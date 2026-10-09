@@ -7,13 +7,130 @@
       "title": "Home",
       "route": "/",
       "states": [
-        "default"
+        "default",
+        "loading",
+        "error",
+        "partial"
       ],
       "not_applicable": {
-        "loading": "This retained mock set contains default states only; this variant has not been authored.",
-        "empty": "This retained mock set contains default states only; this variant has not been authored.",
-        "error": "This retained mock set contains default states only; this variant has not been authored."
+        "empty": "The home page is marketing content; it has no collection that could be empty."
       }
+    },
+    {
+      "id": "sign-in",
+      "kind": "page",
+      "title": "Sign in",
+      "route": "/sign-in",
+      "states": [
+        "default",
+        "invalid",
+        "submitting",
+        "error",
+        "signed-out"
+      ],
+      "not_applicable": {
+        "loading": "The form is static content; nothing loads before it appears.",
+        "empty": "A form has no collection that could be empty."
+      }
+    },
+    {
+      "id": "join",
+      "kind": "page",
+      "title": "Join Banaro",
+      "route": "/join",
+      "states": [
+        "default",
+        "invalid",
+        "submitting",
+        "success"
+      ],
+      "not_applicable": {
+        "loading": "The form is static content; nothing loads before it appears.",
+        "empty": "A form has no collection that could be empty.",
+        "error": "Failed submissions show in the invalid state's error summary; nothing loads on arrival."
+      }
+    },
+    {
+      "id": "forgot-password",
+      "kind": "page",
+      "title": "Forgot password",
+      "route": "/forgot-password",
+      "states": [
+        "default",
+        "invalid",
+        "submitting",
+        "success"
+      ],
+      "not_applicable": {
+        "loading": "The form is static content; nothing loads before it appears.",
+        "empty": "A form has no collection that could be empty.",
+        "error": "Failed submissions show in the invalid state's error summary; nothing loads on arrival."
+      }
+    },
+    {
+      "id": "reset-password",
+      "kind": "page",
+      "title": "Reset password",
+      "route": "/reset-password",
+      "states": [
+        "default",
+        "invalid",
+        "submitting",
+        "success",
+        "error"
+      ],
+      "not_applicable": {
+        "loading": "The form is static content; nothing loads before it appears.",
+        "empty": "A form has no collection that could be empty."
+      }
+    },
+    {
+      "id": "verify-email",
+      "kind": "page",
+      "title": "Verify e-mail",
+      "route": "/verify-email",
+      "states": [
+        "default",
+        "success",
+        "error"
+      ],
+      "not_applicable": {
+        "loading": "The link is checked on the server before the page renders; the result is success or error.",
+        "empty": "A confirmation has no collection that could be empty."
+      }
+    },
+    {
+      "id": "onboarding",
+      "kind": "page",
+      "title": "Welcome",
+      "route": "/welcome",
+      "states": [
+        "default",
+        "skills",
+        "goals",
+        "invalid",
+        "submitting",
+        "success"
+      ],
+      "not_applicable": {
+        "loading": "The form is static content; nothing loads before it appears.",
+        "empty": "A form has no collection that could be empty.",
+        "error": "Failed submissions show in the invalid state's error summary; nothing loads on arrival."
+      }
+    },
+    {
+      "id": "dashboard",
+      "kind": "page",
+      "title": "Dashboard",
+      "route": "/home",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "partial"
+      ],
+      "not_applicable": {}
     },
     {
       "id": "directory",
@@ -21,13 +138,597 @@
       "title": "Builder directory",
       "route": "/builders",
       "states": [
+        "default",
+        "loading",
+        "error",
+        "no-results",
+        "filtered",
+        "edge"
+      ],
+      "not_applicable": {
+        "empty": "The directory always has builders; the filtered-empty case is no-results."
+      }
+    },
+    {
+      "id": "builder-profile",
+      "kind": "page",
+      "title": "Builder profile",
+      "route": "/builders/daniel-reyes",
+      "states": [
+        "default",
+        "loading",
+        "error",
+        "own",
+        "sparse",
+        "not-found"
+      ],
+      "not_applicable": {
+        "empty": "A profile always has a name and a role; a thin profile is shown by the sparse state."
+      }
+    },
+    {
+      "id": "profile-edit",
+      "kind": "page",
+      "title": "Edit profile",
+      "route": "/me/edit",
+      "states": [
+        "default",
+        "loading",
+        "error",
+        "invalid",
+        "submitting",
+        "success"
+      ],
+      "not_applicable": {
+        "empty": "The edit form always opens with the member's own details."
+      }
+    },
+    {
+      "id": "projects",
+      "kind": "page",
+      "title": "Projects",
+      "route": "/projects",
+      "states": [
+        "default",
+        "loading",
+        "error",
+        "no-results"
+      ],
+      "not_applicable": {
+        "empty": "The showcase always has projects; the filtered-empty case is no-results."
+      }
+    },
+    {
+      "id": "project-detail",
+      "kind": "page",
+      "title": "Project",
+      "route": "/projects/psalter",
+      "states": [
+        "default",
+        "loading",
+        "error",
+        "empty",
+        "own",
+        "not-found"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "project-new",
+      "kind": "page",
+      "title": "Share a project",
+      "route": "/projects/new",
+      "states": [
+        "default",
+        "invalid",
+        "submitting",
+        "success"
+      ],
+      "not_applicable": {
+        "loading": "The form is static content; nothing loads before it appears.",
+        "empty": "A form has no collection that could be empty.",
+        "error": "Failed submissions show in the invalid state's error summary; nothing loads on arrival."
+      }
+    },
+    {
+      "id": "project-edit",
+      "kind": "page",
+      "title": "Edit project",
+      "route": "/projects/harvest/edit",
+      "states": [
+        "default",
+        "loading",
+        "error",
+        "invalid",
+        "submitting"
+      ],
+      "not_applicable": {
+        "empty": "The edit form always opens with the project's details."
+      }
+    },
+    {
+      "id": "events",
+      "kind": "page",
+      "title": "Events",
+      "route": "/events",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "past"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "event-detail",
+      "kind": "page",
+      "title": "Event",
+      "route": "/events/fall-demo-night",
+      "states": [
+        "default",
+        "loading",
+        "error",
+        "going",
+        "waitlist",
+        "ended",
+        "cancelled",
+        "not-found"
+      ],
+      "not_applicable": {
+        "empty": "An event always has a title, a time and a place."
+      }
+    },
+    {
+      "id": "matching",
+      "kind": "page",
+      "title": "Matching",
+      "route": "/matching",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "reviewed",
+        "paused"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "matching-setup",
+      "kind": "page",
+      "title": "Matching setup",
+      "route": "/matching/setup",
+      "states": [
+        "default",
+        "invalid",
+        "submitting",
+        "success"
+      ],
+      "not_applicable": {
+        "loading": "The form is static content; nothing loads before it appears.",
+        "empty": "A form has no collection that could be empty.",
+        "error": "Failed submissions show in the invalid state's error summary; nothing loads on arrival."
+      }
+    },
+    {
+      "id": "messages",
+      "kind": "page",
+      "title": "Messages",
+      "route": "/messages",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "send-failed"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "notifications",
+      "kind": "page",
+      "title": "Notifications",
+      "route": "/notifications",
+      "states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "read"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "settings",
+      "kind": "page",
+      "title": "Settings",
+      "route": "/settings",
+      "states": [
+        "default",
+        "privacy",
+        "email",
+        "loading",
+        "error",
+        "invalid",
+        "submitting",
+        "success"
+      ],
+      "not_applicable": {
+        "empty": "Settings always has values; there is no collection that could be empty."
+      }
+    },
+    {
+      "id": "contact",
+      "kind": "page",
+      "title": "Contact",
+      "route": "/contact",
+      "states": [
+        "default",
+        "invalid",
+        "submitting",
+        "success"
+      ],
+      "not_applicable": {
+        "loading": "The form is static content; nothing loads before it appears.",
+        "empty": "A form has no collection that could be empty.",
+        "error": "Failed submissions show in the invalid state's error summary; nothing loads on arrival."
+      }
+    },
+    {
+      "id": "about",
+      "kind": "page",
+      "title": "About Banaro",
+      "route": "/about",
+      "states": [
         "default"
       ],
       "not_applicable": {
-        "loading": "This retained mock set contains default states only; this variant has not been authored.",
-        "empty": "This retained mock set contains default states only; this variant has not been authored.",
-        "error": "This retained mock set contains default states only; this variant has not been authored."
+        "loading": "Static copy served with the page; there is no data request to wait on.",
+        "empty": "Static copy; there is no collection that could be empty.",
+        "error": "Nothing is fetched; a server failure shows the server-error page instead."
       }
+    },
+    {
+      "id": "code-of-conduct",
+      "kind": "page",
+      "title": "Code of conduct",
+      "route": "/code-of-conduct",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Static copy served with the page; there is no data request to wait on.",
+        "empty": "Static copy; there is no collection that could be empty.",
+        "error": "Nothing is fetched; a server failure shows the server-error page instead."
+      }
+    },
+    {
+      "id": "privacy",
+      "kind": "page",
+      "title": "Privacy",
+      "route": "/privacy",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Static copy served with the page; there is no data request to wait on.",
+        "empty": "Static copy; there is no collection that could be empty.",
+        "error": "Nothing is fetched; a server failure shows the server-error page instead."
+      }
+    },
+    {
+      "id": "not-found",
+      "kind": "page",
+      "title": "Page not found",
+      "route": "/404",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "An error page is rendered by the shell; nothing loads.",
+        "empty": "An error page has no collection.",
+        "error": "This page is the error state."
+      }
+    },
+    {
+      "id": "forbidden",
+      "kind": "page",
+      "title": "No access",
+      "route": "/403",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "An error page is rendered by the shell; nothing loads.",
+        "empty": "An error page has no collection.",
+        "error": "This page is the error state."
+      }
+    },
+    {
+      "id": "server-error",
+      "kind": "page",
+      "title": "Something went wrong",
+      "route": "/500",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "An error page is rendered by the shell; nothing loads.",
+        "empty": "An error page has no collection.",
+        "error": "This page is the error state."
+      }
+    },
+    {
+      "id": "offline",
+      "kind": "page",
+      "title": "You're offline",
+      "route": "/offline",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "An error page is rendered by the shell; nothing loads.",
+        "empty": "An error page has no collection.",
+        "error": "This page is the error state."
+      }
+    },
+    {
+      "id": "maintenance",
+      "kind": "page",
+      "title": "Down for maintenance",
+      "route": "/maintenance",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "An error page is rendered by the shell; nothing loads.",
+        "empty": "An error page has no collection.",
+        "error": "This page is the error state."
+      }
+    },
+    {
+      "id": "say-hello",
+      "kind": "dialog",
+      "title": "Say hello",
+      "opens_from": "directory",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "pass-suggestion",
+      "kind": "dialog",
+      "title": "Pass on this suggestion",
+      "opens_from": "matching",
+      "states": [
+        "default",
+        "busy",
+        "failed"
+      ],
+      "not_applicable": {
+        "invalid": "The dialog asks a yes/no question and has no inputs to validate."
+      }
+    },
+    {
+      "id": "give-feedback",
+      "kind": "dialog",
+      "title": "Give feedback",
+      "opens_from": "project-detail",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "offer-to-help",
+      "kind": "dialog",
+      "title": "Offer to help",
+      "opens_from": "project-detail",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "delete-project",
+      "kind": "dialog",
+      "title": "Delete project",
+      "opens_from": "project-edit",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "cancel-rsvp",
+      "kind": "dialog",
+      "title": "Cancel RSVP",
+      "opens_from": "event-detail",
+      "states": [
+        "default",
+        "busy",
+        "failed"
+      ],
+      "not_applicable": {
+        "invalid": "The dialog asks a yes/no question and has no inputs to validate."
+      }
+    },
+    {
+      "id": "pause-matching",
+      "kind": "dialog",
+      "title": "Pause matching",
+      "opens_from": "matching",
+      "states": [
+        "default",
+        "busy",
+        "failed"
+      ],
+      "not_applicable": {
+        "invalid": "The dialog asks a yes/no question and has no inputs to validate."
+      }
+    },
+    {
+      "id": "report",
+      "kind": "dialog",
+      "title": "Report a builder",
+      "opens_from": "builder-profile",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed",
+        "success"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "block-builder",
+      "kind": "dialog",
+      "title": "Block builder",
+      "opens_from": "builder-profile",
+      "states": [
+        "default",
+        "busy",
+        "failed"
+      ],
+      "not_applicable": {
+        "invalid": "The dialog asks a yes/no question and has no inputs to validate."
+      }
+    },
+    {
+      "id": "change-photo",
+      "kind": "dialog",
+      "title": "Change photo",
+      "opens_from": "profile-edit",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "delete-account",
+      "kind": "dialog",
+      "title": "Delete account",
+      "opens_from": "settings",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "session-expired",
+      "kind": "dialog",
+      "title": "Session expired",
+      "opens_from": "profile-edit",
+      "states": [
+        "default",
+        "busy",
+        "invalid",
+        "failed"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "account-menu",
+      "kind": "dialog",
+      "title": "Account menu",
+      "opens_from": "dashboard",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "busy": "A menu only navigates; it makes no server call.",
+        "invalid": "A menu has no inputs to validate."
+      }
+    },
+    {
+      "id": "toast",
+      "kind": "notification",
+      "title": "Toast",
+      "opens_from": "directory",
+      "states": [
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "with-action",
+        "stacked"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "rsvp-toast",
+      "kind": "notification",
+      "title": "RSVP toast",
+      "opens_from": "event-detail",
+      "states": [
+        "info",
+        "success",
+        "warning",
+        "danger"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "account-banner",
+      "kind": "notification",
+      "title": "Account banner",
+      "opens_from": "dashboard",
+      "states": [
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "persistent"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "site-banner",
+      "kind": "notification",
+      "title": "Site banner",
+      "opens_from": "dashboard",
+      "states": [
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "persistent"
+      ],
+      "not_applicable": {}
+    },
+    {
+      "id": "connection-banner",
+      "kind": "notification",
+      "title": "Connection banner",
+      "opens_from": "messages",
+      "states": [
+        "info",
+        "success",
+        "warning",
+        "danger"
+      ],
+      "not_applicable": {}
     }
   ]
 }
