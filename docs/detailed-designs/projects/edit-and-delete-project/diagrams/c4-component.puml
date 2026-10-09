@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Edit and delete a project
+
+Container(web, "Banaro Web", "Angular", "ProjectEditPage, DeleteProjectDialog, HttpProjectsApi")
+ContainerDb(db, "Banaro database", "Relational database", "projects, project_looking_for, feedback, help_offers")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "ProjectController", "Laravel controller", "edit(), update(), destroy()")
+  Component(req, "EditProjectRequest / UpdateProjectRequest / DeleteProjectRequest", "Form requests", "authorize() first, then field rules and confirm_name")
+  Component(policy, "ProjectPolicy", "Policy", "update() and delete(): owner only")
+  Component(update, "UpdateProject", "Action", "Updates fields, syncs roles, touches activity")
+  Component(delete, "DeleteProject", "Action", "Deletes project and its input in one transaction")
+  Component(models, "Project / ProjectLookingFor / Feedback / HelpOffer", "Eloquent models", "Project and its input")
+  Component(resource, "ProjectResource", "API resource", "ProjectDetail JSON shape")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(req, policy, "Authorizes with")
+Rel(ctrl, update, "Calls handle()")
+Rel(ctrl, delete, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(update, models, "Updates")
+Rel(delete, models, "Deletes")
+Rel(models, db, "Reads and writes", "SQL")
+@enduml

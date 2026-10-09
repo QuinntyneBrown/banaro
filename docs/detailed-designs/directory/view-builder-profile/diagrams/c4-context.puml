@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — View a builder profile
+
+Person(member, "Member", "Signed-in, verified builder")
+Person(visitor, "Visitor", "Not signed in; sees profiles visible to everyone")
+Person(builder, "Profiled builder", "Member whose privacy settings shape the profile")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Opens profiles, says hello, reports and blocks using", "HTTPS")
+Rel(visitor, banaro, "Opens public profiles using", "HTTPS")
+Rel(builder, banaro, "Sets profile content and privacy in")
+@enduml

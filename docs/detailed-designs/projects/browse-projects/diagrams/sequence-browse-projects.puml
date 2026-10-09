@@ -1,0 +1,64 @@
+@startuml
+title UML sequence behaviour — Browse, search and filter projects
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member or visitor" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ProjectsPage" as page
+  participant "Router" as router
+  participant "HttpProjectsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ProjectController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "BrowseProjects" as action
+  participant "ProjectSearchService" as search
+  participant "BlockService" as block
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /projects?q=&stage=&looking_for=
+page -> router : Read query parameters (L2-015 criterion 2)
+opt reader changes search text or a filter
+  actor -> page : Search, choose stage or "looking for"
+  page -> router : navigate with new query parameters (L2-015 criterion 2)
+end
+page --> actor : loading state with skeleton cards (L2-015 criterion 4)
+page -> client : browse(query)
+client -> controller : GET /api/v1/projects?q=&stage=&looking_for=&page= (api_public.php)
+controller -> controller : Validate BrowseProjectsRequest, resolve optional viewer
+controller -> action : handle(input, viewer)
+action -> search : search(ProjectSearchQuery)
+opt viewer is a member
+  search -> block : applyScope(query, viewer, owner_id) (L2-044 criterion 5)
+  block --> search : Scoped query
+end
+search -> db : Filter on text AND stage AND role; ORDER BY last_activity_at DESC; LIMIT 12 (L2-015 criterion 1)
+db --> search : Page of projects and total
+search --> action : Paginator
+action --> controller : Paginator
+controller --> client : 200 ProjectSummaryResource collection, or 5xx
+client --> page : Page<ProjectSummary> or error
+alt server error or network failure
+  page --> actor : error state with "Try again" (L2-015 criterion 4)
+else total is 0
+  page --> actor : no-results state with active filters, "Clear filters" and "Share a project" (L2-015 criterion 3)
+else results
+  page --> actor : default state with project cards and count
+end
+@enduml

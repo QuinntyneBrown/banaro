@@ -1,0 +1,80 @@
+@startuml
+title UML sequence behaviour — Recover from a 401
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "Member page" as page
+  participant "sessionExpiryInterceptor" as interceptor
+  participant "DialogSessionRecovery" as recovery
+  participant "SessionExpiredDialog" as dialog
+  participant "SessionStore" as store
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "auth:sanctum" as auth
+  participant "SessionController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "SignIn" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  queue "Redis" as redis
+end box
+
+actor -> page : Select "Save changes"
+page -> interceptor : Original request
+interceptor -> auth : PUT /api/v1/... with the old session cookie
+auth -> redis : Look up session
+redis --> auth : Not found (expired)
+auth --> interceptor : 401 unauthenticated
+interceptor -> interceptor : SessionStore holds a member; join or start one recovery
+interceptor -> recovery : recover()
+recovery -> dialog : Open with disableClose; page stays mounted (L2-005 criterion 1)
+dialog --> actor : "Your session has expired"; focus on password; e-mail read-only
+loop until success or sign-out
+  actor -> dialog : Enter password; select "Sign back in"
+  dialog -> dialog : busy state, "Signing in…"; "Sign out" stays enabled
+  dialog -> store : signIn({ email, password })
+  store -> controller : GET /sanctum/csrf-cookie, then POST /api/v1/session
+  controller -> action : handle(data, request)
+  alt password correct
+    action -> redis : Login; new session identifier; authenticated_at
+    controller --> store : 200 SessionResource
+    store --> dialog : MemberSession
+    dialog --> recovery : Close with 'recovered' (L2-005 criterion 2)
+    recovery --> interceptor : 'recovered'
+    interceptor -> auth : Original request, sent once more with the new cookie and CSRF token
+    auth --> interceptor : Normal response
+    interceptor --> page : Response
+    page --> actor : Saved; nothing typed was lost
+  else wrong password
+    controller --> store : 422 invalid_credentials
+    store --> dialog : Error
+    dialog --> actor : invalid state "That password doesn't match"; dialog stays open (L2-005 criterion 3)
+  else network failure or 5xx
+    store --> dialog : Error
+    dialog --> actor : failed state, danger alert with "Try again" (L2-005 criterion 3)
+  end
+end
+opt member selects "Sign out" in the dialog
+  actor -> dialog : Select "Sign out"
+  dialog -> store : clear()
+  dialog --> recovery : Close with 'signed-out'
+  recovery --> interceptor : 'signed-out'
+  interceptor --> page : SessionEnded; nothing retried
+  recovery -> page : Navigate to /sign-in, bypassing unsaved-changes prompts
+  page --> actor : /sign-in; preserved input discarded (L2-005 criterion 4)
+end
+@enduml

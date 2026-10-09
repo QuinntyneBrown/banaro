@@ -1,0 +1,50 @@
+@startuml
+title UML sequence behaviour — Open a dialog at any width
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ProjectDetailPage" as page
+  participant "GiveFeedbackDialog" as feedback
+end box
+box "Frontend — components library" #E0F2FE
+  participant "BnDialog" as bn
+  participant "BreakpointObserver (CDK)" as observer
+  participant "Dialog and Overlay (CDK)" as cdk
+end box
+
+actor -> page : Select "Give feedback"
+page -> bn : open(GiveFeedbackDialog, { sheetBelow: 'SM' })
+bn -> observer : isMatched(BREAKPOINTS.XS)
+alt viewport < 576 px
+  observer --> bn : true
+  bn -> cdk : open(width 100%, bottom position, panelClass bn-dialog--sheet)
+  cdk -> feedback : Create in overlay panel
+  feedback --> actor : Bottom sheet across the full width (L2-049 criterion 5)
+else viewport >= 576 px
+  observer --> bn : false
+  bn -> cdk : open(maxWidth 32rem, centred, panelClass bn-dialog)
+  cdk -> feedback : Create in overlay panel
+  feedback --> actor : Centred dialog, at most 32 rem wide (L2-049 criterion 5)
+end
+opt viewport crosses 576 px while open (rotation or resize)
+  observer -> bn : Breakpoint change
+  bn -> cdk : updateSize() and updatePosition() for the new form
+  cdk --> actor : Same dialog and input, new form
+end
+actor -> feedback : Close
+feedback -> cdk : close()
+cdk --> page : Focus returns to "Give feedback"
+@enduml

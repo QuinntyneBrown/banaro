@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edit profile · success — Banaro</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="profile-edit">
+<meta name="mock:state" content="success">
+<meta name="description" content="Edit form after a successful save: a confirmation with a link to the public profile; values stay in place.">
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="brand" href="../../pages/dashboard/default.html" aria-label="Banaro home"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a>
+    <nav class="nav" id="primary-nav" popover aria-label="Primary">
+      <ul class="nav__list"><li><a class="nav__link" href="../../pages/directory/default.html">Builders</a></li><li><a class="nav__link" href="../../pages/projects/default.html">Projects</a></li><li><a class="nav__link" href="../../pages/events/default.html">Events</a></li><li><a class="nav__link" href="../../pages/matching/default.html">Matching</a></li></ul>
+      <button type="button" class="btn btn--quiet nav__close" popovertarget="primary-nav" popovertargetaction="hide">Close menu</button>
+    </nav>
+    <div class="header__actions"><a class="matches-link" href="../../pages/matching/default.html"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10z"/></svg>2 new matches</a><a class="icon-btn" href="../../pages/messages/default.html" aria-label="Messages, 1 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5A2.5 2.5 0 0 1 7 4h10a2.5 2.5 0 0 1 2.5 2.5v7A2.5 2.5 0 0 1 17 16h-5.5L7 19.5V16a2.5 2.5 0 0 1-2.5-2.5z"/></svg><span class="icon-btn__count" aria-hidden="true">1</span></a><a class="icon-btn" href="../../pages/notifications/default.html" aria-label="Notifications, 3 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg><span class="icon-btn__count" aria-hidden="true">3</span></a><a class="avatar-btn" href="../../dialogs/account-menu/default.html" aria-label="Your account, Amara Osei" aria-haspopup="menu"><img class="avatar" src="../../assets/photos/amara-osei.jpg" width="40" height="40" alt=""><span>Amara</span></a><button type="button" class="menu-btn" popovertarget="primary-nav" aria-label="Menu"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="menu-btn__label">Menu</span></button></div>
+  </div>
+</header>
+
+<main id="main">
+<div class="wrap">
+<div class="narrow" style="padding-block: var(--space-12) var(--space-8)">
+<div class="page-head"><p class="eyebrow">Your account</p><h1 class="page-head__title">Edit profile</h1><p class="page-head__sub">This is what builders see when they open your profile.</p></div>
+<div style="margin-top: var(--space-10)"><div class="alert alert--success" role="status"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><p class="alert__title">Profile saved</p><p class="alert__body">Your changes are live. Builders see them now.</p><div class="alert__actions"><a class="btn btn--quiet btn--sm" href="../../pages/builder-profile/own.html">View your profile</a></div></div>
+<form class="form" action="#" novalidate>
+<div class="field"><span class="field__label" id="photo-label">Photo</span><div class="photo-edit" role="group" aria-labelledby="photo-label"><img class="photo-edit__img" src="../../assets/photos/amara-osei.jpg" width="96" height="96" alt="Your current photo"><div class="photo-edit__text"><a class="btn btn--quiet btn--sm" href="../../dialogs/change-photo/default.html">Change photo</a><p class="field__help">A clear, square photo works best. JPG or PNG, up to 5 MB.</p></div></div></div>
+<div class="field-row"><div class="field"><label class="field__label" for="name">Full name</label><input class="input" id="name" name="name" type="text" value="Amara Osei" required autocomplete="name"></div><div class="field"><label class="field__label" for="role">Role</label><input class="input" id="role" name="role" type="text" value="Founder · Product" aria-describedby="role-help"><p class="field__help" id="role-help">What you do, in a few words.</p></div></div>
+<div class="field"><label class="field__label" for="hood">Neighbourhood</label><span class="select__wrap"><select class="select__control" id="hood" name="hood"><option selected>Leslieville</option><option>Riverdale</option><option>The Danforth</option><option>The Annex</option><option>Liberty Village</option><option>Roncesvalles</option><option>Kensington Market</option><option>North York</option><option>Etobicoke</option><option>Scarborough</option></select><svg class="icon icon--sm select__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></span><p class="field__help" id="hood-help">Shown to builders. We use it to work out distances; your address is never shared.</p></div>
+<div class="field"><label class="field__label" for="bio">Bio</label><textarea class="textarea" id="bio" name="bio" rows="5" aria-describedby="bio-help">Founder and product lead building Harvest, volunteer scheduling for GTA food banks. Six food banks use it every week. I&#x27;m looking for a technical co-founder who loves boring, reliable software and wants to serve neighbours with it.</textarea><p class="field__help" id="bio-help">Tell builders who you are and what you care about.</p><p class="field__counter" id="bio-count" aria-live="polite">231 / 400</p></div>
+<div class="field"><label class="field__label" for="skill-add">Skills</label><ul class="chips" aria-label="Your skills"><li><button type="button" class="chip" aria-pressed="true" aria-label="Remove skill: Product strategy">Product strategy <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></li><li><button type="button" class="chip" aria-pressed="true" aria-label="Remove skill: User research">User research <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></li><li><button type="button" class="chip" aria-pressed="true" aria-label="Remove skill: Figma">Figma <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></li></ul><div class="input-group"><input class="input" id="skill-add" name="skill-add" type="text" placeholder="Add a skill, such as Laravel" aria-describedby="skills-help"><button type="button" class="btn btn--quiet">Add</button></div><p class="field__help" id="skills-help">Up to 12 skills. Press Enter to add one.</p></div>
+<fieldset class="field"><legend class="field__label">Open to</legend><div class="choices"><label class="choice"><input type="checkbox" id="open-co" name="open" value="co" checked><span class="choice__title">Co-founding</span><span class="choice__text">Looking for someone to build a company with.</span></label><label class="choice"><input type="checkbox" name="open" value="adv"><span class="choice__title">Advising</span><span class="choice__text">Happy to give an hour of advice to early teams.</span></label><label class="choice"><input type="checkbox" name="open" value="con"><span class="choice__title">Contributing</span><span class="choice__text">Open to helping on a project part time.</span></label></div></fieldset>
+<div class="field"><label class="field__label" for="looking">What I am looking for <span class="field__optional">(optional)</span></label><textarea class="textarea" id="looking" name="looking" rows="3" aria-describedby="looking-help">A technical co-founder who can own the Laravel backend, is comfortable in a small team, and lives within an hour of Leslieville.</textarea><p class="field__help" id="looking-help">Shown on your profile and used for your Monday matches.</p></div>
+<fieldset class="field"><legend class="field__label">Who can see my profile</legend><div class="choices"><label class="choice"><input type="radio" name="visibility" value="all" checked><span class="choice__title">Signed-in builders</span><span class="choice__text">Everyone on Banaro can see your profile.</span></label><label class="choice"><input type="radio" name="visibility" value="near"><span class="choice__title">Builders within 60 km</span><span class="choice__text">Only people near you can find you in the directory.</span></label><label class="choice"><input type="radio" name="visibility" value="hidden"><span class="choice__title">Hidden</span><span class="choice__text">Your profile is not listed. You can still message people.</span></label></div></fieldset>
+<div class="form-actions"><button type="submit" class="btn btn--primary">Save changes</button><a class="btn btn--quiet" href="../../pages/builder-profile/own.html">Cancel</a></div>
+</form></div></div>
+</div>
+</main>
+
+<footer class="footer" id="footer">
+  <div class="wrap footer__grid">
+    <p class="footer__made">Made in Toronto. © 2026 Banaro.</p>
+    <nav aria-label="Footer">
+      <ul class="footer__links"><li><a href="../../pages/about/default.html">About</a></li><li><a href="../../pages/code-of-conduct/default.html">Code of conduct</a></li><li><a href="../../pages/privacy/default.html">Privacy</a></li><li><a href="../../pages/contact/default.html">Contact</a></li></ul>
+    </nav>
+    <p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+  </div>
+</footer>
+<p class="mock-note" style="top: 7rem; right: 1rem">The success alert is announced politely and also shown as a toast if the member scrolled down.</p>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="Mock gallery">⌂</a>
+  <span class="mock-bar__screen">Edit profile</span>
+  <ul class="mock-bar__states"><li><a href="default.html">default</a></li><li><a href="loading.html">loading</a></li><li><a href="error.html">error</a></li><li><a href="invalid.html">invalid</a></li><li><a href="submitting.html">submitting</a></li><li><a href="success.html" aria-current="page">success</a></li></ul>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — View an event
+
+package "Frontend — banaro application, components and api libraries" {
+  class EventDetailPage {
+    -api: EventsApi
+    +event: Signal<EventDetail>
+    +rsvp: Signal<RsvpSummary>
+    +state: Signal<PageState>
+    +load(id: string): void
+    +retry(): void
+  }
+  class AttendeeCluster <<bn-attendee-cluster>> {
+    +people: input<BuilderSummary[]>
+    +moreCount: input<number>
+  }
+  interface EventsApi {
+    +getEvent(id: string): Observable<EventDetail>
+  }
+  class HttpEventsApi
+  class EventDetail {
+    +id: string
+    +title: string
+    +category: string
+    +description: string
+    +startsAt: string
+    +endsAt: string
+    +venueName: string
+    +venueAddress: string
+    +mapUrl: string
+    +host: BuilderSummary
+    +goingCount: number
+    +capacity: number | null
+    +spotsLeft: number | null
+    +status: 'scheduled' | 'cancelled'
+    +phase: 'upcoming' | 'started' | 'ended'
+    +recap: string | null
+    +cancellationNote: string | null
+    +attendees: AttendeePreview
+    +viewerRsvp: RsvpSummary
+  }
+  class AttendeePreview {
+    +people: BuilderSummary[]
+    +moreCount: number
+  }
+  class RsvpSummary {
+    +status: 'going' | 'waitlisted' | 'none'
+    +waitlistPosition: number | null
+  }
+}
+
+package "Backend — Banaro API" {
+  class EventController {
+    +show(request: ViewEventRequest, event: Event): EventDetailResource
+  }
+  class ViewEvent {
+    +handle(viewer: User, event: Event): EventView
+  }
+  class EventView {
+    +Event event
+    +?Rsvp viewerRsvp
+    +?int waitlistPosition
+    +Collection attendeePreview
+    +int moreCount
+  }
+  class AttendeeListService {
+    +previewFor(event: Event, viewer: User, limit: int): AttendeePreviewResult
+  }
+  class BlockService <<TrustAndSafety>> {
+    +isBlockedEitherWay(a: User, b: User): bool
+  }
+  class WaitlistService {
+    +positionOf(rsvp: Rsvp): int
+  }
+  class Event {
+    +int id
+    +string title
+    +string category
+    +string description
+    +Carbon starts_at
+    +Carbon ends_at
+    +string venue_name
+    +string venue_address
+    +int host_id
+    +?string recap
+    +?string cancellation_note
+    +EventStatus status
+    +phase(): string
+  }
+  class Rsvp {
+    +int event_id
+    +int user_id
+    +RsvpStatus status
+  }
+  class Builder {
+    +int user_id
+    +string name
+    +string role
+  }
+  enum RsvpStatus {
+    Going
+    Waitlisted
+  }
+  enum EventStatus {
+    Scheduled
+    Cancelled
+  }
+  class EventDetailResource
+}
+
+EventDetailPage ..> EventsApi : uses
+EventDetailPage ..> AttendeeCluster : renders
+HttpEventsApi ..|> EventsApi
+EventsApi ..> EventDetail : returns
+EventDetail *-- AttendeePreview
+EventDetail *-- RsvpSummary
+HttpEventsApi ..> EventController : HTTPS
+
+EventController ..> ViewEvent : calls
+EventController ..> EventDetailResource : returns
+EventDetailResource ..> EventView : serializes
+ViewEvent ..> EventView : creates
+ViewEvent ..> WaitlistService : position via
+ViewEvent ..> AttendeeListService : preview via
+AttendeeListService ..> BlockService : block rule
+AttendeeListService --> Rsvp : queries going
+ViewEvent --> Event : loads
+Event "1" *-- "*" Rsvp : rsvps
+Event --> Builder : host
+Rsvp --> RsvpStatus : has
+Event --> EventStatus : has
+@enduml

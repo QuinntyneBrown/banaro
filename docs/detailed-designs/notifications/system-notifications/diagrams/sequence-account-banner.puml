@@ -1,0 +1,58 @@
+@startuml
+title UML sequence behaviour — Show an account banner
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "AccountBannerSource" as source
+  participant "SessionService" as session
+  participant "BannerService" as svc
+  participant "DismissalStore" as store
+  participant "BannerStack" as stack
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "Session endpoint (identity)" as api
+end box
+
+actor -> source : Load a member page
+source -> session : currentUser()
+session -> api : Read session user
+api --> session : emailVerified, matching status, session expiry
+session --> source : User
+loop each account condition that applies (L2-028 criterion 4)
+  source -> store : isDismissed(conditionKey)
+  alt dismissed and not expired
+    store --> source : true
+    source -> source : Skip non-critical banner
+  else not dismissed, or critical
+    source -> svc : show({ key, variant, text, action, dismissible })
+    svc -> stack : Render above the header
+    stack --> actor : Account banner, role status or alert
+  end
+end
+opt member dismisses the banner
+  actor -> stack : Select "Dismiss banner"
+  stack -> svc : dismiss(key)
+  alt non-critical
+    svc -> store : record(key, now + 7 days) (L2-028 criterion 4)
+  else critical (danger)
+    svc -> svc : Hide for this page only; returns while the condition lasts
+  end
+end
+opt condition resolved (e-mail verified, matching resumed, session renewed)
+  source -> svc : clear(key)
+  svc -> stack : Remove banner
+end
+@enduml

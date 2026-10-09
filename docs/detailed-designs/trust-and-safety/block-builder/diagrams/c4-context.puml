@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Block a builder
+
+Person(member, "Member (blocker)", "Signed-in, verified builder who blocks another")
+Person(blocked, "Member (blocked party)", "Builder named in the block; not told of it")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Blocks and unblocks builders using", "HTTPS")
+Rel(blocked, banaro, "Finds and messages members through, minus the blocker", "HTTPS")
+@enduml

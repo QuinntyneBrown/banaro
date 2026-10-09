@@ -1,0 +1,109 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Review matches
+
+package "Frontend — banaro application, components and api libraries" {
+  class MatchingPage {
+    -api: MatchingApi
+    -dialog: Dialog
+    +state: 'loading' | 'error' | 'default' | 'reviewed' | 'empty' | 'paused'
+    +overview: Signal<MatchingOverview | null>
+    +load(): void
+    +sayHello(card: MatchSuggestionCard): void
+    +pass(card: MatchSuggestionCard): void
+  }
+  class MatchCard <<bn-match-card>> {
+    +suggestion: InputSignal<MatchSuggestionCard>
+    +sayHello: OutputEmitterRef<void>
+    +pass: OutputEmitterRef<void>
+  }
+  class SayHelloDialog <<messaging>>
+  interface MatchingApi {
+    +getOverview(): Observable<MatchingOverview>
+  }
+  class HttpMatchingApi
+  class MatchingOverview {
+    +status: 'not_set_up' | 'active' | 'paused'
+    +pausedAt: string | null
+    +isoWeek: string
+    +suggestedOn: string | null
+    +nextRunOn: string
+    +unreviewedCount: number
+    +search: MatchingSearchSummary
+    +suggestions: MatchSuggestionCard[]
+  }
+  class MatchSuggestionCard {
+    +id: string
+    +builder: BuilderSummary
+    +distanceKm: number
+    +score: number
+    +reasons: MatchReason[]
+    +status: 'suggested' | 'contacted' | 'passed'
+  }
+}
+
+package "Backend — Banaro API" {
+  class MatchingOverviewController {
+    +show(request: ShowMatchingOverviewRequest): MatchingOverviewResource
+  }
+  class BuildMatchingOverview {
+    +handle(member: User): MatchingOverview
+  }
+  class MarkSuggestionContactedOnConversationStarted {
+    +handle(event: ConversationStarted): void
+  }
+  class MarkSuggestionContacted {
+    +handle(sender: User, recipient: User): ?MatchSuggestion
+  }
+  class MatchSuggestionPolicy {
+    +view(member: User, suggestion: MatchSuggestion): bool
+  }
+  class BlockService <<trust-and-safety>> {
+    +isBlockedEitherWay(a: User, b: User): bool
+  }
+  class MatchingScheduleService {
+    +isoWeekOf(instant: CarbonImmutable): string
+    +nextRunDate(now: CarbonImmutable): CarbonImmutable
+  }
+  class MatchSuggestion {
+    +int user_id
+    +int candidate_user_id
+    +string iso_week
+    +int score
+    +array reasons
+    +MatchSuggestionStatus status
+    +?Carbon acted_at
+  }
+  class MatchingOverviewResource
+  class MatchSuggestionResource
+}
+
+MatchingPage *-- "0..3" MatchCard
+MatchingPage ..> MatchingApi : uses
+MatchingPage ..> SayHelloDialog : opens
+HttpMatchingApi ..|> MatchingApi
+MatchingApi ..> MatchingOverview : returns
+MatchingOverview *-- "*" MatchSuggestionCard
+HttpMatchingApi ..> MatchingOverviewController : HTTPS
+
+MatchingOverviewController ..> BuildMatchingOverview : calls
+MatchingOverviewController ..> MatchingOverviewResource : returns
+MatchingOverviewResource *-- MatchSuggestionResource
+BuildMatchingOverview ..> MatchingScheduleService : week, next run
+BuildMatchingOverview ..> BlockService : filters
+BuildMatchingOverview --> MatchSuggestion : reads
+MarkSuggestionContactedOnConversationStarted ..> MarkSuggestionContacted : calls
+MarkSuggestionContacted --> MatchSuggestion : updates
+MatchSuggestionPolicy ..> MatchSuggestion : guards
+@enduml

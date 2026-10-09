@@ -1,0 +1,59 @@
+@startuml
+title UML sequence behaviour — Erase personal data on the worker
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Laravel scheduler" as scheduler
+box "Backend — Banaro Worker" #ECFDF3
+  participant "EraseDeletedAccounts" as sweep
+  participant "ErasePersonalData" as job
+  participant "WaitlistService" as waitlist
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  queue "Redis" as redis
+  database "Banaro database" as db
+  database "Media storage" as media
+end box
+
+redis -> job : Deliver ErasePersonalData(user) queued by DeleteAccount
+job -> db : Load user WHERE deleted_at set AND erased_at empty
+alt already erased
+  job -> job : Exit (idempotent)
+else erasure due
+  job -> db : DELETE profile, skills, matching preferences and suggestions
+  job -> media : Delete profile photo
+  job -> db : DELETE messages sent by the user (L2-038 criterion 2)
+  job -> db : DELETE privacy settings, e-mail preferences, blocks, pending tokens, data exports
+  loop each going RSVP to an upcoming event
+    job -> db : DELETE rsvp; going_count - 1
+    job -> waitlist : promoteNext(event)
+    waitlist -> db : Promote oldest waitlisted member
+  end
+  job -> db : DELETE remaining RSVPs
+  job -> db : UPDATE users SET erased_at = now (L2-038 criterion 2)
+end
+opt job fails
+  job -> redis : Release for retry with back-off
+end
+
+== Daily sweep ==
+scheduler -> sweep : Run daily (routes/console.php)
+sweep -> db : Users with deleted_at set and erased_at empty
+loop each unfinished erasure
+  sweep -> redis : Re-dispatch ErasePersonalData(user)
+end
+opt erase_by is near and erasure still unfinished
+  sweep -> sweep : Raise alert (threshold to be supplied)
+end
+@enduml

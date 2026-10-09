@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — About and contact
+
+Person(visitor, "Visitor", "Person using Banaro without signing in")
+System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "AboutPage, ContactPage")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Validates, rate-limits and queues contact messages; serves the catalogue")
+  Container(worker, "Banaro Worker", "Laravel Horizon", "Runs DeliverContactMessage")
+  ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters and Horizon queues")
+}
+
+Rel(visitor, web, "GET /about, GET /contact", "HTTPS")
+Rel(web, api, "GET /api/v1/i18n/en-CA; POST /api/v1/contact-messages", "JSON/HTTPS")
+Rel(api, redis, "Counts requests per hashed IP, queues job", "Redis protocol")
+Rel(worker, redis, "Takes jobs from", "Redis protocol")
+Rel(worker, mail, "Sends message to the team inbox via", "Mailer contract")
+@enduml

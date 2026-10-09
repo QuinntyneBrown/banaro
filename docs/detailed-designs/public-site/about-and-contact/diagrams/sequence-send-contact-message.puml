@@ -1,0 +1,80 @@
+@startuml
+title UML sequence behaviour — Send a contact message
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ContactPage" as page
+  participant "HttpPublicSiteApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "throttle:contact" as limiter
+  participant "ContactMessageController" as controller
+  participant "SendContactMessageRequest" as req
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "SendContactMessage" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  queue "Redis" as redis
+end box
+box "Backend — Banaro Worker" #FFF4E5
+  participant "DeliverContactMessage" as job
+end box
+participant "Mail provider" as mail
+
+actor -> page : Fill name, e-mail, topic, message; select "Send message"
+page -> page : Client checks mirror server rules
+alt client checks fail
+  page --> actor : invalid state, "Fix these before continuing" summary
+else client checks pass
+  page -> page : submitting state, "Sending…", fields read-only (L2-040 criterion 2)
+  page -> client : sendContactMessage(request)
+  client -> limiter : POST /api/v1/contact-messages (api_public.php, CSRF token)
+  limiter -> redis : Increment counter for hashed client IP
+  alt more than 3 in the hour from this IP
+    limiter --> client : 429 with Retry-After (L2-040 criterion 3)
+    limiter -> limiter : Log route and hashed client identifier (L2-046 criterion 3)
+    client --> page : Rate-limited
+    page --> actor : invalid state with the "slow down" message (L2-046 criterion 2)
+  else within the limit
+    limiter -> controller : store(request)
+    controller -> req : Validate type, length, format, ContactTopic (L2-045 criterion 1)
+    alt validation fails
+      req --> client : 422 with field errors
+      client --> page : Field errors
+      page --> actor : invalid state, focus on the summary
+    else valid
+      controller -> action : handle(ContactMessageData)
+      alt honeypot field filled
+        action -> action : Discard message, log discard without text (L2-040 criterion 3)
+      else honeypot empty
+        action -> redis : Dispatch DeliverContactMessage on the mail queue (L2-040 criterion 2)
+      end
+      action --> controller : Done
+      controller --> client : 202, same body in both cases
+      client --> page : Sent
+      page --> actor : success state "Thank you, {name}", "Message sent"
+    end
+  end
+end
+
+== Delivery by the Banaro Worker ==
+job -> redis : Take job
+job -> mail : Send ContactMessageMail to the team inbox, Reply-To sender
+alt provider fails
+  job -> job : Retry with back-off, at most 5 tries, then log failure with alert (L2-029 criterion 4)
+end
+@enduml

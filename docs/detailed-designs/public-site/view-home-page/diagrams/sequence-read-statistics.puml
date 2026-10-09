@@ -1,0 +1,54 @@
+@startuml
+title UML sequence behaviour — Read the platform statistics
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — banaro application" #E0F2FE
+  participant "HomePage" as page
+  participant "HttpPublicSiteApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "HomeController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "GetPlatformStatistics" as action
+  participant "PlatformStatisticsService" as svc
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Redis cache" as cache
+  database "Banaro database" as db
+end box
+
+page -> client : statistics()
+client -> controller : GET /api/v1/home/statistics (anonymous, api_public.php)
+controller -> action : handle()
+action -> svc : current()
+svc -> cache : GET public-site:statistics
+alt cache hit (entry younger than 600 s)
+  cache --> svc : Cached PlatformStatistics
+else cache miss or expired
+  cache --> svc : null
+  svc -> db : COUNT builders, projects, co-founder matches, events this year
+  db --> svc : Real counts (L2-039 criterion 5)
+  svc -> cache : SET public-site:statistics, TTL 600 s (L2-039 criterion 5)
+end
+svc --> action : PlatformStatistics
+action --> controller : PlatformStatistics
+controller --> client : 200 PlatformStatisticsResource
+client --> page : PlatformStatistics
+page -> page : Format counts with thousands separators, e.g. "1,284" (L2-052 criterion 4)
+alt request failed
+  page -> page : Hide the statistics row, keep the rest of the page
+end
+@enduml

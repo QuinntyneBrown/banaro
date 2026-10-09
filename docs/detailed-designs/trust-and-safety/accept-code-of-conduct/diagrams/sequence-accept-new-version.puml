@@ -1,0 +1,66 @@
+@startuml
+title UML sequence behaviour — Accept a new version at sign-in
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "SignInPage" as signin
+  participant "codeOfConductGuard" as guard
+  participant "AcceptCodeOfConductDialog" as dialog
+  participant "HttpTrustAndSafetyApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "SessionController" as session
+  participant "CodeOfConductController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "CodeOfConductService" as service
+  participant "AcceptCodeOfConduct" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> signin : Sign in
+signin -> session : POST /api/v1/sign-in
+session -> service : requiresAcceptance(member)
+service -> db : Latest acceptance for member
+db --> service : Older version or none
+service --> session : true (current version changed)
+session --> signin : Member payload, codeOfConductAcceptanceRequired = true
+signin -> guard : Navigate to returnTo or /dashboard
+guard -> dialog : Open acceptance prompt with current version (L2-034 criterion 3)
+actor -> dialog : Read text via link, select "Accept"
+dialog -> dialog : Enter busy state
+dialog -> client : acceptCodeOfConduct(version)
+client -> controller : POST /api/v1/code-of-conduct/acceptances
+controller -> action : handle(member, version)
+action -> service : currentVersion()
+alt version is not current
+  action --> controller : 422 stale_code_of_conduct_version
+  controller --> client : 422 problem
+  client --> dialog : Reload current version, ask again
+else current version
+  action -> db : INSERT conduct_acceptance (version, accepted_at = now) unless it exists
+  action --> controller : Acceptance (L2-034 criterion 3)
+  controller --> client : 201 ConductAcceptanceResource
+  client --> dialog : Accepted
+  dialog --> actor : Close; continue to the page
+else server error
+  controller --> client : 5xx
+  client --> dialog : Error
+  dialog --> actor : failed state with retry
+end
+@enduml

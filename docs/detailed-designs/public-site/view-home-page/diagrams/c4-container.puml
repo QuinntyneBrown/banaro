@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — View the home page
+
+Person(visitor, "Visitor", "Person using Banaro without signing in")
+System_Ext(crawler, "Search engine", "Crawls public pages")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Server-renders HomePage, hydrates it in the browser")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Anonymous /home endpoints: statistics and feed sections")
+  ContainerDb(db, "Banaro database", "Relational database", "Builders, projects, match suggestions, events")
+  ContainerDb(redis, "Redis", "Redis", "Statistics cache entry, rate-limit counters")
+}
+
+Rel(visitor, web, "GET /", "HTTPS")
+Rel(crawler, web, "GET /", "HTTPS")
+Rel(web, api, "GET /api/v1/home/statistics, /builders, /projects, /events", "JSON/HTTPS")
+Rel(api, redis, "Reads and writes statistics, TTL 600 s", "Redis protocol")
+Rel(api, db, "Counts rows, reads featured items", "SQL")
+@enduml

@@ -1,0 +1,81 @@
+@startuml
+title UML sequence behaviour — Owner accepts or declines a help offer
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ProjectDetailPage" as page
+  participant "HttpProjectsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "HelpOfferDecisionController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "HelpOfferPolicy" as policy
+  participant "AnswerHelpOffer" as action
+  participant "StartConversation\n(Messaging)" as start
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis queue" as queue
+end box
+box "Backend — Banaro Worker" #ECFDF3
+  participant "HelpOfferAnsweredNotification" as notification
+end box
+
+actor -> page : Open own project, read the help-offer section
+page -> client : helpOffers(projectId)
+client --> page : Offers, open offers first
+actor -> page : Select "Accept" or "Decline" on an open offer
+page -> client : answerHelpOffer(projectId, offerId, decision)
+client -> controller : PUT /api/v1/projects/{id}/help-offers/{offerId}/decision
+controller -> policy : answer(owner, offer)
+alt not the project owner
+  policy --> controller : Deny
+  controller --> client : 403
+else owner
+  policy --> controller : Allow
+  controller -> action : handle(owner, offer, decision)
+  action -> db : BEGIN; SELECT offer FOR UPDATE
+  alt offer no longer Pending
+    action -> db : ROLLBACK
+    action --> controller : 409 code offer_answered
+  else accept
+    action -> start : Open conversation between owner and offerer (L2-017 criterion 4, L2-026)
+    alt blocked pair or messaging refusal
+      start --> action : 403
+      action -> db : ROLLBACK
+      action --> controller : 403, offer stays Pending
+    else conversation opened
+      start --> action : Conversation
+      action -> db : UPDATE offer status Accepted, answered_at, conversation_id; COMMIT
+      action -> queue : Queue HelpOfferAnsweredNotification to offerer (L2-017 criterion 4)
+      action --> controller : HelpOffer
+    end
+  else decline
+    action -> db : UPDATE offer status Declined, answered_at; COMMIT
+    action -> queue : Queue HelpOfferAnsweredNotification to offerer (L2-017 criterion 4)
+    action --> controller : HelpOffer
+  end
+end
+controller --> client : 200 HelpOfferResource, or 403 / 409
+client --> page : HelpOfferView or error
+page --> actor : Offer shows its answer; on accept, link to /messages/{conversationId}
+opt answer stored
+  queue -> notification : Worker takes the job
+  notification -> db : Record database notification for the offerer
+  notification -> notification : Send e-mail if the category allows (channels TO SUPPLY)
+end
+@enduml

@@ -1,0 +1,60 @@
+@startuml
+title UML sequence behaviour — Compare component render cost with the base branch
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Developer" as actor
+box "Pipeline — .ci" #FFF4E5
+  participant "perf-test stage" as stage
+end box
+box "End-to-end — e2e/perf-test" #FFF4E5
+  participant "perf-test.mjs" as runner
+  participant "config/" as config
+end box
+participant "Chromium" as chrome
+box "Frontend — perf-test application" #E0F2FE
+  participant "renderer.ts" as renderer
+  participant "Scenario component" as scenario
+end box
+
+actor -> stage : Pull request touching frontend/ or e2e/perf-test/
+stage -> stage : NG_BUILD_MANGLE=0 ng build perf-test (branch and base)
+stage -> runner : npm run perf-test -- --baseline <base dist> --fail-on-regression
+runner -> config : Read iterations, runs, render types, thresholds, exclusions
+loop each scenario, each build, each run
+  runner -> chrome : Open ?scenario=Name&iterations=N&renderType=T
+  runner -> chrome : Profiler.start (CDP)
+  chrome -> renderer : Load
+  renderer -> scenario : Render N times
+  alt render throws
+    renderer --> runner : Render failure
+  else rendered
+    renderer --> runner : performance marks
+  end
+  runner -> chrome : Profiler.stop
+  chrome --> runner : .cpuprofile
+end
+runner -> runner : Median per scenario; possible regression if > 10 % and >= 1 ms slower with no run overlap
+runner --> stage : perf-test.md, results.json, profiles
+stage -> stage : Publish table in job summary; upload .cpuprofile files
+alt possible regression or render failure
+  alt maintainer added perf-regression-accepted
+    stage --> actor : Check passes for this pull request only
+  else no label
+    stage --> actor : Check fails; open the profile and fix the cost (L2-048 criterion 5)
+  end
+else no flag
+  stage --> actor : Check passes
+end
+@enduml

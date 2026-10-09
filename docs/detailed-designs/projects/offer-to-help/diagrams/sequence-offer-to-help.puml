@@ -1,0 +1,93 @@
+@startuml
+title UML sequence behaviour — Offer to help with a project
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ProjectDetailPage" as page
+  participant "OfferToHelpDialog" as dialog
+  participant "HttpProjectsApi" as client
+  participant "ToastService" as toast
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "HelpOfferController" as controller
+  participant "OfferToHelpRequest" as request
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ProjectPolicy" as policy
+  participant "BlockService" as block
+  participant "OfferToHelp" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis queue" as queue
+end box
+box "Backend — Banaro Worker" #ECFDF3
+  participant "HelpOfferedNotification" as notification
+end box
+
+actor -> page : Select "Offer to help"
+page -> dialog : Open offer-to-help dialog with the project's looking-for roles
+actor -> dialog : Choose role, write message, select "Send offer"
+dialog -> dialog : busy state, fields read-only, "Sending…" (L2-017 criterion 5)
+dialog -> client : offerHelp(projectId, { role, message })
+client -> controller : POST /api/v1/projects/{id}/help-offers
+controller -> request : authorize() then rules()
+request -> policy : offerHelp(member, project)
+policy -> block : isBlockedEitherWay(member, owner) (L2-032)
+block --> policy : true or false
+alt owner, blocked pair, or project looking for no one
+  policy --> request : Deny
+  request --> controller : 403
+  controller --> client : 403
+  client --> dialog : Forbidden
+else allowed
+  policy --> request : Allow
+  alt role not in looking-for list, or message outside 10 to 1,000 characters
+    request --> controller : Field errors
+    controller --> client : 422 with per-field errors
+    client --> dialog : Field errors
+    dialog --> actor : invalid state, no offer created (L2-017 criterion 2)
+  else valid
+    controller -> action : handle(member, project, role, message)
+    action -> db : BEGIN; SELECT project FOR UPDATE
+    action -> db : Find Pending offer by member on project
+    alt open offer exists
+      action -> db : ROLLBACK
+      action --> controller : HelpOfferPending
+      controller --> client : 409 code offer_pending (L2-017 criterion 3)
+      client --> dialog : Offer pending
+      dialog --> actor : Message that an offer is pending
+    else no open offer
+      action -> db : INSERT help_offer (Pending); COMMIT
+      action -> queue : Queue HelpOfferedNotification to owner after commit (L2-029)
+      action --> controller : HelpOffer
+      controller --> client : 201 HelpOfferResource
+      client --> dialog : HelpOfferView
+      dialog --> page : Close with result
+      page -> toast : Show confirmation toast (L2-017 criterion 1)
+    end
+  end
+end
+opt server error or network failure
+  client --> dialog : Error
+  dialog --> actor : failed state with "Try again", inputs kept (L2-017 criterion 5)
+end
+opt offer stored
+  queue -> notification : Worker takes the job
+  notification -> db : Record database notification for the owner
+  notification -> notification : Send e-mail under "Project activity" if enabled (L2-029 criterion 2)
+end
+@enduml

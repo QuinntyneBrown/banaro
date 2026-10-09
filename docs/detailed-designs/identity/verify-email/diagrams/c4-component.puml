@@ -1,0 +1,37 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Verify e-mail address
+
+Container(web, "Banaro Web", "Angular", "VerifyEmailPage, verifyEmailResolver, emailVerificationInterceptor, HttpIdentityApi")
+ContainerDb(db, "Banaro database", "Relational database", "users, email_verification_tokens")
+ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters, Horizon queues")
+
+Container_Boundary(api, "Banaro API") {
+  Component(verifyCtrl, "EmailVerificationController", "Laravel controller", "POST /email/verify")
+  Component(resendCtrl, "VerificationNotificationController", "Laravel controller", "POST /email/verification-notification")
+  Component(reqs, "VerifyEmailRequest / ResendVerificationEmailRequest", "Form requests", "Link parameters; optional token or e-mail")
+  Component(verify, "VerifyEmail", "Action", "Consumes a link")
+  Component(resend, "ResendVerificationEmail", "Action", "Resolves the account, limits to 3 per hour, issues a link")
+  Component(service, "EmailVerificationService", "Domain service", "Issues, signs, checks and consumes tokens")
+  Component(gate, "RequireVerifiedEmail", "Middleware", "403 email_unverified on member routes")
+  Component(models, "User / EmailVerificationToken", "Eloquent models", "Verification state and token rows")
+  Component(notify, "VerifyEmailNotification", "Queued notification", "mail channel")
+}
+
+Rel(web, verifyCtrl, "Calls", "JSON/HTTPS")
+Rel(web, resendCtrl, "Calls", "JSON/HTTPS")
+Rel(web, gate, "Member requests pass through", "JSON/HTTPS")
+Rel(verifyCtrl, reqs, "Validates with")
+Rel(resendCtrl, reqs, "Validates with")
+Rel(verifyCtrl, verify, "Calls handle()")
+Rel(resendCtrl, resend, "Calls handle()")
+Rel(verify, service, "Calls consume()")
+Rel(resend, service, "Calls issue()")
+Rel(resend, redis, "Counts requests in", "Redis protocol")
+Rel(resend, notify, "Queues after commit")
+Rel(service, models, "Locks and writes")
+Rel(gate, models, "Reads email_verified_at")
+Rel(models, db, "Reads and writes", "SQL")
+Rel(notify, redis, "Pushed to", "Redis protocol")
+@enduml

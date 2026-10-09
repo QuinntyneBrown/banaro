@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Report a builder or content
+
+Person(member, "Member", "Signed-in, verified builder")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Builder profile page and report dialog")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Report validation, subject resolution and merge rules")
+  ContainerDb(db, "Banaro database", "Relational database", "Reports and report submissions")
+  ContainerDb(redis, "Redis", "Redis", "Sessions and rate-limit counters")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "POST /api/v1/reports", "JSON/HTTPS")
+Rel(api, redis, "Reads session, counts requests", "Redis protocol")
+Rel(api, db, "Locks reporter row, writes report", "SQL")
+@enduml

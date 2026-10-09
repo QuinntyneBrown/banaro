@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Sign out
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "Header" as header
+  participant "AccountMenuDialog" as menu
+  participant "SessionStore" as store
+  participant "HttpIdentityApi" as client
+  participant "SignInPage" as page
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "SessionController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "SignOut" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  queue "Redis" as redis
+end box
+
+actor -> header : Select the avatar
+header -> menu : Open the CDK menu; focus on the first item
+actor -> menu : Select "Sign out"
+menu -> menu : Close; return focus to the avatar
+menu -> store : signOut()
+store -> client : signOut()
+client -> controller : DELETE /api/v1/session
+controller -> controller : Authenticate the session, check the CSRF token
+controller -> action : handle(request)
+action -> redis : Auth logout; session()->invalidate() destroys the server session
+action -> action : session()->regenerateToken()
+action --> controller : Done
+controller --> client : 204; session cookie expired (L2-003 criterion 5)
+alt success
+  client --> store : Done
+  store -> store : Clear member
+  store -> page : Navigate to /sign-in with state { signedOut: true }
+  page --> actor : signed-out state "You're signed out"; focus on the heading
+else network or server failure
+  client --> store : Error
+  store --> actor : Danger toast with "Try again"; member stays signed in
+end
+@enduml

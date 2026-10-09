@@ -1,0 +1,128 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Edit own profile
+
+package "Frontend — banaro application and api library" {
+  class ProfileEditPage {
+    -api: ProfilesApi
+    -dialog: Dialog
+    -toast: ToastService
+    +form: FormGroup
+    +state: 'loading' | 'default' | 'invalid' | 'submitting' | 'success' | 'error'
+    +load(): void
+    +save(): void
+    +openChangePhoto(): void
+  }
+  class BuilderProfilePage {
+    +profile: Signal<BuilderProfile>
+    +isOwn(): boolean
+  }
+  interface ProfilesApi {
+    +getOwnProfile(): Observable<OwnProfile>
+    +updateOwnProfile(update: ProfileUpdate): Observable<OwnProfile>
+  }
+  class HttpProfilesApi
+  class OwnProfile {
+    +name: string
+    +headline: string | null
+    +neighbourhoodId: number
+    +bio: string | null
+    +skills: string[]
+    +experience: ExperienceItem[]
+    +links: ProfileLinkItem[]
+    +openTo: OpenTo[]
+    +buildingProjectId: string | null
+    +neighbourhoods: NeighbourhoodOption[]
+    +ownProjects: ProjectOption[]
+  }
+  class ToastService {
+    +success(message: string): void
+  }
+}
+
+package "Backend — Banaro API" {
+  class OwnProfileController {
+    +show(): OwnProfileResource
+    +update(request: UpdateOwnProfileRequest): OwnProfileResource
+  }
+  class UpdateOwnProfileRequest {
+    +rules(): array
+  }
+  class GetOwnProfile {
+    +handle(builder: Builder): Builder
+  }
+  class UpdateOwnProfile {
+    +handle(builder: Builder, data: array): Builder
+  }
+  class SkillCatalogue {
+    +resolve(entries: array): Collection<Skill>
+  }
+  class Builder {
+    +int id
+    +string name
+    +?string headline
+    +int neighbourhood_id
+    +?string bio
+    +array open_to
+    +?int building_project_id
+  }
+  class ExperienceEntry {
+    +int id
+    +int builder_id
+    +string title
+    +?string organisation
+    +Carbon started_on
+    +?Carbon ended_on
+    +int position
+  }
+  class ProfileLink {
+    +int id
+    +int builder_id
+    +string label
+    +string url
+    +int position
+  }
+  class Skill {
+    +int id
+    +string name
+  }
+  class Project {
+    +int id
+    +int owner_id
+    +string name
+  }
+  class OwnProfileResource
+  class ProfileUpdated {
+    +int builderId
+  }
+}
+
+ProfileEditPage ..> ProfilesApi : uses
+ProfileEditPage ..> ToastService : confirms save
+HttpProfilesApi ..|> ProfilesApi
+ProfilesApi ..> OwnProfile : returns
+HttpProfilesApi ..> OwnProfileController : HTTPS
+
+OwnProfileController ..> UpdateOwnProfileRequest : validates with
+OwnProfileController ..> GetOwnProfile : calls
+OwnProfileController ..> UpdateOwnProfile : calls
+OwnProfileController ..> OwnProfileResource : returns
+UpdateOwnProfile ..> SkillCatalogue : resolves skills
+UpdateOwnProfile ..> ProfileUpdated : dispatches
+UpdateOwnProfile --> Builder : writes
+Builder "1" *-- "*" ExperienceEntry : experience
+Builder "1" *-- "*" ProfileLink : links
+Builder "*" o-- "0..12" Skill : ordered skills
+Builder "*" --> "0..1" Project : building
+@enduml

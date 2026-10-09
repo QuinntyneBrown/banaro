@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Offer to help with a project
+
+Person(member, "Member", "Signed-in, verified builder who offers help")
+Person(owner, "Owner", "Member who shared the project")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
+
+Rel(member, banaro, "Offers help using", "HTTPS")
+Rel(owner, banaro, "Accepts or declines offers using", "HTTPS")
+Rel(banaro, mail, "Sends offer e-mail via", "Mailer contract")
+Rel(mail, owner, "Delivers new-offer e-mail to")
+Rel(mail, member, "Delivers answer e-mail to")
+@enduml

@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Check visual parity with the mocks
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Developer" as actor
+box "Pipeline — .ci" #FFF4E5
+  participant "visual stage" as stage
+end box
+box "End-to-end — e2e" #FFF4E5
+  participant "visual/parity.spec.ts" as spec
+  participant "routes.manifest.ts" as manifest
+  participant "Page object" as po
+end box
+participant "Chromium" as chrome
+box "Frontend — banaro application" #E0F2FE
+  participant "Banaro Web (test build)" as web
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "Banaro API (seeded mock cast)" as api
+end box
+participant "docs/mocks baselines" as mocks
+
+actor -> stage : Push a UI change
+stage -> spec : npx playwright test visual --project=chromium
+spec -> manifest : Read entries and states
+loop each entry, state, width in 360/768/1280, theme in light/dark
+  spec -> chrome : Set viewport, data-theme, reduced motion, clock 9 Oct 2026
+  spec -> po : Reach state via fixture
+  po -> chrome : Navigate and interact
+  chrome -> web : Load route
+  web -> api : Data for the state
+  api --> web : Mock cast data
+  web --> chrome : Rendered screen
+  chrome --> spec : Screenshot
+  spec -> mocks : Baseline for entry/state/width/theme
+  mocks --> spec : Mock screenshot
+  spec -> spec : Compare; difference within threshold <TO SUPPLY> (L2-049 criterion 4)
+end
+alt any difference over threshold
+  spec --> stage : Failures with diff images
+  stage --> actor : Stage fails; fix the screen or update the mock for an intended design change
+else all within threshold
+  stage --> actor : Stage passes
+end
+@enduml

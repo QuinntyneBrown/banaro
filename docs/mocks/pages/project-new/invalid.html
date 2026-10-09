@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Share a project · invalid — Banaro</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="project-new">
+<meta name="mock:state" content="invalid">
+<meta name="description" content="New project form after a failed submit: summary at the top, errors on name, summary and looking-for.">
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="brand" href="../../pages/dashboard/default.html" aria-label="Banaro home"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a>
+    <nav class="nav" id="primary-nav" popover aria-label="Primary">
+      <ul class="nav__list"><li><a class="nav__link" href="../../pages/directory/default.html">Builders</a></li><li><a class="nav__link" href="../../pages/projects/default.html" aria-current="page">Projects</a></li><li><a class="nav__link" href="../../pages/events/default.html">Events</a></li><li><a class="nav__link" href="../../pages/matching/default.html">Matching</a></li></ul>
+      <button type="button" class="btn btn--quiet nav__close" popovertarget="primary-nav" popovertargetaction="hide">Close menu</button>
+    </nav>
+    <div class="header__actions"><a class="matches-link" href="../../pages/matching/default.html"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10z"/></svg>2 new matches</a><a class="icon-btn" href="../../pages/messages/default.html" aria-label="Messages, 1 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5A2.5 2.5 0 0 1 7 4h10a2.5 2.5 0 0 1 2.5 2.5v7A2.5 2.5 0 0 1 17 16h-5.5L7 19.5V16a2.5 2.5 0 0 1-2.5-2.5z"/></svg><span class="icon-btn__count" aria-hidden="true">1</span></a><a class="icon-btn" href="../../pages/notifications/default.html" aria-label="Notifications, 3 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg><span class="icon-btn__count" aria-hidden="true">3</span></a><a class="avatar-btn" href="../../dialogs/account-menu/default.html" aria-label="Your account, Amara Osei" aria-haspopup="menu"><img class="avatar" src="../../assets/photos/amara-osei.jpg" width="40" height="40" alt=""><span>Amara</span></a><button type="button" class="menu-btn" popovertarget="primary-nav" aria-label="Menu"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="menu-btn__label">Menu</span></button></div>
+  </div>
+</header>
+
+<main id="main">
+<div class="wrap">
+<div class="narrow"><nav aria-label="Breadcrumb"><ol class="breadcrumb" style="margin-top: var(--space-8)"><li><a href="../../pages/projects/default.html">Projects</a></li><li aria-current="page">Share a project</li></ol></nav><div class="page-head"><p class="eyebrow">Project showcase</p><h1 class="page-head__title">Share a project</h1><p class="page-head__sub">Tell builders nearby what you are making. Early is fine; a rough idea with a clear question gets the best feedback.</p></div><div class="page-block" style="padding-top: 0">
+      <form class="form-card" action="#" novalidate>
+        <div class="form-summary" id="error-summary" role="alert" tabindex="-1"><p class="form-summary__title"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg>Fix these before continuing</p><ul><li><a href="#name">Enter a name for your project.</a></li><li><a href="#summary">Shorten the summary to 100 characters or fewer. It is 117 now.</a></li><li><a href="#looking">Choose at least one kind of help, or pick “Feedback only”.</a></li></ul></div>
+        <fieldset class="form-section" ><legend class="form-section__title">The basics</legend><div class="field"><label class="field__label" for="name">Project name</label><input class="input" id="name" name="name" type="text" aria-describedby="name-err" aria-invalid="true" required><p class="field__error" id="name-err"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg><span>Enter a name for your project.</span></p></div><div class="field"><label class="field__label" for="summary">One-line summary</label><input class="input" id="summary" name="summary" type="text" value="Hearth is a weekly meal and prayer rota for small groups of friends who meet in homes across Toronto and the GTA" aria-describedby="summary-err" aria-invalid="true" required><p class="field__error" id="summary-err"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg><span>Shorten the summary to 100 characters or fewer. It is 117 now.</span></p></div><div class="field"><label class="field__label" for="desc">Description <span class="field__optional">(optional)</span></label><textarea class="textarea" id="desc" name="desc" rows="6" aria-describedby="desc-help"></textarea><p class="field__help" id="desc-help">Who it is for, what exists today and what you need next.</p></div></fieldset>
+        <fieldset class="form-section"><legend class="form-section__title">Where it is</legend><div class="field-row"><div class="field"><label class="field__label" for="stage">Stage</label><span class="select__wrap"><select class="select__control" id="stage" name="stage"><option>Idea</option><option selected>Design</option><option>Prototype</option><option>Pilot</option><option>Beta</option><option>Launched</option></select><svg class="icon icon--sm select__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></span></div></div><fieldset class="form-section" id="looking" aria-describedby="looking-help looking-err"><legend class="field__label">Who are you looking for?</legend><p class="field__help" id="looking-help">Choose all that apply. We use this for co-founder matching and the project list.</p><ul class="check-grid"><li><label class="check"><input class="check__box" type="checkbox" name="looking" value="Technical co-founder"><span>Technical co-founder</span><span></span></label></li><li><label class="check"><input class="check__box" type="checkbox" name="looking" value="Co-founder"><span>Co-founder</span><span></span></label></li><li><label class="check"><input class="check__box" type="checkbox" name="looking" value="Contributors"><span>Contributors</span><span></span></label></li><li><label class="check"><input class="check__box" type="checkbox" name="looking" value="Advisor"><span>Advisor</span><span></span></label></li><li><label class="check"><input class="check__box" type="checkbox" name="looking" value="Engineer"><span>Engineer</span><span></span></label></li><li><label class="check"><input class="check__box" type="checkbox" name="looking" value="Designer"><span>Designer</span><span></span></label></li><li><label class="check"><input class="check__box" type="checkbox" name="looking" value="Feedback only"><span>Feedback only</span><span></span></label></li></ul><p class="field__error" id="looking-err"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg><span>Choose at least one kind of help, or pick “Feedback only”.</span></p></fieldset></fieldset>
+        <fieldset class="form-section"><legend class="form-section__title">Links</legend><div class="field-row"><div class="field"><label class="field__label" for="website">Website <span class="field__optional">(optional)</span></label><input class="input" id="website" name="website" type="url" placeholder="https://"></div><div class="field"><label class="field__label" for="repo">Code repository <span class="field__optional">(optional)</span></label><input class="input" id="repo" name="repo" type="url" placeholder="https://github.com/"></div></div></fieldset>
+        <fieldset class="form-section"><legend class="form-section__title">Visibility</legend><fieldset class="form-section"><legend class="field__label">Who can see it?</legend><div class="choices"><label class="choice"><input type="radio" name="visibility" value="Everyone on Banaro" checked><span class="choice__title">Everyone on Banaro</span><span class="choice__text">Anyone who is signed in can read it, including people outside your area.</span></label><label class="choice"><input type="radio" name="visibility" value="Members near me"><span class="choice__title">Members near me</span><span class="choice__text">Only builders within 40 km of you can read it.</span></label></div></fieldset></fieldset>
+        <div class="form-actions form-actions--end"><a class="btn btn--quiet" href="../../pages/projects/default.html">Cancel</a><button type="submit" class="btn btn--primary">Share project</button></div>
+      </form></div></div>
+</div>
+</main>
+
+<footer class="footer" id="footer">
+  <div class="wrap footer__grid">
+    <p class="footer__made">Made in Toronto. © 2026 Banaro.</p>
+    <nav aria-label="Footer">
+      <ul class="footer__links"><li><a href="../../pages/about/default.html">About</a></li><li><a href="../../pages/code-of-conduct/default.html">Code of conduct</a></li><li><a href="../../pages/privacy/default.html">Privacy</a></li><li><a href="../../pages/contact/default.html">Contact</a></li></ul>
+    </nav>
+    <p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+  </div>
+</footer>
+<p class="mock-note" style="top: 7rem; right: 1rem">On submit focus moves to the error summary; each link jumps to its field.</p>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="Mock gallery">⌂</a>
+  <span class="mock-bar__screen">Share a project</span>
+  <ul class="mock-bar__states"><li><a href="default.html">default</a></li><li><a href="invalid.html" aria-current="page">invalid</a></li><li><a href="submitting.html">submitting</a></li><li><a href="success.html">success</a></li></ul>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+@startuml
+title UML sequence behaviour — Upload a profile photo
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ChangePhotoDialog" as dialog
+  participant "PhotoFileCheck" as check
+  participant "HttpProfilesApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ProfilePhotoController" as controller
+  participant "UploadProfilePhotoRequest" as request
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "UploadProfilePhoto" as action
+  participant "PhotoProcessor" as processor
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  collections "Media storage" as media
+  queue "Redis queue" as queue
+end box
+
+actor -> dialog : Choose or drop a file
+dialog -> check : check(file)
+alt wrong type, over 5 MB or under 480 px
+  check --> dialog : Problem
+  dialog --> actor : invalid state naming the problem; focus on "Choose a different photo" (L2-008 criterion 2)
+else file passes the browser check
+  check --> dialog : OK
+  dialog --> actor : Square crop frame over a preview
+  actor -> dialog : Confirm crop and select "Save photo"
+  dialog --> actor : busy state with progress; Escape and backdrop disabled (L2-008 criterion 3)
+  dialog -> client : uploadPhoto(file, crop)
+  client -> controller : POST /api/v1/me/photo (multipart)
+  controller -> request : Validate size, sniffed type, extension, pixel size, crop (L2-045 criterion 6)
+  alt server rejects the file
+    request --> controller : Validation errors
+    controller --> client : 422 naming the problem (L2-008 criterion 2)
+    client --> dialog : Error
+    dialog --> actor : invalid state; nothing stored
+  else file accepted
+    controller -> action : handle(builder, file, crop)
+    action -> processor : process(file, crop)
+    processor --> action : 480 x 480 WebP without metadata (L2-008 criteria 1 and 4)
+    action -> media : Write to quarantine under a random name
+    action -> db : INSERT profile_photo (Pending)
+    action -> queue : Dispatch ScanProfilePhoto after commit
+    action --> controller : Pending photo
+    controller --> client : 202 ProfilePhotoResource (pending)
+    client --> dialog : ProfilePhoto
+    dialog -> dialog : Stay busy, poll getPhoto(id) (see Scan the photo)
+  else server fault
+    controller --> client : 5xx; no photo row kept
+    client --> dialog : Error
+    dialog --> actor : failed state with "Try again"; file still selected (L2-008 criterion 3)
+  end
+  opt member selects "Cancel" while busy
+    dialog -> client : Unsubscribe, aborting the upload
+    dialog --> actor : Dialog closes; previous photo unchanged
+  end
+end
+@enduml

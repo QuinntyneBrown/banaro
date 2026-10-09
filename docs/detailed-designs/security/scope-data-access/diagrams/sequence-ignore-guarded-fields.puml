@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Ignore guarded fields
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "HttpProjectsApi or a crafted request" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "Scoped route binding" as binding
+  participant "ProjectController" as controller
+  participant "UpdateProjectRequest" as request
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ProjectPolicy" as policy
+  participant "UpdateProject" as action
+  participant "Project" as model
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> client : Send body with name, owner_id, role, verified_at
+client -> binding : PATCH /api/v1/projects/{id}
+binding -> model : ownedBy(member)->find(id)
+model -> db : SELECT ... WHERE id = ? AND owner_id = ?
+alt project of another member
+  db --> model : No row
+  binding --> client : 404 not_found (L2-044 criterion 1)
+else own project
+  db --> model : Project row
+  binding -> policy : update(member, project)
+  policy --> binding : allow()
+  binding -> controller : update(request, project)
+  controller -> request : validate()
+  request -> request : Rules list name, description, stage only
+  request --> controller : validated() without owner_id, role, verified_at (L2-044 criterion 4)
+  controller -> action : handle(project, validated data)
+  action -> model : fill(validated data); $fillable excludes owner_id
+  action -> db : UPDATE projects SET name = ? ... WHERE id = ?
+  db --> action : Saved
+  action --> controller : Project
+  controller --> client : 200 ProjectResource; owner and role unchanged
+end
+@enduml

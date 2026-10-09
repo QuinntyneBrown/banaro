@@ -1,0 +1,72 @@
+@startuml
+title UML sequence behaviour — RSVP or join the waitlist
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "EventDetailPage" as page
+  participant "HttpEventsApi" as client
+  participant "ToastService" as toast
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "RsvpController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "RsvpToEvent" as action
+  participant "Event" as event
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis queue" as queue
+end box
+
+actor -> page : Select "Reserve a spot" or "Join waitlist"
+page -> client : rsvp(eventId)
+client -> controller : PUT /api/v1/events/{id}/rsvp
+controller -> controller : Authenticate verified member, validate RsvpToEventRequest
+controller -> action : handle(member, event)
+action -> db : BEGIN; SELECT event FOR UPDATE (L2-020 criterion 3)
+db --> action : Locked event row
+action -> event : isClosed()
+alt event closed
+  event --> action : true
+  action -> db : ROLLBACK
+  action --> controller : 422 event_closed (L2-020 criterion 7)
+else member already has an RSVP
+  action -> db : Find RSVP for member
+  db --> action : Existing RSVP
+  action -> db : COMMIT
+  action --> controller : Existing RSVP (L2-020 criterion 6)
+else spots left
+  action -> event : spotsLeft() > 0 or no capacity
+  action -> db : INSERT rsvp (going); UPDATE going_count + 1
+  action -> db : COMMIT
+  action -> queue : Queue RsvpConfirmedNotification (L2-029)
+  action --> controller : Going RSVP (L2-020 criterion 1)
+else at capacity
+  action -> db : INSERT rsvp (waitlisted, waitlisted_at = now)
+  action -> db : COMMIT
+  action --> controller : Waitlisted RSVP with position (L2-020 criterion 2)
+end
+controller --> client : 200 RsvpResource or 422 problem
+client --> page : RsvpSummary or error
+alt success
+  page -> toast : Show rsvp-toast success "You're going to {event}"
+  page --> actor : going or waitlist state with counts from the response
+else failure
+  page -> toast : Show rsvp-toast danger with "Try again" (L2-020 criterion 5)
+  page --> actor : Counts unchanged
+end
+@enduml

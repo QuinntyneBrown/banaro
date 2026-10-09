@@ -1,0 +1,74 @@
+@startuml
+title UML sequence behaviour — Delete a project
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ProjectEditPage" as page
+  participant "DeleteProjectDialog" as dialog
+  participant "HttpProjectsApi" as client
+  participant "ToastService" as toast
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ProjectController" as controller
+  participant "DeleteProjectRequest" as request
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ProjectPolicy" as policy
+  participant "DeleteProject" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Select "Delete project" in the danger zone
+page -> dialog : Open delete-project dialog, focus in confirmation field
+actor -> dialog : Type the project name
+alt typed text differs from the name
+  dialog --> actor : invalid state, "Delete project" disabled (L2-014 criterion 3)
+else typed text matches exactly
+  dialog --> actor : "Delete project" enabled
+  actor -> dialog : Confirm "Delete project"
+  dialog -> dialog : busy state, field read-only, disableClose (L2-014 criterion 4)
+  dialog -> client : delete(id, confirmName)
+  client -> controller : DELETE /api/v1/projects/{id} { confirm_name }
+  controller -> request : authorize() then rules()
+  request -> policy : delete(member, project)
+  alt not the owner
+    policy --> request : false
+    request --> controller : 403, nothing deleted (L2-014 criterion 2)
+  else owner and confirm_name matches
+    policy --> request : true
+    controller -> action : handle(project)
+    action -> db : BEGIN; DELETE help_offers, feedback, project_looking_for, project
+    alt database error
+      action -> db : ROLLBACK
+      action --> controller : Exception
+      controller --> client : 5xx, project remains (L2-014 criterion 5)
+      client --> dialog : Error
+      dialog --> actor : failed state with "Try again", typed name preserved
+    else success
+      action -> db : COMMIT
+      action --> controller : Done
+      controller --> client : 204 No Content
+      client --> dialog : Deleted
+      dialog --> page : Close with result
+      page -> page : navigate /dashboard
+      page -> toast : Show success toast (L2-014 criterion 4)
+      page --> actor : Dashboard with toast
+    end
+  end
+end
+@enduml

@@ -1,0 +1,67 @@
+@startuml
+title UML sequence behaviour — Enforce privacy on a profile response
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor or member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "BuilderProfilePage" as page
+  participant "HttpDirectoryApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "BuilderController" as controller
+  participant "BuilderResource (ProfileFields)" as resource
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ProfileVisibilityService" as service
+  participant "DistanceService" as distance
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /builders/{id}
+page -> client : getBuilder(id)
+client -> controller : GET /api/v1/builders/{id}
+controller -> db : Load builder with privacy settings
+controller -> service : canView(viewer, owner)
+alt visitor and profile is Members only
+  service --> controller : false
+  controller --> client : 404 (L2-036 criterion 2)
+  client --> page : Not found
+  page --> actor : not-found state
+else viewer may see the profile
+  service --> controller : true
+  controller -> resource : toArray(request)
+  resource -> service : locationFor(viewer, owner)
+  alt location precision City only
+    service --> resource : City only, no neighbourhood (L2-036 criterion 3)
+    resource -> service : distanceFor(viewer, owner)
+    service -> distance : between(viewer, owner)
+    distance --> service : 26.9 km
+    service --> resource : 25 km (nearest 5 km, L2-036 criterion 3)
+  else Neighbourhood
+    service --> resource : Neighbourhood and city
+    resource -> service : distanceFor(viewer, owner)
+    service --> resource : Exact distance
+  end
+  resource -> service : showsOnlineStatus(owner)
+  service --> resource : true or false
+  resource -> resource : Omit hidden fields with when() and mergeWhen() (L2-036 criterion 1, L2-011 criterion 4)
+  resource --> controller : JSON without hidden keys
+  controller --> client : 200 BuilderResource
+  client --> page : Profile
+  page --> actor : Profile with only the permitted fields
+end
+@enduml

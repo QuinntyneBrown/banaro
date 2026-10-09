@@ -1,0 +1,56 @@
+@startuml
+title UML sequence behaviour — Run scheduled work once across replicas
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Backend — Banaro Worker" #ECFDF3
+  participant "Worker replica A: schedule:work" as schedA
+  participant "Worker replica B: schedule:work" as schedB
+  participant "Horizon workers (A and B)" as horizon
+  participant "GenerateWeeklySuggestions" as job
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Redis" as redis
+  database "Banaro database" as db
+end box
+
+note over schedA, schedB
+  Monday 06:00 America/Toronto (L2-022 criterion 1)
+end note
+par
+  schedA -> redis : onOneServer(): SET lock "schedule:{entry}:{minute}" NX (L2-054 criterion 5)
+else
+  schedB -> redis : onOneServer(): SET lock "schedule:{entry}:{minute}" NX
+end
+alt replica A wins the lock
+  redis --> schedA : OK
+  redis --> schedB : Lock held
+  schedB -> schedB : Skip entry this minute
+  schedA -> redis : Dispatch GenerateWeeklySuggestions (ShouldBeUnique)
+else replica B wins the lock
+  redis --> schedB : OK
+  redis --> schedA : Lock held
+  schedA -> schedA : Skip entry this minute
+  schedB -> redis : Dispatch GenerateWeeklySuggestions (ShouldBeUnique)
+end
+horizon -> redis : Reserve next job
+redis --> horizon : Job, reserved by exactly one worker
+horizon -> job : handle()
+job -> db : Create suggestions
+job --> horizon : Done
+horizon -> redis : Delete job, release unique lock
+opt previous run still going
+  schedA -> schedA : withoutOverlapping() skips the entry
+end
+@enduml

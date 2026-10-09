@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Deploy and operate data
+
+System_Ext(pipeline, "CI pipeline", "Product <TO SUPPLY>")
+System_Ext(orchestrator, "Container orchestrator", "Product <TO SUPPLY>")
+
+System_Boundary(banaro, "Banaro") {
+  Container(migrator, "One-off migrate and seed task", "banaro-api image", "artisan migrate ~-~-force ~-~-isolated; artisan db:seed ~-~-force")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3, banaro-api image", "Serves /api/v1; never migrates on boot")
+  Container(worker, "Banaro Worker", "Horizon + scheduler, banaro-api image", "Jobs and scheduled work, once across replicas")
+  Container(web, "Banaro Web", "Angular SSR, banaro-web image", "Drains open SSR responses on SIGTERM")
+  ContainerDb(db, "Banaro database", "Relational database; engine <TO SUPPLY>", "Schema and data")
+  ContainerDb(redis, "Redis", "Redis", "Migration lock, schedule locks, queues")
+}
+
+Rel(pipeline, migrator, "Runs before rollout")
+Rel(migrator, db, "Applies migrations, upserts seed data", "SQL")
+Rel(migrator, redis, "Takes migration lock", "Redis protocol")
+Rel(pipeline, orchestrator, "Requests rollout")
+Rel(orchestrator, api, "Probes /health/ready before traffic; SIGTERM to drain", "HTTP")
+Rel(orchestrator, worker, "Replaces replicas; SIGTERM to drain")
+Rel(orchestrator, web, "Replaces replicas; SIGTERM to drain")
+Rel(api, db, "Reads and writes", "SQL")
+Rel(worker, redis, "Takes jobs, takes onOneServer locks", "Redis protocol")
+Rel(worker, db, "Reads and writes", "SQL")
+@enduml

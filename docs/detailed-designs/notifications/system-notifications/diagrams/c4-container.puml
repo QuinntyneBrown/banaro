@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — System notifications
+
+Person(member, "Member or visitor", "Uses the banaro application")
+Person(admin, "Administrator", "Uses the admin application")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Toast region, banner stack, banner sources; admin application under /admin")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Session user; current and admin site announcements")
+  ContainerDb(db, "Banaro database", "Relational database", "Site announcements, audit entries")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions, cached current announcement")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(admin, web, "Uses /admin", "HTTPS")
+Rel(web, api, "GET /api/v1/announcements/current; admin announcement writes", "JSON/HTTPS")
+Rel(api, redis, "Reads the session; caches the current announcement", "Redis protocol")
+Rel(api, db, "Reads and writes announcements, writes audit entries", "SQL")
+@enduml

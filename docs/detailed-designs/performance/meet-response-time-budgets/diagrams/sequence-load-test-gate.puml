@@ -1,0 +1,59 @@
+@startuml
+title UML sequence behaviour — Gate the build on the response-time budgets
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Developer" as actor
+box "Pipeline — .ci" #FFF4E5
+  participant "load-test stage" as stage
+  participant "Load runner (tool <TO SUPPLY>)" as runner
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "Banaro API (new banaro-api image)" as api
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "LoadTestSeeder" as seeder
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  database "Redis" as redis
+end box
+
+actor -> stage : Pipeline reaches the load-test stage
+stage -> api : Start load environment (size <TO SUPPLY>)
+stage -> api : php artisan migrate --force (explicit step, L2-054)
+api -> db : Apply migrations
+stage -> seeder : php artisan db:seed --class=LoadTestSeeder
+seeder -> db : Upsert 10,000 builders, 100 members, projects, events
+seeder -> redis : Write 100 member sessions
+seeder --> stage : Session cookies for the scenario
+stage -> runner : Run read-endpoints (100 virtual members, steady rate)
+loop scenario duration <TO SUPPLY>
+  runner -> api : Directory, projects, events, profile, dashboard
+  api --> runner : Responses with timings
+end
+runner -> runner : Check p95 < 300 ms and p99 < 800 ms (L2-047 criterion 1)
+stage -> runner : Run write-endpoints (100 virtual members)
+loop scenario duration <TO SUPPLY>
+  runner -> api : RSVP, cancel, feedback, profile update, mark read
+  api --> runner : Responses with timings
+end
+runner -> runner : Check p95 < 500 ms (L2-047 criterion 2)
+runner --> stage : Exit code and percentile table
+alt any threshold breached
+  stage --> actor : Build fails and is not promoted (L2-047 criterion 5)
+else all within budget
+  stage --> actor : Stage passes; table in job summary
+end
+@enduml

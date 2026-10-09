@@ -1,0 +1,59 @@
+@startuml
+title UML sequence behaviour — Read one directory page within budget
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "DirectoryPage" as page
+  participant "HttpDirectoryApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "BuilderController" as controller
+  participant "ListBuildersRequest" as request
+  participant "PaginatedResource" as resource
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "DirectoryQuery" as query
+  participant "DistanceService" as distance
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /builders?page=2
+page -> client : list(filters, { page: 2 })
+client -> controller : GET /api/v1/builders?page=2
+controller -> request : Validate page and per_page
+alt per_page absent
+  request --> controller : perPage() = 12 (L2-047 criterion 4)
+else per_page = 100
+  request --> controller : perPage() = 50, capped (L2-047 criterion 4)
+end
+controller -> query : for(member, filters)->sortBy(BestMatch)->paginate(perPage, 2)
+query -> distance : neighbourhoodsWithin(member neighbourhood, 40)
+distance -> db : SELECT to_id FROM neighbourhood_distances WHERE from_id = ? AND km <= ? (index)
+db --> distance : Neighbourhood ids
+distance --> query : Ids
+query -> db : SELECT card columns FROM builders JOIN match_scores (viewer_id, score) index ... LIMIT 12 OFFSET 12
+note right of db : Index range scans only; no full scan of builders (L2-047 criterion 3)
+db --> query : 12 rows and total count
+query -> db : SELECT skills WHERE builder_id IN (...) (eager load)
+db --> query : Skills
+query --> controller : LengthAwarePaginator
+controller -> resource : Wrap BuilderCardResource items with page meta
+resource --> client : 200 page 2 of N, p95 under 300 ms (L2-047 criterion 1)
+client --> page : Page<BuilderCard>
+page --> actor : Cards 13 to 24
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Accept the code of conduct
+
+Container(web, "Banaro Web", "Angular", "CodeOfConductPage, JoinPage, AcceptCodeOfConductDialog, HttpTrustAndSafetyApi")
+ContainerDb(db, "Banaro database", "Relational database", "conduct_acceptances")
+
+Container_Boundary(api, "Banaro API") {
+  Component(i18n, "I18nController", "Laravel controller", "GET /i18n/{locale}, codeOfConduct.* keys")
+  Component(ctrl, "CodeOfConductController", "Laravel controller", "POST /code-of-conduct/acceptances")
+  Component(req, "AcceptCodeOfConductRequest", "Form request", "Requires version")
+  Component(action, "AcceptCodeOfConduct", "Action", "Rejects stale versions, records acceptance idempotently")
+  Component(service, "CodeOfConductService", "Domain service", "currentVersion(), requiresAcceptance(user)")
+  Component(config, "config/banaro.php", "Configuration", "code_of_conduct.version and published_on")
+  Component(signin, "Sign-in payload", "identity subsystem", "codeOfConductAcceptanceRequired flag")
+  Component(model, "ConductAcceptance", "Eloquent model", "user_id, version, accepted_at")
+}
+
+Rel(web, i18n, "Loads catalogue", "JSON/HTTPS")
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, action, "Calls handle()")
+Rel(action, service, "Reads current version from")
+Rel(service, config, "Reads")
+Rel(signin, service, "Asks requiresAcceptance()")
+Rel(service, model, "Queries")
+Rel(action, model, "Inserts")
+Rel(model, db, "Reads and writes", "SQL")
+@enduml

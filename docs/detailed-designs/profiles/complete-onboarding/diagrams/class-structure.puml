@@ -1,0 +1,143 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Complete onboarding
+
+package "Frontend — banaro application and api library" {
+  class OnboardingPage {
+    -api: ProfilesApi
+    -session: SessionService
+    +progress: Signal<OnboardingProgress>
+    +step: Signal<'about' | 'skills' | 'goals'>
+    +state: 'default' | 'invalid' | 'submitting' | 'success'
+    +continue(): void
+    +back(): void
+    +finish(): void
+  }
+  class onboardingGuard <<CanActivateFn>>
+  class SessionService {
+    +member: Signal<CurrentMember>
+    +markOnboardingComplete(): void
+  }
+  interface ProfilesApi {
+    +getOnboarding(): Observable<OnboardingProgress>
+    +saveOnboardingStep(step: string, answers: object): Observable<OnboardingProgress>
+    +completeOnboarding(): Observable<OnboardingProgress>
+  }
+  class HttpProfilesApi
+  class OnboardingProgress {
+    +nextStep: 'about' | 'skills' | 'goals' | 'finish'
+    +completed: boolean
+    +about: AboutAnswers
+    +skills: string[]
+    +goals: GoalsAnswers
+    +neighbourhoods: NeighbourhoodOption[]
+    +skillCatalogue: SkillOption[]
+  }
+}
+
+package "Backend — Banaro API" {
+  class OnboardingController {
+    +show(): OnboardingResource
+    +updateAbout(request: SaveOnboardingAboutRequest): OnboardingResource
+    +updateSkills(request: SaveOnboardingSkillsRequest): OnboardingResource
+    +updateGoals(request: SaveOnboardingGoalsRequest): OnboardingResource
+    +complete(): OnboardingResource
+  }
+  class SaveOnboardingStep {
+    +handle(builder: Builder, step: OnboardingStep, answers: array): Builder
+  }
+  class CompleteOnboarding {
+    +handle(builder: Builder): Builder
+  }
+  class GetOnboardingProgress {
+    +handle(builder: Builder): Builder
+  }
+  class OnboardingService {
+    +nextStep(builder: Builder): ?OnboardingStep
+    +markSaved(builder: Builder, step: OnboardingStep): void
+    +isReady(builder: Builder): bool
+  }
+  class SkillCatalogue {
+    +catalogue(): Collection<Skill>
+    +resolve(entries: array): Collection<Skill>
+  }
+  class Builder {
+    +int id
+    +int user_id
+    +string name
+    +?BuilderRole role
+    +?int neighbourhood_id
+    +array open_to
+    +?string building_summary
+    +array onboarding_saved_steps
+    +?Carbon onboarding_completed_at
+    +isComplete(): bool
+  }
+  class Skill {
+    +int id
+    +string name
+    +string slug
+    +string normalized_name
+    +bool is_catalogue
+  }
+  class Neighbourhood {
+    +int id
+    +string name
+    +string area
+    +float latitude
+    +float longitude
+  }
+  enum OnboardingStep {
+    About
+    Skills
+    Goals
+  }
+  enum BuilderRole {
+    Founder
+    Engineer
+    Designer
+    ProductManager
+    Other
+  }
+  enum OpenTo {
+    CoFounding
+    Advising
+    Contributing
+  }
+  class OnboardingResource
+}
+
+OnboardingPage ..> ProfilesApi : uses
+OnboardingPage ..> SessionService : updates flag
+onboardingGuard ..> SessionService : reads onboardingComplete
+HttpProfilesApi ..|> ProfilesApi
+ProfilesApi ..> OnboardingProgress : returns
+HttpProfilesApi ..> OnboardingController : HTTPS
+
+OnboardingController ..> GetOnboardingProgress : calls
+OnboardingController ..> SaveOnboardingStep : calls
+OnboardingController ..> CompleteOnboarding : calls
+OnboardingController ..> OnboardingResource : returns
+GetOnboardingProgress ..> OnboardingService : uses
+SaveOnboardingStep ..> OnboardingService : marks saved
+SaveOnboardingStep ..> SkillCatalogue : resolves skills
+CompleteOnboarding ..> OnboardingService : checks readiness
+SaveOnboardingStep --> Builder : writes
+CompleteOnboarding --> Builder : completes
+Builder "*" --> "1" Neighbourhood : based in
+Builder "*" o-- "0..12" Skill : ordered skills
+Builder --> BuilderRole : has
+Builder --> OpenTo : open to
+OnboardingService ..> OnboardingStep : uses
+@enduml

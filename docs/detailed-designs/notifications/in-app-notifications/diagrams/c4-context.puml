@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — In-app notifications
+
+Person(member, "Member", "Signed-in, verified builder")
+Person(other, "Other member", "Messages, RSVPs, gives feedback, offers help")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(other, banaro, "Acts in ways that concern the member, using", "HTTPS")
+Rel(member, banaro, "Reads notifications and the unread count using", "HTTPS")
+@enduml

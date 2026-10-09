@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project · default — Banaro</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="project-detail">
+<meta name="mock:state" content="default">
+<meta name="description" content="Psalter by Daniel Reyes: description, stage, screens, the builder and a feedback thread, with actions to give feedback or offer help.">
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="brand" href="../../pages/dashboard/default.html" aria-label="Banaro home"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a>
+    <nav class="nav" id="primary-nav" popover aria-label="Primary">
+      <ul class="nav__list"><li><a class="nav__link" href="../../pages/directory/default.html">Builders</a></li><li><a class="nav__link" href="../../pages/projects/default.html" aria-current="page">Projects</a></li><li><a class="nav__link" href="../../pages/events/default.html">Events</a></li><li><a class="nav__link" href="../../pages/matching/default.html">Matching</a></li></ul>
+      <button type="button" class="btn btn--quiet nav__close" popovertarget="primary-nav" popovertargetaction="hide">Close menu</button>
+    </nav>
+    <div class="header__actions"><a class="matches-link" href="../../pages/matching/default.html"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10z"/></svg>2 new matches</a><a class="icon-btn" href="../../pages/messages/default.html" aria-label="Messages, 1 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5A2.5 2.5 0 0 1 7 4h10a2.5 2.5 0 0 1 2.5 2.5v7A2.5 2.5 0 0 1 17 16h-5.5L7 19.5V16a2.5 2.5 0 0 1-2.5-2.5z"/></svg><span class="icon-btn__count" aria-hidden="true">1</span></a><a class="icon-btn" href="../../pages/notifications/default.html" aria-label="Notifications, 3 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg><span class="icon-btn__count" aria-hidden="true">3</span></a><a class="avatar-btn" href="../../dialogs/account-menu/default.html" aria-label="Your account, Amara Osei" aria-haspopup="menu"><img class="avatar" src="../../assets/photos/amara-osei.jpg" width="40" height="40" alt=""><span>Amara</span></a><button type="button" class="menu-btn" popovertarget="primary-nav" aria-label="Menu"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="menu-btn__label">Menu</span></button></div>
+  </div>
+</header>
+
+<main id="main">
+<div class="wrap">
+
+  <nav aria-label="Breadcrumb"><ol class="breadcrumb" style="margin-top: var(--space-8)"><li><a href="../../pages/projects/default.html">Projects</a></li><li aria-current="page">Psalter</li></ol></nav>
+  <div class="proj-head"><div class="proj-head__who"><span class="proj-head__mark project__mark--clay" aria-hidden="true">P</span><div><h1 class="proj-head__name">Psalter</h1><p class="proj-head__by">by <a href="../../pages/builder-profile/default.html">Daniel Reyes</a> · Scripture memory with spaced repetition</p></div></div><div class="proj-head__actions"><a class="btn btn--primary" href="../../dialogs/give-feedback/default.html">Give feedback</a><a class="btn btn--quiet" href="../../dialogs/offer-to-help/default.html">Offer to help</a></div></div>
+  <div class="two-col">
+    <div class="stack stack--lg">
+      <section aria-labelledby="about-title"><h2 class="section__title" id="about-title" style="font-size: var(--font-size-2xl)">About Psalter</h2>
+        <div class="prose" style="margin-top: var(--space-5)">
+          <p>Psalter helps you hide Scripture in your heart without the guilt. Each day it shows the few verses that are about to slip away, and lets you rehearse them in under three minutes.</p>
+          <p>It began as a tool for Daniel's own family and is now used by 1,900 beta testers across about forty churches. The code is open source, and the next stretch of work is offline review, shared decks for small groups, and better accessibility.</p>
+          <p>Daniel is looking for contributors who enjoy small, well-tested pull requests: Laravel, Angular, or careful writing for the onboarding.</p>
+        </div></section>
+      <section aria-labelledby="shots-title"><h2 class="section__title" id="shots-title" style="font-size: var(--font-size-2xl); margin-bottom: var(--space-5)">Screens</h2>
+        <div class="shots"><figure class="shot"><div class="shot__tile tile--clay" role="img" aria-label="Screenshot placeholder: Today's review queue"><span class="shot__bars" aria-hidden="true"><span></span><span></span><span></span></span></div><figcaption>Today's review queue</figcaption></figure><figure class="shot"><div class="shot__tile tile--clay" role="img" aria-label="Screenshot placeholder: A verse card"><span class="shot__bars" aria-hidden="true"><span></span><span></span><span></span></span></div><figcaption>A verse card</figcaption></figure><figure class="shot"><div class="shot__tile tile--clay" role="img" aria-label="Screenshot placeholder: Deck for Psalm 121"><span class="shot__bars" aria-hidden="true"><span></span><span></span><span></span></span></div><figcaption>Deck for Psalm 121</figcaption></figure></div></section>
+      <section aria-labelledby="fb-title"><div class="cluster cluster--between"><h2 class="section__title" id="fb-title" style="font-size: var(--font-size-2xl)">Feedback <span class="muted">· 41 comments</span></h2>
+        <a class="btn btn--quiet btn--sm" href="../../dialogs/give-feedback/default.html">Give feedback</a></div>
+        <p class="muted" style="margin-block: var(--space-3) var(--space-5)">Showing the five most recent. Daniel replies to every one.</p>
+        <ol class="comments"><li class="comment"><img class="avatar" src="../../assets/photos/hannah-kowalski.jpg" width="40" height="40" alt="" loading="lazy"><div><div class="comment__head"><h3 class="comment__name"><a href="../../pages/builder-profile/default.html">Hannah Kowalski</a></h3><span class="pill">Question</span><span class="comment__meta">2 days ago</span></div><p class="comment__body">I sat in on three of your beta users' first sessions in my head just from the onboarding copy. What happens when someone misses a week of reviews? That is where I'd expect people to quietly drop off.</p></div></li><li class="comment"><img class="avatar" src="../../assets/photos/noah-fischer.jpg" width="40" height="40" alt="" loading="lazy"><div><div class="comment__head"><h3 class="comment__name"><a href="../../pages/builder-profile/default.html">Noah Fischer</a></h3><span class="pill">Suggestion</span><span class="comment__meta">3 days ago</span></div><p class="comment__body">The review queue is lovely. Could the streak count be optional? On a hard week it can feel like a verdict, and Scripture memory should feel more like a gift than a score.</p></div></li><li class="comment"><img class="avatar" src="../../assets/photos/grace-liu.jpg" width="40" height="40" alt="" loading="lazy"><div><div class="comment__head"><h3 class="comment__name"><a href="../../pages/builder-profile/default.html">Grace Liu</a></h3><span class="pill pill--sage">Encouragement</span><span class="comment__meta">5 days ago</span></div><p class="comment__body">The verse card is the calmest screen I have seen in a memory app. Please keep the generous line spacing as you add features.</p></div></li><li class="comment"><img class="avatar" src="../../assets/photos/marcus-bennett.jpg" width="40" height="40" alt="" loading="lazy"><div><div class="comment__head"><h3 class="comment__name"><a href="../../pages/builder-profile/default.html">Marcus Bennett</a></h3><span class="pill">Question</span><span class="comment__meta">1 week ago</span></div><p class="comment__body">At 1,900 users, how is the scheduling job holding up? I'd happily review the queue design if you want a second pair of eyes.</p></div></li><li class="comment"><img class="avatar" src="../../assets/photos/amara-osei.jpg" width="40" height="40" alt="" loading="lazy"><div><div class="comment__head"><h3 class="comment__name"><a href="../../pages/builder-profile/default.html">Amara Osei</a></h3><span class="pill pill--sage">Encouragement</span><span class="comment__meta">1 week ago</span></div><p class="comment__body">I use Psalter every morning on the streetcar. The Psalm 121 deck got me through a very long September. Thank you for building this.</p></div></li></ol>
+        <div class="cluster" style="margin-top: var(--space-4)"><button type="button" class="btn btn--quiet">Show 36 earlier comments</button></div></section>
+    </div>
+    <aside class="stack" aria-label="About this project">
+      <div class="aside-card"><h2 class="aside-card__title">At a glance</h2>
+        <dl class="facts"><div><dt>Stage</dt><dd>1,900 beta users</dd></div><div><dt>Looking for</dt><dd>Contributors (open source)</dd></div><div><dt>Built with</dt><dd>Laravel, Angular, PostgreSQL</dd></div><div><dt>Licence</dt><dd>MIT</dd></div><div><dt>Updated</dt><dd>6 Oct 2026</dd></div></dl>
+        <ul class="stack" style="gap: var(--space-2)"><li><a class="section__more" href="https://github.com/dreyes/psalter"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 12.5 6 15a3.5 3.5 0 0 0 5 5l2.5-2.5"/><path d="M15.5 11.5 18 9a3.5 3.5 0 0 0-5-5l-2.5 2.5"/><path d="m9 15 6-6"/></svg>github.com/dreyes/psalter</a></li>
+        <li><a class="section__more" href="https://psalter.example.ca"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 12.5 6 15a3.5 3.5 0 0 0 5 5l2.5-2.5"/><path d="M15.5 11.5 18 9a3.5 3.5 0 0 0-5-5l-2.5 2.5"/><path d="m9 15 6-6"/></svg>psalter.example.ca</a></li></ul></div>
+      <div class="aside-card"><p class="eyebrow">The builder</p>
+        <div class="dialog__who"><img class="avatar" src="../../assets/photos/daniel-reyes.jpg" width="48" height="48" alt=""><div><h2 class="rows__title"><a href="../../pages/builder-profile/default.html">Daniel Reyes</a></h2>
+        <p class="rows__meta">Full-stack engineer · Mississauga · 26.9 km away</p></div></div>
+        <a class="btn btn--quiet btn--sm" href="../../dialogs/say-hello/default.html">Say hello</a></div>
+    </aside>
+  </div>
+</div>
+</main>
+
+<footer class="footer" id="footer">
+  <div class="wrap footer__grid">
+    <p class="footer__made">Made in Toronto. © 2026 Banaro.</p>
+    <nav aria-label="Footer">
+      <ul class="footer__links"><li><a href="../../pages/about/default.html">About</a></li><li><a href="../../pages/code-of-conduct/default.html">Code of conduct</a></li><li><a href="../../pages/privacy/default.html">Privacy</a></li><li><a href="../../pages/contact/default.html">Contact</a></li></ul>
+    </nav>
+    <p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+  </div>
+</footer>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="Mock gallery">⌂</a>
+  <span class="mock-bar__screen">Project</span>
+  <ul class="mock-bar__states"><li><a href="default.html" aria-current="page">default</a></li><li><a href="loading.html">loading</a></li><li><a href="error.html">error</a></li><li><a href="empty.html">empty</a></li><li><a href="own.html">own</a></li><li><a href="not-found.html">not-found</a></li></ul>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

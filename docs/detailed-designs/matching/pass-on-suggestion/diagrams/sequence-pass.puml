@@ -1,0 +1,66 @@
+@startuml
+title UML sequence behaviour — Pass on a suggestion
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "MatchingPage" as page
+  participant "PassSuggestionDialog" as dialog
+  participant "HttpMatchingApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "MatchSuggestionPassController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "PassOnSuggestion" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Select "Pass" on a match card
+page -> dialog : Open pass-suggestion dialog (focus on "Keep suggestion")
+actor -> dialog : Optionally choose a reason, select "Pass"
+dialog -> dialog : busy state, "Keep suggestion" disabled, no dismissal (L2-024 criterion 2)
+dialog -> client : passSuggestion(id, reason)
+client -> controller : POST /api/v1/matching/suggestions/{id}/pass
+controller -> controller : Authenticate, validate PassSuggestionRequest
+controller -> db : Resolve {id} through member's own suggestions
+alt not the member's suggestion
+  controller --> client : 404 (L2-044 criterion 1)
+else owned
+  controller -> action : handle(member, suggestion, reason)
+  action -> db : BEGIN; SELECT suggestion FOR UPDATE
+  alt already passed
+    action -> db : COMMIT
+    action --> controller : Suggestion unchanged (idempotent retry)
+  else suggested
+    action -> db : UPDATE status = passed, pass_reason, acted_at = now (L2-024 criterion 1)
+    action -> db : COMMIT
+    note right of action : No notification or event\nreaches the other builder\n(L2-024 criterion 1)
+    action --> controller : Passed suggestion
+  end
+  controller --> client : 200 MatchSuggestionResource
+end
+client --> dialog : Result
+alt success
+  dialog --> page : Close with passed result
+  page -> client : getOverview()
+  client --> page : Overview without the passed card
+  page --> actor : default state with the other cards, or reviewed state
+else server or network error
+  dialog --> actor : failed state with "Try again"; suggestion unchanged (L2-024 criterion 2)
+end
+@enduml

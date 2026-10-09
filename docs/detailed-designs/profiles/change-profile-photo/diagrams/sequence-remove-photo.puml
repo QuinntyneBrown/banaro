@@ -1,0 +1,54 @@
+@startuml
+title UML sequence behaviour — Remove the profile photo
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ProfileEditPage" as page
+  participant "ChangePhotoDialog" as dialog
+  participant "HttpProfilesApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ProfilePhotoController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "RemoveProfilePhoto" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  collections "Media storage" as media
+end box
+
+actor -> page : Select "Change photo"
+page -> dialog : Open change-photo dialog
+actor -> dialog : Select "Remove photo"
+dialog --> actor : busy state
+dialog -> client : removePhoto()
+client -> controller : DELETE /api/v1/me/photo
+controller -> action : handle(session builder)
+action -> db : BEGIN; builders.photo_id = null; DELETE profile_photo; COMMIT
+action -> media : Delete stored file after commit (L2-008 criterion 5)
+action --> controller : Done
+controller --> client : 204 No Content
+alt success
+  client --> dialog : Done
+  dialog --> page : Close with no photo
+  page --> actor : Initials tile shown again (L2-008 criterion 5)
+else server fault
+  controller --> client : 5xx; transaction rolled back
+  client --> dialog : Error
+  dialog --> actor : failed state with "Try again"; photo unchanged
+end
+@enduml

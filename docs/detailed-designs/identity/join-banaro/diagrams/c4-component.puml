@@ -1,0 +1,33 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Join Banaro
+
+Container(web, "Banaro Web", "Angular", "JoinPage, HttpIdentityApi")
+ContainerDb(db, "Banaro database", "Relational database", "users, email_verification_tokens")
+ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters, Horizon queues")
+
+Container_Boundary(api, "Banaro API") {
+  Component(limiter, "join rate limiter", "Laravel RateLimiter", "5 attempts per IP in 10 minutes")
+  Component(ctrl, "JoinController", "Laravel controller", "POST /join; returns 202 in every accepted case")
+  Component(req, "JoinBanaroRequest", "Form request", "Name, e-mail, password, code-of-conduct consent")
+  Component(policy, "PasswordPolicy", "Domain service", "12-character minimum, common-password list")
+  Component(action, "JoinBanaro", "Action", "Creates the unverified account or handles a taken address")
+  Component(verify, "EmailVerificationService", "Domain service", "Issues the signed, single-use link")
+  Component(user, "User", "Eloquent model", "Canonical e-mail, password hash, verification state")
+  Component(notify, "VerifyEmailNotification / AccountAlreadyExistsNotification", "Queued notifications", "mail channel")
+}
+
+Rel(web, limiter, "Calls", "JSON/HTTPS")
+Rel(limiter, ctrl, "Passes allowed requests to")
+Rel(limiter, redis, "Counts attempts in", "Redis protocol")
+Rel(ctrl, req, "Validates with")
+Rel(req, policy, "Applies password rules from")
+Rel(ctrl, action, "Calls handle()")
+Rel(action, user, "Finds by canonical e-mail, creates")
+Rel(action, verify, "Issues link through")
+Rel(action, notify, "Queues after commit")
+Rel(user, db, "Reads and writes", "SQL")
+Rel(verify, db, "Writes token", "SQL")
+Rel(notify, redis, "Pushed to", "Redis protocol")
+@enduml

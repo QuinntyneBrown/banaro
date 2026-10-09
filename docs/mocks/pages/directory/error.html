@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Builder directory · error — Banaro</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="directory">
+<meta name="mock:state" content="error">
+<meta name="description" content="Directory when the results request failed; header and filters stay, with a retry and a way out.">
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="brand" href="../../pages/dashboard/default.html" aria-label="Banaro home"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a>
+    <nav class="nav" id="primary-nav" popover aria-label="Primary">
+      <ul class="nav__list"><li><a class="nav__link" href="../../pages/directory/default.html" aria-current="page">Builders</a></li><li><a class="nav__link" href="../../pages/projects/default.html">Projects</a></li><li><a class="nav__link" href="../../pages/events/default.html">Events</a></li><li><a class="nav__link" href="../../pages/matching/default.html">Matching</a></li></ul>
+      <button type="button" class="btn btn--quiet nav__close" popovertarget="primary-nav" popovertargetaction="hide">Close menu</button>
+    </nav>
+    <div class="header__actions"><a class="matches-link" href="../../pages/matching/default.html"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10z"/></svg>2 new matches</a><a class="icon-btn" href="../../pages/messages/default.html" aria-label="Messages, 1 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5A2.5 2.5 0 0 1 7 4h10a2.5 2.5 0 0 1 2.5 2.5v7A2.5 2.5 0 0 1 17 16h-5.5L7 19.5V16a2.5 2.5 0 0 1-2.5-2.5z"/></svg><span class="icon-btn__count" aria-hidden="true">1</span></a><a class="icon-btn" href="../../pages/notifications/default.html" aria-label="Notifications, 3 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg><span class="icon-btn__count" aria-hidden="true">3</span></a><a class="avatar-btn" href="../../dialogs/account-menu/default.html" aria-label="Your account, Amara Osei" aria-haspopup="menu"><img class="avatar" src="../../assets/photos/amara-osei.jpg" width="40" height="40" alt=""><span>Amara</span></a><button type="button" class="menu-btn" popovertarget="primary-nav" aria-label="Menu"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="menu-btn__label">Menu</span></button></div>
+  </div>
+</header>
+
+<main id="main">
+<div class="wrap">
+    <div class="page-head">
+      <p class="eyebrow">Builder directory</p>
+      <h1 class="page-head__title">Builders near you</h1>
+      <p class="page-head__sub">1,284 builders in Toronto and the GTA, within 40 km of Leslieville.</p>
+      <form class="search" role="search" action="#results">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        <label class="vh" for="q">Search builders</label>
+        <input class="search__input" id="q" name="q" type="search" placeholder="Name, skill or project" autocomplete="off">
+        <button type="submit" class="btn btn--primary">Search</button>
+      </form>
+    </div>
+
+    <div class="dir">
+      <aside class="filters" id="filters" popover aria-labelledby="filters-title">
+        <div class="filters__head">
+          <h2 class="filters__title" id="filters-title">Filters</h2>
+          <button type="button" class="btn btn--text btn--sm">Clear all</button>
+        </div>
+        <form action="#results">
+          <fieldset class="filter">
+            <legend class="filter__legend">Role</legend>
+            <ul class="filter__list">
+              <li><label class="check"><input class="check__box" type="checkbox" name="role" value="Founders"> <span>Founders</span> <span class="check__count">214</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="role" value="Engineers"> <span>Engineers</span> <span class="check__count">486</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="role" value="Designers"> <span>Designers</span> <span class="check__count">231</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="role" value="Product managers"> <span>Product managers</span> <span class="check__count">198</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="role" value="Other"> <span>Other</span> <span class="check__count">155</span></label></li>
+            </ul>
+          </fieldset>
+          <fieldset class="filter">
+            <legend class="filter__legend">Open to</legend>
+            <ul class="filter__list">
+              <li><label class="check"><input class="check__box" type="checkbox" name="open" value="Co-founding"> <span>Co-founding</span> <span class="check__count">173</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="open" value="Advising"> <span>Advising</span> <span class="check__count">248</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="open" value="Contributing"> <span>Contributing</span> <span class="check__count">611</span></label></li>
+            </ul>
+          </fieldset>
+          <fieldset class="filter">
+            <legend class="filter__legend">Neighbourhood or city</legend>
+            <ul class="filter__list">
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Downtown Toronto"> <span>Downtown Toronto</span> <span class="check__count">512</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="North York"> <span>North York</span> <span class="check__count">141</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Scarborough"> <span>Scarborough</span> <span class="check__count">96</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Etobicoke"> <span>Etobicoke</span> <span class="check__count">88</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Mississauga"> <span>Mississauga</span> <span class="check__count">147</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Brampton"> <span>Brampton</span> <span class="check__count">74</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Markham"> <span>Markham</span> <span class="check__count">92</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Vaughan"> <span>Vaughan</span> <span class="check__count">51</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Richmond Hill"> <span>Richmond Hill</span> <span class="check__count">38</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Oakville"> <span>Oakville</span> <span class="check__count">45</span></label></li>
+            </ul>
+          </fieldset>
+          <fieldset class="filter">
+            <legend class="filter__legend">Popular skills</legend>
+            <ul class="chips">
+              <li><button type="button" class="chip" aria-pressed="false">React <span class="chip__count">203</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Figma <span class="chip__count">187</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Python <span class="chip__count">174</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Product strategy <span class="chip__count">156</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">User research <span class="chip__count">112</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Laravel <span class="chip__count">96</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Data/ML <span class="chip__count">89</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Marketing <span class="chip__count">77</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Angular <span class="chip__count">74</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Swift <span class="chip__count">61</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Kotlin <span class="chip__count">48</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Fundraising <span class="chip__count">41</span></button></li>
+            </ul>
+          </fieldset>
+          <fieldset class="filter">
+            <legend class="filter__legend">Distance</legend>
+            <div class="range">
+              <label class="range__label" for="distance"><span>Within 40 km of Leslieville</span></label>
+              <input class="range__input" id="distance" name="distance" type="range" min="1" max="60" value="40" aria-valuetext="40 kilometres">
+              <div class="range__ends" aria-hidden="true"><span>1 km</span><span>60 km</span></div>
+            </div>
+          </fieldset>
+        </form>
+        <button type="button" class="btn btn--primary filters__done" popovertarget="filters" popovertargetaction="hide">Show 1,284 builders</button>
+      </aside>
+
+      <section id="results" aria-labelledby="results-title">
+        <h2 class="vh" id="results-title">Results</h2>
+        <div role="alert"><div class="empty empty--error"><span class="empty__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg></span><h2 class="empty__title">We couldn't load the builders</h2><p>Banaro had trouble reaching the server. Nothing you've set up is lost. Try again, or open your matches while we sort it out.</p><div class="empty__actions"><button type="button" class="btn btn--primary">Try again</button><a class="btn btn--quiet" href="../../pages/matching/default.html">See your matches</a></div></div></div>
+      </section>
+    </div>
+</div>
+</main>
+
+<footer class="footer" id="footer">
+  <div class="wrap footer__grid">
+    <p class="footer__made">Made in Toronto. © 2026 Banaro.</p>
+    <nav aria-label="Footer">
+      <ul class="footer__links"><li><a href="../../pages/about/default.html">About</a></li><li><a href="../../pages/code-of-conduct/default.html">Code of conduct</a></li><li><a href="../../pages/privacy/default.html">Privacy</a></li><li><a href="../../pages/contact/default.html">Contact</a></li></ul>
+    </nav>
+    <p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+  </div>
+</footer>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="Mock gallery">⌂</a>
+  <span class="mock-bar__screen">Builder directory</span>
+  <ul class="mock-bar__states"><li><a href="default.html">default</a></li><li><a href="loading.html">loading</a></li><li><a href="error.html" aria-current="page">error</a></li><li><a href="no-results.html">no-results</a></li><li><a href="filtered.html">filtered</a></li><li><a href="edge.html">edge</a></li></ul>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

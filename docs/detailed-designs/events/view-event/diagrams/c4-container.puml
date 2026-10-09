@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — View an event
+
+Person(member, "Member", "Signed-in, verified builder")
+System_Ext(map, "Map service", "Public map site")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Event detail page, attendee cluster, map link")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Event detail, attendee filtering, viewer RSVP")
+  ContainerDb(db, "Banaro database", "Relational database", "Events, RSVPs, builders, privacy settings, blocks")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(member, map, "Follows map link to", "HTTPS")
+Rel(web, api, "GET /api/v1/events/{id}", "JSON/HTTPS")
+Rel(api, redis, "Reads session", "Redis protocol")
+Rel(api, db, "Reads event, RSVPs and attendees", "SQL")
+@enduml

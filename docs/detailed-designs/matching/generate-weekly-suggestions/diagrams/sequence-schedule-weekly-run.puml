@@ -1,0 +1,49 @@
+@startuml
+title UML sequence behaviour — Start the Monday run once
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Clock (Monday 06:00 America/Toronto)" as clock
+box "Backend — Banaro Worker" #ECFDF3
+  participant "Scheduler replica A" as schedA
+  participant "Scheduler replica B" as schedB
+  participant "GenerateWeeklySuggestionsCommand" as cmd
+  participant "MatchingScheduleService" as cal
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  queue "Redis" as redis
+  database "Banaro database" as db
+end box
+
+clock -> schedA : schedule:run tick
+clock -> schedB : schedule:run tick
+schedA -> redis : Take onOneServer lock for matching:generate-weekly
+redis --> schedA : Lock granted
+schedB -> redis : Take onOneServer lock for matching:generate-weekly
+redis --> schedB : Lock held elsewhere
+schedB -> schedB : Skip run (L2-054 criterion 5)
+schedA -> cmd : Run matching:generate-weekly
+cmd -> cal : isoWeekOf(now in America/Toronto)
+cal --> cmd : 2026-W42
+loop chunkById over active matching preferences
+  cmd -> db : SELECT user_id FROM matching_preferences WHERE status = active
+  db --> cmd : Chunk of member ids
+  loop each member
+    cmd -> redis : Dispatch GenerateMatchSuggestions(userId, 2026-W42)
+    note right of redis : ShouldBeUnique drops a duplicate\nwhile the first job is queued\n(L2-022 criterion 3)
+  end
+end
+cmd --> schedA : Exit 0, members dispatched logged
+schedA -> redis : Release lock
+@enduml

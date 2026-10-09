@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Observe health
+
+Person(maintainer, "Maintainer", "Operates releases and infrastructure")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+System_Ext(orchestrator, "Container orchestrator", "Runs, probes and restarts instances; product <TO SUPPLY>")
+System_Ext(logs, "Log collector", "Gathers and stores stdout and stderr; product <TO SUPPLY>")
+
+Rel(orchestrator, banaro, "Probes /health/live and /health/ready", "HTTP")
+Rel(banaro, logs, "Writes JSON log lines", "stderr")
+Rel(maintainer, logs, "Searches by request ID")
+Rel(maintainer, orchestrator, "Watches instance health")
+@enduml

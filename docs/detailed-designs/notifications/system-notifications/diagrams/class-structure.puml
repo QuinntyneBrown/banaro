@@ -1,0 +1,157 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — System notifications
+
+package "Frontend — components library" {
+  enum Variant {
+    info
+    success
+    warning
+    danger
+  }
+  class ToastOptions {
+    +variant: Variant
+    +title: string
+    +body?: string
+    +action?: ToastAction
+    +kind?: 'plain' | 'rsvp'
+  }
+  class ToastAction {
+    +label: string
+    +run: () => void
+  }
+  class ToastService {
+    -visible: WritableSignal<ToastRef[]>
+    -queue: ToastRef[]
+    +maxVisible: 3
+    +show(options: ToastOptions): ToastRef
+    +dismiss(ref: ToastRef): void
+    +pause(ref: ToastRef): void
+    +resume(ref: ToastRef): void
+  }
+  class ToastRef {
+    +id: string
+    +options: ToastOptions
+    +remainingMs: number | null
+    +actionTaken: boolean
+    +afterDismissed(): Observable<'timeout' | 'closed' | 'action'>
+  }
+  class ToastRegion <<bn-toast-region>>
+  class Toast <<bn-toast>>
+  class RsvpToast <<bn-rsvp-toast>>
+  class BannerSpec {
+    +key: string
+    +variant: Variant
+    +text: string
+    +action?: BannerAction
+    +dismissible: boolean
+    +dismissFor?: 'page' | 'days7' | 'device'
+    +autoDismissMs?: number
+  }
+  class BannerService {
+    -banners: WritableSignal<BannerSpec[]>
+    +show(spec: BannerSpec): void
+    +clear(key: string): void
+    +dismiss(key: string): void
+  }
+  class DismissalStore {
+    +isDismissed(key: string): boolean
+    +record(key: string, expiresAt: Date | null): void
+  }
+  class BannerStack <<bn-banner-stack>>
+  class Banner <<bn-banner>>
+}
+
+package "Frontend — banaro application and api library" {
+  class AccountBannerSource
+  class SiteBannerSource
+  class ConnectionBannerSource
+  class SessionService
+  class ConnectivityService {
+    +state: Signal<'online' | 'offline' | 'reconnecting' | 'failed'>
+    +reportUnreachable(): void
+    +reportReachable(): void
+  }
+  class ConnectivityInterceptor <<HttpInterceptorFn>>
+  interface AnnouncementsApi {
+    +current(): Observable<SiteAnnouncement | null>
+  }
+  class HttpAnnouncementsApi
+}
+
+package "Backend — Banaro API" {
+  class SiteAnnouncementController {
+    +current(): SiteAnnouncementResource
+  }
+  class "Admin\\SiteAnnouncementController" as AdminCtrl {
+    +store(request: PublishSiteAnnouncementRequest): SiteAnnouncementResource
+    +update(request: UpdateSiteAnnouncementRequest, a: SiteAnnouncement): SiteAnnouncementResource
+    +destroy(a: SiteAnnouncement): Response
+  }
+  class GetCurrentAnnouncement {
+    +handle(): ?SiteAnnouncement
+  }
+  class PublishSiteAnnouncement {
+    +handle(admin: User, data: array): SiteAnnouncement
+  }
+  class SiteAnnouncement {
+    +int id
+    +string message
+    +BannerVariant variant
+    +?string link_label
+    +?string link_url
+    +bool dismissible
+    +?Carbon starts_at
+    +?Carbon ends_at
+    +Carbon published_at
+    +?Carbon closed_at
+    +int version
+    +int created_by
+  }
+  enum BannerVariant {
+    Info
+    Success
+    Warning
+    Danger
+  }
+}
+
+ToastService "1" *-- "*" ToastRef
+ToastRef --> ToastOptions
+ToastOptions --> ToastAction
+ToastOptions --> Variant
+ToastRegion ..> ToastService : renders visible
+ToastRegion *-- Toast
+RsvpToast ..> Toast : wraps
+ToastRegion *-- RsvpToast
+BannerService "1" *-- "*" BannerSpec
+BannerService ..> DismissalStore : uses
+BannerStack ..> BannerService : renders
+BannerStack *-- Banner
+AccountBannerSource ..> SessionService : reads
+AccountBannerSource ..> BannerService : shows
+SiteBannerSource ..> AnnouncementsApi : reads
+SiteBannerSource ..> BannerService : shows
+ConnectionBannerSource ..> ConnectivityService : subscribes
+ConnectionBannerSource ..> BannerService : shows
+ConnectivityInterceptor ..> ConnectivityService : reports
+HttpAnnouncementsApi ..|> AnnouncementsApi
+HttpAnnouncementsApi ..> SiteAnnouncementController : HTTPS
+
+SiteAnnouncementController ..> GetCurrentAnnouncement : calls
+AdminCtrl ..> PublishSiteAnnouncement : calls
+GetCurrentAnnouncement --> SiteAnnouncement : reads
+PublishSiteAnnouncement --> SiteAnnouncement : writes
+SiteAnnouncement --> BannerVariant : has
+@enduml

@@ -1,0 +1,131 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Offer to help with a project
+
+package "Frontend — banaro application, components and api libraries" {
+  class OfferToHelpDialog {
+    -api: ProjectsApi
+    -toast: ToastService
+    +roles: LookingForRole[]
+    +form: FormGroup<OfferControls>
+    +state: 'default' | 'busy' | 'invalid' | 'failed'
+    +send(): void
+  }
+  class ProjectDetailPage {
+    +offers: Signal<HelpOfferView[]>
+    +openOfferToHelp(): void
+    +answer(offer: HelpOfferView, decision: 'accepted' | 'declined'): void
+  }
+  class HelpOfferItem {
+    selector bn-help-offer-item
+    +offer: InputSignal<HelpOfferView>
+  }
+  interface ProjectsApi {
+    +offerHelp(projectId: string, offer: HelpOfferDraft): Observable<HelpOfferView>
+    +helpOffers(projectId: string): Observable<Page<HelpOfferView>>
+    +answerHelpOffer(projectId: string, offerId: string, decision: string): Observable<HelpOfferView>
+  }
+  class HttpProjectsApi
+  class HelpOfferView {
+    +id: string
+    +offerer: AuthorSummary
+    +role: LookingForRole
+    +message: string
+    +status: 'pending' | 'accepted' | 'declined'
+    +createdAt: string
+    +conversationId: string | null
+  }
+}
+
+package "Backend — Banaro API" {
+  class HelpOfferController {
+    +store(request: OfferToHelpRequest, project: Project): HelpOfferResource
+    +index(request: ListHelpOffersRequest, project: Project): ResourceCollection
+  }
+  class HelpOfferDecisionController {
+    +update(request: AnswerHelpOfferRequest, project: Project, offer: HelpOffer): HelpOfferResource
+  }
+  class ProjectPolicy {
+    +offerHelp(user: ?User, project: Project): bool
+    +viewHelpOffers(user: User, project: Project): Response
+  }
+  class HelpOfferPolicy {
+    +answer(user: User, offer: HelpOffer): bool
+  }
+  class BlockService {
+    +isBlockedEitherWay(a: User, b: User): bool
+  }
+  class OfferToHelp {
+    +handle(offerer: User, project: Project, role: LookingForRole, message: string): HelpOffer
+  }
+  class AnswerHelpOffer {
+    +handle(owner: User, offer: HelpOffer, decision: HelpOfferStatus): HelpOffer
+  }
+  class ListHelpOffers {
+    +handle(project: Project): LengthAwarePaginator
+  }
+  class StartConversation {
+    Actions/Messaging
+    +handle(...): Conversation
+  }
+  class HelpOfferPending {
+    +code: 'offer_pending'
+    +status: 409
+  }
+  class Project {
+    +int id
+    +int owner_id
+  }
+  class HelpOffer {
+    +int id
+    +int project_id
+    +int offerer_id
+    +LookingForRole role
+    +string message
+    +HelpOfferStatus status
+    +?Carbon answered_at
+    +?int conversation_id
+  }
+  enum HelpOfferStatus {
+    Pending
+    Accepted
+    Declined
+  }
+  class HelpOfferResource
+  class HelpOfferedNotification
+  class HelpOfferAnsweredNotification
+}
+
+OfferToHelpDialog ..> ProjectsApi : uses
+ProjectDetailPage ..> OfferToHelpDialog : opens
+ProjectDetailPage ..> HelpOfferItem : renders
+ProjectDetailPage ..> ProjectsApi : uses
+HttpProjectsApi ..|> ProjectsApi
+ProjectsApi ..> HelpOfferView : returns
+HttpProjectsApi ..> HelpOfferController : HTTPS
+
+HelpOfferController ..> ProjectPolicy : authorize
+HelpOfferController ..> OfferToHelp : calls
+HelpOfferController ..> ListHelpOffers : calls
+HelpOfferDecisionController ..> HelpOfferPolicy : authorize
+HelpOfferDecisionController ..> AnswerHelpOffer : calls
+ProjectPolicy ..> BlockService : blocked pair check
+OfferToHelp ..> HelpOfferPending : throws
+OfferToHelp ..> HelpOfferedNotification : queues
+AnswerHelpOffer ..> StartConversation : calls on accept
+AnswerHelpOffer ..> HelpOfferAnsweredNotification : queues
+HelpOfferController ..> HelpOfferResource : returns
+Project "1" *-- "*" HelpOffer : helpOffers
+HelpOffer --> HelpOfferStatus : has
+@enduml

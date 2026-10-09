@@ -1,0 +1,73 @@
+@startuml
+title UML sequence behaviour — Save an onboarding step
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "OnboardingPage" as page
+  participant "HttpProfilesApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "OnboardingController" as controller
+  participant "SaveOnboarding{Step}Request" as request
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "SaveOnboardingStep" as action
+  participant "SkillCatalogue" as catalogue
+  participant "OnboardingService" as service
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Select "Continue" on the about or skills step, or "Finish" on goals
+page -> page : Disable the button and show the busy label
+page -> client : saveOnboardingStep(step, answers)
+client -> controller : PUT /api/v1/me/onboarding/{step}
+controller -> controller : Authenticate verified member (L2-002 criterion 4)
+controller -> request : Validate answers, drop unknown fields (L2-044 criterion 4)
+alt role or neighbourhood missing, or more than 12 skills
+  request --> controller : Validation errors
+  controller --> client : 422 with per-field errors (L2-006 criteria 2 and 4)
+  client --> page : Field errors
+  page --> actor : invalid state, focus on "Fix these before continuing"; nothing saved
+else answers valid
+  request --> controller : Validated answers
+  controller -> action : handle(builder, step, answers)
+  action -> db : BEGIN
+  alt about step
+    action -> db : UPDATE builder name, neighbourhood_id, role
+  else skills step
+    action -> catalogue : resolve(entries)
+    catalogue -> db : Find catalogue skills; find or create custom skills
+    catalogue --> action : Skills in member order
+    action -> db : Sync builder_skill with position (L2-006 criterion 2)
+  else goals step
+    action -> db : UPDATE builder open_to, building_summary (L2-006 criterion 3)
+  end
+  action -> service : markSaved(builder, step) (L2-006 criterion 6)
+  service -> db : UPDATE onboarding_saved_steps
+  action -> db : COMMIT
+  action --> controller : Updated builder
+  controller --> client : 200 OnboardingResource with nextStep
+  client --> page : OnboardingProgress
+  page --> actor : Next step, or the finish flow after goals
+end
+opt server error
+  controller --> client : 5xx, transaction rolled back
+  client --> page : Error
+  page --> actor : Danger toast with "Try again"; answers kept
+end
+@enduml

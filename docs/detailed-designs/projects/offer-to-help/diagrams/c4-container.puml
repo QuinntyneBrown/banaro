@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Offer to help with a project
+
+Person(member, "Member", "Offers help")
+Person(owner, "Owner", "Answers offers")
+System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "offer-to-help dialog, owner's help-offer section")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Offer rules, answers, conversation start")
+  Container(worker, "Banaro Worker", "Laravel Horizon", "Sends queued notifications")
+  ContainerDb(db, "Banaro database", "Relational database", "Projects, help offers, conversations, blocks")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions and Horizon queues")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(owner, web, "Uses", "HTTPS")
+Rel(web, api, "POST and GET /help-offers, PUT /decision", "JSON/HTTPS")
+Rel(api, db, "Locks and writes offers, creates conversations", "SQL")
+Rel(api, redis, "Queues notifications", "Redis protocol")
+Rel(worker, redis, "Takes jobs from", "Redis protocol")
+Rel(worker, db, "Records database notifications", "SQL")
+Rel(worker, mail, "Sends e-mail via", "Mailer contract")
+@enduml

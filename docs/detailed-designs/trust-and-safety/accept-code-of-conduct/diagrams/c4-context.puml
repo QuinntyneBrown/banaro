@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Accept the code of conduct
+
+Person(visitor, "Visitor", "Person using Banaro without signing in")
+Person(member, "Member", "Signed-in, verified builder")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(visitor, banaro, "Reads the code of conduct, agrees to it on /join", "HTTPS")
+Rel(member, banaro, "Accepts each new version at sign-in", "HTTPS")
+@enduml

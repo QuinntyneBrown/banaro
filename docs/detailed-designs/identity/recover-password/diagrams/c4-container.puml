@@ -1,0 +1,24 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Recover a forgotten password
+
+Person(person, "Visitor", "Person who has forgotten a Banaro password")
+System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Forgot-password and reset-password pages")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Request limits, link checks, password change")
+  Container(worker, "Banaro Worker", "Laravel Horizon", "Looks up the account, issues the token, sends e-mail")
+  ContainerDb(db, "Banaro database", "Relational database", "users, password_reset_tokens")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions, rate-limit counters, Horizon queues")
+}
+
+Rel(person, web, "Uses", "HTTPS")
+Rel(web, api, "POST /api/v1/forgot-password, /reset-password/check, /reset-password", "JSON/HTTPS")
+Rel(api, redis, "Counts requests, queues SendPasswordResetLink", "Redis protocol")
+Rel(api, db, "Checks tokens, writes the new password hash", "SQL")
+Rel(worker, redis, "Takes jobs from", "Redis protocol")
+Rel(worker, db, "Reads the account, writes the token hash", "SQL")
+Rel(worker, mail, "Sends e-mail via", "Mailer contract")
+@enduml

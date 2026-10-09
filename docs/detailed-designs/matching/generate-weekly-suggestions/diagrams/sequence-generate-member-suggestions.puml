@@ -1,0 +1,72 @@
+@startuml
+title UML sequence behaviour — Generate one member's suggestions
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Backend — Banaro Worker" #FFF4E5
+  participant "Horizon worker" as horizon
+  participant "GenerateMatchSuggestions" as job
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "GenerateSuggestionsForMember" as action
+  participant "MatchCandidateService" as candidates
+  participant "DistanceService" as distance
+  participant "BlockService" as block
+  participant "MatchScoreService" as score
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis queue" as queue
+end box
+
+horizon -> job : handle()
+job -> action : handle(member, 2026-W42)
+action -> db : BEGIN; SELECT matching_preference FOR UPDATE
+db --> action : Locked preference
+alt status paused
+  action -> db : ROLLBACK
+  action --> job : No suggestions (L2-025 criterion 1)
+else matching run exists for 2026-W42
+  action -> db : ROLLBACK
+  action --> job : Existing run, no duplicates (L2-022 criterion 3)
+else first run this week
+  action -> candidates : eligibleFor(member, preference)
+  candidates -> db : Builders open to the sought roles, not self, not paused,\nnot suggested or passed in 90 days (L2-022 criterion 1, L2-025 criterion 4)
+  db --> candidates : Narrowed candidates
+  loop each candidate
+    candidates -> distance : between(member neighbourhood, candidate neighbourhood)
+    distance --> candidates : km
+    candidates -> block : isBlockedEitherWay(member, candidate)
+    block --> candidates : bool
+  end
+  candidates --> action : Eligible candidates within max distance, not blocked
+  loop each eligible candidate
+    action -> score : scoreFor(member, candidate)
+    score --> action : MatchScore 0-100 with reasons (L2-022 criterion 4)
+  end
+  action -> action : Order by score, then distance, then id; keep at most 3 (L2-022 criteria 1 and 2)
+  action -> db : INSERT match_suggestions (status suggested)
+  action -> db : INSERT matching_runs (user_id, iso_week, suggestions_created)
+  action -> db : COMMIT
+  opt at least one suggestion created
+    action -> queue : Queue MatchSuggestionsReadyNotification (L2-022 criterion 5, L2-029)
+  end
+  action --> job : MatchingRun
+end
+job --> horizon : Done
+opt exception before commit
+  action -> db : ROLLBACK, nothing stored
+  horizon -> horizon : Retry with back-off, same ISO week key
+end
+@enduml

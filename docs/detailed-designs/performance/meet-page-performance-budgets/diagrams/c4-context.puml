@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Meet page-performance budgets
+
+Person(member, "Member", "Opens Banaro on a mid-range phone")
+Person(visitor, "Visitor", "Opens the home page and directory")
+Person(maintainer, "Maintainer", "May accept an intended render cost")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+System_Ext(ci, "CI pipeline", "Bundle budget, Lighthouse and perf-test stages; platform <TO SUPPLY>")
+
+Rel(member, banaro, "Loads pages using", "HTTPS")
+Rel(visitor, banaro, "Loads public pages using", "HTTPS")
+Rel(ci, banaro, "Measures pages and components of", "Chromium")
+Rel(maintainer, ci, "Adds perf-regression-accepted label in")
+@enduml

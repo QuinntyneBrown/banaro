@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Announce status without moving focus
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member (screen reader)" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "DirectoryPage" as dir
+  participant "ProfileEditPage" as form
+end box
+box "Frontend — components library" #E0F2FE
+  participant "Announcer" as announcer
+  participant "LiveAnnouncer (CDK)" as live
+  participant "bn-toast" as toast
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "Banaro API" as api
+end box
+
+== Loading complete ==
+actor -> dir : Open /builders
+dir -> dir : Skeleton grid with aria-busy="true"
+dir -> api : GET /api/v1/builders
+api --> dir : 12 builders
+dir -> dir : Replace skeletons; aria-busy="false"
+dir -> announcer : polite(directory.loaded, { count: 12 })
+announcer -> live : announce(text, 'polite')
+live --> actor : "12 builders shown"; focus unchanged (L2-050 criterion 4)
+
+== Form errors ==
+actor -> form : Submit with a bio over 500 characters
+form -> api : PATCH /api/v1/profile
+api --> form : 422 with field errors
+form -> form : Error summary role="alert"; aria-invalid and aria-describedby on the field
+form --> actor : Summary read; focus moves to the first invalid field after submit
+
+== Success toast ==
+actor -> form : Submit valid changes
+form -> api : PATCH /api/v1/profile
+api --> form : 200
+form -> toast : success(profile.saved)
+toast --> actor : role="status" read; focus stays on the form (L2-050 criterion 4)
+opt danger toast
+  toast --> actor : role="alert" read immediately
+end
+@enduml

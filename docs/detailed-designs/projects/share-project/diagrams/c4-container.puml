@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Share a project
+
+Person(member, "Member", "Signed-in, verified builder")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "project-new page and its states")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Validation, project limit, ownership")
+  ContainerDb(db, "Banaro database", "Relational database", "Projects and their looking-for roles")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "POST /api/v1/projects", "JSON/HTTPS")
+Rel(api, redis, "Reads session", "Redis protocol")
+Rel(api, db, "Locks owner row, writes project", "SQL")
+@enduml

@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Pause and resume matching
+
+Person(member, "Member", "Set-up matching member")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Matching page paused state, pause-matching dialog")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Sets matching status")
+  ContainerDb(db, "Banaro database", "Relational database", "Matching preferences with status and paused_at")
+  Container(worker, "Banaro Worker", "Laravel scheduler and Horizon", "Skips paused members on the Monday run")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "PUT and DELETE /api/v1/matching/pause", "JSON/HTTPS")
+Rel(api, db, "Locks and updates the preference", "SQL")
+Rel(worker, db, "Reads status; locks the same row per member", "SQL")
+@enduml

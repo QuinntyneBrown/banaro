@@ -1,0 +1,33 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Filter the directory
+
+Container(web, "Banaro Web", "Angular", "DirectoryPage, FilterSheet, DirectoryQueryCodec, HttpDirectoryApi")
+ContainerDb(db, "Banaro database", "Relational database", "builders, builder_skill, neighbourhoods, neighbourhood_distances")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "BuilderDirectoryController", "Laravel controller", "GET /builders (api_public.php)")
+  Component(req, "SearchDirectoryRequest", "Form request", "Enum membership for role, open to, area, skills, distance")
+  Component(action, "SearchDirectory", "Action", "Builds the filtered, sorted page")
+  Component(filters, "DirectoryFilters", "Value object", "Selection and distance limit (default 40 km)")
+  Component(applier, "DirectoryFilterApplier", "Domain service", "AND across groups, OR within a group")
+  Component(counter, "FacetCounter", "Domain service", "Option counts given the other groups")
+  Component(scopes, "ProfileVisibility / block scope", "Settings and trust-and-safety scopes", "Hide private and blocked builders")
+  Component(distance, "DistanceService", "Domain service", "Neighbourhood centroid distances")
+  Component(resource, "DirectoryPageResource", "API resource", "Items, facets, applied filters")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, action, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(action, filters, "Builds")
+Rel(action, scopes, "Applies")
+Rel(action, applier, "Applies filters with")
+Rel(action, counter, "Counts options with")
+Rel(applier, distance, "Limits by distance")
+Rel(counter, scopes, "Applies the same scopes")
+Rel(applier, db, "Filtered page", "SQL")
+Rel(counter, db, "Grouped counts", "SQL")
+@enduml

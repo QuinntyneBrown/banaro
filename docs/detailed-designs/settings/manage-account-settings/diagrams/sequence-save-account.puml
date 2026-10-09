@@ -1,0 +1,74 @@
+@startuml
+title UML sequence behaviour — Load and save account details
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "SettingsPage" as page
+  participant "AccountSettingsSection" as section
+  participant "HttpSettingsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "SettingsController" as settings
+  participant "AccountController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "UpdateAccount" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /settings
+page --> actor : loading state (skeleton, tabs stay)
+page -> client : getSettings()
+client -> settings : GET /api/v1/settings
+settings -> db : Load session user's account, privacy, e-mail preferences
+settings --> client : 200 SettingsResource
+alt load failed
+  client --> page : Error
+  page --> actor : error state with "Try again" (L2-035 criterion 3)
+else loaded
+  client --> page : Settings
+  page -> section : Account details
+  section --> actor : default state
+end
+
+actor -> section : Edit full name, select "Save changes"
+alt client check fails
+  section --> actor : invalid state, focus on error summary (L2-035 criterion 2)
+else values pass
+  section -> section : submitting state, controls read-only (L2-035 criterion 2)
+  section -> client : updateAccount({name})
+  client -> controller : PATCH /api/v1/settings/account
+  controller -> controller : Authenticate member, validate UpdateAccountRequest
+  alt 422 field errors
+    controller --> client : 422 per-field errors
+    client --> section : Errors
+    section --> actor : invalid state with field errors (L2-035 criterion 2)
+  else valid
+    controller -> action : handle(member, data)
+    action -> db : UPDATE users SET name
+    action --> controller : User
+    controller --> client : 200 AccountSettingsResource
+    client --> section : AccountSettings
+    section --> actor : success state "Saved" (L2-035 criteria 1 and 2)
+  else server or network error
+    controller --> client : 5xx
+    client --> section : Error
+    section --> actor : error with retry; entered values kept (L2-035 criterion 3)
+  end
+end
+@enduml

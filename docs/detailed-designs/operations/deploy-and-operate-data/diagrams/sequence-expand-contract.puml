@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — Change the schema with expand–contract
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "CI pipeline (.ci/)" as ci
+box "Backend — Banaro API application" #D1FADF
+  participant "Release N-1" as r0
+  participant "Release N" as r1
+  participant "Release N+1" as r2
+  participant "Release N+2" as r3
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+note over r0, db
+  Example: rename column old_name to new_name in one table (illustrative)
+end note
+
+== Release N: expand ==
+ci -> db : Migration adds nullable column new_name (L2-054 criterion 2)
+r0 -> db : Still reads and writes old_name; works against new schema
+ci -> r1 : Roll out
+r1 -> db : Writes old_name and new_name; reads old_name
+
+== Release N+1: backfill and switch reads ==
+ci -> r2 : Roll out
+r2 -> db : Queued backfill copies old_name to new_name in batches
+r2 -> db : Writes both; reads new_name
+r1 -> db : Still works during the rollout: both columns kept in step
+
+== Release N+2: contract ==
+ci -> db : Migration drops old_name; no running release reads it (L2-054 criterion 2)
+ci -> r3 : Roll out
+r3 -> db : Reads and writes new_name only
+r2 -> db : Still works: it reads new_name
+
+opt rollback
+  ci -> ci : Redeploy the previous image; expand migrations stay applied
+end
+@enduml

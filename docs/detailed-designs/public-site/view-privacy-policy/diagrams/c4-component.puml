@@ -1,0 +1,27 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — View the privacy policy
+
+Container(api, "Banaro API", "Laravel 11", "I18nController, resources/i18n/en-CA")
+Container(worker, "Banaro Worker", "Laravel Horizon", "E-mail layout with /privacy link")
+
+Container_Boundary(web, "Banaro Web — banaro application") {
+  Component(shellFooter, "Footer", "Shell component", "Privacy link on every page")
+  Component(join, "JoinPage", "Page", "Privacy link beside the code-of-conduct agreement")
+  Component(settings, "SettingsPage", "Page", "Privacy link in privacy and account sections")
+  Component(page, "PrivacyPage", "Page", "Renders /privacy with the last-updated date")
+  Component(version, "PRIVACY_POLICY_VERSION", "Constant", "lastUpdated ISO date")
+  Component(i18n, "TranslationService", "api library service", "privacy.* copy")
+  Component(seo, "SeoService", "App helper", "Title and canonical link")
+}
+
+Rel(shellFooter, page, "Links to", "/privacy")
+Rel(join, page, "Links to", "/privacy")
+Rel(settings, page, "Links to", "/privacy")
+Rel(worker, page, "E-mail links to", "{APP_URL}/privacy")
+Rel(page, version, "Reads lastUpdated")
+Rel(page, i18n, "Reads copy")
+Rel(page, seo, "Sets metadata")
+Rel(i18n, api, "GET /api/v1/i18n/en-CA", "JSON/HTTPS")
+@enduml

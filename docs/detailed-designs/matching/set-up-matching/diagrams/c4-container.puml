@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Set up matching
+
+Person(member, "Member", "Signed-in, verified builder")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Matching setup page, matchingSetUpGuard on /matching")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Validates and stores matching preferences")
+  ContainerDb(db, "Banaro database", "Relational database", "Matching preferences, e-mail preferences")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "GET and PUT /api/v1/matching/preferences, GET /api/v1/matching", "JSON/HTTPS")
+Rel(api, redis, "Reads the session", "Redis protocol")
+Rel(api, db, "Upserts the member's matching preference", "SQL")
+@enduml

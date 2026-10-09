@@ -1,0 +1,29 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Control privacy
+
+Container(web, "Banaro Web", "Angular", "PrivacySettingsSection, HttpSettingsApi")
+ContainerDb(db, "Banaro database", "Relational database", "privacy_settings, builders")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "PrivacyController", "Laravel controller", "PUT /settings/privacy")
+  Component(req, "UpdatePrivacySettingsRequest", "Form request", "Five required fields")
+  Component(action, "UpdatePrivacySettings", "Action", "Writes the five values")
+  Component(model, "PrivacySettings", "Eloquent model", "Visibility, precision and three switches; defaults")
+  Component(service, "ProfileVisibilityService", "Domain service", "canView, applyScope, locationFor, distanceFor")
+  Component(distance, "DistanceService", "Domain service", "Exact distance between two members")
+  Component(trait, "ProfileFields", "Resource trait", "Omits hidden fields with when() and mergeWhen()")
+  Component(resources, "BuilderResource, BuilderCardResource, MatchSuggestionResource, AttendeeResource", "API resources", "Profile data in other subsystems")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, action, "Calls handle()")
+Rel(action, model, "Updates")
+Rel(resources, trait, "Use")
+Rel(trait, service, "Asks what the viewer may see")
+Rel(service, model, "Reads")
+Rel(service, distance, "Gets exact distance from")
+Rel(model, db, "Reads and writes", "SQL")
+@enduml

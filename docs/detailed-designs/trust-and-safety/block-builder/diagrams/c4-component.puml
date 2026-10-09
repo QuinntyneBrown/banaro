@@ -1,0 +1,31 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Block a builder
+
+Container(web, "Banaro Web", "Angular", "BlockBuilderDialog, BlockedBuildersSection, HttpTrustAndSafetyApi")
+ContainerDb(db, "Banaro database", "Relational database", "blocks")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "BlockController", "Laravel controller", "GET /blocks, PUT and DELETE /blocks/{builder}")
+  Component(req, "BlockBuilderRequest / UnblockBuilderRequest", "Form requests", "Authorize the member, reject body fields")
+  Component(blockAction, "BlockBuilder", "Action", "Rejects self-blocks, inserts the block idempotently")
+  Component(unblockAction, "UnblockBuilder", "Action", "Deletes the member's own block")
+  Component(service, "BlockService", "Domain service", "isBlockedEitherWay(a, b), applyScope(query, viewer)")
+  Component(model, "Block", "Eloquent model", "blocker_id, blocked_id")
+  Component(resource, "BlockedBuilderResource", "API resource", "Blocked list row")
+  Component(consumers, "Directory, matching, projects, events, messaging and search", "Queries and policies", "Apply withoutBlockedFor(viewer) or isBlockedEitherWay")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, blockAction, "Calls handle()")
+Rel(ctrl, unblockAction, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(blockAction, service, "Checks reverse block with")
+Rel(blockAction, model, "Inserts")
+Rel(unblockAction, model, "Deletes")
+Rel(consumers, service, "Apply block scope with")
+Rel(service, db, "Queries blocks in both directions", "SQL")
+Rel(model, db, "Reads and writes", "SQL")
+@enduml

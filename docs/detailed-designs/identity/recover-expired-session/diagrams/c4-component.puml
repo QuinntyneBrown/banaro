@@ -1,0 +1,35 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Recover an expired session
+
+Person(member, "Member", "Signed-in, verified builder")
+ContainerQueue(redis, "Redis", "Redis", "Sessions")
+
+Container_Boundary(web, "Banaro Web — banaro application and api library") {
+  Component(page, "Member page", "Angular page", "Any member page, such as edit profile; keeps its form state")
+  Component(interceptor, "sessionExpiryInterceptor", "HTTP interceptor", "Catches 401 and 419, waits, retries once")
+  Component(recovery, "SESSION_RECOVERY / DialogSessionRecovery", "Injection token and binding", "Opens the dialog, maps its result")
+  Component(dialog, "SessionExpiredDialog", "CDK dialog", "default, busy, invalid, failed")
+  Component(store, "SessionStore", "Signal store", "Current member and e-mail")
+  Component(client, "HttpIdentityApi", "IdentityApi implementation", "CSRF cookie, GET and POST /session")
+}
+
+Container_Boundary(api, "Banaro API") {
+  Component(absolute, "EnforceAbsoluteSessionLifetime", "Middleware", "Ends sessions 90 days after sign-in")
+  Component(auth, "auth:sanctum", "Middleware", "401 unauthenticated without a session")
+  Component(ctrl, "SessionController / SignIn", "Controller and action", "Sign-in from sign-in-and-sign-out")
+}
+
+Rel(member, page, "Works in")
+Rel(page, interceptor, "API calls pass through")
+Rel(interceptor, absolute, "Sends requests to", "JSON/HTTPS")
+Rel(absolute, auth, "Passes request to")
+Rel(interceptor, recovery, "Calls recover() on 401")
+Rel(recovery, dialog, "Opens with disableClose")
+Rel(dialog, store, "signIn() with the stored e-mail")
+Rel(store, client, "Uses")
+Rel(client, ctrl, "POST /api/v1/session", "JSON/HTTPS")
+Rel(absolute, redis, "Reads authenticated_at, invalidates", "Redis protocol")
+Rel(ctrl, redis, "Starts a new session", "Redis protocol")
+@enduml

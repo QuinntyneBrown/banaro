@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Exceed the general limit
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "DirectoryPage" as page
+  participant "rateLimitInterceptor" as interceptor
+  participant "ToastService" as toast
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "auth:sanctum" as auth
+  participant "ThrottleRequestsWithLogging (api)" as throttle
+  participant "BuilderController" as controller
+  participant "Exception rendering" as render
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ClientFingerprint" as fingerprint
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Redis" as redis
+  participant "Log pipeline" as logs
+end box
+
+actor -> page : Page through results quickly
+page -> interceptor : GET /api/v1/builders?page=n
+interceptor -> auth : Request with session
+auth -> throttle : Member resolved
+throttle -> fingerprint : forRequest(request)
+fingerprint --> throttle : HMAC of member id
+throttle -> redis : INCR api:{hash} in 60 s window
+redis --> throttle : Count
+alt count <= 120
+  throttle -> controller : Handle
+  controller --> interceptor : 200 with X-RateLimit-Remaining
+  interceptor --> page : Builders
+else count > 120
+  throttle -> logs : rate_limit.exceeded, route, limiter api, client hash, no raw IP (L2-046 criterion 3)
+  throttle -> render : ThrottleRequestsException
+  render --> interceptor : 429 rate_limited, limiter api, Retry-After (L2-046 criterion 1)
+  interceptor -> toast : RATE_LIMIT_NOTICE: warning rateLimit.general
+  interceptor --> page : RateLimitedError
+  page --> actor : Results unchanged; warning toast asks to slow down
+end
+@enduml

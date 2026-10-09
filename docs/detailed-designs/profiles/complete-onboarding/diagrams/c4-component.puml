@@ -1,0 +1,34 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Complete onboarding
+
+Container(web, "Banaro Web", "Angular", "OnboardingPage, onboardingGuard, HttpProfilesApi")
+ContainerDb(db, "Banaro database", "Relational database", "builders, skills, builder_skill, neighbourhoods")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "OnboardingController", "Laravel controller", "GET, PUT /me/onboarding/{step}, POST /me/onboarding/complete")
+  Component(req, "SaveOnboardingAboutRequest / SaveOnboardingSkillsRequest / SaveOnboardingGoalsRequest", "Form requests", "Required fields, skill limit of 12, enum membership")
+  Component(get, "GetOnboardingProgress", "Action", "Loads saved answers and the next step")
+  Component(save, "SaveOnboardingStep", "Action", "Saves one step in one transaction")
+  Component(complete, "CompleteOnboarding", "Action", "Checks readiness and stamps completion")
+  Component(svc, "OnboardingService", "Domain service", "Tracks saved steps, finds the first unfinished step")
+  Component(catalogue, "SkillCatalogue", "Domain service", "Catalogue skills, resolves custom skills")
+  Component(models, "Builder / Skill / Neighbourhood", "Eloquent models", "Profile, ordered skills, GTA neighbourhoods")
+  Component(resource, "OnboardingResource", "API resource", "OnboardingProgress JSON shape")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, get, "Calls handle()")
+Rel(ctrl, save, "Calls handle()")
+Rel(ctrl, complete, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(get, svc, "Asks for nextStep()")
+Rel(save, catalogue, "Resolves skills")
+Rel(save, svc, "Calls markSaved()")
+Rel(complete, svc, "Calls isReady()")
+Rel(save, models, "Writes")
+Rel(complete, models, "Stamps onboarding_completed_at")
+Rel(models, db, "Reads and writes", "SQL")
+@enduml

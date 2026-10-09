@@ -1,0 +1,80 @@
+@startuml
+title UML sequence behaviour — View a builder profile
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "BuilderProfilePage" as page
+  participant "HttpDirectoryApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "BuilderProfileController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ViewBuilderProfile" as action
+  participant "ProfileVisibility" as visibility
+  participant "MatchScoreService" as match
+  participant "DistanceService" as distance
+  participant "PresenceService" as presence
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /builders/{id}
+opt response takes longer than about 300 ms
+  page --> actor : loading state with skeletons (L2-011 criterion 5)
+end
+page -> client : getBuilder(id)
+client -> controller : GET /api/v1/builders/{id}
+controller -> controller : Resolve session, validate ShowBuilderProfileRequest
+controller -> action : handle(viewer, public id)
+action -> db : Load builder by public_id with skills, experience, project, privacy
+action -> db : Block in either direction?
+action -> visibility : canView(builder, viewer)
+alt no such builder, deleted, blocked, or visibility denies the viewer
+  action --> controller : NotFoundHttpException
+  controller --> client : 404 with the same body for every reason (L2-011 criterion 3)
+  client --> page : Not found
+  page --> actor : not-found state "We can't find that builder"; SSR status 404
+else viewable
+  action -> visibility : visibleFields(builder, viewer)
+  visibility --> action : Fields this viewer may see (L2-011 criterion 4)
+  alt viewer owns the profile
+    action -> action : isOwn = true, actions = edit only
+  else another member
+    action -> match : scoreFor(viewer, builder)
+    match --> action : Score and reasons
+    action -> distance : between(viewer neighbourhood, builder neighbourhood)
+    distance --> action : km, rounded to 5 km for City only (L2-036 criterion 3)
+    action -> presence : statusFor(builder) unless hidden
+    action -> action : actions = say hello (L2-026), report, block
+  end
+  action --> controller : BuilderProfileView
+  controller --> client : 200 BuilderProfileResource; hidden keys absent
+  client --> page : BuilderProfile
+  alt own profile
+    page --> actor : own state (L2-007 criterion 1)
+  else only required fields present
+    page --> actor : sparse state, populated sections and "Say hello" (L2-011 criterion 2)
+  else full profile
+    page --> actor : default state with match, skills, bio, experience, project, "Open to", last seen (L2-011 criterion 1)
+  end
+end
+opt server fault or timeout
+  client --> page : Error
+  page --> actor : error state with "Try again" and "Back to builders" (L2-011 criterion 5)
+end
+@enduml

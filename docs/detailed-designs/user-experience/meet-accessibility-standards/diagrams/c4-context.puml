@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Meet accessibility standards
+
+Person(member, "Member", "May use keyboard only, a screen reader, zoom or reduced motion")
+Person(visitor, "Visitor", "Same range of needs, public pages")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+System_Ext(at, "Assistive technology", "Screen readers, switch access, OS preferences")
+System_Ext(ci, "CI pipeline", "Runs e2e/a11y and keyboard tests; platform <TO SUPPLY>")
+
+Rel(member, at, "Uses")
+Rel(at, banaro, "Reads landmarks, names, live regions of", "Accessibility tree")
+Rel(member, banaro, "Uses with keyboard or pointer", "HTTPS")
+Rel(visitor, banaro, "Uses", "HTTPS")
+Rel(ci, banaro, "Runs axe-core on every route and theme of", "Playwright, Chromium")
+@enduml

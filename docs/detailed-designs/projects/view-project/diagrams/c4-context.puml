@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — View a project
+
+Person(member, "Member", "Signed-in, verified builder; may own the project")
+Person(visitor, "Visitor", "Person using Banaro without signing in")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Reads project pages and feedback using", "HTTPS")
+Rel(visitor, banaro, "Reads project pages using", "HTTPS")
+@enduml

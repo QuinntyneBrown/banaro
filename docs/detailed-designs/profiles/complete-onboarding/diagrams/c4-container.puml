@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Complete onboarding
+
+Person(member, "Member", "Verified builder with an incomplete profile")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Welcome page, onboarding route guard")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Validates and saves onboarding steps, marks the profile complete")
+  ContainerDb(db, "Banaro database", "Relational database", "Builders, skills, neighbourhoods")
+  ContainerDb(redis, "Redis", "Redis", "Sessions")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "GET, PUT and POST /api/v1/me/onboarding", "JSON/HTTPS")
+Rel(api, redis, "Reads the session", "Redis protocol")
+Rel(api, db, "Reads and writes the builder profile", "SQL")
+@enduml

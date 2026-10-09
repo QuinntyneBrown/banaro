@@ -1,0 +1,34 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Say hello
+
+Container(web, "Banaro Web", "Angular", "SayHelloDialog, ToastService, HttpMessagingApi")
+ContainerDb(db, "Banaro database", "Relational database", "conversations, conversation_participants, messages")
+ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters and Horizon queues")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "ConversationController", "Laravel controller", "store() for POST /conversations in api.php")
+  Component(req, "StartConversationRequest", "Form request", "recipient_id, body 10–1,000, client_message_id")
+  Component(action, "StartConversation", "Action", "Creates or reuses the pair's conversation and stores the message")
+  Component(block, "BlockService", "Domain service (TrustAndSafety)", "isBlockedEitherWay()")
+  Component(limiter, "FirstMessageLimiter", "Domain service", "20 first messages per member per day")
+  Component(models, "Conversation / ConversationParticipant / Message", "Eloquent models", "Pair key, read marks, message body")
+  Component(resource, "ConversationResource", "API resource", "ConversationRef JSON shape")
+  Component(event, "ConversationStarted", "Domain event", "Heard by the matching subsystem")
+  Component(notify, "NewMessageNotification", "Queued notification", "mail and database channels")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, action, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(action, block, "Checks blocked pair")
+Rel(action, limiter, "Takes a slot for a new conversation")
+Rel(action, models, "Creates and writes")
+Rel(action, event, "Dispatches after commit")
+Rel(action, notify, "Queues after commit")
+Rel(models, db, "Reads and writes", "SQL")
+Rel(limiter, redis, "Increments counter", "Redis protocol")
+Rel(notify, redis, "Pushed to", "Redis protocol")
+@enduml

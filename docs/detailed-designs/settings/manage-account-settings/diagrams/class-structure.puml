@@ -1,0 +1,129 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Manage account settings
+
+package "Frontend — banaro application and api library" {
+  class SettingsPage {
+    -api: SettingsApi
+    +settings: Signal<Settings>
+    +state: 'loading' | 'error' | 'ready'
+    +reload(): void
+  }
+  class AccountSettingsSection {
+    -api: SettingsApi
+    +form: FormGroup
+    +state: 'default' | 'invalid' | 'submitting' | 'success' | 'failed'
+    +save(): void
+  }
+  class SessionsSection {
+    -api: SettingsApi
+    +signOutOtherDevices(): void
+  }
+  class ConfirmPasswordDialog {
+    +confirm(password: string): void
+  }
+  class ChangePasswordDialog {
+    -api: SettingsApi
+    +state: 'default' | 'invalid' | 'busy' | 'failed'
+    +submit(): void
+  }
+  interface SettingsApi {
+    +getSettings(): Observable<Settings>
+    +updateAccount(request: UpdateAccountRequest): Observable<AccountSettings>
+    +changePassword(request: ChangePasswordRequest): Observable<void>
+    +signOutOtherDevices(): Observable<void>
+    +confirmEmailChange(token: string): Observable<void>
+  }
+  class HttpSettingsApi
+  class AccountSettings {
+    +name: string
+    +email: string
+    +pendingEmail: string | null
+    +passwordChangedAt: string
+    +locale: string
+  }
+}
+
+package "Backend — Banaro API" {
+  class AccountController {
+    +update(request: UpdateAccountRequest): AccountSettingsResource
+  }
+  class PasswordController {
+    +update(request: ChangePasswordRequest): Response
+  }
+  class SessionController {
+    +destroyOthers(request: Request): Response
+  }
+  class EmailChangeController {
+    +confirm(request: ConfirmEmailChangeRequest): Response
+  }
+  class UpdateAccount {
+    +handle(member: User, data: array): User
+  }
+  class RequestEmailChange {
+    +handle(member: User, newEmail: string): PendingEmailChange
+  }
+  class ConfirmEmailChange {
+    +handle(token: string): User
+  }
+  class ChangePassword {
+    +handle(member: User, newPassword: string, currentSessionId: string): void
+  }
+  class SignOutOtherDevices {
+    +handle(member: User, currentSessionId: string): void
+  }
+  class SessionRegistry {
+    +register(user: User, sessionId: string): void
+    +revokeOthers(user: User, currentSessionId: string): void
+    +revokeAll(user: User): void
+  }
+  class User {
+    +int id
+    +string name
+    +string email
+    +Carbon email_verified_at
+    +string password
+    +Carbon password_changed_at
+  }
+  class PendingEmailChange {
+    +int user_id
+    +string new_email
+    +string token_hash
+    +Carbon expires_at
+  }
+}
+
+SettingsPage *-- AccountSettingsSection
+SettingsPage *-- SessionsSection
+SettingsPage ..> SettingsApi : uses
+AccountSettingsSection ..> SettingsApi : uses
+AccountSettingsSection ..> ConfirmPasswordDialog : opens
+AccountSettingsSection ..> ChangePasswordDialog : opens
+SessionsSection ..> SettingsApi : uses
+ChangePasswordDialog ..> SettingsApi : uses
+HttpSettingsApi ..|> SettingsApi
+SettingsApi ..> AccountSettings : returns
+HttpSettingsApi ..> AccountController : HTTPS
+
+AccountController ..> UpdateAccount : calls
+UpdateAccount ..> RequestEmailChange : calls on new e-mail
+EmailChangeController ..> ConfirmEmailChange : calls
+PasswordController ..> ChangePassword : calls
+SessionController ..> SignOutOtherDevices : calls
+ChangePassword ..> SessionRegistry : revokes
+SignOutOtherDevices ..> SessionRegistry : revokes
+RequestEmailChange --> PendingEmailChange : creates
+ConfirmEmailChange --> User : updates e-mail
+User "1" *-- "0..1" PendingEmailChange
+@enduml

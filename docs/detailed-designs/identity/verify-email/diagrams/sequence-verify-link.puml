@@ -1,0 +1,69 @@
+@startuml
+title UML sequence behaviour — Open a verification link
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "verifyEmailResolver" as resolver
+  participant "VerifyEmailPage" as page
+  participant "HttpIdentityApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "EmailVerificationController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "VerifyEmail" as action
+  participant "EmailVerificationService" as service
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> resolver : Open /verify-email?token&expires&signature (server-side render)
+resolver -> client : verifyEmail(link)
+client -> controller : POST /api/v1/email/verify
+controller -> controller : Validate VerifyEmailRequest
+controller -> action : handle(link)
+action -> service : consume(token, expires, signature)
+service -> service : hash_equals(signature, HMAC(token, expires))
+alt signature tampered or expires in the past
+  service --> action : Reject (L2-002 criterion 2)
+else signature valid and not expired
+  service -> db : BEGIN; SELECT token by hash FOR UPDATE
+  db --> service : Token row or none
+  alt no row, used_at set, or expires_at passed (superseded or reused)
+    service -> db : ROLLBACK
+    service --> action : Reject (L2-002 criterion 2)
+  else usable token
+    service -> db : UPDATE users SET email_verified_at = now
+    service -> db : UPDATE token SET used_at = now
+    service -> db : COMMIT
+    service --> action : Verified user (L2-002 criterion 1)
+  end
+end
+alt verified
+  action --> controller : User
+  controller --> client : 204 No Content
+  client --> resolver : Success
+  resolver --> page : 'success'
+  page --> actor : "E-mail confirmed" with "Set up your profile"
+else rejected
+  action --> controller : VerificationLinkInvalid
+  controller --> client : 422 verification_link_invalid; account unchanged
+  client --> resolver : Error
+  resolver --> page : 'error'
+  page --> actor : "We couldn't confirm that link" with "Send a new link"
+end
+@enduml

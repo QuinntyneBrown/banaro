@@ -1,0 +1,38 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Localize and format
+
+ContainerQueue(redis, "Redis", "Redis", "Catalogue cache")
+System_Ext(ci, "CI pipeline", "i18n stage")
+
+Container_Boundary(web, "Banaro Web") {
+  Component(page, "EventDetailPage and other templates", "banaro application", "No literal text; t pipe and format pipes")
+  Component(pipes, "TranslatePipe, bnDate, bnDistance, bnNumber", "api library pipes", "Template access")
+  Component(translation, "TranslationService and provideI18n()", "api library", "Catalogue signal; placeholders; plural rules")
+  Component(formatters, "formatEventRange, formatDistance, formatNumber, formatRelative", "api library functions", "en-CA, America/Toronto")
+  Component(client, "HttpI18nApi", "api library", "GET /api/v1/i18n/{locale}; transfer cache")
+}
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "CatalogueController", "Controller (api_public.php)", "200 with ETag, 304, 404 for other locales")
+  Component(service, "CatalogueService", "Domain service", "Merges resources/i18n/{locale}/*.json")
+  Component(loader, "CatalogueTranslationLoader", "Translation loader", "Laravel translator over the same files")
+  Component(phpdate, "DateTimeFormatter", "Domain service", "Toronto dates for e-mail")
+  Component(files, "resources/i18n/en-CA", "JSON catalogue files", "common, directory, events, errors, email")
+  Component(check, "CheckI18nKeys (i18n:check)", "Artisan command", "Fails on keys missing from a catalogue")
+}
+
+Rel(page, pipes, "Uses")
+Rel(pipes, translation, "t()")
+Rel(pipes, formatters, "Formats with")
+Rel(translation, client, "Loads catalogue through")
+Rel(client, ctrl, "GET", "JSON/HTTPS")
+Rel(ctrl, service, "catalogue('en-CA')")
+Rel(service, files, "Reads")
+Rel(service, redis, "Caches", "Redis protocol")
+Rel(loader, files, "Reads")
+Rel(check, files, "Compares keys with")
+Rel(phpdate, loader, "Reads e-mail date texts through")
+Rel(ci, check, "Runs")
+@enduml

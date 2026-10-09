@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Review matches
+
+Person(member, "Member", "Active matching member")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Matching page, match cards, say-hello dialog")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Matching overview, contacted marking, say hello (messaging)")
+  ContainerDb(db, "Banaro database", "Relational database", "Suggestions, preferences, blocks, conversations")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "GET /api/v1/matching; POST /api/v1/conversations (messaging)", "JSON/HTTPS")
+Rel(api, redis, "Reads the session", "Redis protocol")
+Rel(api, db, "Reads suggestions, marks contacted", "SQL")
+@enduml

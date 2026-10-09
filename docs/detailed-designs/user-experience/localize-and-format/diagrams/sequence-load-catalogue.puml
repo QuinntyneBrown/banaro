@@ -1,0 +1,63 @@
+@startuml
+title UML sequence behaviour — Load the catalogue
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+participant "Browser" as browser
+box "Frontend — banaro application (server and browser)" #E0F2FE
+  participant "provideI18n initializer" as init
+  participant "TranslationService" as translation
+  participant "HttpI18nApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "CatalogueController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "CatalogueService" as service
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Redis" as redis
+  database "resources/i18n/en-CA" as files
+end box
+
+actor -> browser : Open /events/{id}
+browser -> init : Server render starts
+init -> client : catalogue('en-CA')
+client -> controller : GET /api/v1/i18n/en-CA (anonymous route)
+controller -> service : catalogue('en-CA')
+service -> redis : GET catalogue:en-CA:{hash}
+alt cache miss
+  redis --> service : Nothing
+  service -> files : Read and merge *.json
+  files --> service : Key map
+  service -> redis : SET catalogue:en-CA:{hash}
+else cache hit
+  redis --> service : Key map
+end
+service --> controller : Catalogue and ETag
+alt If-None-Match equals ETag
+  controller --> client : 304 Not Modified
+else
+  controller --> client : 200 catalogue with ETag, Cache-Control
+end
+client --> translation : Catalogue (L2-052 criterion 1)
+translation --> init : Ready; render with t()
+init --> browser : HTML in en-CA plus catalogue in transfer state
+browser -> translation : Hydrate; read catalogue from transfer state, no second request
+opt locale other than en-CA requested
+  client -> controller : GET /api/v1/i18n/fr-CA
+  controller --> client : 404 not_found
+end
+@enduml

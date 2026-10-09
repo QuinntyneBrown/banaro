@@ -1,0 +1,152 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Hold conversations
+
+package "Frontend — banaro application, components and api libraries" {
+  class MessagesPage {
+    -api: MessagingApi
+    -poller: ConversationPoller
+    +inbox: Signal<ConversationSummary[]>
+    +thread: Signal<Thread | null>
+    +pending: Signal<PendingMessage[]>
+    +state: Signal<PageState>
+    +open(conversationId: string): void
+    +send(body: string): void
+    +retry(clientMessageId: string): void
+    +discard(clientMessageId: string): void
+  }
+  class ConversationPoller {
+    +start(conversationId: string, cursor: string): Observable<ChatMessage[]>
+    +stop(): void
+  }
+  class PendingMessage {
+    +clientMessageId: string
+    +body: string
+    +status: 'pending' | 'failed'
+  }
+  class InboxItem <<bn-inbox-item>> {
+    +conversation: input<ConversationSummary>
+    +active: input<boolean>
+  }
+  class MessageBubble <<bn-message-bubble>> {
+    +variant: input<'mine' | 'theirs' | 'pending' | 'failed'>
+    +retry: output<void>
+    +discard: output<void>
+  }
+  interface MessagingApi {
+    +listConversations(page: number): Observable<Page<ConversationSummary>>
+    +getMessages(id: string, cursor: MessageCursor): Observable<Thread>
+    +sendMessage(id: string, input: SendMessageInput): Observable<ChatMessage>
+    +markRead(id: string, lastMessageId: string): Observable<void>
+  }
+  class HttpMessagingApi
+  class ConversationSummary {
+    +id: string
+    +counterpart: BuilderSummary
+    +lastMessage: LastMessage
+    +unreadCount: number
+    +canReply: boolean
+  }
+  class ChatMessage {
+    +id: string
+    +fromMe: boolean
+    +body: string
+    +sentAt: string
+    +clientMessageId: string | null
+  }
+  class Thread {
+    +conversation: ConversationSummary
+    +messages: ChatMessage[]
+    +hasEarlier: boolean
+  }
+}
+
+package "Backend — Banaro API" {
+  class ConversationController {
+    +index(request: ListConversationsRequest): AnonymousResourceCollection
+  }
+  class MessageController {
+    +index(request: ListMessagesRequest, conversation: Conversation): AnonymousResourceCollection
+    +store(request: SendMessageRequest, conversation: Conversation): MessageResource
+  }
+  class ConversationReadController {
+    +update(request: MarkConversationReadRequest, conversation: Conversation): Response
+  }
+  class ConversationPolicy {
+    +view(user: User, conversation: Conversation): Response
+    +reply(user: User, conversation: Conversation): Response
+  }
+  class BlockService <<TrustAndSafety>> {
+    +isBlockedEitherWay(a: User, b: User): bool
+  }
+  class ListConversations {
+    +handle(member: User, perPage: int): LengthAwarePaginator
+  }
+  class ListMessages {
+    +handle(member: User, conversation: Conversation, cursor: MessageCursor): Collection
+  }
+  class SendMessage {
+    +handle(sender: User, conversation: Conversation, body: string, clientMessageId: string): Message
+  }
+  class MarkConversationRead {
+    +handle(member: User, conversation: Conversation, lastMessageId: int): void
+  }
+  class Conversation {
+    +int id
+    +string pair_key
+    +?int last_message_id
+    +?Carbon last_message_at
+    +otherParticipant(user: User): User
+  }
+  class ConversationParticipant {
+    +int conversation_id
+    +int user_id
+    +?int last_read_message_id
+  }
+  class Message {
+    +int id
+    +int conversation_id
+    +int sender_id
+    +string body
+    +string client_message_id
+    +Carbon created_at
+  }
+  class NewMessageNotification
+}
+
+MessagesPage ..> MessagingApi : uses
+MessagesPage --> ConversationPoller : owns
+MessagesPage *-- PendingMessage
+MessagesPage ..> InboxItem : renders
+MessagesPage ..> MessageBubble : renders
+ConversationPoller ..> MessagingApi : polls getMessages
+HttpMessagingApi ..|> MessagingApi
+MessagingApi ..> Thread : returns
+Thread *-- ChatMessage
+Thread --> ConversationSummary
+HttpMessagingApi ..> MessageController : HTTPS
+
+ConversationController ..> ListConversations : calls
+MessageController ..> ListMessages : calls
+MessageController ..> SendMessage : calls
+ConversationReadController ..> MarkConversationRead : calls
+MessageController ..> ConversationPolicy : authorizes
+ConversationReadController ..> ConversationPolicy : authorizes
+ConversationPolicy ..> BlockService : checks
+SendMessage ..> NewMessageNotification : queues
+SendMessage --> Message : creates
+MarkConversationRead --> ConversationParticipant : updates
+Conversation "1" *-- "2" ConversationParticipant : participants
+Conversation "1" *-- "*" Message : messages
+@enduml

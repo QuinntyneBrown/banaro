@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — About and contact
+
+Container(web, "Banaro Web", "Angular, SSR", "ContactPage, HttpPublicSiteApi")
+ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters, mail queue")
+Container(worker, "Banaro Worker", "Laravel Horizon", "Runs queued jobs")
+
+Container_Boundary(api, "Banaro API") {
+  Component(routes, "api_public.php", "Route file", "Anonymous POST /contact-messages")
+  Component(limiter, "contact rate limiter", "throttle:contact middleware", "3 per hour per hashed IP, 429 with Retry-After")
+  Component(ctrl, "ContactMessageController", "Laravel controller", "store(): 202")
+  Component(req, "SendContactMessageRequest", "Form request", "Name, e-mail, topic, 10-2,000 character message, honeypot")
+  Component(action, "SendContactMessage", "Action", "Discards honeypot submissions or dispatches the job")
+  Component(job, "DeliverContactMessage", "Queued job", "Mails the team inbox, Reply-To sender")
+  Component(topic, "ContactTopic", "Enum", "Closed list of topics")
+}
+
+Rel(web, routes, "Posts", "JSON/HTTPS")
+Rel(routes, limiter, "Applies")
+Rel(limiter, redis, "Increments counter", "Redis protocol")
+Rel(limiter, ctrl, "Passes allowed requests to")
+Rel(ctrl, req, "Validates with")
+Rel(req, topic, "Checks membership in")
+Rel(ctrl, action, "Calls handle()")
+Rel(action, job, "Dispatches")
+Rel(job, redis, "Pushed to", "Redis protocol")
+Rel(worker, job, "Runs")
+@enduml

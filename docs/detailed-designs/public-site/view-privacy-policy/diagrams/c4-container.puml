@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — View the privacy policy
+
+Person(visitor, "Visitor or member", "Anyone who follows a privacy link")
+System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "PrivacyPage, footer, join and settings links")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Serves the en-CA catalogue with privacy.* copy")
+  Container(worker, "Banaro Worker", "Laravel Horizon", "Renders e-mails with the shared layout")
+}
+
+Rel(visitor, web, "GET /privacy", "HTTPS")
+Rel(web, api, "GET /api/v1/i18n/en-CA", "JSON/HTTPS")
+Rel(worker, mail, "Sends e-mail whose footer links to /privacy", "Mailer contract")
+Rel(mail, visitor, "Delivers e-mail to")
+@enduml

@@ -1,0 +1,85 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Pause and resume matching
+
+package "Frontend — banaro application and api library" {
+  class MatchingPage {
+    -api: MatchingApi
+    -toasts: ToastService
+    +state: 'default' | 'paused' | ...
+    +openPauseDialog(): void
+    +resume(): void
+  }
+  class PauseMatchingDialog {
+    -api: MatchingApi
+    +state: 'default' | 'busy' | 'failed'
+    +confirm(): void
+  }
+  interface MatchingApi {
+    +pauseMatching(): Observable<MatchingPreferences>
+    +resumeMatching(): Observable<MatchingPreferences>
+    +getOverview(): Observable<MatchingOverview>
+  }
+  class HttpMatchingApi
+  class ToastService <<components>>
+}
+
+package "Backend — Banaro API" {
+  class MatchingPauseController {
+    +store(request: PauseMatchingRequest): MatchingPreferenceResource
+    +destroy(request: ResumeMatchingRequest): MatchingPreferenceResource
+  }
+  class PauseMatching {
+    +handle(member: User): MatchingPreference
+  }
+  class ResumeMatching {
+    +handle(member: User): MatchingPreference
+  }
+  class MatchingPreference {
+    +int user_id
+    +MatchingStatus status
+    +?Carbon paused_at
+  }
+  enum MatchingStatus {
+    Active
+    Paused
+  }
+  class MatchingPreferenceResource
+}
+
+package "Backend — Banaro Worker" {
+  class GenerateSuggestionsForMember {
+    +handle(member: User, isoWeek: string): MatchingRun
+  }
+  class MatchCandidateService {
+    +eligibleFor(member: User, preference: MatchingPreference): Collection<Builder>
+  }
+}
+
+MatchingPage ..> PauseMatchingDialog : opens
+MatchingPage ..> MatchingApi : uses
+MatchingPage ..> ToastService : resume failure
+PauseMatchingDialog ..> MatchingApi : uses
+HttpMatchingApi ..|> MatchingApi
+HttpMatchingApi ..> MatchingPauseController : HTTPS
+
+MatchingPauseController ..> PauseMatching : calls
+MatchingPauseController ..> ResumeMatching : calls
+MatchingPauseController ..> MatchingPreferenceResource : returns
+PauseMatching --> MatchingPreference : locks and updates
+ResumeMatching --> MatchingPreference : locks and updates
+MatchingPreference --> MatchingStatus : has
+GenerateSuggestionsForMember ..> MatchingPreference : skips when paused
+MatchCandidateService ..> MatchingPreference : excludes paused candidates
+@enduml

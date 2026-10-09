@@ -1,0 +1,60 @@
+@startuml
+title UML sequence behaviour — Run the cross-user access suite
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Developer" as actor
+box "Pipeline — .ci" #FFF4E5
+  participant "Backend test stage" as stage
+end box
+box "Backend — tests/Feature/Security" #ECFDF3
+  participant "CrossUserAccessTest" as test
+  participant "RouteOwnershipRegistry" as registry
+  participant "RouteOwnershipFixture" as fixture
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "HTTP kernel and routes/api.php" as kernel
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Test database" as db
+end box
+
+actor -> stage : Push a change that adds a route
+stage -> test : php artisan test --testsuite=Feature
+test -> kernel : Route::getRoutes() from routes/api.php
+kernel --> test : Authenticated routes
+loop each authenticated route
+  test -> registry : fixtureFor(routeName)
+  alt no fixture registered
+    registry --> test : null
+    test --> stage : Fail naming the route (L2-044 criterion 2)
+  else fixture found
+    registry --> test : Fixture
+    test -> fixture : arrange(member B)
+    fixture -> db : Create B's record
+    fixture --> test : Route parameters
+    test -> kernel : Call route as member A
+    kernel -> db : Query through A's scopes
+    db --> kernel : No row of B
+    kernel --> test : Response
+    test -> test : Assert 404 (403 for role routes) and no sentinel of B in body (L2-044 criterion 1)
+  end
+end
+test --> stage : Suite result
+alt any failure
+  stage --> actor : Build fails; change cannot merge
+else all pass
+  stage --> actor : Security stage green
+end
+@enduml

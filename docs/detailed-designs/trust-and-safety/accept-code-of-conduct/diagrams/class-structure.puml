@@ -1,0 +1,80 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Accept the code of conduct
+
+package "Frontend — banaro application and api library" {
+  class CodeOfConductPage {
+    +sections: TocEntry[]
+    +lastUpdated: string
+  }
+  class JoinPage {
+    +consentLinkLabel: string
+  }
+  class AcceptCodeOfConductDialog {
+    -api: TrustAndSafetyApi
+    +version: string
+    +state: 'default' | 'busy' | 'failed'
+    +accept(): void
+  }
+  class codeOfConductGuard <<function>> {
+    +canActivate(): boolean
+  }
+  interface TrustAndSafetyApi {
+    +acceptCodeOfConduct(version: string): Observable<ConductAcceptanceSummary>
+  }
+  class HttpTrustAndSafetyApi
+  class ConductAcceptanceSummary {
+    +version: string
+    +acceptedAt: string
+  }
+}
+
+package "Backend — Banaro API" {
+  class CodeOfConductController {
+    +store(request: AcceptCodeOfConductRequest): ConductAcceptanceResource
+  }
+  class AcceptCodeOfConduct {
+    +handle(member: User, version: string): ConductAcceptance
+  }
+  class CodeOfConductService {
+    +currentVersion(): string
+    +publishedOn(): CarbonImmutable
+    +requiresAcceptance(member: User): bool
+  }
+  class ConductAcceptance {
+    +int id
+    +int user_id
+    +string version
+    +Carbon accepted_at
+  }
+  class User {
+    +int id
+  }
+  class ConductAcceptanceResource
+}
+
+codeOfConductGuard ..> AcceptCodeOfConductDialog : opens
+AcceptCodeOfConductDialog ..> TrustAndSafetyApi : uses
+HttpTrustAndSafetyApi ..|> TrustAndSafetyApi
+TrustAndSafetyApi ..> ConductAcceptanceSummary : returns
+JoinPage ..> CodeOfConductPage : links in new tab
+HttpTrustAndSafetyApi ..> CodeOfConductController : HTTPS
+
+CodeOfConductController ..> AcceptCodeOfConduct : calls
+CodeOfConductController ..> ConductAcceptanceResource : returns
+AcceptCodeOfConduct ..> CodeOfConductService : checks version
+AcceptCodeOfConduct --> ConductAcceptance : inserts
+CodeOfConductService ..> ConductAcceptance : queries
+User "1" *-- "*" ConductAcceptance : acceptances
+@enduml

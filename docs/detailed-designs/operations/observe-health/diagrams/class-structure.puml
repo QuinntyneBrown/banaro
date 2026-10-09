@@ -1,0 +1,81 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Observe health
+
+package "Backend — Banaro API: health" {
+  class LivenessController {
+    +__invoke(): JsonResponse
+  }
+  class ReadinessController {
+    -service: ReadinessService
+    +__invoke(): JsonResponse
+  }
+  class ReadinessService {
+    -checks: HealthCheck[]
+    +check(): ReadinessResult
+  }
+  class ReadinessResult {
+    +bool ready
+    +?string failedCheck
+  }
+  interface HealthCheck {
+    +name(): string
+    +passes(): bool
+  }
+  class DatabaseCheck
+  class CacheCheck
+  class QueueCheck
+}
+
+package "Backend — Banaro API: request logging" {
+  class AssignRequestId <<middleware>> {
+    -pattern = '^[A-Za-z0-9-]{8,64}$'
+    +handle(request: Request, next: Closure): Response
+  }
+  class LogRequest <<terminable middleware>> {
+    -startedAt: float
+    +handle(request: Request, next: Closure): Response
+    +terminate(request: Request, response: Response): void
+    -routeOf(request: Request): string
+  }
+  class RequestLogLine <<log record>> {
+    +string request_id
+    +string method
+    +string route
+    +int status
+    +int duration_ms
+    +?int member_id
+  }
+  class ExceptionHandling <<bootstrap/app.php withExceptions>> {
+    +context(): array
+    +report(e: Throwable): void
+    +render(e: Throwable, request: Request): JsonResponse
+  }
+  class Context <<Laravel facade>> {
+    +add(key: string, value: mixed): void
+    +get(key: string): mixed
+  }
+}
+
+ReadinessController --> ReadinessService : calls
+ReadinessService ..> ReadinessResult : returns
+ReadinessService o-- "3" HealthCheck
+DatabaseCheck ..|> HealthCheck
+CacheCheck ..|> HealthCheck
+QueueCheck ..|> HealthCheck
+AssignRequestId ..> Context : add request_id
+LogRequest ..> Context : get request_id
+LogRequest ..> RequestLogLine : writes
+ExceptionHandling ..> Context : get request_id
+@enduml

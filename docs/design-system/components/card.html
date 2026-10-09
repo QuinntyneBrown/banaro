@@ -1,0 +1,1353 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Card — Banaro design system</title><meta name="description" content="Show one builder with enough information to assess local collaboration. Whole-card styling does not replace the real name link.">
+<link rel="stylesheet" href="../assets/fonts/fonts.css"><link rel="stylesheet" href="../tokens/tokens.css"><link rel="stylesheet" href="../assets/components.css"><link rel="stylesheet" href="../assets/ds.css"></head>
+<body id="top"><a class="skip-link" href="#main">Skip to content</a><div class="ds-shell"><nav class="ds-nav" aria-label="Design system"><div class="ds-nav__brand"><a href="../index.html">Banaro DS</a><button class="ds-theme-toggle" type="button" aria-pressed="false">☾ Dark</button></div><details open><summary>Foundations</summary><ul><li><a href="../foundations/color.html">Color</a></li><li><a href="../foundations/typography.html">Typography</a></li><li><a href="../foundations/spacing.html">Spacing</a></li><li><a href="../foundations/layout.html">Layout</a></li><li><a href="../foundations/elevation.html">Elevation</a></li><li><a href="../foundations/shape.html">Shape</a></li><li><a href="../foundations/motion.html">Motion</a></li><li><a href="../foundations/iconography.html">Iconography</a></li><li><a href="../foundations/theming.html">Theming</a></li><li><a href="../foundations/responsive.html">Responsive</a></li><li><a href="../foundations/accessibility.html">Accessibility</a></li><li><a href="../foundations/content.html">Content</a></li></ul></details><details open><summary>Components</summary><ul><li><a href="../components/button.html">Button</a></li><li><a href="../components/button-group.html">Button group</a></li><li><a href="../components/link.html">Link</a></li><li><a href="../components/menu.html">Menu</a></li><li><a href="../components/text-field.html">Text field</a></li><li><a href="../components/textarea.html">Textarea</a></li><li><a href="../components/select.html">Select</a></li><li><a href="../components/checkbox.html">Checkbox</a></li><li><a href="../components/radio-group.html">Radio group</a></li><li><a href="../components/switch.html">Switch</a></li><li><a href="../components/slider.html">Slider</a></li><li><a href="../components/file-upload.html">File upload</a></li><li><a href="../components/form-field.html">Form field</a></li><li><a href="../components/form-layout.html">Form layout</a></li><li><a href="../components/top-bar.html">Top bar</a></li><li><a href="../components/sidebar-navigation.html">Sidebar navigation</a></li><li><a href="../components/tabs.html">Tabs</a></li><li><a href="../components/breadcrumb.html">Breadcrumb</a></li><li><a href="../components/pagination.html">Pagination</a></li><li><a href="../components/stepper.html">Stepper</a></li><li><a href="../components/footer.html">Footer</a></li><li><a href="../components/skip-link.html">Skip link</a></li><li><a href="../components/card.html">Card</a></li><li><a href="../components/accordion.html">Accordion</a></li><li><a href="../components/dialog.html">Dialog</a></li><li><a href="../components/drawer.html">Drawer and sheet</a></li><li><a href="../components/popover.html">Popover</a></li><li><a href="../components/tooltip.html">Tooltip</a></li><li><a href="../components/divider.html">Divider</a></li><li><a href="../components/container-grid-stack.html">Container, grid and stack</a></li><li><a href="../components/table.html">Table</a></li><li><a href="../components/list.html">List</a></li><li><a href="../components/description-list.html">Description list</a></li><li><a href="../components/avatar.html">Avatar</a></li><li><a href="../components/badge.html">Badge and status</a></li><li><a href="../components/chip.html">Chip and tag</a></li><li><a href="../components/stat.html">Stat and KPI</a></li><li><a href="../components/code-block.html">Code block</a></li><li><a href="../components/timeline.html">Timeline and activity</a></li><li><a href="../components/toast.html">Toast</a></li><li><a href="../components/alert.html">Alert and banner</a></li><li><a href="../components/inline-message.html">Inline message</a></li><li><a href="../components/progress-bar.html">Progress bar</a></li><li><a href="../components/spinner.html">Spinner</a></li><li><a href="../components/skeleton.html">Skeleton</a></li><li><a href="../components/empty-state.html">Empty state</a></li><li><a href="../components/error-page.html">Error page</a></li><li><a href="../components/brand.html">Brand</a></li><li><a href="../components/page-header.html">Page header</a></li><li><a href="../components/hero.html">Hero</a></li><li><a href="../components/feature-area.html">Feature area</a></li><li><a href="../components/person.html">Featured builder</a></li><li><a href="../components/project-card.html">Project card</a></li><li><a href="../components/event-row.html">Event row</a></li><li><a href="../components/testimonial.html">Testimonial and verse</a></li><li><a href="../components/matching-panel.html">Matching invitation</a></li><li><a href="../components/search-filter-toolbar.html">Search and filter toolbar</a></li><li><a href="../components/profile-header.html">Profile header</a></li><li><a href="../components/message-thread.html">Message thread</a></li><li><a href="../components/inbox.html">Inbox</a></li><li><a href="../components/notification-item.html">Notification item</a></li><li><a href="../components/comment.html">Feedback comment</a></li><li><a href="../components/screenshot-tile.html">Project screenshot</a></li><li><a href="../components/rsvp-panel.html">RSVP panel</a></li><li><a href="../components/danger-zone.html">Danger zone</a></li><li><a href="../components/prose.html">Prose and legal content</a></li></ul></details><details open><summary>Patterns</summary><ul><li><a href="../patterns/forms.html">Forms</a></li><li><a href="../patterns/feedback.html">Feedback</a></li><li><a href="../patterns/empty-states.html">Empty States</a></li><li><a href="../patterns/navigation.html">Navigation</a></li><li><a href="../patterns/dialogs.html">Dialogs</a></li><li><a href="../patterns/tables.html">Tables</a></li><li><a href="../patterns/notifications.html">Notifications</a></li><li><a href="../patterns/content.html">Content</a></li></ul></details></nav><main class="ds-main" id="main" tabindex="-1"><header class="ds-header"><p class="ds-kicker">Components · v1.0</p><h1>Card</h1><p class="ds-lead">Show one builder with enough information to assess local collaboration. Whole-card styling does not replace the real name link.</p><div class="ds-meta"><span class="ds-pill ds-pill--ok">Contrast verified</span><span class="ds-pill">Extracted 9 October 2026</span></div><ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do Dont</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul></header><section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2><p>Show one builder with enough information to assess local collaboration. Whole-card styling does not replace the real name link.</p><p>Extracted from the current mocks.</p></section><section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2><div class="ds-anatomy"><figure class="ds-anatomy__figure"><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1342-n-daniel-reyes" class="card" id="demo-1342-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1342-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></figure><ol class="ds-anatomy__list"><li><div><b>Portrait and name</b><small>Keep this part in reading order and preserve its semantic label.</small></div></li><li><div><b>Role and neighbourhood</b><small>Keep this part in reading order and preserve its semantic label.</small></div></li><li><div><b>Building and Open to facts</b><small>Keep this part in reading order and preserve its semantic label.</small></div></li><li><div><b>Actions</b><small>Keep this part in reading order and preserve its semantic label.</small></div></li></ol></div></section><section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2><h3>Builder</h3><div class="ds-example"><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1343-n-daniel-reyes" class="card" id="demo-1343-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1343-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></div><p class="ds-example__caption">Card · builder</p></div><h3>Interactive</h3><div class="ds-example"><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1344-n-daniel-reyes" class="card" id="demo-1344-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1344-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></div><p class="ds-example__caption">Card · interactive</p></div><h3>Header Footer</h3><div class="ds-example"><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1345-n-daniel-reyes" class="card" id="demo-1345-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1345-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></div><p class="ds-example__caption">Card · header footer</p></div><h3>Media</h3><div class="ds-example"><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1346-n-daniel-reyes" class="card" id="demo-1346-b-daniel-reyes"><img alt="Builders gathering over coffee" src="../assets/photos/coffee-together.jpg"/>
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1346-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></div><p class="ds-example__caption">Card · media</p></div><h3>Selected</h3><div class="ds-example"><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1347-n-daniel-reyes" class="card" data-state="selected" id="demo-1347-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1347-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></div><p class="ds-example__caption">Card · selected</p></div></section><section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2><p>Content-driven cards with 24px interior padding and 64px square portraits.</p></section><section class="ds-section" id="states"><h2><a href="#states">States</a></h2><p>Forced hover, focus and active specimens use data-state; native disabled, readonly, checked, required and aria-invalid are used when applicable.</p><div class="ds-themes"><div data-theme="light"><div class="ds-matrix"><table><caption>Card states · light</caption><thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">Selected</th></tr></thead><tbody><tr><th scope="row">builder</th><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1348-n-daniel-reyes" class="card" id="demo-1348-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1348-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1349-n-daniel-reyes" class="card" id="demo-1349-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1349-n-daniel-reyes"><a data-state="hover" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1350-n-daniel-reyes" class="card" id="demo-1350-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1350-n-daniel-reyes"><a data-state="focus" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1351-n-daniel-reyes" class="card" id="demo-1351-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1351-n-daniel-reyes"><a data-state="active" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1352-n-daniel-reyes" class="card" data-state="disabled" id="demo-1352-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1352-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" disabled="" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1353-n-daniel-reyes" class="card" data-state="selected" id="demo-1353-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1353-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td></tr><tr><th scope="row">interactive</th><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1354-n-daniel-reyes" class="card" id="demo-1354-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1354-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1355-n-daniel-reyes" class="card" id="demo-1355-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1355-n-daniel-reyes"><a data-state="hover" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1356-n-daniel-reyes" class="card" id="demo-1356-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1356-n-daniel-reyes"><a data-state="focus" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1357-n-daniel-reyes" class="card" id="demo-1357-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1357-n-daniel-reyes"><a data-state="active" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1358-n-daniel-reyes" class="card" data-state="disabled" id="demo-1358-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1358-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" disabled="" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1359-n-daniel-reyes" class="card" data-state="selected" id="demo-1359-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1359-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td></tr><tr><th scope="row">header footer</th><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1360-n-daniel-reyes" class="card" id="demo-1360-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1360-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1361-n-daniel-reyes" class="card" id="demo-1361-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1361-n-daniel-reyes"><a data-state="hover" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1362-n-daniel-reyes" class="card" id="demo-1362-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1362-n-daniel-reyes"><a data-state="focus" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1363-n-daniel-reyes" class="card" id="demo-1363-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1363-n-daniel-reyes"><a data-state="active" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1364-n-daniel-reyes" class="card" data-state="disabled" id="demo-1364-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1364-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" disabled="" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1365-n-daniel-reyes" class="card" data-state="selected" id="demo-1365-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1365-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td></tr><tr><th scope="row">media</th><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1366-n-daniel-reyes" class="card" id="demo-1366-b-daniel-reyes"><img alt="Builders gathering over coffee" src="../assets/photos/coffee-together.jpg"/>
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1366-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1367-n-daniel-reyes" class="card" id="demo-1367-b-daniel-reyes"><img alt="Builders gathering over coffee" src="../assets/photos/coffee-together.jpg"/>
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1367-n-daniel-reyes"><a data-state="hover" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1368-n-daniel-reyes" class="card" id="demo-1368-b-daniel-reyes"><img alt="Builders gathering over coffee" src="../assets/photos/coffee-together.jpg"/>
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1368-n-daniel-reyes"><a data-state="focus" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1369-n-daniel-reyes" class="card" id="demo-1369-b-daniel-reyes"><img alt="Builders gathering over coffee" src="../assets/photos/coffee-together.jpg"/>
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1369-n-daniel-reyes"><a data-state="active" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1370-n-daniel-reyes" class="card" data-state="disabled" id="demo-1370-b-daniel-reyes"><img alt="Builders gathering over coffee" src="../assets/photos/coffee-together.jpg"/>
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1370-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" disabled="" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1371-n-daniel-reyes" class="card" data-state="selected" id="demo-1371-b-daniel-reyes"><img alt="Builders gathering over coffee" src="../assets/photos/coffee-together.jpg"/>
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1371-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td></tr><tr><th scope="row">selected</th><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1372-n-daniel-reyes" class="card" data-state="selected" id="demo-1372-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1372-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1373-n-daniel-reyes" class="card" data-state="selected" id="demo-1373-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1373-n-daniel-reyes"><a data-state="hover" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1374-n-daniel-reyes" class="card" data-state="selected" id="demo-1374-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1374-n-daniel-reyes"><a data-state="focus" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1375-n-daniel-reyes" class="card" data-state="selected" id="demo-1375-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1375-n-daniel-reyes"><a data-state="active" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1376-n-daniel-reyes" class="card" data-state="disabled" id="demo-1376-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1376-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" disabled="" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1377-n-daniel-reyes" class="card" data-state="selected" id="demo-1377-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1377-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td></tr></tbody></table></div></div><div data-theme="dark"><div class="ds-matrix"><table><caption>Card states · dark</caption><thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">Selected</th></tr></thead><tbody><tr><th scope="row">builder</th><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1378-n-daniel-reyes" class="card" id="demo-1378-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1378-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1379-n-daniel-reyes" class="card" id="demo-1379-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1379-n-daniel-reyes"><a data-state="hover" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1380-n-daniel-reyes" class="card" id="demo-1380-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1380-n-daniel-reyes"><a data-state="focus" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1381-n-daniel-reyes" class="card" id="demo-1381-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1381-n-daniel-reyes"><a data-state="active" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1382-n-daniel-reyes" class="card" data-state="disabled" id="demo-1382-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1382-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" disabled="" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1383-n-daniel-reyes" class="card" data-state="selected" id="demo-1383-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1383-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td></tr><tr><th scope="row">interactive</th><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1384-n-daniel-reyes" class="card" id="demo-1384-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1384-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1385-n-daniel-reyes" class="card" id="demo-1385-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1385-n-daniel-reyes"><a data-state="hover" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1386-n-daniel-reyes" class="card" id="demo-1386-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1386-n-daniel-reyes"><a data-state="focus" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1387-n-daniel-reyes" class="card" id="demo-1387-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1387-n-daniel-reyes"><a data-state="active" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1388-n-daniel-reyes" class="card" data-state="disabled" id="demo-1388-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1388-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" disabled="" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1389-n-daniel-reyes" class="card" data-state="selected" id="demo-1389-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1389-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td></tr><tr><th scope="row">header footer</th><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1390-n-daniel-reyes" class="card" id="demo-1390-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1390-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1391-n-daniel-reyes" class="card" id="demo-1391-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1391-n-daniel-reyes"><a data-state="hover" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1392-n-daniel-reyes" class="card" id="demo-1392-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1392-n-daniel-reyes"><a data-state="focus" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1393-n-daniel-reyes" class="card" id="demo-1393-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1393-n-daniel-reyes"><a data-state="active" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1394-n-daniel-reyes" class="card" data-state="disabled" id="demo-1394-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1394-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" disabled="" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1395-n-daniel-reyes" class="card" data-state="selected" id="demo-1395-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1395-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td></tr><tr><th scope="row">media</th><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1396-n-daniel-reyes" class="card" id="demo-1396-b-daniel-reyes"><img alt="Builders gathering over coffee" src="../assets/photos/coffee-together.jpg"/>
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1396-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1397-n-daniel-reyes" class="card" id="demo-1397-b-daniel-reyes"><img alt="Builders gathering over coffee" src="../assets/photos/coffee-together.jpg"/>
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1397-n-daniel-reyes"><a data-state="hover" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1398-n-daniel-reyes" class="card" id="demo-1398-b-daniel-reyes"><img alt="Builders gathering over coffee" src="../assets/photos/coffee-together.jpg"/>
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1398-n-daniel-reyes"><a data-state="focus" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1399-n-daniel-reyes" class="card" id="demo-1399-b-daniel-reyes"><img alt="Builders gathering over coffee" src="../assets/photos/coffee-together.jpg"/>
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1399-n-daniel-reyes"><a data-state="active" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1400-n-daniel-reyes" class="card" data-state="disabled" id="demo-1400-b-daniel-reyes"><img alt="Builders gathering over coffee" src="../assets/photos/coffee-together.jpg"/>
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1400-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" disabled="" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1401-n-daniel-reyes" class="card" data-state="selected" id="demo-1401-b-daniel-reyes"><img alt="Builders gathering over coffee" src="../assets/photos/coffee-together.jpg"/>
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1401-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td></tr><tr><th scope="row">selected</th><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1402-n-daniel-reyes" class="card" data-state="selected" id="demo-1402-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1402-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1403-n-daniel-reyes" class="card" data-state="selected" id="demo-1403-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1403-n-daniel-reyes"><a data-state="hover" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1404-n-daniel-reyes" class="card" data-state="selected" id="demo-1404-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1404-n-daniel-reyes"><a data-state="focus" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1405-n-daniel-reyes" class="card" data-state="selected" id="demo-1405-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1405-n-daniel-reyes"><a data-state="active" href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1406-n-daniel-reyes" class="card" data-state="disabled" id="demo-1406-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1406-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" disabled="" type="button">Say hello</button>
+</div>
+</article></div></td><td><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1407-n-daniel-reyes" class="card" data-state="selected" id="demo-1407-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1407-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></td></tr></tbody></table></div></div></div></section><section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2><p>One column on phones, two at 768px; directory sidebar joins at 1024px. Facts wrap even with unusually long content.</p><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Width</th><th scope="col">Review</th></tr></thead><tbody><tr><td>360px</td><td>Single column, wrapping text, comfortable controls; internal tables may scroll.</td></tr><tr><td>768px</td><td>Related controls may align; retain reading order.</td></tr><tr><td>1280px</td><td>Wide shell with a 74rem content cap; do not stretch prose past its measure.</td></tr></tbody></table></div></section><section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2><p>Use semantic roles from the single token stylesheet. Light wrappers reset inherited dark roles; the dark theme uses warmer charcoal surfaces and light sage accents. Component overrides keep the <code>--bn-</code> prefix.</p><div class="ds-themes"><div data-theme="light"><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1408-n-daniel-reyes" class="card" id="demo-1408-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1408-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></div><div data-theme="dark"><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1409-n-daniel-reyes" class="card" id="demo-1409-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1409-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></div></div></section><section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2><h3>Role and pattern</h3><p><a href="https://www.w3.org/WAI/ARIA/apg/practices/landmark-regions/">Native semantics and landmark guidance</a>. Tab visits the builder name and each action; Enter follows or invokes the control.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Key</th><th scope="col">Effect</th></tr></thead><tbody><tr><td>Tab / Shift+Tab</td><td>Tab visits the builder name and each action; Enter follows or invokes the control.</td></tr><tr><td>Enter / Space</td><td>Native activation on buttons and appropriate inputs; links activate with Enter.</td></tr><tr><td>Escape</td><td>Dismiss open overlays; leave field contents intact. Passive components have no Escape action.</td></tr></tbody></table></div><h3>Focus</h3><p>Keep visible focus on the real control, using the shared 2px ring with 3px offset. Never move focus on background refresh.</p><h3>Labelling</h3><p>Use the fictional cast consistently: Daniel Reyes, engineer, Leslieville, building Psalter.</p><h3>Contrast</h3><div class="ds-themes"><div data-theme="light"><div class="ds-pair"><span>Text contrast</span><span class="ds-pair__ratio" data-contrast="--color-fg-default|--color-bg-surface" data-min="4.5"></span></div><div class="ds-pair"><span>Focus indicator</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-bg-surface" data-min="3"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>Text contrast</span><span class="ds-pair__ratio" data-contrast="--color-fg-default|--color-bg-surface" data-min="4.5"></span></div><div class="ds-pair"><span>Focus indicator</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-bg-surface" data-min="3"></span></div></div></div><h3>Motion</h3><p>Colour changes use 240–420ms; lifts use 420ms and entrance uses 640ms. Reduced motion removes animations and transforms while preserving status text.</p><h3>Touch</h3><p>Use at least 24px targets; primary mobile actions and label rows are at least 44px. Do not rely on hover for access to controls.</p></section><section class="ds-section" id="content"><h2><a href="#content">Content</a></h2><p>Use the fictional cast consistently: Daniel Reyes, engineer, Leslieville, building Psalter.</p></section><section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don’t</a></h2><div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1410-n-daniel-reyes" class="card" id="demo-1410-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1410-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></div><figcaption>Wrap long builder names and skills.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><p>Do not place a button inside a card-wide anchor.</p></div><figcaption>Keep this error out of card compositions.</figcaption></figure><figure class="ds-do"><div class="ds-example__canvas"><div class="ds-demo" data-demo-component="card"><article aria-labelledby="demo-1411-n-daniel-reyes" class="card" id="demo-1411-b-daniel-reyes">
+<div class="card__top">
+<img alt="" class="card__photo" height="64" src="../../mocks/assets/photos/daniel-reyes.jpg" width="64"/>
+<div>
+<h3 class="card__name" id="demo-1411-n-daniel-reyes"><a href="../../mocks/dialogs/say-hello/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+<p class="card__role">Full-stack engineer</p>
+</div>
+<p class="card__match"><strong>94%</strong>match</p>
+</div>
+<p class="card__place"><svg aria-hidden="true" class="icon icon--sm" viewbox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Mississauga · 26.9 km away</p>
+<ul aria-label="Skills" class="tags"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+<dl class="card__facts">
+<div><dt>Building</dt><dd>Psalter</dd></div>
+<div><dt>Open to</dt><dd>Co-founding</dd></div>
+</dl>
+<div class="card__foot">
+<span class="status status--online"><span aria-hidden="true" class="status__dot"></span>Online now</span>
+<button class="btn btn--quiet btn--sm" type="button">Say hello</button>
+</div>
+</article></div></div><figcaption>Keep distinct actions as separate controls.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><p>Do not truncate the two collaboration facts.</p></div><figcaption>Keep this error out of card compositions.</figcaption></figure></div></section><section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Role</th><th scope="col">Token</th><th scope="col">Light value</th><th scope="col">Dark value</th></tr></thead><tbody><tr><td>space 5</td><td><code>--space-5</code></td><td><span data-theme="light" data-token="--space-5"></span></td><td><span data-theme="dark" data-token="--space-5"></span></td></tr><tr><td>space 6</td><td><code>--space-6</code></td><td><span data-theme="light" data-token="--space-6"></span></td><td><span data-theme="dark" data-token="--space-6"></span></td></tr><tr><td>radius lg</td><td><code>--radius-lg</code></td><td><span data-theme="light" data-token="--radius-lg"></span></td><td><span data-theme="dark" data-token="--radius-lg"></span></td></tr><tr><td>color bg surface</td><td><code>--color-bg-surface</code></td><td><span data-theme="light" data-token="--color-bg-surface"></span></td><td><span data-theme="dark" data-token="--color-bg-surface"></span></td></tr><tr><td>border width hairline</td><td><code>--border-width-hairline</code></td><td><span data-theme="light" data-token="--border-width-hairline"></span></td><td><span data-theme="dark" data-token="--border-width-hairline"></span></td></tr><tr><td>color border default</td><td><code>--color-border-default</code></td><td><span data-theme="light" data-token="--color-border-default"></span></td><td><span data-theme="dark" data-token="--color-border-default"></span></td></tr><tr><td>space 8</td><td><code>--space-8</code></td><td><span data-theme="light" data-token="--space-8"></span></td><td><span data-theme="dark" data-token="--space-8"></span></td></tr><tr><td>space 4</td><td><code>--space-4</code></td><td><span data-theme="light" data-token="--space-4"></span></td><td><span data-theme="dark" data-token="--space-4"></span></td></tr><tr><td>space 16</td><td><code>--space-16</code></td><td><span data-theme="light" data-token="--space-16"></span></td><td><span data-theme="dark" data-token="--space-16"></span></td></tr><tr><td>radius md</td><td><code>--radius-md</code></td><td><span data-theme="light" data-token="--radius-md"></span></td><td><span data-theme="dark" data-token="--radius-md"></span></td></tr><tr><td>color bg subtle</td><td><code>--color-bg-subtle</code></td><td><span data-theme="light" data-token="--color-bg-subtle"></span></td><td><span data-theme="dark" data-token="--color-bg-subtle"></span></td></tr><tr><td>font weight light</td><td><code>--font-weight-light</code></td><td><span data-theme="light" data-token="--font-weight-light"></span></td><td><span data-theme="dark" data-token="--font-weight-light"></span></td></tr><tr><td>font size xl</td><td><code>--font-size-xl</code></td><td><span data-theme="light" data-token="--font-size-xl"></span></td><td><span data-theme="dark" data-token="--font-size-xl"></span></td></tr><tr><td>font family display</td><td><code>--font-family-display</code></td><td><span data-theme="light" data-token="--font-family-display"></span></td><td><span data-theme="dark" data-token="--font-family-display"></span></td></tr><tr><td>color tile fg</td><td><code>--color-tile-fg</code></td><td><span data-theme="light" data-token="--color-tile-fg"></span></td><td><span data-theme="dark" data-token="--color-tile-fg"></span></td></tr><tr><td>size rand and header                               letter spacing 2</td><td><code>--size-rand-and-header-------------------------------letter-spacing-2</code></td><td><span data-theme="light" data-token="--size-rand-and-header-------------------------------letter-spacing-2"></span></td><td><span data-theme="dark" data-token="--size-rand-and-header-------------------------------letter-spacing-2"></span></td></tr><tr><td>text h4</td><td><code>--text-h4</code></td><td><span data-theme="light" data-token="--text-h4"></span></td><td><span data-theme="dark" data-token="--text-h4"></span></td></tr><tr><td>font size lg</td><td><code>--font-size-lg</code></td><td><span data-theme="light" data-token="--font-size-lg"></span></td><td><span data-theme="dark" data-token="--font-size-lg"></span></td></tr><tr><td>text body sm</td><td><code>--text-body-sm</code></td><td><span data-theme="light" data-token="--text-body-sm"></span></td><td><span data-theme="dark" data-token="--text-body-sm"></span></td></tr><tr><td>color fg muted</td><td><code>--color-fg-muted</code></td><td><span data-theme="light" data-token="--color-fg-muted"></span></td><td><span data-theme="dark" data-token="--color-fg-muted"></span></td></tr><tr><td>space 1</td><td><code>--space-1</code></td><td><span data-theme="light" data-token="--space-1"></span></td><td><span data-theme="dark" data-token="--space-1"></span></td></tr><tr><td>text caption</td><td><code>--text-caption</code></td><td><span data-theme="light" data-token="--text-caption"></span></td><td><span data-theme="dark" data-token="--text-caption"></span></td></tr><tr><td>color fg subtle</td><td><code>--color-fg-subtle</code></td><td><span data-theme="light" data-token="--color-fg-subtle"></span></td><td><span data-theme="dark" data-token="--color-fg-subtle"></span></td></tr><tr><td>color fg accent</td><td><code>--color-fg-accent</code></td><td><span data-theme="light" data-token="--color-fg-accent"></span></td><td><span data-theme="dark" data-token="--color-fg-accent"></span></td></tr><tr><td>space 2</td><td><code>--space-2</code></td><td><span data-theme="light" data-token="--space-2"></span></td><td><span data-theme="dark" data-token="--space-2"></span></td></tr><tr><td>text overline</td><td><code>--text-overline</code></td><td><span data-theme="light" data-token="--text-overline"></span></td><td><span data-theme="dark" data-token="--text-overline"></span></td></tr><tr><td>letter spacing wide</td><td><code>--letter-spacing-wide</code></td><td><span data-theme="light" data-token="--letter-spacing-wide"></span></td><td><span data-theme="dark" data-token="--letter-spacing-wide"></span></td></tr><tr><td>font weight semibold</td><td><code>--font-weight-semibold</code></td><td><span data-theme="light" data-token="--font-weight-semibold"></span></td><td><span data-theme="dark" data-token="--font-weight-semibold"></span></td></tr><tr><td>font weight regular</td><td><code>--font-weight-regular</code></td><td><span data-theme="light" data-token="--font-weight-regular"></span></td><td><span data-theme="dark" data-token="--font-weight-regular"></span></td></tr><tr><td>space 3</td><td><code>--space-3</code></td><td><span data-theme="light" data-token="--space-3"></span></td><td><span data-theme="dark" data-token="--space-3"></span></td></tr><tr><td>duration base</td><td><code>--duration-base</code></td><td><span data-theme="light" data-token="--duration-base"></span></td><td><span data-theme="dark" data-token="--duration-base"></span></td></tr><tr><td>ease standard</td><td><code>--ease-standard</code></td><td><span data-theme="light" data-token="--ease-standard"></span></td><td><span data-theme="dark" data-token="--ease-standard"></span></td></tr><tr><td>duration slow</td><td><code>--duration-slow</code></td><td><span data-theme="light" data-token="--duration-slow"></span></td><td><span data-theme="dark" data-token="--duration-slow"></span></td></tr><tr><td>lift</td><td><code>--lift</code></td><td><span data-theme="light" data-token="--lift"></span></td><td><span data-theme="dark" data-token="--lift"></span></td></tr><tr><td>shadow 3</td><td><code>--shadow-3</code></td><td><span data-theme="light" data-token="--shadow-3"></span></td><td><span data-theme="dark" data-token="--shadow-3"></span></td></tr><tr><td>color border strong</td><td><code>--color-border-strong</code></td><td><span data-theme="light" data-token="--color-border-strong"></span></td><td><span data-theme="dark" data-token="--color-border-strong"></span></td></tr><tr><td>color accent</td><td><code>--color-accent</code></td><td><span data-theme="light" data-token="--color-accent"></span></td><td><span data-theme="dark" data-token="--color-accent"></span></td></tr><tr><td>color accent subtle</td><td><code>--color-accent-subtle</code></td><td><span data-theme="light" data-token="--color-accent-subtle"></span></td><td><span data-theme="dark" data-token="--color-accent-subtle"></span></td></tr></tbody></table></div></section><section class="ds-section" id="code"><h2><a href="#code">Code</a></h2><p>Link tokens.css and components.css before using this BEM markup. Pointer hooks are documentation-only. CSS does not implement application events or APG keyboard handlers. The complete token-driven implementation is in <a href="../assets/components.css">components.css</a>.</p><pre><code>&lt;article aria-labelledby=&quot;demo-1412-n-daniel-reyes&quot; class=&quot;card&quot; id=&quot;demo-1412-b-daniel-reyes&quot;&gt;
+&lt;div class=&quot;card__top&quot;&gt;
+&lt;img alt=&quot;&quot; class=&quot;card__photo&quot; height=&quot;64&quot; src=&quot;../../mocks/assets/photos/daniel-reyes.jpg&quot; width=&quot;64&quot;/&gt;
+&lt;div&gt;
+&lt;h3 class=&quot;card__name&quot; id=&quot;demo-1412-n-daniel-reyes&quot;&gt;&lt;a href=&quot;../../mocks/dialogs/say-hello/default.html#b-daniel-reyes&quot;&gt;Daniel Reyes&lt;/a&gt;&lt;/h3&gt;
+&lt;p class=&quot;card__role&quot;&gt;Full-stack engineer&lt;/p&gt;
+&lt;/div&gt;
+&lt;p class=&quot;card__match&quot;&gt;&lt;strong&gt;94%&lt;/strong&gt;match&lt;/p&gt;
+&lt;/div&gt;
+&lt;p class=&quot;card__place&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; class=&quot;icon icon--sm&quot; viewbox=&quot;0 0 24 24&quot;&gt;&lt;path d=&quot;M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z&quot;&gt;&lt;/path&gt;&lt;circle cx=&quot;12&quot; cy=&quot;10&quot; r=&quot;2.3&quot;&gt;&lt;/circle&gt;&lt;/svg&gt;Mississauga · 26.9 km away&lt;/p&gt;
+&lt;ul aria-label=&quot;Skills&quot; class=&quot;tags&quot;&gt;&lt;li class=&quot;pill&quot;&gt;Laravel&lt;/li&gt;&lt;li class=&quot;pill&quot;&gt;Angular&lt;/li&gt;&lt;li class=&quot;pill&quot;&gt;PostgreSQL&lt;/li&gt;&lt;/ul&gt;
+&lt;dl class=&quot;card__facts&quot;&gt;
+&lt;div&gt;&lt;dt&gt;Building&lt;/dt&gt;&lt;dd&gt;Psalter&lt;/dd&gt;&lt;/div&gt;
+&lt;div&gt;&lt;dt&gt;Open to&lt;/dt&gt;&lt;dd&gt;Co-founding&lt;/dd&gt;&lt;/div&gt;
+&lt;/dl&gt;
+&lt;div class=&quot;card__foot&quot;&gt;
+&lt;span class=&quot;status status--online&quot;&gt;&lt;span aria-hidden=&quot;true&quot; class=&quot;status__dot&quot;&gt;&lt;/span&gt;Online now&lt;/span&gt;
+&lt;button class=&quot;btn btn--quiet btn--sm&quot; type=&quot;button&quot;&gt;Say hello&lt;/button&gt;
+&lt;/div&gt;
+&lt;/article&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Attribute</th><th scope="col">Purpose</th></tr></thead><tbody><tr><td>data-state="hover|focus|active"</td><td>Force a reviewable pointer specimen.</td></tr><tr><td>disabled / readonly / required</td><td>Use native state for native controls.</td></tr><tr><td>aria-busy / aria-invalid / aria-current</td><td>Communicate the applicable changing state.</td></tr></tbody></table></div></section><section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2><ul><li><a href="../../mocks/dialogs/say-hello/default.html">dialogs/say-hello/default.html</a></li><li><a href="../../mocks/pages/directory/default.html">pages/directory/default.html</a></li><li><a href="../../mocks/dialogs/say-hello/busy.html">dialogs/say-hello/busy.html</a></li><li><a href="../../mocks/dialogs/say-hello/failed.html">dialogs/say-hello/failed.html</a></li></ul><p>Normalisation records are in the <a href="../README.md#drift-found-in-the-mocks">drift log</a>; off-grid geometry and role contrast are shared corrections.</p></section><footer class="ds-footer"><span>Banaro design system · <a href="../../mocks/index.html">Source mocks</a></span><a href="#top">Back to top</a></footer></main></div><script src="../assets/ds.js"></script><script src="../assets/examples.js"></script></body></html>

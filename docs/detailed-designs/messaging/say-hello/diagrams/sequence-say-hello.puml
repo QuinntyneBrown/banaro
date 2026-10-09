@@ -1,0 +1,97 @@
+@startuml
+title UML sequence behaviour — Send a first message
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "SayHelloDialog" as dialog
+  participant "HttpMessagingApi" as client
+  participant "ToastService" as toast
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ConversationController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "StartConversation" as action
+  participant "BlockService" as block
+  participant "FirstMessageLimiter" as limiter
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis" as redis
+end box
+box "Backend — Banaro Worker" #ECFDF3
+  participant "NewMessageNotification" as notify
+end box
+
+actor -> dialog : Write note, select "Send message"
+alt empty, under 10 or over 1,000 characters
+  dialog --> actor : invalid state with the limit; nothing sent (L2-026 criterion 2)
+else length valid
+  dialog -> dialog : Enter busy state; keep text and clientMessageId (L2-026 criterion 3)
+  dialog -> client : startConversation({ recipientId, body, clientMessageId })
+  client -> controller : POST /api/v1/conversations
+  controller -> controller : Authenticate verified member, validate StartConversationRequest (L2-045)
+  controller -> action : handle(sender, recipient, body, clientMessageId)
+  action -> db : BEGIN
+  action -> block : isBlockedEitherWay(sender, recipient)
+  alt blocked pair
+    block --> action : true
+    action -> db : ROLLBACK
+    action --> controller : 403 blocked (L2-026 criterion 7)
+  else same clientMessageId already stored
+    action -> db : Find message by sender_id, client_message_id
+    db --> action : Stored message
+    action --> controller : Stored result, no new row
+  else pair already has a conversation
+    action -> db : INSERT message into existing conversation; no limiter slot taken
+    action -> db : COMMIT
+    action -> redis : Queue NewMessageNotification
+    action --> controller : Reused conversation (200)
+  else no conversation for the pair yet
+    action -> limiter : attempt(sender)
+    limiter -> redis : Hit first-messages:{userId}
+    redis --> limiter : Count in window
+    alt more than 20 first messages today
+      limiter --> action : false
+      action -> db : ROLLBACK
+      action --> controller : 429 first_message_limit with Retry-After (L2-026 criterion 8)
+    else slot available
+      limiter --> action : true
+      action -> db : INSERT conversation (unique pair_key) and two participants
+      action -> db : INSERT message; UPDATE last_message_id, last_message_at
+      action -> db : COMMIT
+      action -> redis : Queue NewMessageNotification; dispatch ConversationStarted (L2-026 criterion 1)
+      action --> controller : Created conversation
+    end
+  end
+  controller --> client : 201 ConversationResource, 403, 429 or 422 problem
+  client --> dialog : ConversationRef or error
+  alt success
+    dialog --> actor : Close dialog, focus returns to "Say hello"
+    dialog -> toast : Show success "Message sent to {first name}"
+  else 403 or 429
+    dialog --> actor : Explanation in the dialog; text kept (L2-046 criterion 2)
+  else server or network failure
+    dialog --> actor : failed state with "Try again"; text kept (L2-026 criterion 3)
+  end
+end
+
+opt notification queued
+  redis -> notify : Worker takes the job
+  notify -> db : Store database notification for the recipient
+  notify -> notify : Send e-mail via Mailer if Messages e-mail is on (L2-029, L2-037)
+end
+@enduml

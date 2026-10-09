@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Edit own profile
+
+Person(member, "Member", "Signed-in, verified builder")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Builder profile page (own state), profile edit page")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Validates and saves the member's profile")
+  ContainerDb(db, "Banaro database", "Relational database", "Builders, skills, experience entries, links, projects")
+  ContainerDb(redis, "Redis", "Redis", "Sessions")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "GET and PUT /api/v1/me/profile", "JSON/HTTPS")
+Rel(api, redis, "Reads the session", "Redis protocol")
+Rel(api, db, "Reads and writes the profile in one transaction", "SQL")
+@enduml

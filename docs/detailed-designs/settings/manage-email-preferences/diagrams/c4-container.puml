@@ -1,0 +1,24 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Manage e-mail preferences
+
+Person(member, "Member", "Builder who receives Banaro e-mail")
+System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Settings E-mail tab, unsubscribe page")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Saves preferences, verifies unsubscribe tokens")
+  Container(worker, "Banaro Worker", "Laravel Horizon", "Checks preferences, sends e-mail")
+  ContainerDb(db, "Banaro database", "Relational database", "E-mail preferences")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions and Horizon queues")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "PUT /api/v1/settings/email-preferences/{category}", "JSON/HTTPS")
+Rel(web, api, "POST /api/v1/email-preferences/unsubscribe (anonymous)", "JSON/HTTPS")
+Rel(api, db, "Upserts preferences", "SQL")
+Rel(worker, redis, "Takes jobs from", "Redis protocol")
+Rel(worker, db, "Reads preferences", "SQL")
+Rel(worker, mail, "Sends e-mail via", "Mailer contract")
+@enduml

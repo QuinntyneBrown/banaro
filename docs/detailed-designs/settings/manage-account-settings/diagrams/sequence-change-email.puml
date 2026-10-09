@@ -1,0 +1,77 @@
+@startuml
+title UML sequence behaviour — Change the e-mail address
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "AccountSettingsSection" as section
+  participant "ConfirmPasswordDialog" as dialog
+  participant "ConfirmEmailChangePage" as confirmPage
+  participant "HttpSettingsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "AccountController" as controller
+  participant "EmailChangeController" as confirmCtrl
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "RequestEmailChange" as request
+  participant "ConfirmEmailChange" as confirm
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis" as redis
+end box
+box "Backend — Banaro Worker" #ECFDF3
+  participant "Horizon worker" as worker
+end box
+
+actor -> section : Enter new e-mail, select "Save changes"
+section -> dialog : Ask for current password
+actor -> dialog : Enter current password
+dialog --> section : Password (memory only)
+section -> client : updateAccount({email, current_password})
+client -> controller : PATCH /api/v1/settings/account
+controller -> controller : Validate UpdateAccountRequest, current_password rule
+alt wrong current password
+  controller --> client : 422 current_password error
+  client --> section : invalid state on password (L2-035 criterion 1)
+else password correct
+  controller -> request : handle(member, newEmail)
+  request -> db : UPSERT pending_email_change (token hash, expires_at)
+  request -> redis : Queue ConfirmNewEmailNotification to new address
+  request -> redis : Queue EmailChangeRequestedNotification to old address (L2-035 criterion 1)
+  controller --> client : 200 AccountSettingsResource with pendingEmail
+  client --> section : success state "Saved"; change waits for confirmation
+end
+worker -> redis : Take jobs
+worker -> worker : Send both e-mails through the Mailer contract
+
+actor -> confirmPage : Follow confirmation link from the new inbox
+confirmPage -> client : confirmEmailChange(token)
+client -> confirmCtrl : POST /api/v1/settings/email-change/confirm (api_public.php)
+confirmCtrl -> confirm : handle(token)
+confirm -> db : Find pending change by token hash
+alt token unknown, used or expired
+  confirm --> confirmCtrl : 422 invalid_email_change_token
+  confirmCtrl --> confirmPage : Error state
+else address taken meanwhile
+  confirm --> confirmCtrl : 422 (address not revealed)
+  confirmCtrl --> confirmPage : Error state
+else valid
+  confirm -> db : UPDATE users.email, email_verified_at; DELETE pending change
+  confirmCtrl --> confirmPage : 204
+  confirmPage --> actor : Address changed
+end
+@enduml

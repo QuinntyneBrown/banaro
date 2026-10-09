@@ -1,0 +1,74 @@
+@startuml
+title UML sequence behaviour — Submit a report
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "BuilderProfilePage" as page
+  participant "ReportDialog" as dialog
+  participant "HttpTrustAndSafetyApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ReportController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "SubmitReport" as action
+  participant "ReportSubjectResolver" as resolver
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Select "More", then "Report Daniel"
+page -> dialog : Open report dialog with subject (focus on first reason)
+actor -> dialog : Choose reason, add optional details, select "Send report"
+alt no reason chosen
+  dialog --> actor : invalid state "Choose the reason that fits best." (L2-031 criterion 2)
+else reason chosen
+  dialog -> dialog : Enter busy state "Sending…" (L2-031 criterion 3)
+  dialog -> client : report(CreateReportRequest)
+  client -> controller : POST /api/v1/reports
+  controller -> controller : Authenticate verified member, validate SubmitReportRequest
+  alt reason missing or details over 1,000 characters
+    controller --> client : 422 field errors, nothing stored (L2-031 criteria 1 and 2)
+  else valid request
+    controller -> action : handle(reporter, subject, reason, details)
+    action -> resolver : resolve(reporter, type, id)
+    resolver -> db : Load subject, owner and blocks
+    alt subject missing or hidden from reporter
+      resolver --> action : Not found
+      action --> controller : 404
+    else subject visible
+      resolver --> action : Subject and reported party
+      action -> db : BEGIN; SELECT reporter FOR UPDATE
+      action -> db : Find report by reporter and subject created in last 24 hours
+      alt report found
+        action -> db : INSERT report_submission; UPDATE last_submitted_at (L2-031 criterion 5)
+      else no recent report
+        action -> db : INSERT report (Open) and first report_submission (L2-031 criterion 1)
+      end
+      action -> db : COMMIT
+      action --> controller : Report (no notification to reported party, L2-031 criterion 4)
+      controller --> client : 201 ReportReceiptResource
+    end
+  end
+  client --> dialog : ReportReceipt or error
+  alt success
+    dialog --> actor : success state "Report sent" with "Block Daniel" and "Done"
+  else server or network error
+    dialog --> actor : failed state with "Try again", answers kept (L2-031 criterion 3)
+  end
+end
+@enduml

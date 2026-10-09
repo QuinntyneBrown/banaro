@@ -1,0 +1,76 @@
+@startuml
+title UML sequence behaviour — Queue and send one e-mail
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "Feature action\n(e.g. RsvpToEvent)" as action
+end box
+box "Backend — Banaro Worker" #FFF4E5
+  participant "Horizon mail worker" as horizon
+  participant "BanaroMailNotification" as notification
+  participant "EmailPreferenceService" as prefs
+  participant "MailerChannel" as channel
+  participant "UnsubscribeTokenService" as links
+  participant "Mailer ({Vendor}Mailer)" as mailer
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis mail queue" as queue
+end box
+participant "Mail provider" as provider
+
+action -> db : COMMIT feature change
+action -> queue : Queue notification afterCommit (L2-029 criterion 1)
+horizon -> queue : Take job (target: sent within 5 minutes)
+horizon -> notification : shouldSend(member, mail)
+notification -> prefs : allows(member, category); skipped for security e-mail
+alt category off (security e-mail has no category)
+  prefs --> notification : false
+  notification --> horizon : Skip; no e-mail (L2-029 criterion 2)
+else allowed, or security e-mail
+  prefs --> notification : true
+  horizon -> channel : send(member, notification)
+  channel -> db : Find email_deliveries by notification_id
+  alt already sent
+    channel --> horizon : Return; no duplicate (L2-029 criterion 1)
+  else not sent
+    channel -> channel : Render template with minimum personal data (L2-029 criterion 3)
+    opt e-mail has a category
+      channel -> links : issue(member, category)
+      links --> channel : Signed token
+      channel -> channel : Add /unsubscribe?token= link and List-Unsubscribe headers (L2-029 criterion 3)
+    end
+    channel -> mailer : send(OutgoingEmail, idempotency key = notification id)
+    mailer -> provider : Deliver
+    alt accepted
+      provider --> mailer : Message id
+      mailer --> channel : MailerReceipt
+      channel -> db : UPSERT delivery status = sent
+    else provider failure
+      provider --> mailer : Error or timeout
+      mailer --> channel : MailerUnavailable
+      channel -> db : UPSERT delivery attempts + 1
+      channel --> horizon : Exception
+      alt retries left (5 retries after the first attempt)
+        horizon -> queue : Release with back-off delay (L2-029 criterion 4)
+      else last retry failed
+        horizon -> notification : failed(e)
+        notification -> db : Delivery status = failed
+        notification -> notification : Structured log line and alert (L2-029 criterion 4)
+      end
+    end
+  end
+end
+@enduml

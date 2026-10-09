@@ -1,0 +1,68 @@
+@startuml
+title UML sequence behaviour — Scan the photo and make it visible
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ChangePhotoDialog" as dialog
+  participant "HttpProfilesApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ProfilePhotoController" as controller
+end box
+box "Backend — Banaro Worker" #ECFDF3
+  participant "ScanProfilePhoto" as job
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  queue "Redis queue" as queue
+  participant "MediaScanner adapter" as port
+  collections "Media storage" as media
+  database "Banaro database" as db
+end box
+participant "Media scanner" as scanner
+
+queue -> job : Deliver ScanProfilePhoto(photoId)
+job -> db : Load pending photo
+job -> media : Read quarantined file
+job -> port : scan(path)
+port -> scanner : Submit file
+scanner --> port : Verdict
+port --> job : ScanResult
+alt clean
+  job -> media : Move file out of quarantine
+  job -> db : BEGIN; photo status Ready; builders.photo_id = photo; delete previous photo row; COMMIT
+  job -> media : Delete previous photo file
+else infected
+  job -> media : Delete file
+  job -> db : photo status Rejected
+else scanner fault
+  job -> queue : Release for retry with back-off
+  note right of job : After the last attempt the photo becomes Rejected
+end
+
+loop until ready, rejected or timed out
+  dialog -> client : getPhoto(id)
+  client -> controller : GET /api/v1/me/photo/{id}
+  controller -> controller : ProfilePhotoPolicy::view, owner only (L2-044 criterion 1)
+  controller -> db : Read status
+  controller --> client : 200 ProfilePhotoResource
+  client --> dialog : ProfilePhoto
+end
+alt ready
+  dialog --> actor : Dialog closes; new photo replaces the initials or old photo (L2-008 criteria 1 and 4)
+else rejected or timed out
+  dialog --> actor : failed state with "Try again"; previous photo unchanged
+end
+@enduml

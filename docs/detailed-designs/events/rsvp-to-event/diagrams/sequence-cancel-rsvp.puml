@@ -1,0 +1,69 @@
+@startuml
+title UML sequence behaviour — Cancel an RSVP and promote from the waitlist
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "EventDetailPage" as page
+  participant "CancelRsvpDialog" as dialog
+  participant "HttpEventsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "RsvpController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "CancelRsvp" as action
+  participant "WaitlistService" as waitlist
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis queue" as queue
+end box
+
+actor -> page : Select "Cancel RSVP"
+page -> dialog : Open cancel-rsvp dialog (focus on "Keep my spot")
+actor -> dialog : Confirm "Cancel RSVP"
+dialog -> dialog : Enter busy state, block dismissal
+dialog -> client : cancelRsvp(eventId)
+client -> controller : DELETE /api/v1/events/{id}/rsvp
+controller -> controller : Authenticate verified member, validate CancelRsvpRequest
+controller -> action : handle(member, event)
+action -> db : BEGIN; SELECT event FOR UPDATE
+action -> db : DELETE member's RSVP
+alt deleted RSVP was going
+  action -> db : UPDATE going_count - 1
+  action -> waitlist : promoteNext(event) (L2-020 criterion 4)
+  waitlist -> db : Oldest waitlisted RSVP by waitlisted_at, id
+  opt waitlisted RSVP exists
+    waitlist -> db : UPDATE rsvp to going; going_count + 1
+  end
+  waitlist --> action : Promoted RSVP or none
+end
+action -> db : COMMIT
+opt member promoted
+  action -> queue : Queue WaitlistPromotedNotification (L2-029)
+end
+action --> controller : Updated event
+controller --> client : 200 RsvpResource (status none)
+client --> dialog : RsvpSummary
+alt success
+  dialog --> page : Close with result
+  page --> actor : default state with counts from the response
+else server error
+  controller --> client : 5xx, transaction rolled back (L2-020 criterion 5)
+  client --> dialog : Error
+  dialog --> actor : failed state "We couldn't cancel your RSVP" with "Try again"
+end
+@enduml

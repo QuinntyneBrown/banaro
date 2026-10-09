@@ -1,0 +1,116 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Recover a forgotten password
+
+package "Frontend — banaro application and api library" {
+  class ForgotPasswordPage {
+    -api: IdentityApi
+    +form: FormGroup<{ email }>
+    +state: 'default' | 'invalid' | 'submitting' | 'success'
+    +submit(): void
+    +sendAgain(): void
+  }
+  class ResetPasswordPage {
+    -api: IdentityApi
+    +form: FormGroup<{ password, confirm }>
+    +state: 'default' | 'invalid' | 'submitting' | 'success' | 'error'
+    +email: string
+    +submit(): void
+  }
+  class resetPasswordResolver <<ResolveFn>> {
+    +resolve(route): Observable<'default' | 'error'>
+  }
+  interface IdentityApi {
+    +requestPasswordReset(email: string): Observable<void>
+    +checkPasswordReset(link: PasswordResetLink): Observable<void>
+    +resetPassword(request: ResetPasswordRequest): Observable<void>
+  }
+  class HttpIdentityApi
+  class PasswordResetLink {
+    +token: string
+    +email: string
+  }
+  class ResetPasswordRequest {
+    +token: string
+    +email: string
+    +password: string
+    +passwordConfirmation: string
+  }
+}
+
+package "Backend — Banaro API and Worker" {
+  class PasswordResetLinkController {
+    +store(request: SendPasswordResetLinkRequest): Response
+  }
+  class PasswordResetController {
+    +check(request: CheckPasswordResetRequest): Response
+    +store(request: ResetPasswordRequest): Response
+  }
+  class RequestPasswordReset {
+    +handle(email: string): void
+  }
+  class CheckPasswordResetLink {
+    +handle(link: PasswordResetLinkData): User
+  }
+  class ResetPassword {
+    +handle(data: ResetPasswordData): void
+  }
+  class PasswordPolicy {
+    +rules(): array
+  }
+  class SessionRevocationService {
+    +revokeAll(user: User): void
+  }
+  interface TokenRepositoryInterface {
+    +create(user): string
+    +exists(user, token: string): bool
+    +delete(user): void
+  }
+  class SendPasswordResetLink <<Job>> {
+    +string email
+    +handle(broker: PasswordBroker): void
+  }
+  class ResetPasswordNotification {
+    +string token
+    +via(): array
+  }
+  class User {
+    +int id
+    +string email
+    +string password
+    +string remember_token
+  }
+}
+
+ForgotPasswordPage ..> IdentityApi : uses
+ResetPasswordPage ..> IdentityApi : uses
+resetPasswordResolver ..> IdentityApi : uses
+HttpIdentityApi ..|> IdentityApi
+IdentityApi ..> PasswordResetLink : sends
+IdentityApi ..> ResetPasswordRequest : sends
+HttpIdentityApi ..> PasswordResetLinkController : HTTPS
+HttpIdentityApi ..> PasswordResetController : HTTPS
+
+PasswordResetLinkController ..> RequestPasswordReset : calls
+PasswordResetController ..> CheckPasswordResetLink : calls
+PasswordResetController ..> ResetPassword : calls
+RequestPasswordReset ..> SendPasswordResetLink : dispatches
+SendPasswordResetLink ..> TokenRepositoryInterface : create()
+SendPasswordResetLink ..> ResetPasswordNotification : sends
+CheckPasswordResetLink ..> TokenRepositoryInterface : exists()
+ResetPassword ..> TokenRepositoryInterface : exists() / delete()
+ResetPassword ..> PasswordPolicy : rules
+ResetPassword --> User : changes password
+ResetPassword ..> SessionRevocationService : revokeAll()
+@enduml

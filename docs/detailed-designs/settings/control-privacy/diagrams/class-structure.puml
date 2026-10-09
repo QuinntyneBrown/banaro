@@ -1,0 +1,101 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Control privacy
+
+package "Frontend — banaro application and api library" {
+  class PrivacySettingsSection {
+    -api: SettingsApi
+    +form: FormGroup
+    +state: 'default' | 'invalid' | 'submitting' | 'success' | 'failed'
+    +save(): void
+  }
+  interface SettingsApi {
+    +updatePrivacy(request: PrivacySettings): Observable<PrivacySettings>
+  }
+  class HttpSettingsApi
+  class "PrivacySettings (model)" as PrivacyModel {
+    +profileVisibility: 'everyone' | 'members'
+    +locationPrecision: 'neighbourhood' | 'city'
+    +emailContact: boolean
+    +showOnlineStatus: boolean
+    +listInAttendees: boolean
+  }
+}
+
+package "Backend — Banaro API" {
+  class PrivacyController {
+    +update(request: UpdatePrivacySettingsRequest): PrivacySettingsResource
+  }
+  class UpdatePrivacySettings {
+    +handle(member: User, values: array): PrivacySettings
+  }
+  class PrivacySettings {
+    +int user_id
+    +ProfileAudience profile_visibility = MembersOnly
+    +LocationPrecision location_precision
+    +bool email_contact
+    +bool show_online_status = true
+    +bool list_in_attendees = false
+  }
+  enum ProfileAudience {
+    Everyone
+    MembersOnly
+  }
+  enum LocationPrecision {
+    Neighbourhood
+    CityOnly
+  }
+  class ProfileVisibilityService {
+    +canView(viewer: ?User, owner: User): bool
+    +applyScope(query: Builder, viewer: ?User): Builder
+    +locationFor(viewer: ?User, owner: User): ProfileLocation
+    +distanceFor(viewer: ?User, owner: User): ?float
+    +showsOnlineStatus(owner: User): bool
+    +listsInAttendees(owner: User): bool
+    +allowsEmailContact(owner: User): bool
+  }
+  class ProfileLocation {
+    +string city
+    +?string neighbourhood
+  }
+  class DistanceService {
+    +between(a: User, b: User): float
+  }
+  class ProfileFields <<trait>> {
+    #profileFields(request: Request, owner: User): array
+  }
+  class BuilderResource
+  class AttendeeResource
+  class User {
+    +int id
+  }
+}
+
+PrivacySettingsSection ..> SettingsApi : uses
+HttpSettingsApi ..|> SettingsApi
+SettingsApi ..> PrivacyModel : sends and returns
+HttpSettingsApi ..> PrivacyController : HTTPS
+
+PrivacyController ..> UpdatePrivacySettings : calls
+UpdatePrivacySettings --> PrivacySettings : updates
+User "1" *-- "1" PrivacySettings
+PrivacySettings --> ProfileAudience : has
+PrivacySettings --> LocationPrecision : has
+ProfileVisibilityService ..> PrivacySettings : reads
+ProfileVisibilityService ..> DistanceService : rounds result of
+ProfileVisibilityService ..> ProfileLocation : returns
+ProfileFields ..> ProfileVisibilityService : asks
+BuilderResource ..> ProfileFields : uses
+AttendeeResource ..> ProfileFields : uses
+@enduml

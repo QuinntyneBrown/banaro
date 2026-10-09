@@ -1,0 +1,78 @@
+@startuml
+title UML sequence behaviour — Open a project page
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member or visitor" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ProjectDetailPage" as page
+  participant "HttpProjectsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ProjectController" as pctrl
+  participant "FeedbackController" as fctrl
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ViewProject" as view
+  participant "ListProjectFeedback" as list
+  participant "ProjectPolicy" as policy
+  participant "BlockService" as block
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /projects/{id}
+page --> actor : loading state with skeletons (L2-013 criterion 5)
+par project
+  page -> client : get(id)
+  client -> pctrl : GET /api/v1/projects/{id} (api_public.php)
+  pctrl -> pctrl : Resolve optional session viewer
+  alt project missing or deleted
+    pctrl --> client : 404 (L2-013 criterion 4)
+  else project found
+    pctrl -> view : handle(project)
+    view -> db : Project with owner builder and roles
+    db --> view : Project
+    view --> pctrl : Project
+    pctrl -> policy : edit, delete, giveFeedback, offerHelp for viewer
+    policy --> pctrl : Permissions
+    pctrl --> client : 200 ProjectResource
+  end
+else first feedback page
+  page -> client : feedback(id, 1)
+  client -> fctrl : GET /api/v1/projects/{id}/feedback?per_page=5
+  fctrl -> list : handle(project, viewer, 1, 5)
+  opt viewer is a member
+    list -> block : applyScope(query, viewer, author_id) (L2-032 criterion 1)
+    block --> list : Scoped query
+  end
+  list -> db : Feedback visibleTo(viewer), newest first (L2-016 criterion 4)
+  db --> list : Page of feedback
+  list --> fctrl : Paginator
+  fctrl --> client : 200 FeedbackResource collection
+end
+client --> page : ProjectDetail and Page<FeedbackView>, or error
+alt 404
+  page --> actor : not-found state
+else server error or network failure
+  page --> actor : error state with "Try again" (L2-013 criterion 5)
+else permissions.edit is true
+  page --> actor : own state with "Edit project", no feedback or help actions (L2-013 criterion 2)
+else feedback count is 0
+  page --> actor : empty state inviting the first comment (L2-013 criterion 3)
+else otherwise
+  page --> actor : default state with project fields and feedback (L2-013 criterion 1)
+end
+@enduml

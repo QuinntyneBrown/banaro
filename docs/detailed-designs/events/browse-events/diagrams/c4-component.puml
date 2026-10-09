@@ -1,0 +1,25 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Browse events
+
+Container(web, "Banaro Web", "Angular", "EventsPage, EventMonthGroups, HttpEventsApi")
+ContainerDb(db, "Banaro database", "Relational database", "events")
+
+Container_Boundary(api, "Banaro API") {
+  Component(routes, "routes/api_public.php", "Route file", "Declares GET /events as anonymous")
+  Component(ctrl, "EventController", "Laravel controller", "index() for GET /events")
+  Component(req, "ListEventsRequest", "Form request", "Validates when, page and per_page")
+  Component(action, "ListEvents", "Action", "Upcoming ascending or past descending, paginated")
+  Component(model, "Event", "Eloquent model", "Times, venue, capacity, going count")
+  Component(resource, "EventSummaryResource", "API resource", "EventSummary JSON shape")
+}
+
+Rel(web, routes, "Calls", "JSON/HTTPS")
+Rel(routes, ctrl, "Routes to")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, action, "Calls handle()")
+Rel(ctrl, resource, "Returns collection of")
+Rel(action, model, "Queries")
+Rel(model, db, "Reads", "SQL")
+@enduml

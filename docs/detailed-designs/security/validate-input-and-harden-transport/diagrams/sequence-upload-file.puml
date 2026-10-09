@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Accept a file upload
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ChangePhotoDialog" as dialog
+  participant "HttpProfilesApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ProfilePhotoController" as controller
+  participant "ChangePhotoRequest" as request
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ChangeProfilePhoto" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Media storage (media disk)" as media
+  database "Banaro database" as db
+  queue "Redis queue" as queue
+end box
+
+actor -> dialog : Choose a photo and confirm the crop
+dialog -> client : uploadPhoto(file, crop)
+client -> controller : POST /api/v1/profile/photo (multipart, CSRF and origin checked)
+controller -> request : Validate
+request -> request : file, max 5 MB, mimes jpg/png/webp
+request -> request : MIME type from content, min 480 x 480 px (L2-045 criterion 6)
+alt any rule fails
+  request --> client : 422 with the failing field error
+  client --> dialog : ValidationErrors
+  dialog --> actor : invalid state names the problem (L2-008 criterion 2)
+else valid
+  request --> controller : toData()
+  controller -> action : handle(member, data)
+  action -> media : Write to private media disk as {uuid}.{ext}, outside the web root (L2-045 criterion 6)
+  media --> action : Stored path
+  action -> db : Record pending photo with storage key
+  action -> queue : Queue scan and metadata strip (L2-008 criterion 4)
+  action --> controller : Pending photo
+  controller --> client : 202 PhotoResource
+  client --> dialog : Pending
+  dialog --> actor : Photo shows once scanned
+end
+@enduml

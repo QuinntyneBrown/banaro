@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Set up matching
+
+Container(web, "Banaro Web", "Angular", "MatchingSetupPage, matchingSetUpGuard, HttpMatchingApi")
+ContainerDb(db, "Banaro database", "Relational database", "matching_preferences, email_preferences")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "MatchingPreferenceController", "Laravel controller", "GET and PUT /matching/preferences")
+  Component(req, "SaveMatchingPreferencesRequest", "Form request", "Validates roles, skills, distance; ignores protected fields")
+  Component(action, "SaveMatchingPreferences", "Action", "Upserts the preference, keeps the status")
+  Component(schedule, "MatchingScheduleService", "Domain service", "Next Monday 06:00 America/Toronto, ISO week keys")
+  Component(emailprefs, "EmailPreferenceService", "Domain service (settings)", "Stores the Matches e-mail category")
+  Component(model, "MatchingPreference", "Eloquent model", "One row per member")
+  Component(resource, "MatchingPreferenceResource", "API resource", "MatchingPreferences JSON shape")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, action, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(action, model, "Upserts")
+Rel(action, emailprefs, "Sets Matches category")
+Rel(action, schedule, "Reads nextRunDate()")
+Rel(model, db, "Reads and writes", "SQL")
+Rel(emailprefs, db, "Reads and writes", "SQL")
+@enduml

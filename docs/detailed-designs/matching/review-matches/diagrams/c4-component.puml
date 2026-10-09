@@ -1,0 +1,36 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Review matches
+
+Container(web, "Banaro Web", "Angular", "MatchingPage, MatchCard, SayHelloDialog, HttpMatchingApi")
+ContainerDb(db, "Banaro database", "Relational database", "match_suggestions, matching_preferences, blocks")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "MatchingOverviewController", "Laravel controller", "GET /matching")
+  Component(req, "ShowMatchingOverviewRequest", "Form request", "Authorizes the verified member")
+  Component(build, "BuildMatchingOverview", "Action", "Status, this week's suggestions, unreviewed count, next run")
+  Component(cal, "MatchingScheduleService", "Domain service", "Current ISO week, next run date")
+  Component(block, "BlockService", "Domain service (trust and safety)", "isBlockedEitherWay()")
+  Component(resource, "MatchingOverviewResource / MatchSuggestionResource", "API resources", "Overview JSON, privacy-aware distance")
+  Component(policy, "MatchSuggestionPolicy", "Policy", "Owner-only access")
+  Component(sayhello, "ConversationController / StartConversation", "Controller and action (messaging)", "POST /conversations; dispatches ConversationStarted after commit")
+  Component(listener, "MarkSuggestionContactedOnConversationStarted", "Listener", "Synchronous")
+  Component(mark, "MarkSuggestionContacted", "Action", "suggested to contacted")
+  Component(model, "MatchSuggestion", "Eloquent model", "Weekly suggestions")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(web, sayhello, "POST /api/v1/conversations", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, build, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(build, cal, "Reads ISO week and next run")
+Rel(build, block, "Filters blocked builders")
+Rel(build, model, "Reads")
+Rel(resource, policy, "Scoped by")
+Rel(sayhello, listener, "ConversationStarted")
+Rel(listener, mark, "Calls handle()")
+Rel(mark, model, "Updates status")
+Rel(model, db, "Reads and writes", "SQL")
+@enduml

@@ -1,0 +1,95 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Handle offline and maintenance
+
+package "Frontend — api and components libraries" {
+  enum ConnectionStatus {
+    online
+    reconnecting
+    offline
+    failed
+  }
+  class ConnectivityService {
+    +status: Signal<ConnectionStatus>
+    +reportUnreachable(): void
+    +reportReachable(): void
+    +probeNow(): void
+  }
+  class ConnectivityInterceptor {
+    +intercept(req: HttpRequest, next: HttpHandler): Observable<HttpEvent>
+  }
+  class MaintenanceInterceptor {
+    -navigator: ErrorPageNavigator
+    +intercept(req: HttpRequest, next: HttpHandler): Observable<HttpEvent>
+    -expectedBackAt(error: HttpErrorResponse): Date
+  }
+  interface ErrorPageNavigator <<token ERROR_PAGE_NAVIGATOR>> {
+    +offline(failedUrl: string): void
+    +maintenance(expectedBackAt: Date, failedUrl: string): void
+  }
+  class ConnectionBanner <<bn-connection-banner>> {
+    +variant: 'info' | 'warning' | 'danger' | 'success'
+    +retry: OutputEmitterRef<void>
+  }
+}
+
+package "Frontend — banaro application" {
+  class OfflinePage {
+    +failedUrl: string
+    +tryAgain(): void
+  }
+  class MaintenancePage {
+    +expectedBackAt: Date
+    +failedUrl: string
+    +checkAgain(): void
+  }
+  class DraftStore {
+    +bind(form: FormGroup, key: string): void
+    +clear(key: string): void
+    +clearAllFor(memberId: string): void
+  }
+  class RouterErrorPageNavigator
+}
+
+package "Backend — Banaro API" {
+  class PreventRequestsDuringMaintenance <<Laravel>> {
+    #except: array
+    +handle(request: Request, next: Closure): Response
+  }
+  class RespondDuringMaintenance {
+    #except = ['health/*']
+    +handle(request: Request, next: Closure): Response
+    -body(data: array): JsonResponse
+  }
+  class MaintenancePayload {
+    +int time
+    +int retry
+    +expectedBackAt(): CarbonImmutable
+  }
+}
+
+ConnectivityService --> ConnectionStatus : has
+ConnectivityInterceptor ..> ConnectivityService : reports to
+ConnectivityInterceptor ..> ErrorPageNavigator : offline() on ESSENTIAL_DATA
+MaintenanceInterceptor ..> ErrorPageNavigator : calls
+RouterErrorPageNavigator ..|> ErrorPageNavigator
+RouterErrorPageNavigator ..> OfflinePage : routes to
+RouterErrorPageNavigator ..> MaintenancePage : routes to
+ConnectionBanner ..> ConnectivityService : bound by the shell to
+OfflinePage ..> ConnectivityService : waits for online
+DraftStore ..> ConnectivityService : reads
+PreventRequestsDuringMaintenance <|-- RespondDuringMaintenance
+RespondDuringMaintenance ..> MaintenancePayload : reads
+MaintenanceInterceptor ..> RespondDuringMaintenance : HTTPS 503
+@enduml

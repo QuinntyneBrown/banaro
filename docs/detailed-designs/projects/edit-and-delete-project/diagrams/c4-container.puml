@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Edit and delete a project
+
+Person(owner, "Owner", "Member who shared the project")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "project-edit page, delete-project dialog, toasts")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Ownership checks, update and delete rules")
+  ContainerDb(db, "Banaro database", "Relational database", "Projects, looking-for roles, feedback, help offers")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions")
+}
+
+Rel(owner, web, "Uses", "HTTPS")
+Rel(web, api, "GET /edit, PATCH and DELETE /api/v1/projects/{id}", "JSON/HTTPS")
+Rel(api, redis, "Reads session", "Redis protocol")
+Rel(api, db, "Updates or deletes in one transaction", "SQL")
+@enduml

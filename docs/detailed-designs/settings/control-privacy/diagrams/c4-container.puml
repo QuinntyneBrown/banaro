@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Control privacy
+
+Person(member, "Member", "Sets privacy choices")
+Person(viewer, "Viewer", "Member or visitor")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Settings Privacy tab; profile, directory and event pages")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Stores privacy settings, filters every profile response")
+  ContainerDb(db, "Banaro database", "Relational database", "Privacy settings, profiles, locations")
+  ContainerDb(redis, "Redis", "Redis", "Sessions")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(viewer, web, "Uses", "HTTPS")
+Rel(web, api, "PUT /api/v1/settings/privacy", "JSON/HTTPS")
+Rel(web, api, "GET builders, matches, attendees", "JSON/HTTPS")
+Rel(api, redis, "Reads session", "Redis protocol")
+Rel(api, db, "Reads and writes privacy settings", "SQL")
+@enduml

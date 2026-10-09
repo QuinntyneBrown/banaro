@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — System notifications
+
+Person(member, "Member", "Signed-in, verified builder")
+Person(visitor, "Visitor", "Uses Banaro without signing in")
+Person(admin, "Administrator", "Publishes site announcements")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Sees toasts, account, site and connection banners in", "HTTPS")
+Rel(visitor, banaro, "Sees site and connection banners in", "HTTPS")
+Rel(admin, banaro, "Publishes and closes site announcements using", "HTTPS")
+@enduml

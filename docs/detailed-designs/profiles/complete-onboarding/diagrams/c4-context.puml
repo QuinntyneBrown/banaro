@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Complete onboarding
+
+Person(member, "Member", "Signed-in builder with a verified e-mail address and an incomplete profile")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Sets role, neighbourhood, skills and goals using", "HTTPS")
+@enduml

@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Filter the directory
+
+Person(member, "Member", "Signed-in, verified builder")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Directory page, filter sidebar and filter sheet")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Validates filters, applies them, counts options")
+  ContainerDb(db, "Banaro database", "Relational database", "Builders, skills, neighbourhoods, distances")
+  ContainerDb(redis, "Redis", "Redis", "Sessions, cached match scores")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "GET /api/v1/builders?role=&open_to=&area=&distance=&skills=", "JSON/HTTPS")
+Rel(api, db, "Filtered page and facet counts", "SQL")
+Rel(api, redis, "Reads session and match scores", "Redis protocol")
+@enduml

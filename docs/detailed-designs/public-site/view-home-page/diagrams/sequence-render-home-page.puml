@@ -1,0 +1,77 @@
+@startuml
+title UML sequence behaviour — Render the home page
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor, member or search engine" as actor
+box "Frontend — Banaro Web SSR server" #E0F2FE
+  participant "server.ts" as ssr
+end box
+box "Frontend — banaro application" #E0F2FE
+  participant "HomePage" as page
+  participant "SeoService" as seo
+  participant "HttpPublicSiteApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "HomeController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "GetPlatformStatistics" as stats
+  participant "List* feed actions" as feeds
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> ssr : GET /
+ssr -> page : Render route / with forwarded Cookie header
+page -> seo : Set title, description, canonical link (L2-039 criterion 4)
+page -> page : Render static sections from en-CA catalogue (L2-052)
+opt session cookie belongs to a member
+  page -> page : Primary action "Go to dashboard" (L2-039 criterion 2)
+end
+par statistics
+  page -> client : statistics()
+  client -> controller : GET /api/v1/home/statistics
+  controller -> stats : handle()
+  stats --> controller : Cached or fresh counts (L2-039 criterion 5)
+  controller --> client : 200 PlatformStatisticsResource
+else each feed section: builders, projects, events
+  page -> client : featuredBuilders() / featuredProjects() / upcomingEvents()
+  client -> controller : GET /api/v1/home/builders | /projects | /events
+  controller -> feeds : handle()
+  feeds -> db : Visitor-safe query, "Members only" excluded (L2-036)
+  db --> feeds : Rows
+  feeds --> controller : Models
+  controller --> client : 200 visitor-safe resources, or 5xx
+end
+client --> page : Results per section
+alt every feed section loaded
+  page -> page : default state
+else one or two feed sections failed
+  page -> page : partial state, failed section replaced (L2-039 criterion 3)
+else all three feed sections failed
+  page -> page : error state with "Try again" and "Browse builders" (L2-039 criterion 3)
+end
+page --> ssr : HTML with transfer cache of API responses
+ssr --> actor : 200 HTML with headline, title, description, canonical link
+actor -> page : Browser hydrates; transfer cache replays responses, no refetch
+opt "Try again" on a failed section
+  actor -> page : Select "Try again"
+  page -> page : Section shows skeletons (loading)
+  page -> client : Re-issue only that section's request
+  client --> page : Section result
+  page --> actor : Focus moves to the new list, or back to the alert
+end
+@enduml

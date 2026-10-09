@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delete account · failed — Banaro</title>
+<meta name="mock:kind" content="dialog">
+<meta name="mock:screen" content="delete-account">
+<meta name="mock:state" content="failed">
+<meta name="description" content="Delete account after a server failure: an alert at the top, input kept, retry.">
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<div class="page-behind" inert aria-hidden="true">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="brand" href="../../pages/dashboard/default.html" aria-label="Banaro home"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a>
+    <nav class="nav" id="primary-nav" popover aria-label="Primary">
+      <ul class="nav__list"><li><a class="nav__link" href="../../pages/directory/default.html">Builders</a></li><li><a class="nav__link" href="../../pages/projects/default.html">Projects</a></li><li><a class="nav__link" href="../../pages/events/default.html">Events</a></li><li><a class="nav__link" href="../../pages/matching/default.html">Matching</a></li></ul>
+      <button type="button" class="btn btn--quiet nav__close" popovertarget="primary-nav" popovertargetaction="hide">Close menu</button>
+    </nav>
+    <div class="header__actions"><a class="matches-link" href="../../pages/matching/default.html"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10z"/></svg>2 new matches</a><a class="icon-btn" href="../../pages/messages/default.html" aria-label="Messages, 1 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5A2.5 2.5 0 0 1 7 4h10a2.5 2.5 0 0 1 2.5 2.5v7A2.5 2.5 0 0 1 17 16h-5.5L7 19.5V16a2.5 2.5 0 0 1-2.5-2.5z"/></svg><span class="icon-btn__count" aria-hidden="true">1</span></a><a class="icon-btn" href="../../pages/notifications/default.html" aria-label="Notifications, 3 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg><span class="icon-btn__count" aria-hidden="true">3</span></a><a class="avatar-btn" href="../../dialogs/account-menu/default.html" aria-label="Your account, Amara Osei" aria-haspopup="menu"><img class="avatar" src="../../assets/photos/amara-osei.jpg" width="40" height="40" alt=""><span>Amara</span></a><button type="button" class="menu-btn" popovertarget="primary-nav" aria-label="Menu"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="menu-btn__label">Menu</span></button></div>
+  </div>
+</header>
+
+<main id="main">
+<div class="wrap">
+<div class="page-head"><p class="eyebrow">Your account</p><h1 class="page-head__title">Settings</h1><p class="page-head__sub">Manage your account, who sees you, and the e-mail you get.</p></div>
+  <div class="settings-layout">
+    <nav aria-label="Settings"><ul class="settings-nav" style="list-style:none;padding:0;margin:0"><li><a class="nav__link" href="../../pages/settings/default.html" aria-current="page">Account</a></li><li><a class="nav__link" href="../../pages/settings/privacy.html">Privacy</a></li><li><a class="nav__link" href="../../pages/settings/email.html">E-mail</a></li></ul></nav>
+    <div class="stack stack--lg"><section aria-labelledby="acct-title">
+      <h2 class="section__title" id="acct-title" style="font-size: var(--font-size-2xl)">Account</h2>
+      <form class="form" style="margin-top: var(--space-6)" action="#" novalidate>
+        
+        <div class="field"><label class="field__label" for="name">Full name</label><input class="input" id="name" name="name" type="text" value="Amara Osei" required autocomplete="name"></div><div class="field"><label class="field__label" for="email">E-mail</label><input class="input" id="email" name="email" type="email" value="amara@harvest.example" aria-describedby="email-help" required autocomplete="email"><p class="field__help" id="email-help">We send match and event e-mail here.</p></div>
+        <div class="field"><span class="field__label">Password</span><p><a href="../../pages/reset-password/default.html">Change your password</a></p><p class="field__help">Last changed 3 months ago.</p></div>
+        <div class="field"><label class="field__label" for="language">Language</label><select class="input" id="language" name="language"><option selected>English</option><option>Français</option></select></div>
+        <div class="form-actions"><button type="submit" class="btn btn--primary">Save changes</button><button type="button" class="btn btn--quiet">Cancel</button></div>
+      </form>
+    </section>
+    <section aria-labelledby="danger-title">
+      <h2 class="section__title" id="danger-title" style="font-size: var(--font-size-xl)">Delete account</h2>
+      <p class="muted" style="margin-block: var(--space-3) var(--space-4)">This removes your profile, projects and messages for good.</p>
+      <a class="link-danger" href="../../dialogs/delete-account/default.html">Delete my account</a>
+    </section></div>
+  </div>
+</div>
+</main>
+
+<footer class="footer" id="footer">
+  <div class="wrap footer__grid">
+    <p class="footer__made">Made in Toronto. © 2026 Banaro.</p>
+    <nav aria-label="Footer">
+      <ul class="footer__links"><li><a href="../../pages/about/default.html">About</a></li><li><a href="../../pages/code-of-conduct/default.html">Code of conduct</a></li><li><a href="../../pages/privacy/default.html">Privacy</a></li><li><a href="../../pages/contact/default.html">Contact</a></li></ul>
+    </nav>
+    <p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+  </div>
+</footer>
+
+</div>
+<div class="backdrop">
+  <div class="dialog " role="dialog" aria-modal="true" aria-labelledby="dlg-title" aria-describedby="dlg-desc">
+    <div class="dialog__header"><span class="dialog__icon dialog__icon--danger"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 4h4M7 7l.8 12.5h8.4L17 7M10 11v5M14 11v5"/></svg></span><h2 class="dialog__title" id="dlg-title">Delete your account?</h2><button type="button" class="icon-btn" aria-label="Close dialog"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="dialog__body"><p id="dlg-desc">Deleting your account is permanent and removes everything below.</p><div class="alert alert--danger" role="alert"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg><p class="alert__title">We couldn't delete your account</p><p class="alert__body">Nothing was deleted. Check your connection and try again.</p></div><div style="height: var(--space-4)"></div><p>You will lose, for good:</p><ul style="margin: var(--space-4) 0; padding-left: var(--space-6)">
+      <li>Your profile and photo, and your place in the directory</li>
+      <li>Your project, Harvest, and the 23 comments on it</li>
+      <li>Your messages with Daniel Reyes, Grace Liu and Hannah Kowalski</li>
+    </ul><p class="muted">This cannot be undone. Other builders will no longer see you. Download your data first if you want a copy.</p><form class="form" action="#" style="margin-top: var(--space-5)"><div class="field"><label class="field__label" for="confirm">Type DELETE or your e-mail to confirm</label><input class="input" id="confirm" name="confirm" type="text" value="DELETE" aria-describedby="confirm-help" required autocomplete="off"><p class="field__help" id="confirm-help">Type DELETE, or amara@harvest.example.</p></div></form></div>
+    <div class="dialog__footer"><button type="button" class="btn btn--quiet">Keep my account</button><button type="submit" class="btn btn--danger">Try again</button></div>
+  </div>
+</div>
+<p class="mock-note" style="top: 5rem; left: 1rem">Focus moves to the alert. The typed confirmation is kept.</p>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="Mock gallery">⌂</a>
+  <span class="mock-bar__screen">Delete account</span>
+  <ul class="mock-bar__states"><li><a href="default.html">default</a></li><li><a href="busy.html">busy</a></li><li><a href="invalid.html">invalid</a></li><li><a href="failed.html" aria-current="page">failed</a></li></ul>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+@startuml
+title UML sequence behaviour — Load and save the profile
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ProfileEditPage" as page
+  participant "HttpProfilesApi" as client
+  participant "ToastService" as toast
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "OwnProfileController" as controller
+  participant "UpdateOwnProfileRequest" as request
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "GetOwnProfile" as get
+  participant "UpdateOwnProfile" as update
+  participant "SkillCatalogue" as catalogue
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /profile/edit
+page --> actor : loading state, skeletons sized to the form (L2-007 criterion 7)
+page -> client : getOwnProfile()
+client -> controller : GET /api/v1/me/profile
+controller -> get : handle(session builder)
+get -> db : Load builder, skills, experience, links, own projects
+db --> get : Profile rows
+get --> controller : Builder
+controller --> client : 200 OwnProfileResource
+alt load failed
+  client --> page : Error
+  page --> actor : error state with "Try again" (L2-007 criterion 5)
+else loaded
+  client --> page : OwnProfile
+  page --> actor : default state with current values and "Save changes"
+end
+
+actor -> page : Change fields and select "Save changes"
+page --> actor : submitting state, "Save changes" and "Cancel" disabled (L2-007 criterion 4)
+page -> client : updateOwnProfile(update)
+client -> controller : PUT /api/v1/me/profile
+controller -> request : Validate and drop fields the member may not set (L2-044 criterion 4)
+alt bio over 500, malformed link URL or unsupported neighbourhood
+  request --> controller : Validation errors
+  controller --> client : 422 with per-field errors (L2-007 criterion 3)
+  client --> page : Field errors
+  page --> actor : invalid state, focus on the error summary
+else valid
+  controller -> update : handle(session builder, data)
+  update -> db : BEGIN
+  update -> db : UPDATE builder fields (L2-007 criterion 2)
+  update -> catalogue : resolve(skills)
+  catalogue --> update : Skills in member order
+  update -> db : Sync builder_skill; replace experience entries and links
+  update -> db : COMMIT
+  update -> update : Dispatch ProfileUpdated
+  update --> controller : Builder
+  controller --> client : 200 OwnProfileResource
+  client --> page : OwnProfile
+  page -> toast : Show success toast
+  page --> actor : success state "Profile saved" with "View your profile"
+end
+opt server fault
+  controller --> client : 5xx, transaction rolled back
+  client --> page : Error
+  page --> actor : Entered values kept, "Try again" resends them (L2-007 criterion 5)
+end
+@enduml

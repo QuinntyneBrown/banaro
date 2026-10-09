@@ -1,0 +1,82 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Validate input and harden transport
+
+package "Frontend — Banaro Web server and api library" {
+  class "server.ts securityHeaders" as WebHeaders {
+    +handle(req, res, next): void
+    -nonce(): string
+    -redirectToHttps(req, res): void
+  }
+  class csrfRecoveryInterceptor <<HttpInterceptorFn>> {
+    +intercept(req, next): Observable<HttpEvent>
+  }
+  class ValidationErrors {
+    +fieldErrors: Record<string, string[]>
+    +applyTo(form: FormGroup): void
+    +firstInvalidField(): string
+  }
+}
+
+package "Backend — Banaro API" {
+  abstract class FormRequest
+  abstract class ApiRequest {
+    +authorize(): bool
+    +{abstract} rules(): array
+    #prepareForValidation(): void
+    #failedValidation(validator: Validator): void
+    +toData(): object
+  }
+  class GiveFeedbackRequest {
+    +rules(): array
+  }
+  class ChangePhotoRequest {
+    +rules(): array
+  }
+  class VerifyRequestOrigin {
+    +handle(request: Request, next: Closure): Response
+    -originOf(request: Request): ?string
+  }
+  class SecurityHeaders {
+    +handle(request: Request, next: Closure): Response
+  }
+  class RedirectToHttps {
+    +handle(request: Request, next: Closure): Response
+  }
+  class SecurityConfig <<config/security.php>> {
+    +array allowed_origins
+    +int hsts_max_age
+    +string permissions_policy
+    +string api_csp
+  }
+  class GiveFeedbackData {
+    +int projectId
+    +string body
+  }
+  class GiveFeedback {
+    +handle(member: User, data: GiveFeedbackData): Feedback
+  }
+}
+
+ApiRequest --|> FormRequest
+GiveFeedbackRequest --|> ApiRequest
+ChangePhotoRequest --|> ApiRequest
+GiveFeedbackRequest ..> GiveFeedbackData : toData()
+GiveFeedback ..> GiveFeedbackData : receives
+VerifyRequestOrigin ..> SecurityConfig : reads
+SecurityHeaders ..> SecurityConfig : reads
+RedirectToHttps ..> SecurityConfig : reads
+csrfRecoveryInterceptor ..> VerifyRequestOrigin : retries only csrf_token_mismatch
+ValidationErrors ..> ApiRequest : maps 422 errors from
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Adapt the responsive layout
+
+Container_Ext(e2e, "e2e test harness", "Playwright", "parity.spec.ts, responsive-layout.spec.ts, page objects")
+
+Container_Boundary(web, "Banaro Web") {
+  Component(sass, "styles/_breakpoints.scss", "Sass map and media-up() mixin", "XS, SM, MD, LG, XL widths for CSS")
+  Component(bp, "BREAKPOINTS", "TypeScript constant", "Same widths as BreakpointObserver queries")
+  Component(tokens, "tokens.css and utilities.css", "Global foundations", "Layout tokens, .container at 74 rem, reset against overflow")
+  Component(observer, "BreakpointObserver", "Angular CDK layout", "Emits breakpoint matches")
+  Component(dialog, "BnDialog", "components library service", "Bottom sheet below SM, centred 32 rem from SM")
+  Component(cdk, "Dialog and Overlay", "Angular CDK", "Panels, positioning, focus trap")
+  Component(header, "ShellHeader and NavigationSheet", "shell", "Menu button and navigation overlay")
+  Component(pages, "HomePage, DirectoryPage", "pages", "Mock BEM grids with media-up()")
+  Component(dialogs, "GiveFeedbackDialog and other dialogs", "dialogs", "Opened only through BnDialog")
+}
+
+Rel(pages, sass, "Uses media-up() from")
+Rel(pages, tokens, "Reads layout tokens")
+Rel(header, observer, "Watches XS")
+Rel(header, cdk, "Opens NavigationSheet with Overlay")
+Rel(dialog, bp, "Reads")
+Rel(dialog, observer, "Watches XS while open")
+Rel(dialog, cdk, "Opens and repositions with")
+Rel(pages, dialog, "open(GiveFeedbackDialog)")
+Rel(dialog, dialogs, "Hosts")
+Rel(e2e, pages, "Captures and measures", "Chromium")
+@enduml

@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Browse events
+
+Person(visitor, "Visitor", "Person using Banaro without signing in")
+Person(member, "Member", "Signed-in, verified builder")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Events page, month groups, Toronto time formatting")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Public events listing")
+  ContainerDb(db, "Banaro database", "Relational database", "Events")
+}
+
+Rel(visitor, web, "Uses", "HTTPS")
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "GET /api/v1/events?when=&page=", "JSON/HTTPS")
+Rel(api, db, "Reads events ordered by start time", "SQL")
+@enduml

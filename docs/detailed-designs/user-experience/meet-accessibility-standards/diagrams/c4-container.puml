@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Meet accessibility standards
+
+Person(member, "Member", "Keyboard, screen reader or pointer")
+System_Ext(ci, "CI pipeline", "a11y and e2e stages")
+Container_Ext(e2e, "e2e test harness", "Playwright, @axe-core/playwright, Chromium", "a11y/axe.spec.ts, keyboard.spec.ts, page objects")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular SSR", "Shell landmarks, skip link, titles, CDK dialogs, live regions, tokens")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Catalogue text for titles, labels and announcements")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "Loads catalogue and data", "JSON/HTTPS")
+Rel(ci, e2e, "Runs")
+Rel(e2e, web, "Checks each route and theme", "Chromium")
+@enduml

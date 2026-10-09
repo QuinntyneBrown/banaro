@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Browse the directory
+
+Person(member, "Member", "Signed-in, verified builder")
+Person(visitor, "Visitor", "Person using Banaro without signing in")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Browses, searches and sorts builders with match score, distance and status", "HTTPS")
+Rel(visitor, banaro, "Browses reduced builder cards", "HTTPS")
+@enduml

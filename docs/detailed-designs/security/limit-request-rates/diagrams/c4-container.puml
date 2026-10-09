@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Limit request rates
+
+Person(member, "Member", "Signed-in, verified builder")
+Person(visitor, "Visitor", "Not signed in")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "rateLimitInterceptor, toasts and form messages")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3, one or more replicas", "Named limiters, 429 responses, hashed logging")
+  ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters shared by all replicas")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(visitor, web, "Uses", "HTTPS")
+Rel(web, api, "Calls /api/v1", "JSON/HTTPS")
+Rel(api, redis, "Increments and reads counters keyed by hashed client", "Redis protocol")
+Rel(api, web, "Answers 429 with Retry-After and limiter name", "JSON/HTTPS")
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Sign in and sign out
+
+Person(member, "Member", "Builder with a Banaro account")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Signs in with e-mail and password, signs out using", "HTTPS")
+@enduml

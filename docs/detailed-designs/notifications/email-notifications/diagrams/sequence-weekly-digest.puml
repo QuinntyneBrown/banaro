@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — Send the weekly digest
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Clock (weekly, day and time <TO SUPPLY>)" as clock
+box "Backend — Banaro Worker" #ECFDF3
+  participant "Scheduler" as scheduler
+  participant "SendWeeklyDigestCommand" as cmd
+  participant "SendWeeklyDigest" as job
+  participant "NotificationDedupeService" as dedupe
+  participant "EmailPreferenceService" as prefs
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  queue "Redis" as redis
+  database "Banaro database" as db
+end box
+
+clock -> scheduler : schedule:run tick
+scheduler -> redis : Take onOneServer lock (L2-054 criterion 5)
+scheduler -> cmd : Run notifications:send-weekly-digest
+cmd -> db : Members with the Weekly digest category on (chunkById)
+loop each member
+  cmd -> redis : Dispatch SendWeeklyDigest(member, iso_week)
+end
+cmd --> scheduler : Exit 0
+redis -> job : handle()
+job -> dedupe : claim("digest:{member}:{iso_week}")
+dedupe -> db : INSERT notification_dedupe_keys
+alt key already claimed (retry or re-run)
+  dedupe --> job : false
+  job --> redis : Done; at most one digest per week (L2-029 criterion 5)
+else claimed
+  dedupe --> job : true
+  job -> prefs : allows(member, WeeklyDigest)
+  job -> db : Unread notifications and unread conversations of the member
+  db --> job : Unread items
+  opt unread items exist (empty digest rule <TO SUPPLY>)
+    job -> redis : Queue WeeklyDigestNotification on mail (L2-029 criterion 5)
+  end
+end
+@enduml

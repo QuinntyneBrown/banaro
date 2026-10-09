@@ -1,0 +1,116 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Say hello
+
+package "Frontend — banaro application, components and api libraries" {
+  class SayHelloDialog {
+    -api: MessagingApi
+    -toast: ToastService
+    +data: SayHelloDialogData
+    +state: 'default' | 'busy' | 'invalid' | 'failed'
+    +message: FormControl<string>
+    -clientMessageId: string
+    +send(): void
+    +cancel(): void
+  }
+  class SayHelloDialogData {
+    +recipient: BuilderSummary
+    +suggestionId: string | null
+  }
+  class ToastService {
+    +success(title: string, body?: string): void
+  }
+  interface MessagingApi {
+    +startConversation(input: StartConversationInput): Observable<ConversationRef>
+  }
+  class HttpMessagingApi
+  class InMemoryMessagingApi
+  class StartConversationInput {
+    +recipientId: string
+    +body: string
+    +clientMessageId: string
+  }
+  class ConversationRef {
+    +conversationId: string
+    +created: boolean
+  }
+}
+
+package "Backend — Banaro API" {
+  class ConversationController {
+    +store(request: StartConversationRequest): ConversationResource
+  }
+  class StartConversationRequest {
+    +rules(): array
+  }
+  class StartConversation {
+    +handle(sender: User, recipient: User, body: string, clientMessageId: string): StartConversationResult
+  }
+  class StartConversationResult {
+    +Conversation conversation
+    +Message message
+    +bool created
+  }
+  class FirstMessageLimiter {
+    +attempt(sender: User): bool
+    +availableIn(sender: User): int
+  }
+  class BlockService <<TrustAndSafety>> {
+    +isBlockedEitherWay(a: User, b: User): bool
+  }
+  class Conversation {
+    +int id
+    +string pair_key
+    +?int last_message_id
+    +?Carbon last_message_at
+  }
+  class ConversationParticipant {
+    +int conversation_id
+    +int user_id
+    +?int last_read_message_id
+  }
+  class Message {
+    +int id
+    +int conversation_id
+    +int sender_id
+    +string body
+    +string client_message_id
+    +Carbon created_at
+  }
+  class ConversationResource
+  class ConversationStarted <<event>>
+  class NewMessageNotification
+}
+
+SayHelloDialog ..> MessagingApi : uses
+SayHelloDialog ..> ToastService : confirms with
+SayHelloDialog --> SayHelloDialogData : data
+HttpMessagingApi ..|> MessagingApi
+InMemoryMessagingApi ..|> MessagingApi
+MessagingApi ..> StartConversationInput : takes
+MessagingApi ..> ConversationRef : returns
+HttpMessagingApi ..> ConversationController : HTTPS
+
+ConversationController ..> StartConversationRequest : validates with
+ConversationController ..> StartConversation : calls
+ConversationController ..> ConversationResource : returns
+StartConversation ..> BlockService : checks
+StartConversation ..> FirstMessageLimiter : limits with
+StartConversation ..> StartConversationResult : returns
+StartConversation ..> ConversationStarted : dispatches
+StartConversation ..> NewMessageNotification : queues
+StartConversation --> Conversation : creates or reuses
+Conversation "1" *-- "2" ConversationParticipant : participants
+Conversation "1" *-- "*" Message : messages
+@enduml

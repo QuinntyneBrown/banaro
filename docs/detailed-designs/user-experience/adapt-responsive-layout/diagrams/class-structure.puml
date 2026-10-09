@@ -1,0 +1,102 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Adapt the responsive layout
+
+package "Frontend — components library" {
+  enum BreakpointClass {
+    XS
+    SM
+    MD
+    LG
+    XL
+  }
+  class BREAKPOINTS <<const>> {
+    +XS: '(max-width: 575.98px)'
+    +SM: '(min-width: 576px)'
+    +MD: '(min-width: 768px)'
+    +LG: '(min-width: 992px)'
+    +XL: '(min-width: 1200px)'
+  }
+  class BnDialog <<Injectable>> {
+    -dialog: Dialog
+    -breakpoints: BreakpointObserver
+    +open<T, R>(component: Type<T>, config?: BnDialogConfig): DialogRef<R, T>
+    -configFor(cls: BreakpointClass, sheetBelow: BreakpointClass): DialogConfig
+    -follow(ref: DialogRef): void
+  }
+  class BnDialogConfig {
+    +data?: unknown
+    +sheetBelow: 'SM' | 'LG' = 'SM'
+    +disableClose?: boolean
+  }
+  class "Dialog (CDK)" as Dialog
+  class "BreakpointObserver (CDK)" as BreakpointObserver
+}
+
+package "Frontend — banaro application" {
+  class ShellHeader {
+    +menuOpen: Signal<boolean>
+    +openMenu(): void
+  }
+  class NavigationSheet
+  class DirectoryPage {
+    +openFilters(): void
+  }
+  class DirectoryFiltersSheet {
+    +apply(): void
+  }
+  class GiveFeedbackDialog
+}
+
+package "End-to-end — e2e" {
+  class RouteManifestEntry <<routes.manifest.ts>> {
+    +id: string
+    +kind: 'page' | 'dialog' | 'notification'
+    +route: string
+    +states: string[]
+    +signedIn: boolean
+    +fixture(state: string): Fixture
+  }
+  class ParitySpec <<visual/parity.spec.ts>> {
+    +widths = [360, 768, 1280]
+    +themes = ['light', 'dark']
+  }
+  class MockBaseline {
+    +path(entry, state, width, theme): string
+  }
+  class "DirectoryPage (page object)" as DirectoryPO {
+    +resultColumnCount(): Promise<number>
+    +filtersAreSticky(): Promise<boolean>
+  }
+  class "GiveFeedbackDialog (page object)" as FeedbackPO {
+    +isBottomSheet(): Promise<boolean>
+    +width(): Promise<number>
+  }
+}
+
+BnDialog --> Dialog : wraps
+BnDialog --> BreakpointObserver : watches
+BnDialog ..> BREAKPOINTS : reads
+BnDialog ..> BnDialogConfig
+BREAKPOINTS ..> BreakpointClass
+ShellHeader ..> NavigationSheet : opens via Overlay
+DirectoryPage ..> BnDialog : opens DirectoryFiltersSheet (sheetBelow LG)
+DirectoryPage ..> DirectoryFiltersSheet
+BnDialog ..> GiveFeedbackDialog : hosts
+
+ParitySpec ..> RouteManifestEntry : iterates
+ParitySpec ..> MockBaseline : compares with
+ParitySpec ..> DirectoryPO : reaches states via
+ParitySpec ..> FeedbackPO : reaches states via
+@enduml

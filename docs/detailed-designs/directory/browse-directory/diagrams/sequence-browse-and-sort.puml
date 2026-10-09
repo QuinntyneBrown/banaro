@@ -1,0 +1,74 @@
+@startuml
+title UML sequence behaviour — Browse, sort and page the directory
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member or visitor" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "DirectoryPage" as page
+  participant "HttpDirectoryApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "BuilderDirectoryController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "SearchDirectory" as action
+  participant "DirectorySorter" as sorter
+  participant "MatchScoreService" as match
+  participant "DistanceService" as distance
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  database "Redis" as redis
+end box
+
+actor -> page : Open /builders?sort=...&page=N, or choose a sort
+page -> page : Read q, sort and page from the URL (L2-009 criterion 3)
+opt results take longer than about 300 ms
+  page --> actor : loading state with 12 skeleton cards (L2-009 criterion 7)
+end
+page -> client : searchBuilders(query)
+client -> controller : GET /api/v1/builders?sort=&page=
+controller -> controller : Resolve session if present; validate SearchDirectoryRequest
+controller -> action : handle(viewer or null, query)
+action -> db : Complete profiles, minus viewer, ProfileVisibility and block scopes (L2-036, L2-044 criterion 5)
+action -> sorter : apply(query, sort, viewer)
+alt Best match (member default)
+  sorter -> match : scoresFor(viewer, candidates)
+  match -> redis : Read cached scores
+  match --> sorter : Score per builder
+  sorter -> sorter : Order by score desc, then last_active_at desc (L2-009 criterion 2)
+else Nearest
+  sorter -> distance : Join neighbourhood_distances from viewer's neighbourhood
+  sorter -> sorter : Order by distance asc
+else Recently active or Newest
+  sorter -> sorter : Order by last_active_at or created_at desc
+end
+action -> db : COUNT, clamp page to last page, load 12 rows (L2-009 criterion 5)
+db --> action : One page
+action --> controller : Paginator
+alt member
+  controller --> client : 200 BuilderCardResource items with score, distance, status (L2-009 criterion 1)
+else visitor
+  controller --> client : 200 PublicBuilderCardResource items: name, role, neighbourhood, skills, photo (L2-009 criterion 6)
+end
+alt success
+  client --> page : DirectoryResultPage
+  page -> page : Replace URL page if the API served a lower page
+  page --> actor : "1,284 builders in Toronto and the GTA" and 12 cards
+else failure
+  client --> page : Error
+  page --> actor : error state with "Try again" (L2-009 criterion 7)
+end
+@enduml

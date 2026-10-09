@@ -1,0 +1,80 @@
+@startuml
+title UML sequence behaviour — Owner replies to or hides feedback
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Owner" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ProjectDetailPage" as page
+  participant "ReplyToFeedbackDialog" as dialog
+  participant "HttpProjectsApi" as client
+  participant "ToastService" as toast
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "FeedbackReplyController" as rctrl
+  participant "FeedbackVisibilityController" as vctrl
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "FeedbackPolicy" as policy
+  participant "ReplyToFeedback" as reply
+  participant "HideFeedback" as hide
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+alt reply to an item
+  actor -> page : Select "Reply" on a feedback item
+  page -> dialog : Open reply dialog
+  actor -> dialog : Write reply, send
+  dialog -> dialog : busy state
+  dialog -> client : replyToFeedback(projectId, feedbackId, body)
+  client -> rctrl : PUT /api/v1/projects/{id}/feedback/{feedbackId}/reply
+  rctrl -> policy : reply(owner, feedback)
+  alt not the project owner
+    policy --> rctrl : Deny
+    rctrl --> client : 403
+  else owner
+    policy --> rctrl : Allow
+    rctrl -> reply : handle(feedback, body)
+    reply -> db : BEGIN; SELECT feedback FOR UPDATE
+    alt reply already exists
+      reply -> db : ROLLBACK
+      reply --> rctrl : 409 reply_exists (L2-016 criterion 4)
+      rctrl --> client : 409
+    else no reply yet
+      reply -> db : SET reply_body, replied_at; project last_activity_at = now; COMMIT
+      reply --> rctrl : Feedback
+      rctrl --> client : 200 FeedbackResource
+    end
+  end
+  client --> dialog : FeedbackView or error
+  dialog --> page : Close with the threaded reply, or failed state with retry
+  page --> actor : Reply shown under the item (L2-016 criterion 4)
+else hide an item
+  actor -> page : Select "Hide" on a feedback item
+  page -> client : hideFeedback(projectId, feedbackId)
+  client -> vctrl : PUT /api/v1/projects/{id}/feedback/{feedbackId}/hidden
+  vctrl -> policy : hide(owner, feedback)
+  policy --> vctrl : Allow for the project owner only
+  vctrl -> hide : handle(owner, feedback)
+  hide -> db : SET hidden_at = now, hidden_by = owner
+  hide --> vctrl : Feedback
+  vctrl --> client : 200 FeedbackResource
+  client --> page : FeedbackView
+  page -> toast : Confirm the item is hidden
+  page --> actor : Item removed from the public list
+  note over db : Feedback::visibleTo() keeps hidden items for the author\nand administrators (L2-016 criterion 4)
+end
+@enduml

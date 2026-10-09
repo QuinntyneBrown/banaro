@@ -1,0 +1,67 @@
+@startuml
+title UML sequence behaviour — Load the matching page
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "MatchingPage" as page
+  participant "HttpMatchingApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "MatchingOverviewController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "BuildMatchingOverview" as action
+  participant "MatchingScheduleService" as cal
+  participant "BlockService" as block
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /matching (guard passed)
+page --> actor : loading state, three skeleton cards (L2-023 criterion 4)
+page -> client : getOverview()
+client -> controller : GET /api/v1/matching
+controller -> controller : Authenticate verified member, validate ShowMatchingOverviewRequest
+controller -> action : handle(member)
+action -> db : Matching preference of session member
+action -> cal : isoWeekOf(now), nextRunDate(now)
+action -> db : This week's suggestions WHERE user_id = member
+db --> action : Suggestions
+loop each suggestion
+  action -> block : isBlockedEitherWay(member, builder)
+  block --> action : Drop when blocked (L2-032 criterion 1)
+end
+action -> action : unreviewedCount = suggestions with status suggested
+action --> controller : MatchingOverview
+controller --> client : 200 MatchingOverviewResource
+client --> page : MatchingOverview
+alt status paused
+  page --> actor : paused state with "Resume matching" (L2-025)
+else no suggestions this week
+  page --> actor : empty state with the next run date (L2-023 criterion 3)
+else every suggestion contacted or passed
+  page --> actor : reviewed state with outcomes and next Monday (L2-023 criterion 2)
+else open suggestions
+  page --> actor : default state, cards with builder, score, reasons, "Say hello" and "Pass" (L2-023 criterion 1)
+end
+opt request fails
+  client --> page : Error
+  page --> actor : error state with "Try again" (L2-023 criterion 4)
+  actor -> page : Select "Try again"
+  page -> client : getOverview()
+end
+@enduml

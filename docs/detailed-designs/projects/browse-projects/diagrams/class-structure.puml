@@ -1,0 +1,110 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Browse projects
+
+package "Frontend — banaro application, components and api libraries" {
+  class ProjectsPage {
+    -api: ProjectsApi
+    -router: Router
+    +query: Signal<ProjectQuery>
+    +results: Signal<ProjectSummary[]>
+    +total: Signal<number>
+    +state: 'loading' | 'default' | 'no-results' | 'error'
+    +applyQuery(change: Partial<ProjectQuery>): void
+    +removeFilter(name: string): void
+    +clearFilters(): void
+    +showMore(): void
+    +retry(): void
+  }
+  class ProjectCard {
+    selector bn-project-card
+    +project: InputSignal<ProjectSummary>
+  }
+  interface ProjectsApi {
+    +browse(query: ProjectQuery): Observable<Page<ProjectSummary>>
+  }
+  class HttpProjectsApi
+  class ProjectQuery {
+    +q: string | null
+    +stage: ProjectStage | null
+    +lookingFor: LookingForRole | null
+    +page: number
+  }
+  class ProjectSummary {
+    +id: string
+    +name: string
+    +owner: OwnerSummary
+    +summary: string
+    +stage: ProjectStage
+    +lookingFor: LookingForRole[]
+    +feedbackCount: number
+  }
+}
+
+package "Backend — Banaro API" {
+  class ProjectController {
+    +index(request: BrowseProjectsRequest): ResourceCollection
+  }
+  class BrowseProjectsRequest {
+    +rules(): array
+  }
+  class BrowseProjects {
+    +handle(input: array, viewer: ?User): LengthAwarePaginator
+  }
+  class ProjectSearchService {
+    +search(query: ProjectSearchQuery): LengthAwarePaginator
+  }
+  class ProjectSearchQuery {
+    +?string text
+    +?ProjectStage stage
+    +?LookingForRole lookingFor
+    +?User viewer
+    +int page
+    +int perPage
+  }
+  class BlockService {
+    +applyScope(query, viewer: User, column: string): Builder
+  }
+  class Project {
+    +int id
+    +int owner_id
+    +string name
+    +string summary
+    +ProjectStage stage
+    +int feedback_count
+    +Carbon last_activity_at
+  }
+  class ProjectLookingFor {
+    +int project_id
+    +LookingForRole role
+  }
+  class ProjectSummaryResource
+}
+
+ProjectsPage ..> ProjectsApi : uses
+ProjectsPage ..> ProjectCard : renders
+HttpProjectsApi ..|> ProjectsApi
+ProjectsApi ..> ProjectQuery : sends
+ProjectsApi ..> ProjectSummary : returns
+HttpProjectsApi ..> ProjectController : HTTPS
+
+ProjectController ..> BrowseProjectsRequest : validates with
+ProjectController ..> BrowseProjects : calls
+ProjectController ..> ProjectSummaryResource : returns
+BrowseProjects ..> ProjectSearchQuery : builds
+BrowseProjects ..> ProjectSearchService : calls
+ProjectSearchService ..> BlockService : excludes blocked owners
+ProjectSearchService --> Project : queries
+Project "1" *-- "*" ProjectLookingFor : lookingFor
+@enduml

@@ -1,0 +1,69 @@
+@startuml
+title UML sequence behaviour — Save matching preferences
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "MatchingSetupPage" as page
+  participant "HttpMatchingApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "MatchingPreferenceController" as controller
+  participant "SaveMatchingPreferencesRequest" as request
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "SaveMatchingPreferences" as action
+  participant "MatchingScheduleService" as schedule
+  participant "EmailPreferenceService" as emailprefs
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Choose roles, skills, distance and select "Start matching"
+page -> page : Client validation
+alt no looking-for role or no skill
+  page --> actor : invalid state with error summary and field errors (L2-021 criterion 2)
+else form complete
+  page -> page : submitting state, button disabled, aria-busy (L2-021 criterion 3)
+  page -> client : savePreferences(request)
+  client -> controller : PUT /api/v1/matching/preferences
+  controller -> controller : Authenticate verified member
+  controller -> request : Validate rules, drop protected fields (L2-044 criterion 4)
+  alt validation fails
+    request --> controller : Field errors
+    controller --> client : 422 with field errors
+    client --> page : Validation error
+    page --> actor : invalid state with server field errors (L2-021 criterion 2)
+  else valid
+    controller -> action : handle(member, data)
+    action -> db : BEGIN; UPSERT matching_preferences by user_id
+    note right of action : New row starts active;\nexisting row keeps its status
+    action -> emailprefs : set(member, Matches, weekly_email)
+    emailprefs -> db : UPDATE e-mail preference
+    action -> db : COMMIT
+    action -> schedule : nextRunDate(now)
+    schedule --> action : Next Monday 06:00 America/Toronto
+    action --> controller : MatchingPreference and nextRunOn
+    controller --> client : 200 MatchingPreferenceResource
+    client --> page : MatchingPreferences
+    page --> actor : success state, first three arrive on nextRunOn (L2-021 criterion 1)
+  end
+end
+opt server error or network failure
+  client --> page : Error
+  page --> actor : Failure message in the error summary, values kept
+end
+@enduml

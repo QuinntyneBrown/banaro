@@ -1,0 +1,48 @@
+@startuml
+title UML sequence behaviour — Route an unverified member to verify-email
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Unverified member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "Member page" as page
+  participant "emailVerificationInterceptor" as interceptor
+  participant "Router" as router
+  participant "VerifyEmailPage" as verify
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "RequireVerifiedEmail" as gate
+  participant "Member endpoint controller" as controller
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open a member page after signing in
+page -> interceptor : Member API request
+interceptor -> gate : GET or POST /api/v1/... with session cookie
+gate -> db : Load the session user
+db --> gate : User with email_verified_at null
+alt account unverified
+  gate --> interceptor : 403 { code: email_unverified } (L2-002 criterion 4)
+  interceptor -> router : navigateByUrl('/verify-email')
+  router -> verify : Activate default state
+  verify --> actor : "Confirm your e-mail" with "Send the link again"
+else account verified
+  gate -> controller : Pass the request on
+  controller --> interceptor : Normal response
+  interceptor --> page : Response
+  page --> actor : Member page
+end
+@enduml

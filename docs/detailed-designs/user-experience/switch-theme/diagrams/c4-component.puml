@@ -1,0 +1,36 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Switch theme
+
+ContainerDb(db, "Banaro database", "Relational database", "users.theme_preference")
+
+Container_Boundary(web, "Banaro Web") {
+  Component(server, "server.ts and app.routes.server.ts", "Angular SSR", "RenderMode.Server; Vary: Cookie; Cache-Control: private")
+  Component(service, "ThemeService", "components library", "preference, effective, toggle(), set(); reads REQUEST cookie on the server")
+  Component(switch, "bn-theme-switch", "components library", "aria-pressed button")
+  Component(shortcut, "ThemeShortcut", "shell", "t outside text fields")
+  Component(tokens, "tokens.css", "Design-system tokens", "Light on :root; dark under data-theme and prefers-color-scheme")
+  Component(sync, "THEME_SYNC binding", "app.config.ts", "Calls SettingsApi.updateTheme() for members")
+  Component(settingsApi, "HttpSettingsApi", "api library", "PUT /api/v1/settings/theme")
+}
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "ThemePreferenceController", "Controller", "update()")
+  Component(req, "UpdateThemePreferenceRequest", "Form request", "theme in ThemePreference")
+  Component(action, "UpdateThemePreference", "Action", "Stores the session member's preference")
+  Component(me, "MeResource", "API resource", "Includes theme")
+}
+
+Rel(server, service, "Renders with")
+Rel(switch, service, "toggle()")
+Rel(shortcut, service, "toggle()")
+Rel(service, tokens, "Sets data-theme that selects")
+Rel(service, sync, "Calls on change")
+Rel(sync, settingsApi, "Calls")
+Rel(settingsApi, ctrl, "PUT", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, action, "Calls handle()")
+Rel(action, db, "UPDATE users", "SQL")
+Rel(me, db, "Reads theme_preference", "SQL")
+@enduml

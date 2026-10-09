@@ -1,0 +1,70 @@
+@startuml
+title UML sequence behaviour — Change the password or sign out of other devices
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ChangePasswordDialog" as dialog
+  participant "SessionsSection" as sessions
+  participant "HttpSettingsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "PasswordController" as pwCtrl
+  participant "SessionController" as sessCtrl
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ChangePassword" as change
+  participant "SignOutOtherDevices" as signOut
+  participant "SessionRegistry" as registry
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis" as redis
+end box
+
+alt change password
+  actor -> dialog : Enter current and new password, submit
+  dialog -> dialog : busy state
+  dialog -> client : changePassword({current_password, password})
+  client -> pwCtrl : PUT /api/v1/settings/password
+  pwCtrl -> pwCtrl : Validate ChangePasswordRequest (current password, 12+ characters, not common)
+  alt invalid
+    pwCtrl --> client : 422 field errors
+    client --> dialog : invalid state with field errors
+  else valid
+    pwCtrl -> change : handle(member, newPassword, currentSessionId)
+    change -> db : UPDATE users.password (hashed), password_changed_at
+    change -> change : Regenerate current session id
+    change -> registry : revokeOthers(member, currentSessionId) (L2-035 criterion 1)
+    registry -> redis : Destroy every other session in the member's set
+    change -> redis : Queue PasswordChangedNotification (security e-mail, L2-029)
+    pwCtrl --> client : 204
+    client --> dialog : Close; settings shows success
+  end
+else sign out of other devices
+  actor -> sessions : Select "Sign out of other devices"
+  sessions -> client : signOutOtherDevices()
+  client -> sessCtrl : DELETE /api/v1/settings/sessions/others
+  sessCtrl -> signOut : handle(member, currentSessionId)
+  signOut -> registry : revokeOthers(member, currentSessionId) (L2-035 criterion 4)
+  registry -> redis : Destroy every other session in the member's set
+  sessCtrl --> client : 204
+  client --> sessions : Confirmation
+  sessions --> actor : Other devices signed out
+end
+opt server error on either path
+  client --> actor : failed state with retry; sessions unchanged
+end
+@enduml

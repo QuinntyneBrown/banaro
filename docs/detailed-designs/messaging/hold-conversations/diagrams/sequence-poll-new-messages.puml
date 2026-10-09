@@ -1,0 +1,66 @@
+@startuml
+title UML sequence behaviour — Receive new messages by polling
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "MessagesPage" as page
+  participant "ConversationPoller" as poller
+  participant "HttpMessagingApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "MessageController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ConversationPolicy" as policy
+  participant "ListMessages" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+page -> poller : start(conversationId, cursor) in the browser only, not during SSR
+loop every polling interval <TO SUPPLY> while the thread is open
+  alt document hidden
+    poller -> poller : Pause until the tab is visible again
+  else document visible
+    poller -> client : getMessages(conversationId, { after: cursor })
+    client -> controller : GET /api/v1/conversations/{id}/messages?after={cursor}
+    controller -> policy : view(member, conversation) (L2-026 criterion 9)
+    controller -> action : handle(member, conversation, after cursor)
+    action -> db : SELECT messages WHERE conversation_id = ? AND id > cursor ORDER BY id
+    db --> action : New messages, often none
+    action --> controller : Messages
+    controller --> client : 200 Thread with canReply
+    client --> poller : New ChatMessage list or error
+    alt new messages arrived
+      poller --> page : New messages
+      page -> page : Append in order, drop any already held by clientMessageId, move cursor
+      page --> actor : New messages shown without reloading, announced by role="log" (L2-026 criterion 4)
+      page -> client : markRead(conversationId, newest id)
+    else none
+      poller -> poller : Wait for the next interval
+    else canReply became false
+      page --> actor : Thread switches to read-only (L2-026 criterion 7)
+    else 403 or 404
+      poller -> poller : Stop polling
+    else network or server failure
+      poller -> poller : Back off before the next attempt; screen unchanged
+    end
+  end
+end
+actor -> page : Leave the thread or the page
+page -> poller : stop()
+@enduml

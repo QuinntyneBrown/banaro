@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Recover an expired session
+
+Person(member, "Member", "Signed-in, verified builder whose session has expired")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Session-expiry interceptor, session-expired dialog")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3, Sanctum", "Session lifetimes, 401 response, sign-in")
+  ContainerDb(db, "Banaro database", "Relational database", "users")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions with a 30-day idle time-to-live")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "Member API calls; GET /sanctum/csrf-cookie; GET and POST /api/v1/session", "JSON/HTTPS")
+Rel(api, redis, "Reads, refreshes and invalidates sessions", "Redis protocol")
+Rel(api, db, "Reads the account on sign-in", "SQL")
+@enduml

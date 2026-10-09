@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Block a builder
+
+Person(member, "Member", "Signed-in, verified builder")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Block-builder dialog, settings blocked list, toasts")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Block rules and the block scope for every listing")
+  ContainerDb(db, "Banaro database", "Relational database", "Blocks, builders, conversations, attendees")
+  ContainerDb(redis, "Redis", "Redis", "Sessions")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "GET, PUT and DELETE /api/v1/blocks", "JSON/HTTPS")
+Rel(api, redis, "Reads session", "Redis protocol")
+Rel(api, db, "Writes blocks, applies block scope to queries", "SQL")
+@enduml

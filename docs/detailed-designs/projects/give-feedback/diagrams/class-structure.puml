@@ -1,0 +1,113 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Give feedback on a project
+
+package "Frontend — banaro application and api library" {
+  class GiveFeedbackDialog {
+    -api: ProjectsApi
+    +body: FormControl<string>
+    +state: 'default' | 'busy' | 'invalid' | 'failed'
+    +post(): void
+  }
+  class ReplyToFeedbackDialog {
+    -api: ProjectsApi
+    +body: FormControl<string>
+    +state: 'default' | 'busy' | 'invalid' | 'failed'
+    +send(): void
+  }
+  class ProjectDetailPage {
+    +openGiveFeedback(): void
+    +openReply(item: FeedbackView): void
+    +hide(item: FeedbackView): void
+  }
+  interface ProjectsApi {
+    +giveFeedback(projectId: string, body: string): Observable<FeedbackView>
+    +replyToFeedback(projectId: string, feedbackId: string, body: string): Observable<FeedbackView>
+    +hideFeedback(projectId: string, feedbackId: string): Observable<FeedbackView>
+  }
+  class HttpProjectsApi
+}
+
+package "Backend — Banaro API" {
+  class FeedbackController {
+    +store(request: GiveFeedbackRequest, project: Project): FeedbackResource
+  }
+  class FeedbackReplyController {
+    +store(request: ReplyToFeedbackRequest, project: Project, feedback: Feedback): FeedbackResource
+  }
+  class FeedbackVisibilityController {
+    +store(request: HideFeedbackRequest, project: Project, feedback: Feedback): FeedbackResource
+  }
+  class ProjectPolicy {
+    +giveFeedback(user: ?User, project: Project): bool
+  }
+  class FeedbackPolicy {
+    +reply(user: User, feedback: Feedback): bool
+    +hide(user: User, feedback: Feedback): bool
+  }
+  class BlockService {
+    +isBlockedEitherWay(a: User, b: User): bool
+  }
+  class GiveFeedback {
+    +handle(author: User, project: Project, body: string): Feedback
+  }
+  class ReplyToFeedback {
+    +handle(feedback: Feedback, body: string): Feedback
+  }
+  class HideFeedback {
+    +handle(owner: User, feedback: Feedback): Feedback
+  }
+  class Project {
+    +int id
+    +int owner_id
+    +int feedback_count
+    +Carbon last_activity_at
+  }
+  class Feedback {
+    +int id
+    +int project_id
+    +int author_id
+    +string body
+    +?string reply_body
+    +?Carbon replied_at
+    +?Carbon hidden_at
+    +?int hidden_by
+    +hasReply(): bool
+  }
+  class FeedbackResource
+  class FeedbackReceivedNotification {
+    +via(owner: User): array
+    +toMail(owner: User): MailMessage
+  }
+}
+
+GiveFeedbackDialog ..> ProjectsApi : uses
+ReplyToFeedbackDialog ..> ProjectsApi : uses
+ProjectDetailPage ..> GiveFeedbackDialog : opens
+ProjectDetailPage ..> ReplyToFeedbackDialog : opens
+ProjectDetailPage ..> ProjectsApi : hides via
+HttpProjectsApi ..|> ProjectsApi
+HttpProjectsApi ..> FeedbackController : HTTPS
+
+FeedbackController ..> GiveFeedback : calls
+FeedbackReplyController ..> ReplyToFeedback : calls
+FeedbackVisibilityController ..> HideFeedback : calls
+FeedbackController ..> ProjectPolicy : authorize
+FeedbackReplyController ..> FeedbackPolicy : authorize
+FeedbackVisibilityController ..> FeedbackPolicy : authorize
+ProjectPolicy ..> BlockService : blocked pair check
+GiveFeedback ..> FeedbackReceivedNotification : queues
+FeedbackController ..> FeedbackResource : returns
+Project "1" *-- "*" Feedback : feedback
+@enduml

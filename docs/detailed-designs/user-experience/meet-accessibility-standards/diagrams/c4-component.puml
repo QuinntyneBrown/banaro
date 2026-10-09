@@ -1,0 +1,29 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Meet accessibility standards
+
+Container_Ext(e2e, "e2e test harness", "Playwright", "axe.spec.ts, keyboard.spec.ts, page objects")
+
+Container_Boundary(web, "Banaro Web") {
+  Component(styles, "tokens.css and focus.css", "Global foundations", "Focus ring 2 px, contrast-checked colours, reduced-motion durations")
+  Component(shell, "Shell", "shell", "Skip link, header, nav, main#main, footer; focus to main after navigation")
+  Component(title, "BanaroTitleStrategy", "api library", "Unique document titles from catalogue keys")
+  Component(dialog, "BnDialog", "components library", "Role, aria-modal, autoFocus, restoreFocus, disableClose while busy")
+  Component(cdkdialog, "Dialog and focus trap", "Angular CDK", "Contains Tab inside open modals")
+  Component(announcer, "Announcer", "components library", "polite and assertive announcements")
+  Component(live, "LiveAnnouncer", "Angular CDK a11y", "Hidden live region")
+  Component(toast, "bn-toast and error summary", "components library", "role=status, role=alert")
+  Component(pages, "Pages and dialogs", "banaro application", "One h1, labelled sections, text beside colour")
+}
+
+Rel(shell, title, "Uses on navigation")
+Rel(shell, announcer, "Announces new title")
+Rel(pages, dialog, "Open dialogs through")
+Rel(dialog, cdkdialog, "Configures")
+Rel(pages, announcer, "Announce loading complete")
+Rel(announcer, live, "Wraps")
+Rel(pages, toast, "Show status with")
+Rel(pages, styles, "Styled only by tokens from")
+Rel(e2e, shell, "Tabs through and runs axe on", "Chromium")
+@enduml

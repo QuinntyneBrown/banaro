@@ -1,0 +1,135 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — E-mail notifications
+
+package "Backend — Notifications" {
+  abstract class BanaroMailNotification <<ShouldQueue>> {
+    +int tries
+    +{abstract} category(): ?EmailCategory
+    +via(notifiable: User): array
+    +shouldSend(notifiable: User, channel: string): bool
+    +backoff(): array
+    +toMail(notifiable: User): MailMessage
+    +failed(e: Throwable): void
+  }
+  class MatchSuggestionsReadyNotification
+  class NewMessageNotification
+  class RsvpConfirmedNotification
+  class WaitlistPromotedNotification
+  class EventReminderNotification
+  class FeedbackReceivedNotification
+  class HelpOfferedNotification
+  class HelpOfferAnsweredNotification
+  class WeeklyDigestNotification
+  class VerifyEmailNotification
+  class MailerChannel {
+    +send(notifiable: User, notification: BanaroMailNotification): void
+  }
+}
+
+package "Backend — Contracts and Integrations" {
+  interface Mailer {
+    +send(email: OutgoingEmail): MailerReceipt
+  }
+  class "{Vendor}Mailer" as VendorMailer
+  class OutgoingEmail {
+    +string to
+    +string subject
+    +string html
+    +string text
+    +array headers
+    +string idempotencyKey
+  }
+  class MailerReceipt {
+    +string providerMessageId
+  }
+  class MailerUnavailable <<exception>>
+}
+
+package "Backend — Services, Commands and Jobs" {
+  class EmailPreferenceService <<settings>> {
+    +allows(user: User, category: EmailCategory): bool
+  }
+  class UnsubscribeTokenService <<settings>> {
+    +issue(user: User, category: EmailCategory): string
+  }
+  class NotificationDedupeService {
+    +claim(key: string): bool
+  }
+  class SendEventRemindersCommand {
+    +signature: 'events:send-reminders'
+    +handle(): int
+  }
+  class SendWeeklyDigestCommand {
+    +signature: 'notifications:send-weekly-digest'
+    +handle(): int
+  }
+  class SendWeeklyDigest <<ShouldQueue>> {
+    +int userId
+    +string isoWeek
+    +handle(): void
+  }
+}
+
+package "Backend — Models" {
+  class EmailDelivery {
+    +string notification_id
+    +int user_id
+    +EmailCategory category
+    +string status
+    +int attempts
+    +?string provider_message_id
+    +?Carbon sent_at
+    +?Carbon failed_at
+  }
+  class NotificationDedupeKey {
+    +string key
+    +Carbon created_at
+  }
+  enum EmailCategory {
+    Matches
+    Messages
+    Events
+    ProjectActivity
+    WeeklyDigest
+  }
+}
+
+BanaroMailNotification <|-- MatchSuggestionsReadyNotification
+BanaroMailNotification <|-- NewMessageNotification
+BanaroMailNotification <|-- RsvpConfirmedNotification
+BanaroMailNotification <|-- WaitlistPromotedNotification
+BanaroMailNotification <|-- EventReminderNotification
+BanaroMailNotification <|-- FeedbackReceivedNotification
+BanaroMailNotification <|-- HelpOfferedNotification
+BanaroMailNotification <|-- HelpOfferAnsweredNotification
+BanaroMailNotification <|-- WeeklyDigestNotification
+BanaroMailNotification <|-- VerifyEmailNotification
+BanaroMailNotification --> EmailCategory : category
+BanaroMailNotification ..> EmailPreferenceService : shouldSend
+BanaroMailNotification ..> MailerChannel : via
+MailerChannel ..> Mailer : send
+MailerChannel ..> UnsubscribeTokenService : token
+MailerChannel --> EmailDelivery : reads and writes
+MailerChannel ..> OutgoingEmail : builds
+VendorMailer ..|> Mailer
+Mailer ..> MailerReceipt : returns
+Mailer ..> MailerUnavailable : throws
+SendEventRemindersCommand ..> NotificationDedupeService : claim
+SendEventRemindersCommand ..> EventReminderNotification : sends
+SendWeeklyDigestCommand ..> SendWeeklyDigest : dispatches
+SendWeeklyDigest ..> NotificationDedupeService : claim
+SendWeeklyDigest ..> WeeklyDigestNotification : sends
+NotificationDedupeService --> NotificationDedupeKey : inserts
+@enduml

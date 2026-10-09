@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matching setup · invalid — Banaro</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="matching-setup">
+<meta name="mock:state" content="invalid">
+<meta name="description" content="Submitted with missing answers: field errors and a summary at the top.">
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="brand" href="../../pages/dashboard/default.html" aria-label="Banaro home"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a>
+    <nav class="nav" id="primary-nav" popover aria-label="Primary">
+      <ul class="nav__list"><li><a class="nav__link" href="../../pages/directory/default.html">Builders</a></li><li><a class="nav__link" href="../../pages/projects/default.html">Projects</a></li><li><a class="nav__link" href="../../pages/events/default.html">Events</a></li><li><a class="nav__link" href="../../pages/matching/default.html" aria-current="page">Matching</a></li></ul>
+      <button type="button" class="btn btn--quiet nav__close" popovertarget="primary-nav" popovertargetaction="hide">Close menu</button>
+    </nav>
+    <div class="header__actions"><a class="matches-link" href="../../pages/matching/default.html"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10z"/></svg>2 new matches</a><a class="icon-btn" href="../../pages/messages/default.html" aria-label="Messages, 1 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5A2.5 2.5 0 0 1 7 4h10a2.5 2.5 0 0 1 2.5 2.5v7A2.5 2.5 0 0 1 17 16h-5.5L7 19.5V16a2.5 2.5 0 0 1-2.5-2.5z"/></svg><span class="icon-btn__count" aria-hidden="true">1</span></a><a class="icon-btn" href="../../pages/notifications/default.html" aria-label="Notifications, 3 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg><span class="icon-btn__count" aria-hidden="true">3</span></a><a class="avatar-btn" href="../../dialogs/account-menu/default.html" aria-label="Your account, Amara Osei" aria-haspopup="menu"><img class="avatar" src="../../assets/photos/amara-osei.jpg" width="40" height="40" alt=""><span>Amara</span></a><button type="button" class="menu-btn" popovertarget="primary-nav" aria-label="Menu"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="menu-btn__label">Menu</span></button></div>
+  </div>
+</header>
+
+<main id="main">
+<div class="wrap">
+<div class="page-head"><p class="eyebrow">Co-founder matching</p><h1 class="page-head__title">Set up matching</h1><p class="page-head__sub">Tell us what you are building and who you need. We will suggest three builders nearby every Monday.</p></div>
+  <div class="narrow"><div class="stack stack--lg"><div class="form-summary" id="error-summary" role="alert" tabindex="-1"><p class="form-summary__title"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg>Fix these before continuing</p><ul><li><a href="#building">Tell us what you are building.</a></li><li><a href="#need-help">Choose at least one kind of person you need.</a></li><li><a href="#skills-help">Choose at least one skill you are looking for.</a></li></ul></div>
+    <form class="form" novalidate>
+      <div class="field"><label class="field__label" for="building">What you are building</label><textarea class="textarea" id="building" name="building" rows="4" aria-describedby="building-help building-err" aria-invalid="true" required></textarea><p class="field__help" id="building-help">A sentence or two is plenty.</p><p class="field__error" id="building-err"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg><span>Tell us what you are building.</span></p></div>
+      <fieldset class="field" style="border: 0; padding: 0; margin: 0" aria-describedby="need-help need-err"><legend class="field__label" style="padding: 0">Who you need</legend><p class="field__help" id="need-help">Pick all that apply.</p><div class="choices"><label class="choice"><input type="checkbox" name="need" value="cofounder"><span class="choice__title">Co-founder</span><span class="choice__text">Someone to build the product with me, full time or soon.</span></label><label class="choice"><input type="checkbox" name="need" value="advisor"><span class="choice__title">Advisor</span><span class="choice__text">Someone who has done this before and can guide key decisions.</span></label><label class="choice"><input type="checkbox" name="need" value="contributor"><span class="choice__title">Contributor</span><span class="choice__text">Someone who can help for a season or on a specific piece.</span></label></div><p class="field__error" id="need-err"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg><span>Choose at least one kind of person you need.</span></p></fieldset>
+      <fieldset class="field" style="border: 0; padding: 0; margin: 0" aria-describedby="skills-help skills-err"><legend class="field__label" style="padding: 0">Skills wanted</legend><p class="field__help" id="skills-help">Choose the skills that would complete your team.</p><ul class="chips"><li><button type="button" class="chip" aria-pressed="false">Laravel</button></li><li><button type="button" class="chip" aria-pressed="false">Angular</button></li><li><button type="button" class="chip" aria-pressed="false">PostgreSQL</button></li><li><button type="button" class="chip" aria-pressed="false">Python</button></li><li><button type="button" class="chip" aria-pressed="false">iOS</button></li><li><button type="button" class="chip" aria-pressed="false">Fundraising</button></li><li><button type="button" class="chip" aria-pressed="false">Product design</button></li><li><button type="button" class="chip" aria-pressed="false">DevOps</button></li></ul><p class="field__error" id="skills-err"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg><span>Choose at least one skill you are looking for.</span></p></fieldset>
+      <div class="range"><label class="range__label" for="distance"><span>How far you will travel</span><span>40 km</span></label><input class="range__input" id="distance" name="distance" type="range" min="5" max="60" step="5" value="40" aria-valuetext="40 kilometres from Leslieville"><div class="range__ends"><span>5 km</span><span>60 km</span></div></div>
+      <div class="switch"><div><label class="switch__title" for="weekly" style="display: block">Weekly e-mail</label><p class="switch__text" id="weekly-help">We e-mail your three every Monday morning.</p></div><input class="switch__control" id="weekly" name="weekly" type="checkbox" role="switch" aria-describedby="weekly-help" checked></div>
+      <div class="form-actions"><button type="submit" class="btn btn--primary">Start matching</button><a class="btn btn--quiet" href="../../pages/matching/default.html">Cancel</a></div>
+    </form></div></div>
+</div>
+</main>
+
+<footer class="footer" id="footer">
+  <div class="wrap footer__grid">
+    <p class="footer__made">Made in Toronto. © 2026 Banaro.</p>
+    <nav aria-label="Footer">
+      <ul class="footer__links"><li><a href="../../pages/about/default.html">About</a></li><li><a href="../../pages/code-of-conduct/default.html">Code of conduct</a></li><li><a href="../../pages/privacy/default.html">Privacy</a></li><li><a href="../../pages/contact/default.html">Contact</a></li></ul>
+    </nav>
+    <p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+  </div>
+</footer>
+<p class="mock-note" style="top: 7rem; right: 1rem">On submit, focus moves to the error summary; each link jumps to its field.</p>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="Mock gallery">⌂</a>
+  <span class="mock-bar__screen">Matching setup</span>
+  <ul class="mock-bar__states"><li><a href="default.html">default</a></li><li><a href="invalid.html" aria-current="page">invalid</a></li><li><a href="submitting.html">submitting</a></li><li><a href="success.html">success</a></li></ul>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

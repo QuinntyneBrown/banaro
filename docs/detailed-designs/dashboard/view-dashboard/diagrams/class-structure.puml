@@ -1,0 +1,118 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — View the dashboard
+
+package "Frontend — banaro application and api library" {
+  class DashboardPage {
+    -api: DashboardApi
+    -dialog: Dialog
+    +dashboard: Signal<Dashboard | null>
+    +state: Signal<'loading' | 'default' | 'empty' | 'partial' | 'error'>
+    +load(): void
+    +retrySection(name: SectionName): void
+    +sayHello(suggestion: MatchSuggestionCard): void
+  }
+  class authGuard <<CanActivateFn>> {
+    +redirect: '/sign-in?returnTo=...'
+  }
+  interface DashboardApi {
+    +getDashboard(): Observable<Dashboard>
+    +getSection(name: SectionName): Observable<DashboardSection>
+  }
+  class HttpDashboardApi
+  class InMemoryDashboardApi
+  class Dashboard {
+    +firstName: string
+    +hasActivity: boolean
+    +nextSteps: NextStep[]
+    +sections: Record<SectionName, DashboardSection>
+  }
+  class "DashboardSection<T>" as DashboardSection {
+    +name: SectionName
+    +status: 'ok' | 'failed'
+    +data: T | null
+  }
+  enum SectionName {
+    matches
+    events
+    messages
+    projects
+    profile
+  }
+}
+
+package "Backend — Banaro API" {
+  class DashboardController {
+    +show(request: ViewDashboardRequest): DashboardResource
+    +section(request: ViewDashboardSectionRequest, section: DashboardSectionName): DashboardSectionResource
+  }
+  class BuildDashboard {
+    +handle(member: User): DashboardView
+  }
+  class BuildDashboardSection {
+    +handle(member: User, section: DashboardSectionName): SectionResult
+  }
+  class DashboardAssembler {
+    +all(member: User): SectionResult[]
+    +one(member: User, section: DashboardSectionName): SectionResult
+  }
+  interface DashboardSectionProvider {
+    +name(): DashboardSectionName
+    +load(member: User): array
+  }
+  class MatchesSection
+  class EventsSection
+  class MessagesSection
+  class ProjectsSection
+  class ProfileSection
+  class SectionResult {
+    +DashboardSectionName name
+    +string status
+    +?array data
+  }
+  enum DashboardSectionName {
+    Matches
+    Events
+    Messages
+    Projects
+    Profile
+  }
+  class DashboardResource
+  class DashboardSectionResource
+}
+
+DashboardPage ..> DashboardApi : uses
+DashboardPage ..> authGuard : guarded by
+HttpDashboardApi ..|> DashboardApi
+InMemoryDashboardApi ..|> DashboardApi
+DashboardApi ..> Dashboard : returns
+Dashboard *-- "5" DashboardSection
+DashboardSection --> SectionName
+HttpDashboardApi ..> DashboardController : HTTPS
+
+DashboardController ..> BuildDashboard : calls
+DashboardController ..> BuildDashboardSection : calls
+DashboardController ..> DashboardResource : returns
+DashboardController ..> DashboardSectionResource : returns
+BuildDashboard ..> DashboardAssembler : uses
+BuildDashboardSection ..> DashboardAssembler : uses
+DashboardAssembler o-- "5" DashboardSectionProvider : providers
+DashboardAssembler ..> SectionResult : creates
+MatchesSection ..|> DashboardSectionProvider
+EventsSection ..|> DashboardSectionProvider
+MessagesSection ..|> DashboardSectionProvider
+ProjectsSection ..|> DashboardSectionProvider
+ProfileSection ..|> DashboardSectionProvider
+SectionResult --> DashboardSectionName
+@enduml

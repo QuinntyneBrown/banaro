@@ -1,0 +1,54 @@
+@startuml
+title UML sequence behaviour — Gate the build on page budgets
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Developer" as actor
+box "Pipeline — .ci" #FFF4E5
+  participant "Frontend build stage" as build
+  participant "bundle-budget check" as budget
+  participant "Lighthouse stage" as lh
+end box
+box "Frontend — Banaro Web server" #E0F2FE
+  participant "server.ts (banaro build)" as server
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "Seeded Banaro API" as api
+end box
+participant "Chromium (Lighthouse)" as chrome
+
+actor -> build : Push a change
+build -> build : ng build banaro --configuration production --stats-json
+build -> budget : dist/banaro/browser/index.html and stats.json
+budget -> budget : Gzip each module script and modulepreload; sum
+alt sum > 200 KB or an input under projects/admin/
+  budget --> actor : Stage fails (L2-048 criterion 2)
+else within budget
+  budget --> lh : Continue
+  lh -> server : Start against the seeded API
+  lh -> chrome : Navigate / and /builders, mobile profile, fast 4G (values <TO SUPPLY>)
+  chrome -> server : Page requests
+  server -> api : SSR data
+  api --> server : JSON
+  server --> chrome : HTML and assets
+  chrome --> lh : LCP and CLS per run
+  lh -> chrome : Timespan user flow on /builders: open filters, toggle a skill, type in search
+  chrome --> lh : INP
+  alt LCP > 2.5 s or CLS > 0.1 or INP > 200 ms
+    lh --> actor : Stage fails with the report (L2-048 criterion 1)
+  else all within budget
+    lh --> actor : Stage passes; report attached
+  end
+end
+@enduml

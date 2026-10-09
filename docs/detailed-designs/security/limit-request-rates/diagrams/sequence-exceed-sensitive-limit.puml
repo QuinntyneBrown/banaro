@@ -1,0 +1,61 @@
+@startuml
+title UML sequence behaviour — Exceed a sensitive endpoint limit
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "GiveFeedbackDialog" as dialog
+  participant "HttpProjectsApi" as client
+  participant "rateLimitInterceptor" as interceptor
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ThrottleRequestsWithLogging (api)" as general
+  participant "ThrottleRequestsWithLogging (feedback)" as throttle
+  participant "FeedbackController" as controller
+  participant "Exception rendering" as render
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "GiveFeedback" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Redis" as redis
+  participant "Log pipeline" as logs
+end box
+
+actor -> dialog : Submit an eleventh feedback within one hour
+dialog -> client : giveFeedback(projectId, body)
+client -> interceptor : POST /api/v1/projects/{id}/feedback
+interceptor -> general : Request
+general -> redis : INCR api:{hash}
+redis --> general : Under 120 per minute
+general -> throttle : Next
+throttle -> redis : INCR feedback:{hash} in 3,600 s window
+redis --> throttle : Count
+alt count <= 10
+  throttle -> controller : store(...)
+  controller -> action : handle(member, data)
+  action --> controller : Feedback
+  controller --> interceptor : 201 FeedbackResource
+  interceptor --> dialog : Feedback
+  dialog --> actor : Dialog closes; feedback at top of list
+else count > 10 (L2-016 criterion 5)
+  throttle -> logs : rate_limit.exceeded, route, limiter feedback, client hash (L2-046 criterion 3)
+  throttle -> render : ThrottleRequestsException
+  render --> interceptor : 429 rate_limited, limiter feedback, Retry-After
+  interceptor --> dialog : RateLimitedError(feedback, seconds)
+  dialog -> dialog : failed state with rateLimit.feedback; text preserved
+  dialog --> actor : Specific "slow down" message, role="alert" (L2-046 criterion 2)
+end
+@enduml

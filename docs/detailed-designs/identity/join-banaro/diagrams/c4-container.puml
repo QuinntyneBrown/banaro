@@ -1,0 +1,23 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Join Banaro
+
+Person(visitor, "Visitor", "Person using Banaro without signing in")
+System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Join page with default, invalid, submitting and success states")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Validation, password policy, account creation")
+  Container(worker, "Banaro Worker", "Laravel Horizon", "Sends queued e-mail")
+  ContainerDb(db, "Banaro database", "Relational database", "users, email_verification_tokens")
+  ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters and Horizon queues")
+}
+
+Rel(visitor, web, "Uses", "HTTPS")
+Rel(web, api, "POST /api/v1/join", "JSON/HTTPS")
+Rel(api, redis, "Counts join attempts per IP, queues e-mail", "Redis protocol")
+Rel(api, db, "Writes the unverified account", "SQL")
+Rel(worker, redis, "Takes jobs from", "Redis protocol")
+Rel(worker, mail, "Sends e-mail via", "Mailer contract")
+@enduml

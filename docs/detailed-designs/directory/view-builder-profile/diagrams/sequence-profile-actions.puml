@@ -1,0 +1,52 @@
+@startuml
+title UML sequence behaviour — Act on a builder profile
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "BuilderProfilePage" as page
+  participant "CDK Dialog" as cdk
+  participant "SayHelloDialog" as hello
+  participant "ReportDialog" as report
+  participant "BlockBuilderDialog" as block
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "Banaro API" as api
+end box
+
+actor -> page : View another builder's profile (actions from the response)
+alt "Say hello" (actions.sayHello)
+  actor -> page : Select "Say hello"
+  page -> cdk : open(SayHelloDialog, { builderId })
+  cdk -> hello : Create; focus moves inside (L2-011 criterion 6)
+  hello -> api : Send first message (messaging feature, L2-026)
+  hello --> cdk : Close with result
+else "Report {first name}" from "More"
+  actor -> page : Open "More", select "Report {first name}"
+  page -> cdk : open(ReportDialog, { subject: builder })
+  cdk -> report : Create; focus moves inside (L2-011 criterion 6)
+  report -> api : Store report (trust-and-safety feature, L2-031)
+  report --> cdk : Close with result
+else "Block {first name}" from "More"
+  actor -> page : Open "More", select "Block {first name}"
+  page -> cdk : open(BlockBuilderDialog, { builderId })
+  cdk -> block : Create; focus moves inside (L2-011 criterion 6)
+  block -> api : Create block (trust-and-safety feature, L2-032)
+  block --> cdk : Close with blocked = true
+  cdk --> page : Result
+  page --> actor : Outcome as the block-builder feature defines it
+end
+cdk --> page : Focus returns to the control that opened the dialog (L2-050 criterion 3)
+@enduml

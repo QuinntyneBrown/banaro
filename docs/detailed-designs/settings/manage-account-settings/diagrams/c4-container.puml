@@ -1,0 +1,23 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Manage account settings
+
+Person(member, "Member", "Signed-in, verified builder")
+System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Settings page, password dialogs, e-mail confirmation page")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Account updates, e-mail change, password change, session revocation")
+  Container(worker, "Banaro Worker", "Laravel Horizon", "Sends queued account e-mail")
+  ContainerDb(db, "Banaro database", "Relational database", "Users and pending e-mail changes")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions, per-user session sets, Horizon queues")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "GET /api/v1/settings, PATCH account, PUT password, DELETE sessions/others", "JSON/HTTPS")
+Rel(api, db, "Reads and writes account", "SQL")
+Rel(api, redis, "Destroys other sessions, queues e-mail", "Redis protocol")
+Rel(worker, redis, "Takes jobs from", "Redis protocol")
+Rel(worker, mail, "Sends e-mail via", "Mailer contract")
+@enduml

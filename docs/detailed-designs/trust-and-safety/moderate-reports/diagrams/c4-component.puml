@@ -1,0 +1,42 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Moderate reports
+
+Container(web, "Banaro Web", "Angular", "adminGate, ReportsPage, ReportDetailPage, ModerationActionDialog, HttpModerationApi")
+ContainerDb(db, "Banaro database", "Relational database", "reports, moderation_actions, audit_entries, users")
+ContainerQueue(redis, "Redis", "Redis", "Sessions and Horizon queues")
+
+Container_Boundary(api, "Banaro API") {
+  Component(mw, "EnsureAdministrator", "Middleware", "403 unless role is Administrator")
+  Component(access, "AdminAccessController", "Laravel controller", "GET /admin/access")
+  Component(list, "AdminReportController", "Laravel controller", "GET /admin/reports, GET /admin/reports/{report}")
+  Component(actCtrl, "ReportActionController", "Laravel controller", "POST /admin/reports/{report}/actions")
+  Component(req, "ActOnReportRequest", "Form request", "Action type and required note")
+  Component(action, "ActOnReport", "Action", "Locks the report, applies the effect, records action and audit entry")
+  Component(moderation, "ModerationService", "Domain service", "warn, suspend, remove")
+  Component(sessions, "SessionRegistry", "Domain service", "Revokes every session of a suspended member")
+  Component(audit, "AuditLogger", "Domain service", "Writes immutable audit entries")
+  Component(models, "Report / ModerationAction / AuditEntry", "Eloquent models", "Report status, decisions and audit trail")
+  Component(resources, "AdminReportResource / AdminReportDetailResource", "API resources", "Only shapes that include the reporter")
+  Component(notify, "MemberWarned / AccountSuspended / ContentRemoved notifications", "Queued notifications", "mail channel")
+}
+
+Rel(web, mw, "Calls", "JSON/HTTPS")
+Rel(mw, access, "Admits administrators to")
+Rel(mw, list, "Admits administrators to")
+Rel(mw, actCtrl, "Admits administrators to")
+Rel(list, resources, "Returns")
+Rel(list, models, "Reads oldest first")
+Rel(actCtrl, req, "Validates with")
+Rel(actCtrl, action, "Calls handle()")
+Rel(action, moderation, "Applies effect with")
+Rel(action, sessions, "Calls revokeAll() after commit")
+Rel(action, audit, "Records with")
+Rel(action, models, "Locks and writes")
+Rel(audit, models, "Inserts AuditEntry")
+Rel(action, notify, "Queues after commit")
+Rel(models, db, "Reads and writes", "SQL")
+Rel(sessions, redis, "Deletes sessions", "Redis protocol")
+Rel(notify, redis, "Pushed to", "Redis protocol")
+@enduml

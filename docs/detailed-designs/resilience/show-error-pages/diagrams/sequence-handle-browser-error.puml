@@ -1,0 +1,43 @@
+@startuml
+title UML sequence behaviour — Handle an unhandled browser error
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor or member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "Any component" as comp
+  participant "AppErrorHandler" as handler
+  participant "RouterErrorPageNavigator" as nav
+  participant "ServerErrorPage" as page
+  participant "SeoService" as seo
+end box
+
+actor -> comp : Interact with a page
+comp -> comp : Throws an unhandled error
+comp -> handler : handleError(error)
+handler -> handler : Write error to the console only
+alt ServerErrorPage already showing
+  handler -> handler : Skip navigation, prevent a loop
+else any other page
+  handler -> nav : serverError(null, currentUrl) (L2-042 criterion 4)
+  nav -> page : Navigate to /500, skipLocationChange, state {failedUrl}
+  page -> seo : setTitle("Something went wrong"), noindex() (L2-042 criterion 5)
+  page --> actor : "Something went wrong on our side", no stack trace or internal detail
+end
+opt "Try again"
+  actor -> page : Select "Try again"
+  page -> nav : Navigate to failedUrl
+  nav --> actor : Original page re-renders
+end
+@enduml

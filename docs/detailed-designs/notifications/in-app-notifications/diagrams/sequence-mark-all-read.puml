@@ -1,0 +1,51 @@
+@startuml
+title UML sequence behaviour — Mark all notifications as read
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "NotificationsPage" as page
+  participant "UnreadCountStore" as store
+  participant "HttpNotificationsApi" as client
+  participant "ToastService" as toast
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "NotificationController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "MarkAllNotificationsRead" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Select "Mark all as read"
+page -> client : markAllRead()
+client -> controller : POST /api/v1/notifications/read-all
+controller -> controller : Authenticate, validate MarkAllNotificationsReadRequest
+controller -> action : handle(member)
+action -> db : UPDATE notifications SET read_at = now\nWHERE notifiable_id = member AND read_at IS NULL
+db --> action : Rows updated
+action --> controller : Count
+controller --> client : 204
+client --> page : Done
+alt success
+  page -> store : clear()
+  page --> actor : read state; header count cleared (L2-027 criterion 3)
+else failure
+  page -> toast : Show danger toast with "Try again"
+  page --> actor : default state unchanged
+end
+@enduml

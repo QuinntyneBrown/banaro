@@ -1,0 +1,62 @@
+@startuml
+title UML sequence behaviour — Block a builder
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "BuilderProfilePage" as page
+  participant "BlockBuilderDialog" as dialog
+  participant "HttpTrustAndSafetyApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "BlockController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "BlockBuilder" as action
+  participant "BlockService" as service
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Select "More", then "Block Daniel"
+page -> dialog : Open block-builder dialog (focus on "Cancel")
+actor -> dialog : Select "Block Daniel"
+dialog -> dialog : Enter busy state "Blocking…" (L2-032 criterion 2)
+dialog -> client : block(builderId)
+client -> controller : PUT /api/v1/blocks/{builder}
+controller -> controller : Authenticate verified member, validate BlockBuilderRequest
+controller -> action : handle(blocker, builder)
+alt builder is the member
+  action --> controller : 422 cannot_block_self
+else builder missing, deleted or has blocked the member
+  action -> service : isBlockedEitherWay(builder, blocker)
+  service -> db : Query blocks both directions
+  service --> action : true
+  action --> controller : 404 (no block revealed)
+else builder visible
+  action -> db : INSERT block (blocker, blocked) unless it exists
+  db --> action : Block row
+  action --> controller : Block (no notification to blocked party)
+  controller --> client : 204
+end
+client --> dialog : Result or error
+alt success
+  dialog --> page : Close with result
+  page --> actor : Leave the profile; both hidden from each other (L2-032 criterion 1)
+else server or network error
+  dialog --> actor : failed state with "Try again"; nothing changed (L2-032 criterion 2)
+end
+@enduml

@@ -1,0 +1,61 @@
+@startuml
+title UML sequence behaviour — Operate a dialog with the keyboard
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member (keyboard)" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "EventDetailPage" as page
+  participant "CancelRsvpDialog" as dialog
+  participant "HttpEventsApi" as client
+end box
+box "Frontend — components library" #E0F2FE
+  participant "BnDialog" as bn
+  participant "CDK Dialog and focus trap" as cdk
+  participant "Announcer" as announcer
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "RsvpController" as api
+end box
+
+actor -> page : Tab to "Cancel RSVP" (2 px focus ring visible) and press Enter
+page -> bn : open(CancelRsvpDialog, autoFocus "Keep my spot")
+bn -> cdk : open(role dialog, aria-modal, aria-labelledby h2, restoreFocus)
+cdk -> dialog : Attach
+cdk -> dialog : Focus "Keep my spot" (L2-050 criterion 3)
+loop Tab and Shift+Tab
+  actor -> cdk : Tab
+  cdk --> actor : Focus wraps inside the dialog only
+end
+alt member presses Escape
+  actor -> cdk : Escape
+  cdk -> dialog : close()
+  cdk --> page : Focus returns to "Cancel RSVP" (L2-050 criterion 3)
+else member confirms
+  actor -> dialog : Enter on "Cancel RSVP" in the dialog
+  dialog -> dialog : state = busy; disableClose = true
+  dialog -> client : cancelRsvp(eventId)
+  client -> api : DELETE /api/v1/events/{id}/rsvp
+  opt Escape while busy
+    actor -> cdk : Escape
+    cdk --> actor : Ignored; dialog stays open
+  end
+  api --> client : 200 RsvpSummary
+  client --> dialog : Done
+  dialog -> cdk : close()
+  cdk --> page : Focus returns to the opener
+  page -> announcer : polite(rsvp.cancelled) via toast role=status (L2-050 criterion 4)
+  announcer --> actor : Toast text read without focus change
+end
+@enduml

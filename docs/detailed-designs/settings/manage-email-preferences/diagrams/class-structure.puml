@@ -1,0 +1,99 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Manage e-mail preferences
+
+package "Frontend — banaro application and api library" {
+  class EmailPreferencesSection {
+    -api: SettingsApi
+    +preferences: Signal<EmailPreferences>
+    +saving: Signal<Set<string>>
+    +toggle(category: string, enabled: boolean): void
+  }
+  class UnsubscribePage {
+    -api: SettingsApi
+    +state: 'busy' | 'success' | 'error'
+    +category: string
+  }
+  interface SettingsApi {
+    +setEmailPreference(category: string, enabled: boolean): Observable<EmailPreferences>
+    +unsubscribe(token: string): Observable<UnsubscribeResult>
+  }
+  class HttpSettingsApi
+  class EmailPreferences {
+    +matches: boolean
+    +messages: boolean
+    +events: boolean
+    +projectActivity: boolean
+    +weeklyDigest: boolean
+  }
+}
+
+package "Backend — Banaro API" {
+  class EmailPreferenceController {
+    +update(request: SetEmailPreferenceRequest, category: EmailCategory): EmailPreferencesResource
+  }
+  class UnsubscribeController {
+    +store(request: UnsubscribeRequest): JsonResponse
+  }
+  class SetEmailPreference {
+    +handle(member: User, category: EmailCategory, enabled: bool): array
+  }
+  class Unsubscribe {
+    +handle(token: string): EmailCategory
+  }
+  class UnsubscribeTokenService {
+    +issue(member: User, category: EmailCategory): string
+    +verify(token: string): ?UnsubscribeClaim
+  }
+  class EmailPreferenceService {
+    +allows(member: User, category: EmailCategory): bool
+  }
+  class EmailPreference {
+    +int user_id
+    +EmailCategory category
+    +bool enabled
+  }
+  enum EmailCategory {
+    Matches
+    Messages
+    Events
+    ProjectActivity
+    WeeklyDigest
+  }
+  class UnsubscribeClaim {
+    +int userId
+    +EmailCategory category
+  }
+  class User {
+    +int id
+  }
+}
+
+EmailPreferencesSection ..> SettingsApi : uses
+UnsubscribePage ..> SettingsApi : uses
+HttpSettingsApi ..|> SettingsApi
+SettingsApi ..> EmailPreferences : returns
+HttpSettingsApi ..> EmailPreferenceController : HTTPS
+HttpSettingsApi ..> UnsubscribeController : HTTPS
+
+EmailPreferenceController ..> SetEmailPreference : calls
+UnsubscribeController ..> Unsubscribe : calls
+Unsubscribe ..> UnsubscribeTokenService : verifies with
+Unsubscribe ..> SetEmailPreference : calls
+UnsubscribeTokenService ..> UnsubscribeClaim : returns
+SetEmailPreference --> EmailPreference : upserts
+EmailPreferenceService ..> EmailPreference : reads
+User "1" *-- "5" EmailPreference
+EmailPreference --> EmailCategory : has
+@enduml

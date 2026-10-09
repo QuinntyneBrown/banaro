@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Switch theme
+
+Person(member, "Member", "Signed-in builder")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular SSR on Express", "Reads bn-theme cookie, writes data-theme, ThemeService, ThemeSwitch")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "PUT /settings/theme, theme in GET /me")
+  ContainerDb(db, "Banaro database", "Relational database", "users.theme_preference")
+}
+
+Rel(member, web, "Requests pages with bn-theme cookie", "HTTPS")
+Rel(web, api, "Saves and reads the preference", "JSON/HTTPS")
+Rel(api, db, "Reads and writes theme_preference", "SQL")
+@enduml

@@ -1,0 +1,36 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — In-app notifications
+
+Container(web, "Banaro Web", "Angular", "NotificationsPage, header bell, UnreadCountStore, HttpNotificationsApi")
+ContainerDb(db, "Banaro database", "Relational database", "notifications")
+Container(worker, "Banaro Worker", "Laravel Horizon", "Feature notifications on the database channel")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "NotificationController", "Laravel controller", "index, unreadCount, markRead, markAllRead")
+  Component(req, "ListNotificationsRequest / MarkNotificationReadRequest / MarkAllNotificationsReadRequest", "Form requests", "Page size 12 by default, 50 at most")
+  Component(list, "ListNotifications", "Action", "Newest first, block-filtered")
+  Component(count, "CountUnreadNotifications", "Action", "Unread rows of the member")
+  Component(mark, "MarkNotificationRead", "Action", "Sets read_at once")
+  Component(markall, "MarkAllNotificationsRead", "Action", "One UPDATE for every unread row")
+  Component(block, "BlockService", "Domain service (trust and safety)", "isBlockedEitherWay()")
+  Component(model, "DatabaseNotification", "Laravel model", "Member's notifications relation")
+  Component(resource, "NotificationResource / UnreadCountResource", "API resources", "AppNotification and count shapes")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, list, "Calls handle()")
+Rel(ctrl, count, "Calls handle()")
+Rel(ctrl, mark, "Calls handle()")
+Rel(ctrl, markall, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(list, block, "Drops blocked actors")
+Rel(list, model, "Reads")
+Rel(count, model, "Counts")
+Rel(mark, model, "Updates")
+Rel(markall, model, "Updates")
+Rel(model, db, "Reads and writes", "SQL")
+Rel(worker, db, "Inserts rows", "SQL")
+@enduml

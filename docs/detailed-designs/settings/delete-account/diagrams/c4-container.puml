@@ -1,0 +1,25 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Delete an account
+
+Person(member, "Member", "Signed-in, verified builder")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Settings data-export panel, delete-account dialog")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Anonymises account, deletes projects, revokes sessions, signs export links")
+  Container(worker, "Banaro Worker", "Laravel Horizon and scheduler", "ErasePersonalData, BuildDataExport, daily sweep, export pruning")
+  ContainerDb(db, "Banaro database", "Relational database", "Users, profiles, projects, messages, RSVPs, data exports")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions and Horizon queues")
+  ContainerDb(media, "Media storage", "Private file storage", "Profile photos and export archives")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "DELETE /api/v1/settings/account; POST and GET data-exports", "JSON/HTTPS")
+Rel(api, db, "Anonymises account, deletes projects in one transaction", "SQL")
+Rel(api, redis, "Revokes sessions, queues jobs", "Redis protocol")
+Rel(api, media, "Streams export download", "Storage API")
+Rel(worker, redis, "Takes jobs from", "Redis protocol")
+Rel(worker, db, "Erases personal data, writes exports", "SQL")
+Rel(worker, media, "Deletes photo, writes and prunes archives", "Storage API")
+@enduml
