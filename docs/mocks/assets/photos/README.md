@@ -1,4 +1,4 @@
-# Shared photography for the concept mocks
+# Photography for the Banaro mocks
 
 Stock photographs from Unsplash, used under the Unsplash Licence (free to use, no attribution
 required), resized and recompressed for the mocks (scenes 1600 px, portraits 480 px square).
