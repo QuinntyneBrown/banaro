@@ -36,6 +36,7 @@ docs/mocks/<NN-slug>/
   pages/directory/default.html
 docs/mocks/assets/photos/         shared photography (Unsplash licence) used by photo-led concepts
 docs/mocks/assets/fonts/          offline woff2 copies of open-licence fonts + fonts.css
+docs/mocks/assets/thumbs/         gallery previews (1440×900 captures, light and dark)
 ```
 
 Re-check a concept and regenerate its gallery:
