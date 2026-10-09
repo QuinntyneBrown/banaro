@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Builder directory · default — Banaro · Plain &amp; Clear</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="directory">
+<meta name="mock:state" content="default">
+<meta name="description" content="Signed-in builder directory as a plain search page: real checkboxes in fieldsets with legends, an Apply filters button, and results as simple summary lists with large, high-contrast text.">
+<link rel="stylesheet" href="../../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/tokens.css">
+<link rel="stylesheet" href="../../assets/ui.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="header">
+  <div class="width-container header__inner">
+    <a class="header__logo" href="../home/default.html">Banaro</a>
+    <ul class="header__links">
+      <li><a class="header__link" href="#results">Matches (2 new)</a></li>
+      <li><a class="header__link" href="#results">Notifications (3 unread)</a></li>
+      <li><a class="header__link" href="#main">Amara Osei</a></li>
+      <li><a class="header__link" href="../home/default.html">Sign out</a></li>
+    </ul>
+  </div>
+</header>
+
+<nav class="service-nav" aria-label="Primary">
+  <div class="width-container service-nav__inner">
+    <details class="service-nav__menu">
+      <summary class="service-nav__toggle">Menu</summary>
+      <ul class="service-nav__list">
+        <li><a class="service-nav__link" href="default.html" aria-current="page">Builders</a></li>
+        <li><a class="service-nav__link" href="#results">Projects</a></li>
+        <li><a class="service-nav__link" href="#results">Events</a></li>
+        <li><a class="service-nav__link" href="#results">Matching</a></li>
+      </ul>
+    </details>
+    <div class="service-nav__wide">
+      <ul class="service-nav__list">
+        <li><a class="service-nav__link" href="default.html" aria-current="page">Builders</a></li>
+        <li><a class="service-nav__link" href="#results">Projects</a></li>
+        <li><a class="service-nav__link" href="#results">Events</a></li>
+        <li><a class="service-nav__link" href="#results">Matching</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="width-container">
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <ol class="breadcrumbs__list">
+      <li class="breadcrumbs__item"><a href="../home/default.html">Home</a></li>
+      <li class="breadcrumbs__item" aria-current="page">Builders</li>
+    </ol>
+  </nav>
+</div>
+
+<main class="width-container main-wrapper" id="main">
+  <h1 class="heading-xl">Find a builder</h1>
+  <p class="body-l measure">1,284 builders in Toronto and the GTA. Results are sorted by how well they match your search for a technical co-founder.</p>
+
+  <form class="form-group" role="search" action="#results">
+    <label class="label label--m" for="q">Search builders</label>
+    <span class="hint" id="q-hint">Search by name, skill or project, for example “Laravel” or “Psalter”.</span>
+    <div class="search">
+      <input class="input" id="q" name="q" type="search" aria-describedby="q-hint" spellcheck="false" data-state="focus">
+      <button class="button" type="submit">Search</button>
+    </div>
+  </form>
+
+  <div class="grid-row grid-row--filters">
+    <div>
+      <details class="filter-toggle" id="filters" open>
+        <summary>Filters (1 selected)</summary>
+        <form class="filter-panel" action="#results">
+          <h2 class="filter-panel__heading">Filter results</h2>
+
+          <div class="selected-filters">
+            <div class="selected-filters__head">
+              <h3 class="heading-s">Selected filters</h3>
+              <a href="#results">Clear filters</a>
+            </div>
+            <button class="filter-tag" type="button"><span class="visually-hidden">Remove filter: </span>Within 40 km of Leslieville</button>
+          </div>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Distance from Leslieville</legend>
+            <div class="checkboxes radios checkboxes--small">
+              <div class="checkboxes__item"><input class="checkboxes__input" id="d-5" name="distance" type="radio" value="5"><label class="checkboxes__label" for="d-5">Within 5 km</label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="d-10" name="distance" type="radio" value="10"><label class="checkboxes__label" for="d-10">Within 10 km</label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="d-20" name="distance" type="radio" value="20"><label class="checkboxes__label" for="d-20">Within 20 km</label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="d-40" name="distance" type="radio" value="40" checked><label class="checkboxes__label" for="d-40">Within 40 km</label></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Role</legend>
+            <div class="checkboxes checkboxes--small">
+              <div class="checkboxes__item"><input class="checkboxes__input" id="role-founders" name="role" type="checkbox" value="founders"><label class="checkboxes__label" for="role-founders">Founders <span class="checkboxes__hint">214 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="role-engineers" name="role" type="checkbox" value="engineers"><label class="checkboxes__label" for="role-engineers">Engineers <span class="checkboxes__hint">486 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="role-designers" name="role" type="checkbox" value="designers"><label class="checkboxes__label" for="role-designers">Designers <span class="checkboxes__hint">231 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="role-pms" name="role" type="checkbox" value="pms"><label class="checkboxes__label" for="role-pms">Product managers <span class="checkboxes__hint">198 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="role-other" name="role" type="checkbox" value="other"><label class="checkboxes__label" for="role-other">Other <span class="checkboxes__hint">155 builders</span></label></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Open to</legend>
+            <div class="checkboxes checkboxes--small">
+              <div class="checkboxes__item"><input class="checkboxes__input" id="open-cofounding" name="open" type="checkbox" value="co-founding"><label class="checkboxes__label" for="open-cofounding">Co-founding <span class="checkboxes__hint">173 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="open-advising" name="open" type="checkbox" value="advising"><label class="checkboxes__label" for="open-advising">Advising <span class="checkboxes__hint">248 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="open-contributing" name="open" type="checkbox" value="contributing"><label class="checkboxes__label" for="open-contributing">Contributing <span class="checkboxes__hint">611 builders</span></label></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Neighbourhood or city</legend>
+            <div class="checkboxes checkboxes--small">
+              <div class="checkboxes__item"><input class="checkboxes__input" id="n-downtown" name="hood" type="checkbox" value="downtown"><label class="checkboxes__label" for="n-downtown">Downtown Toronto <span class="checkboxes__hint">512 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="n-north-york" name="hood" type="checkbox" value="north-york"><label class="checkboxes__label" for="n-north-york">North York <span class="checkboxes__hint">141 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="n-scarborough" name="hood" type="checkbox" value="scarborough"><label class="checkboxes__label" for="n-scarborough">Scarborough <span class="checkboxes__hint">96 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="n-etobicoke" name="hood" type="checkbox" value="etobicoke"><label class="checkboxes__label" for="n-etobicoke">Etobicoke <span class="checkboxes__hint">88 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="n-mississauga" name="hood" type="checkbox" value="mississauga"><label class="checkboxes__label" for="n-mississauga">Mississauga <span class="checkboxes__hint">147 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="n-brampton" name="hood" type="checkbox" value="brampton"><label class="checkboxes__label" for="n-brampton">Brampton <span class="checkboxes__hint">74 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="n-markham" name="hood" type="checkbox" value="markham"><label class="checkboxes__label" for="n-markham">Markham <span class="checkboxes__hint">92 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="n-vaughan" name="hood" type="checkbox" value="vaughan"><label class="checkboxes__label" for="n-vaughan">Vaughan <span class="checkboxes__hint">51 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="n-richmond-hill" name="hood" type="checkbox" value="richmond-hill"><label class="checkboxes__label" for="n-richmond-hill">Richmond Hill <span class="checkboxes__hint">38 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="n-oakville" name="hood" type="checkbox" value="oakville"><label class="checkboxes__label" for="n-oakville">Oakville <span class="checkboxes__hint">45 builders</span></label></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Skills</legend>
+            <div class="checkboxes checkboxes--small">
+              <div class="checkboxes__item"><input class="checkboxes__input" id="s-react" name="skill" type="checkbox" value="react"><label class="checkboxes__label" for="s-react">React <span class="checkboxes__hint">203 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="s-figma" name="skill" type="checkbox" value="figma"><label class="checkboxes__label" for="s-figma">Figma <span class="checkboxes__hint">187 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="s-python" name="skill" type="checkbox" value="python"><label class="checkboxes__label" for="s-python">Python <span class="checkboxes__hint">174 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="s-strategy" name="skill" type="checkbox" value="product-strategy"><label class="checkboxes__label" for="s-strategy">Product strategy <span class="checkboxes__hint">156 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="s-research" name="skill" type="checkbox" value="user-research"><label class="checkboxes__label" for="s-research">User research <span class="checkboxes__hint">112 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="s-laravel" name="skill" type="checkbox" value="laravel"><label class="checkboxes__label" for="s-laravel">Laravel <span class="checkboxes__hint">96 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="s-data" name="skill" type="checkbox" value="data-ml"><label class="checkboxes__label" for="s-data">Data and machine learning <span class="checkboxes__hint">89 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="s-marketing" name="skill" type="checkbox" value="marketing"><label class="checkboxes__label" for="s-marketing">Marketing <span class="checkboxes__hint">77 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="s-angular" name="skill" type="checkbox" value="angular"><label class="checkboxes__label" for="s-angular">Angular <span class="checkboxes__hint">74 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="s-swift" name="skill" type="checkbox" value="swift"><label class="checkboxes__label" for="s-swift">Swift <span class="checkboxes__hint">61 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="s-kotlin" name="skill" type="checkbox" value="kotlin"><label class="checkboxes__label" for="s-kotlin">Kotlin <span class="checkboxes__hint">48 builders</span></label></div>
+              <div class="checkboxes__item"><input class="checkboxes__input" id="s-fundraising" name="skill" type="checkbox" value="fundraising"><label class="checkboxes__label" for="s-fundraising">Fundraising <span class="checkboxes__hint">41 builders</span></label></div>
+            </div>
+          </fieldset>
+
+          <button class="button" type="submit">Apply filters</button>
+        </form>
+      </details>
+    </div>
+
+    <section id="results" aria-labelledby="results-title">
+      <h2 class="visually-hidden" id="results-title">Results</h2>
+      <div class="results-bar">
+        <p class="results-bar__count" role="status"><strong>1,284 builders</strong> found. Showing 1 to 12.</p>
+        <div class="form-group">
+          <label class="label" for="sort">Sort by</label>
+          <select class="select" id="sort" name="sort">
+            <option selected>Best match</option>
+            <option>Nearest</option>
+            <option>Recently active</option>
+            <option>Newest</option>
+          </select>
+        </div>
+      </div>
+      <ol class="result-list">
+        <li class="result" id="r-01">
+          <h3 class="result__title"><a href="#r-01">Daniel Reyes</a> <strong class="tag tag--green result__match">94% match</strong></h3>
+          <p class="result__lead">Full-stack engineer in Mississauga, 26.9 km from Leslieville.</p>
+          <dl class="summary-list">
+            <div class="summary-list__row"><dt class="summary-list__key">Skills</dt><dd class="summary-list__value">Laravel, Angular, PostgreSQL</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Building</dt><dd class="summary-list__value">Psalter</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Open to</dt><dd class="summary-list__value">Co-founding</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Last seen</dt><dd class="summary-list__value"><span class="status status--online">Online now</span></dd></div>
+          </dl>
+          <div class="result__actions">
+            <button class="button button--secondary button--small" type="button">Say hello<span class="visually-hidden"> to Daniel Reyes</span></button>
+            <a href="#r-01">View Daniel's profile</a>
+          </div>
+        </li>
+        <li class="result" id="r-02">
+          <h3 class="result__title"><a href="#r-02">Grace Liu</a> <strong class="tag tag--green result__match">91% match</strong></h3>
+          <p class="result__lead">Product designer in Markham, 24.3 km from Leslieville.</p>
+          <dl class="summary-list">
+            <div class="summary-list__row"><dt class="summary-list__key">Skills</dt><dd class="summary-list__value">Figma, Design systems, Prototyping</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Building</dt><dd class="summary-list__value">Gather</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Open to</dt><dd class="summary-list__value">Contributing</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Last seen</dt><dd class="summary-list__value"><span class="status status--online">Online now</span></dd></div>
+          </dl>
+          <div class="result__actions">
+            <button class="button button--secondary button--small" type="button">Say hello<span class="visually-hidden"> to Grace Liu</span></button>
+            <a href="#r-02">View Grace's profile</a>
+          </div>
+        </li>
+        <li class="result" id="r-03">
+          <h3 class="result__title"><a href="#r-03">Noah Fischer</a> <strong class="tag tag--green result__match">88% match</strong></h3>
+          <p class="result__lead">Backend &amp; data engineer in The Annex, 5.8 km from Leslieville.</p>
+          <dl class="summary-list">
+            <div class="summary-list__row"><dt class="summary-list__key">Skills</dt><dd class="summary-list__value">Python, PostgreSQL, Data pipelines</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Building</dt><dd class="summary-list__value">Ledgerline</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Open to</dt><dd class="summary-list__value">Co-founding</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Last seen</dt><dd class="summary-list__value">1 h ago</dd></div>
+          </dl>
+          <div class="result__actions">
+            <button class="button button--secondary button--small" type="button">Say hello<span class="visually-hidden"> to Noah Fischer</span></button>
+            <a href="#r-03">View Noah's profile</a>
+          </div>
+        </li>
+        <li class="result" id="r-04">
+          <h3 class="result__title"><a href="#r-04">Caleb Morgan</a> <strong class="tag tag--green result__match">85% match</strong></h3>
+          <p class="result__lead">Frontend engineer in Etobicoke, 17.8 km from Leslieville.</p>
+          <dl class="summary-list">
+            <div class="summary-list__row"><dt class="summary-list__key">Skills</dt><dd class="summary-list__value">Angular, TypeScript, Accessibility</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Building</dt><dd class="summary-list__value">No project listed</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Open to</dt><dd class="summary-list__value">Contributing</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Last seen</dt><dd class="summary-list__value"><span class="status status--online">Online now</span></dd></div>
+          </dl>
+          <div class="result__actions">
+            <button class="button button--secondary button--small" type="button">Say hello<span class="visually-hidden"> to Caleb Morgan</span></button>
+            <a href="#r-04">View Caleb's profile</a>
+          </div>
+        </li>
+        <li class="result" id="r-05">
+          <h3 class="result__title"><a href="#r-05">Sofia Marquez</a> <strong class="tag tag--green result__match">82% match</strong></h3>
+          <p class="result__lead">Growth &amp; marketing in Liberty Village, 6.1 km from Leslieville.</p>
+          <dl class="summary-list">
+            <div class="summary-list__row"><dt class="summary-list__key">Skills</dt><dd class="summary-list__value">Lifecycle marketing, SEO, Community</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Building</dt><dd class="summary-list__value">Kindred</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Open to</dt><dd class="summary-list__value">Contributing</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Last seen</dt><dd class="summary-list__value">3 h ago</dd></div>
+          </dl>
+          <div class="result__actions">
+            <button class="button button--secondary button--small" type="button">Say hello<span class="visually-hidden"> to Sofia Marquez</span></button>
+            <a href="#r-05">View Sofia's profile</a>
+          </div>
+        </li>
+        <li class="result" id="r-06">
+          <h3 class="result__title"><a href="#r-06">Hannah Kowalski</a> <strong class="tag tag--green result__match">80% match</strong></h3>
+          <p class="result__lead">UX researcher in Roncesvalles, 7.2 km from Leslieville.</p>
+          <dl class="summary-list">
+            <div class="summary-list__row"><dt class="summary-list__key">Skills</dt><dd class="summary-list__value">User interviews, Usability testing, Synthesis</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Building</dt><dd class="summary-list__value">No project listed</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Open to</dt><dd class="summary-list__value">Advising</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Last seen</dt><dd class="summary-list__value">Yesterday</dd></div>
+          </dl>
+          <div class="result__actions">
+            <button class="button button--secondary button--small" type="button">Say hello<span class="visually-hidden"> to Hannah Kowalski</span></button>
+            <a href="#r-06">View Hannah's profile</a>
+          </div>
+        </li>
+        <li class="result" id="r-07">
+          <h3 class="result__title"><a href="#r-07">Marcus Bennett</a> <strong class="tag tag--green result__match">78% match</strong></h3>
+          <p class="result__lead">Engineering leader (ex-CTO) in North York, 14.2 km from Leslieville.</p>
+          <dl class="summary-list">
+            <div class="summary-list__row"><dt class="summary-list__key">Skills</dt><dd class="summary-list__value">Architecture, Hiring, Laravel</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Building</dt><dd class="summary-list__value">No project listed</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Open to</dt><dd class="summary-list__value">Advising</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Last seen</dt><dd class="summary-list__value">2 h ago</dd></div>
+          </dl>
+          <div class="result__actions">
+            <button class="button button--secondary button--small" type="button">Say hello<span class="visually-hidden"> to Marcus Bennett</span></button>
+            <a href="#r-07">View Marcus's profile</a>
+          </div>
+        </li>
+        <li class="result" id="r-08">
+          <h3 class="result__title"><a href="#r-08">Ruth Alvarez</a> <strong class="tag tag--green result__match">76% match</strong></h3>
+          <p class="result__lead">Product manager, health tech in Scarborough, 13.5 km from Leslieville.</p>
+          <dl class="summary-list">
+            <div class="summary-list__row"><dt class="summary-list__key">Skills</dt><dd class="summary-list__value">Roadmapping, Healthcare, Analytics</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Building</dt><dd class="summary-list__value">Sabbath</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Open to</dt><dd class="summary-list__value">Co-founding</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Last seen</dt><dd class="summary-list__value"><span class="status status--online">Online now</span></dd></div>
+          </dl>
+          <div class="result__actions">
+            <button class="button button--secondary button--small" type="button">Say hello<span class="visually-hidden"> to Ruth Alvarez</span></button>
+            <a href="#r-08">View Ruth's profile</a>
+          </div>
+        </li>
+        <li class="result" id="r-09">
+          <h3 class="result__title"><a href="#r-09">Leah Thompson</a> <strong class="tag tag--green result__match">73% match</strong></h3>
+          <p class="result__lead">Brand &amp; illustration designer in Kensington Market, 4.6 km from Leslieville.</p>
+          <dl class="summary-list">
+            <div class="summary-list__row"><dt class="summary-list__key">Skills</dt><dd class="summary-list__value">Illustration, Branding, Motion</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Building</dt><dd class="summary-list__value">No project listed</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Open to</dt><dd class="summary-list__value">Contributing</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Last seen</dt><dd class="summary-list__value">5 h ago</dd></div>
+          </dl>
+          <div class="result__actions">
+            <button class="button button--secondary button--small" type="button">Say hello<span class="visually-hidden"> to Leah Thompson</span></button>
+            <a href="#r-09">View Leah's profile</a>
+          </div>
+        </li>
+        <li class="result" id="r-10">
+          <h3 class="result__title"><a href="#r-10">Elijah Brooks</a> <strong class="tag tag--green result__match">70% match</strong></h3>
+          <p class="result__lead">Hardware founder in Oakville, 36.4 km from Leslieville.</p>
+          <dl class="summary-list">
+            <div class="summary-list__row"><dt class="summary-list__key">Skills</dt><dd class="summary-list__value">Embedded C, IoT, Manufacturing</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Building</dt><dd class="summary-list__value">Wellspring</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Open to</dt><dd class="summary-list__value">Co-founding</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Last seen</dt><dd class="summary-list__value">Yesterday</dd></div>
+          </dl>
+          <div class="result__actions">
+            <button class="button button--secondary button--small" type="button">Say hello<span class="visually-hidden"> to Elijah Brooks</span></button>
+            <a href="#r-10">View Elijah's profile</a>
+          </div>
+        </li>
+        <li class="result" id="r-11">
+          <h3 class="result__title"><a href="#r-11">Peter Walsh</a> <strong class="tag tag--green result__match">68% match</strong></h3>
+          <p class="result__lead">Angel investor &amp; advisor in Richmond Hill, 27.6 km from Leslieville.</p>
+          <dl class="summary-list">
+            <div class="summary-list__row"><dt class="summary-list__key">Skills</dt><dd class="summary-list__value">Fundraising, Go-to-market, SaaS</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Building</dt><dd class="summary-list__value">No project listed</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Open to</dt><dd class="summary-list__value">Advising</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Last seen</dt><dd class="summary-list__value">2 days ago</dd></div>
+          </dl>
+          <div class="result__actions">
+            <button class="button button--secondary button--small" type="button">Say hello<span class="visually-hidden"> to Peter Walsh</span></button>
+            <a href="#r-11">View Peter's profile</a>
+          </div>
+        </li>
+        <li class="result" id="r-12">
+          <h3 class="result__title"><a href="#r-12">Esther Nguyen</a> <strong class="tag tag--green result__match">66% match</strong></h3>
+          <p class="result__lead">Product designer in Riverdale, 1.4 km from Leslieville.</p>
+          <dl class="summary-list">
+            <div class="summary-list__row"><dt class="summary-list__key">Skills</dt><dd class="summary-list__value">Figma, Service design, Workshops</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Building</dt><dd class="summary-list__value">No project listed</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Open to</dt><dd class="summary-list__value">Co-founding</dd></div>
+            <div class="summary-list__row"><dt class="summary-list__key">Last seen</dt><dd class="summary-list__value">4 h ago</dd></div>
+          </dl>
+          <div class="result__actions">
+            <button class="button button--secondary button--small" type="button">Say hello<span class="visually-hidden"> to Esther Nguyen</span></button>
+            <a href="#r-12">View Esther's profile</a>
+          </div>
+        </li>
+      </ol>
+
+      <nav class="pagination" aria-label="Results pages">
+        <ul class="pagination__list">
+          <li class="pagination__item pagination__item--current"><a href="#results" aria-current="page" aria-label="Page 1">1</a></li>
+          <li class="pagination__item"><a href="#results" aria-label="Page 2">2</a></li>
+          <li class="pagination__item"><a href="#results" aria-label="Page 3">3</a></li>
+          <li class="pagination__item">…</li>
+          <li class="pagination__item"><a href="#results" aria-label="Page 107">107</a></li>
+        </ul>
+        <a class="pagination__next" href="#results">Next page
+          <svg viewBox="0 0 15 13" aria-hidden="true" focusable="false"><path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"/></svg>
+        </a>
+      </nav>
+    </section>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="width-container">
+    <div class="footer__top" aria-hidden="true"></div>
+    <h2 class="visually-hidden">Support links</h2>
+    <ul class="footer__links">
+      <li><a href="#main">About</a></li>
+      <li><a href="#main">Code of conduct</a></li>
+      <li><a href="#main">Privacy</a></li>
+      <li><a href="#main">Contact</a></li>
+    </ul>
+    <p class="footer__ack">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+    <div class="footer__meta"><span>Made in Toronto.</span><span>© 2026 Banaro</span></div>
+  </div>
+</footer>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../../index.html" aria-label="All concepts">⌂</a>
+  <a class="mock-bar__home" href="../../../29-isometric-city/pages/directory/default.html" aria-label="Previous concept: Isometric City">‹</a>
+  <span class="mock-bar__screen">30 · Plain &amp; Clear</span>
+  <ul class="mock-bar__states">
+    <li><a href="../home/default.html">Home</a></li>
+    <li><a href="default.html" aria-current="page">Directory</a></li>
+  </ul>
+  <a class="mock-bar__home" href="../../../31-gradient-mesh/pages/directory/default.html" aria-label="Next concept: Gradient Mesh">›</a>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+<script>
+  /* Filters are open without JavaScript. On small screens, fold them behind "Filters" so results come first. */
+  (function () {
+    var filters = document.getElementById('filters');
+    var wide = window.matchMedia('(min-width: 64rem)');
+    function sync() { filters.open = wide.matches; }
+    sync();
+    wide.addEventListener('change', sync);
+  })();
+</script>
+</body>
+</html>

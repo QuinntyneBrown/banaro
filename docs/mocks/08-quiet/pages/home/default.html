@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home · default — Banaro · Quiet</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="home">
+<meta name="mock:state" content="default">
+<meta name="description" content="A quiet, single-column home page: small type on a tall line, warm paper, ink only and one tiny accent dot; the promise, the four areas, a few builders and what is coming up.">
+<link rel="stylesheet" href="../../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/tokens.css">
+<link rel="stylesheet" href="../../assets/ui.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="column top__row">
+    <a class="wordmark" href="../home/default.html">Banaro<span class="dot" aria-hidden="true"></span></a>
+    <div class="top__end">
+      <nav aria-label="Primary">
+        <button type="button" class="menu-btn" popovertarget="nav">Menu</button>
+        <div class="nav" id="nav" popover>
+          <ul><li><a href="../directory/default.html">Builders</a></li><li><a href="#areas">Projects</a></li><li><a href="#events">Events</a></li><li><a href="#matching">Matching</a></li></ul>
+          <button type="button" class="text-btn text-btn--quiet nav__close" popovertarget="nav" popovertargetaction="hide">Close</button>
+        </div>
+      </nav>
+      <button type="button" class="text-btn small">Sign in</button>
+    </div>
+  </div>
+</header>
+<main id="main" class="page">
+  <div class="column">
+    <section class="fade" aria-labelledby="title">
+      <h1 class="lede" id="title">Build what matters, with believers down the street.</h1>
+      <p class="intro">Banaro connects Christian founders, engineers, designers and product managers across Toronto and the GTA — so you can find collaborators, share what you’re making, and meet in person.</p>
+      <div class="actions">
+        <button type="button" class="action">Join Banaro</button>
+        <a href="../directory/default.html">Browse builders</a>
+      </div>
+      <p class="stats"><span><b>1,284</b> builders</span><span><b>312</b> projects</span><span><b>96</b> matches</span><span><b>48</b> events in 2026</span></p>
+    </section>
+
+    <section class="part fade" id="areas" aria-labelledby="areas-title">
+      <h2 class="part__title" id="areas-title">What Banaro is for</h2>
+      <ul class="lines"><li><h3 class="line__title"><a href="../directory/default.html">Builder directory</a></h3><p class="line__text">Find local builders by skill, role and neighbourhood.</p></li><li><h3 class="line__title"><a href="#areas">Project showcase</a></h3><p class="line__text">Share what you’re building, ask for feedback, find collaborators.</p></li><li><h3 class="line__title"><a href="#events">Meetups and events</a></h3><p class="line__text">Demo nights, prayer breakfasts and workshops across the GTA.</p></li><li><h3 class="line__title"><a href="#matching">Co-founder matching</a></h3><p class="line__text">Meet a co-founder, an advisor or a contributor who shares your faith.</p></li></ul>
+    </section>
+
+    <section class="part fade" aria-labelledby="people-title">
+      <h2 class="part__title" id="people-title">A few builders</h2>
+      <ul class="people"><li><h3 class="person__name">Daniel Reyes</h3><p class="person__meta">Full-stack engineer, Mississauga. Open to co-founding.</p></li><li><h3 class="person__name">Grace Liu</h3><p class="person__meta">Product designer, Markham. Open to contributing.</p></li><li><h3 class="person__name">Noah Fischer</h3><p class="person__meta">Backend & data engineer, The Annex. Open to co-founding.</p></li><li><h3 class="person__name">Hannah Kowalski</h3><p class="person__meta">UX researcher, Roncesvalles. Open to advising.</p></li></ul>
+      <p style="margin-top: var(--space-8);"><a href="../directory/default.html">All 1,284 builders</a></p>
+    </section>
+
+    <section class="part fade" id="events" aria-labelledby="events-title">
+      <h2 class="part__title" id="events-title">Coming up</h2>
+      <ul class="events"><li><p class="when">Thu 15 Oct</p><div><h3 class="line__title">Fall Demo Night</h3><p class="line__text">7:00–9:30 pm, Centre for Social Innovation, 192 Spadina Ave. 64 going · 16 spots left · 6 demos.</p></div></li><li><p class="when">Sat 17 Oct</p><div><h3 class="line__title">Builders’ Prayer Breakfast</h3><p class="line__text">8:00–9:30 am, St. Matthew’s Hall, Leslieville. 22 going.</p></div></li><li><p class="when">Tue 20 Oct</p><div><h3 class="line__title">Design Critique Circle</h3><p class="line__text">6:30–8:30 pm, Markham Village Library, community room. 15 going.</p></div></li><li><p class="when">Thu 29 Oct</p><div><h3 class="line__title">Co-founder Mixer</h3><p class="line__text">7:00–9:00 pm, The Assembly Hall, Liberty Village. 41 going.</p></div></li></ul>
+    </section>
+
+    <section class="part fade" id="matching" aria-labelledby="matching-title">
+      <h2 class="part__title" id="matching-title">Co-founder matching</h2>
+      <p>Looking for a co-founder? Tell us what you’re building and who you need. We’ll suggest three builders nearby every Monday.</p>
+      <p style="margin-top: var(--space-6);"><button type="button" class="text-btn">Start matching</button></p>
+    </section>
+
+    <section class="part fade" aria-labelledby="words-title">
+      <h2 class="visually-hidden" id="words-title">Words</h2>
+      <p class="verse">“Two are better than one, because they have a good return for their labour.”</p>
+      <p>Ecclesiastes 4:9</p>
+      <blockquote class="quote" style="margin-top: var(--space-16);"><p>“Within a week I was advising two founders, both a streetcar ride from my house.”</p><footer>Hannah Kowalski, UX researcher, Roncesvalles</footer></blockquote>
+    </section>
+  </div>
+</main>
+<footer class="foot" id="foot">
+  <div class="column">
+    <hr class="rule" style="margin-bottom: var(--space-8);">
+    <nav class="foot__links" aria-label="Footer"><a href="#foot">About</a><a href="#foot">Code of conduct</a><a href="#foot">Privacy</a><a href="#foot">Contact</a></nav>
+    <p>Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+    <p>Made in Toronto. © 2026 Banaro.</p>
+  </div>
+</footer>
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../../index.html" aria-label="All concepts">⌂</a>
+  <a class="mock-bar__home" href="../../../07-editorial/pages/home/default.html" aria-label="Previous concept: The Builder Quarterly">‹</a>
+  <span class="mock-bar__screen">08 · Quiet</span>
+  <ul class="mock-bar__states">
+    <li><a href="default.html" aria-current="page">Home</a></li>
+    <li><a href="../directory/default.html">Directory</a></li>
+  </ul>
+  <a class="mock-bar__home" href="../../../09-live-pulse/pages/home/default.html" aria-label="Next concept: Live Pulse">›</a>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

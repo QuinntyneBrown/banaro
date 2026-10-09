@@ -1,0 +1,486 @@
+/* ==========================================================================
+   Banaro · Glass Night — design tokens
+   Frosted-glass panels floating over slowly drifting colour blobs.
+   Dark ("night") is the signature: indigo sky, neon blobs, smoked glass.
+   Light ("ice") is frosted ice over pastel blobs.
+   --color-bg-surface* are opaque stand-ins for the glass (used for contrast
+   checks, menus and the mock chrome); panels themselves use --glass-*.
+   ========================================================================== */
+
+:root {
+  /* ---------- Primitives: colour --------------------------------------- */
+  --palette-white: #ffffff;
+  --palette-black: #000000;
+
+  --palette-ice-50: #f7f8fe;
+  --palette-ice-100: #eef1fb;
+  --palette-ice-200: #e1e5f6;
+  --palette-ice-300: #c9cfea;
+  --palette-ink-500: #5a5e86;
+  --palette-ink-600: #474a70;
+  --palette-ink-700: #33355a;
+  --palette-ink-900: #14152e;
+
+  --palette-night-950: #07081a;
+  --palette-night-900: #0e0f26;
+  --palette-night-850: #16162f;
+  --palette-night-800: #1f1e3d;
+  --palette-night-700: #2c2a52;
+  --palette-night-400: #7c78a8;
+  --palette-night-300: #a9a5cf;
+  --palette-night-200: #cbc8e8;
+  --palette-night-50: #f4f3ff;
+
+  --palette-violet-200: #d4c9ff;
+  --palette-violet-300: #b6a4ff;
+  --palette-violet-400: #9a82ff;
+  --palette-violet-500: #7b5cff;
+  --palette-violet-600: #5b3df5;
+  --palette-violet-700: #4a2fd8;
+  --palette-violet-900: #1d1450;
+
+  --palette-magenta-300: #ff9fcf;
+  --palette-magenta-500: #ff4fa3;
+  --palette-magenta-700: #b0185f;
+  --palette-teal-300: #7ff0e3;
+  --palette-teal-500: #1fd1c1;
+  --palette-teal-700: #0b7a70;
+  --palette-amber-300: #ffd28a;
+  --palette-amber-500: #ffb14a;
+  --palette-amber-700: #8a5300;
+  --palette-red-300: #ff9b9b;
+  --palette-red-700: #b4232c;
+
+  --palette-pastel-peri: #b4c0ff;
+  --palette-pastel-pink: #ffc2e2;
+  --palette-pastel-mint: #a9efe4;
+  --palette-pastel-peach: #ffdca3;
+
+  /* ---------- Primitives: typography ----------------------------------- */
+  --font-family-sans: "Outfit", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-family-display: "Sora", "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-family-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.1875rem;
+  --font-size-xl: 1.3125rem;
+  --font-size-2xl: 1.625rem;
+  --font-size-3xl: clamp(1.9rem, 1.4rem + 2vw, 2.75rem);
+  --font-size-4xl: clamp(2.3rem, 1.5rem + 3.4vw, 4rem);
+  --font-size-5xl: clamp(2.6rem, 1.2rem + 5.6vw, 5.75rem);
+
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.04;
+  --line-height-snug: 1.25;
+  --line-height-normal: 1.55;
+  --line-height-relaxed: 1.7;
+
+  --letter-spacing-tight: -0.04em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.12em;
+
+  /* ---------- Semantic: colour (light = frosted ice) ------------------- */
+  --color-bg-canvas: var(--palette-ice-100);
+  --color-bg-surface: var(--palette-ice-50);
+  --color-bg-surface-raised: var(--palette-white);
+  --color-bg-surface-sunken: var(--palette-ice-200);
+  --color-bg-subtle: var(--palette-ice-200);
+  --color-bg-subtle-hover: var(--palette-ice-300);
+  --color-bg-inverse: var(--palette-ink-900);
+  --color-bg-backdrop: rgba(20, 21, 46, 0.35);
+
+  --color-fg-default: var(--palette-ink-900);
+  --color-fg-muted: var(--palette-ink-700);
+  --color-fg-subtle: var(--palette-ink-600);
+  --color-fg-disabled: var(--palette-ice-300);
+  --color-fg-inverse: var(--palette-ice-50);
+  --color-fg-link: var(--palette-violet-700);
+  --color-fg-link-hover: var(--palette-ink-900);
+
+  --color-border-default: rgba(255, 255, 255, 0.85);
+  --color-border-strong: var(--palette-ink-500);
+  --color-border-inverse: var(--palette-ink-700);
+
+  --color-accent: var(--palette-violet-600);
+  --color-accent-hover: var(--palette-violet-700);
+  --color-accent-active: var(--palette-violet-900);
+  --color-accent-subtle: rgba(91, 61, 245, 0.1);
+  --color-accent-subtle-hover: rgba(91, 61, 245, 0.18);
+  --color-fg-on-accent: var(--palette-white);
+  --color-fg-accent: var(--palette-violet-700);
+
+  --color-focus-ring: var(--palette-violet-600);
+  --color-focus-ring-offset: var(--color-bg-surface);
+
+  --color-info-bg: var(--palette-ice-200);
+  --color-info-fg: var(--palette-violet-700);
+  --color-info-border: var(--palette-violet-300);
+  --color-info-icon: var(--palette-violet-600);
+  --color-info-solid: var(--palette-violet-600);
+  --color-success-bg: rgba(31, 209, 193, 0.14);
+  --color-success-fg: var(--palette-teal-700);
+  --color-success-border: var(--palette-teal-300);
+  --color-success-icon: var(--palette-teal-700);
+  --color-success-solid: var(--palette-teal-700);
+  --color-warning-bg: rgba(255, 177, 74, 0.16);
+  --color-warning-fg: var(--palette-amber-700);
+  --color-warning-border: var(--palette-amber-300);
+  --color-warning-icon: var(--palette-amber-700);
+  --color-warning-solid: var(--palette-amber-700);
+  --color-danger-bg: rgba(255, 155, 155, 0.18);
+  --color-danger-fg: var(--palette-red-700);
+  --color-danger-border: var(--palette-red-300);
+  --color-danger-icon: var(--palette-red-700);
+  --color-danger-solid: var(--palette-red-700);
+  --color-danger-solid-hover: var(--palette-ink-900);
+  --color-fg-on-danger: var(--palette-white);
+
+  /* Concept tokens: glass, blobs, glow, gradients. */
+  --glass-fill: rgba(255, 255, 255, 0.52);
+  --glass-fill-strong: rgba(255, 255, 255, 0.72);
+  --glass-fill-faint: rgba(255, 255, 255, 0.32);
+  --glass-edge: rgba(255, 255, 255, 0.9);
+  --glass-edge-outer: rgba(40, 42, 110, 0.1);
+  --glass-highlight: rgba(255, 255, 255, 0.95);
+  --glass-track: rgba(40, 42, 110, 0.12);
+  --glass-blur: 22px;
+  --glass-saturate: 170%;
+  --blob-1: var(--palette-pastel-peri);
+  --blob-2: var(--palette-pastel-pink);
+  --blob-3: var(--palette-pastel-mint);
+  --blob-4: var(--palette-pastel-peach);
+  --blob-opacity: 0.95;
+  --sky-top: var(--palette-ice-100);
+  --sky-bottom: var(--palette-ice-200);
+  --grad-a: var(--palette-violet-600);
+  --grad-b: var(--palette-magenta-700);
+  --grad-c: var(--palette-teal-700);
+  --orb-1: var(--palette-violet-400);
+  --orb-2: var(--palette-magenta-500);
+  --orb-3: var(--palette-teal-500);
+  --orb-4: var(--palette-amber-500);
+  --color-online: var(--palette-teal-500);
+  --glow: 0 0 24px rgba(91, 61, 245, 0.35);
+  --grain-color: var(--palette-ink-900);
+  --grain-opacity: 0.05;
+
+  /* ---------- Semantic: typography roles ------------------------------- */
+  --text-display: var(--font-weight-semibold) var(--font-size-5xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h1: var(--font-weight-semibold) var(--font-size-4xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h2: var(--font-weight-semibold) var(--font-size-3xl) / 1.1 var(--font-family-display);
+  --text-h3: var(--font-weight-semibold) var(--font-size-xl) / var(--line-height-snug) var(--font-family-display);
+  --text-h4: var(--font-weight-semibold) var(--font-size-lg) / var(--line-height-snug) var(--font-family-display);
+  --text-body-lg: var(--font-weight-light) var(--font-size-lg) / var(--line-height-relaxed) var(--font-family-sans);
+  --text-body: var(--font-weight-regular) var(--font-size-md) / var(--line-height-normal) var(--font-family-sans);
+  --text-body-sm: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-sans);
+  --text-caption: var(--font-weight-medium) var(--font-size-xs) / var(--line-height-normal) var(--font-family-sans);
+  --text-label: var(--font-weight-medium) var(--font-size-sm) / 1.3 var(--font-family-sans);
+  --text-overline: var(--font-weight-semibold) var(--font-size-xs) / var(--line-height-normal) var(--font-family-sans);
+  --text-code: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-mono);
+
+  /* ---------- Semantic: spacing ---------------------------------------- */
+  --space-0: 0;
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ---------- Semantic: layout ----------------------------------------- */
+  --layout-breakpoint-sm: 40rem;
+  --layout-breakpoint-md: 48rem;
+  --layout-breakpoint-lg: 64rem;
+  --layout-breakpoint-xl: 80rem;
+  --layout-breakpoint-2xl: 96rem;
+  --layout-columns: 4;
+  --layout-gutter: var(--space-4);
+  --layout-margin: var(--space-4);
+  --layout-container-max: 76rem;
+  --layout-measure: 60ch;
+  --layout-sidebar-width: 18rem;
+  --layout-topbar-height: 4rem;
+
+  /* ---------- Semantic: shape (soft, pebble-like) ---------------------- */
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.625rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-full: 9999px;
+  --border-width-hairline: 1px;
+  --border-width-thick: 2px;
+
+  /* ---------- Semantic: elevation (depth layers) ----------------------- */
+  --shadow-color: 40 42 110;
+  --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.06), 0 6px 18px -8px rgb(var(--shadow-color) / 0.18);
+  --shadow-2: 0 2px 6px rgb(var(--shadow-color) / 0.06), 0 18px 40px -16px rgb(var(--shadow-color) / 0.28);
+  --shadow-3: 0 4px 12px rgb(var(--shadow-color) / 0.08), 0 32px 64px -24px rgb(var(--shadow-color) / 0.35);
+  --shadow-4: 0 8px 20px rgb(var(--shadow-color) / 0.1), 0 48px 96px -32px rgb(var(--shadow-color) / 0.45);
+  --shadow-focus: 0 0 0 2px var(--color-focus-ring-offset), 0 0 0 4px var(--color-focus-ring);
+
+  /* ---------- Semantic: motion ----------------------------------------- */
+  --duration-instant: 0ms;
+  --duration-fast: 160ms;
+  --duration-base: 260ms;
+  --duration-slow: 420ms;
+  --duration-deliberate: 700ms;
+  --duration-drift: 48s;
+  --duration-float: 7s;
+  --duration-orbit: 36s;
+  --ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-enter: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-drift: cubic-bezier(0.45, 0, 0.55, 1);
+
+  /* ---------- Semantic: z-order ---------------------------------------- */
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 100;
+  --z-dropdown: 1000;
+  --z-overlay: 1200;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+  --z-tooltip: 1600;
+
+  /* ---------- Semantic: interaction ------------------------------------ */
+  --target-min: 1.5rem;
+  --target-comfortable: 2.75rem;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 3px;
+  --control-height-sm: 2.25rem;
+  --control-height-md: 2.75rem;
+  --control-height-lg: 3.25rem;
+
+  color-scheme: light;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --layout-columns: 8;
+    --layout-gutter: var(--space-6);
+    --layout-margin: var(--space-8);
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --layout-columns: 12;
+    --layout-gutter: var(--space-6);
+    --layout-margin: var(--space-12);
+  }
+}
+
+/* ---------- Dark theme: night sky, neon blobs, smoked glass --------------- */
+/* dark:start */
+[data-theme="dark"] {
+  --color-bg-canvas: var(--palette-night-950);
+  --color-bg-surface: var(--palette-night-850);
+  --color-bg-surface-raised: var(--palette-night-800);
+  --color-bg-surface-sunken: var(--palette-night-900);
+  --color-bg-subtle: var(--palette-night-800);
+  --color-bg-subtle-hover: var(--palette-night-700);
+  --color-bg-inverse: var(--palette-night-50);
+  --color-bg-backdrop: rgba(3, 3, 12, 0.6);
+  --color-fg-default: var(--palette-night-50);
+  --color-fg-muted: var(--palette-night-200);
+  --color-fg-subtle: var(--palette-night-300);
+  --color-fg-disabled: var(--palette-night-400);
+  --color-fg-inverse: var(--palette-night-950);
+  --color-fg-link: var(--palette-violet-300);
+  --color-fg-link-hover: var(--palette-night-50);
+  --color-border-default: rgba(255, 255, 255, 0.16);
+  --color-border-strong: var(--palette-night-400);
+  --color-border-inverse: var(--palette-night-200);
+  --color-accent: var(--palette-violet-300);
+  --color-accent-hover: var(--palette-violet-200);
+  --color-accent-active: var(--palette-night-50);
+  --color-accent-subtle: #27234f;
+  --color-accent-subtle-hover: #332e66;
+  --color-fg-on-accent: var(--palette-night-950);
+  --color-fg-accent: var(--palette-violet-300);
+  --color-focus-ring: var(--palette-teal-300);
+  --color-info-bg: var(--palette-violet-900);
+  --color-info-fg: var(--palette-violet-200);
+  --color-info-border: var(--palette-violet-500);
+  --color-info-icon: var(--palette-violet-300);
+  --color-info-solid: var(--palette-violet-300);
+  --color-success-bg: #0e2c36;
+  --color-success-fg: var(--palette-teal-300);
+  --color-success-border: var(--palette-teal-700);
+  --color-success-icon: var(--palette-teal-300);
+  --color-success-solid: var(--palette-teal-300);
+  --color-warning-bg: #2f2418;
+  --color-warning-fg: var(--palette-amber-300);
+  --color-warning-border: var(--palette-amber-700);
+  --color-warning-icon: var(--palette-amber-300);
+  --color-warning-solid: var(--palette-amber-300);
+  --color-danger-bg: #36142e;
+  --color-danger-fg: var(--palette-magenta-300);
+  --color-danger-border: var(--palette-magenta-700);
+  --color-danger-icon: var(--palette-magenta-300);
+  --color-danger-solid: var(--palette-magenta-300);
+  --color-danger-solid-hover: var(--palette-night-50);
+  --color-fg-on-danger: var(--palette-night-950);
+  --glass-fill: rgba(24, 22, 56, 0.46);
+  --glass-fill-strong: rgba(26, 24, 60, 0.7);
+  --glass-fill-faint: rgba(255, 255, 255, 0.06);
+  --glass-edge: rgba(255, 255, 255, 0.18);
+  --glass-edge-outer: rgba(0, 0, 0, 0.3);
+  --glass-highlight: rgba(255, 255, 255, 0.28);
+  --glass-track: rgba(255, 255, 255, 0.12);
+  --blob-1: var(--palette-violet-500);
+  --blob-2: var(--palette-magenta-500);
+  --blob-3: var(--palette-teal-500);
+  --blob-4: var(--palette-amber-500);
+  --blob-opacity: 0.55;
+  --sky-top: var(--palette-night-950);
+  --sky-bottom: var(--palette-night-900);
+  --grad-a: var(--palette-violet-300);
+  --grad-b: var(--palette-magenta-300);
+  --grad-c: var(--palette-teal-300);
+  --glow: 0 0 28px rgba(154, 130, 255, 0.55);
+  --grain-color: var(--palette-white);
+  --grain-opacity: 0.04;
+  --shadow-color: 0 0 0;
+  --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.3), 0 8px 20px -8px rgb(var(--shadow-color) / 0.5);
+  --shadow-2: 0 2px 6px rgb(var(--shadow-color) / 0.3), 0 20px 44px -16px rgb(var(--shadow-color) / 0.6);
+  --shadow-3: 0 4px 12px rgb(var(--shadow-color) / 0.35), 0 36px 70px -24px rgb(var(--shadow-color) / 0.7);
+  --shadow-4: 0 8px 20px rgb(var(--shadow-color) / 0.4), 0 56px 110px -32px rgb(var(--shadow-color) / 0.8);
+  color-scheme: dark;
+}
+/* dark:end */
+
+/* auto-dark:start (generated from the dark block) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-canvas: var(--palette-night-950);
+    --color-bg-surface: var(--palette-night-850);
+    --color-bg-surface-raised: var(--palette-night-800);
+    --color-bg-surface-sunken: var(--palette-night-900);
+    --color-bg-subtle: var(--palette-night-800);
+    --color-bg-subtle-hover: var(--palette-night-700);
+    --color-bg-inverse: var(--palette-night-50);
+    --color-bg-backdrop: rgba(3, 3, 12, 0.6);
+    --color-fg-default: var(--palette-night-50);
+    --color-fg-muted: var(--palette-night-200);
+    --color-fg-subtle: var(--palette-night-300);
+    --color-fg-disabled: var(--palette-night-400);
+    --color-fg-inverse: var(--palette-night-950);
+    --color-fg-link: var(--palette-violet-300);
+    --color-fg-link-hover: var(--palette-night-50);
+    --color-border-default: rgba(255, 255, 255, 0.16);
+    --color-border-strong: var(--palette-night-400);
+    --color-border-inverse: var(--palette-night-200);
+    --color-accent: var(--palette-violet-300);
+    --color-accent-hover: var(--palette-violet-200);
+    --color-accent-active: var(--palette-night-50);
+    --color-accent-subtle: #27234f;
+    --color-accent-subtle-hover: #332e66;
+    --color-fg-on-accent: var(--palette-night-950);
+    --color-fg-accent: var(--palette-violet-300);
+    --color-focus-ring: var(--palette-teal-300);
+    --color-info-bg: var(--palette-violet-900);
+    --color-info-fg: var(--palette-violet-200);
+    --color-info-border: var(--palette-violet-500);
+    --color-info-icon: var(--palette-violet-300);
+    --color-info-solid: var(--palette-violet-300);
+    --color-success-bg: #0e2c36;
+    --color-success-fg: var(--palette-teal-300);
+    --color-success-border: var(--palette-teal-700);
+    --color-success-icon: var(--palette-teal-300);
+    --color-success-solid: var(--palette-teal-300);
+    --color-warning-bg: #2f2418;
+    --color-warning-fg: var(--palette-amber-300);
+    --color-warning-border: var(--palette-amber-700);
+    --color-warning-icon: var(--palette-amber-300);
+    --color-warning-solid: var(--palette-amber-300);
+    --color-danger-bg: #36142e;
+    --color-danger-fg: var(--palette-magenta-300);
+    --color-danger-border: var(--palette-magenta-700);
+    --color-danger-icon: var(--palette-magenta-300);
+    --color-danger-solid: var(--palette-magenta-300);
+    --color-danger-solid-hover: var(--palette-night-50);
+    --color-fg-on-danger: var(--palette-night-950);
+    --glass-fill: rgba(24, 22, 56, 0.46);
+    --glass-fill-strong: rgba(26, 24, 60, 0.7);
+    --glass-fill-faint: rgba(255, 255, 255, 0.06);
+    --glass-edge: rgba(255, 255, 255, 0.18);
+    --glass-edge-outer: rgba(0, 0, 0, 0.3);
+    --glass-highlight: rgba(255, 255, 255, 0.28);
+    --glass-track: rgba(255, 255, 255, 0.12);
+    --blob-1: var(--palette-violet-500);
+    --blob-2: var(--palette-magenta-500);
+    --blob-3: var(--palette-teal-500);
+    --blob-4: var(--palette-amber-500);
+    --blob-opacity: 0.55;
+    --sky-top: var(--palette-night-950);
+    --sky-bottom: var(--palette-night-900);
+    --grad-a: var(--palette-violet-300);
+    --grad-b: var(--palette-magenta-300);
+    --grad-c: var(--palette-teal-300);
+    --glow: 0 0 28px rgba(154, 130, 255, 0.55);
+    --grain-color: var(--palette-white);
+    --grain-opacity: 0.04;
+    --shadow-color: 0 0 0;
+    --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.3), 0 8px 20px -8px rgb(var(--shadow-color) / 0.5);
+    --shadow-2: 0 2px 6px rgb(var(--shadow-color) / 0.3), 0 20px 44px -16px rgb(var(--shadow-color) / 0.6);
+    --shadow-3: 0 4px 12px rgb(var(--shadow-color) / 0.35), 0 36px 70px -24px rgb(var(--shadow-color) / 0.7);
+    --shadow-4: 0 8px 20px rgb(var(--shadow-color) / 0.4), 0 56px 110px -32px rgb(var(--shadow-color) / 0.8);
+    color-scheme: dark;
+  }
+}
+/* auto-dark:end */
+
+/* ---------- Preference overrides ------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0.01ms;
+    --duration-base: 0.01ms;
+    --duration-slow: 0.01ms;
+    --duration-deliberate: 0.01ms;
+  }
+}
+
+/* Reduced transparency: glass turns into solid, readable panels. */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass-fill: var(--color-bg-surface);
+    --glass-fill-strong: var(--color-bg-surface-raised);
+    --glass-blur: 0px;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-border-default: var(--color-border-strong);
+    --color-fg-muted: var(--color-fg-default);
+    --color-fg-subtle: var(--color-fg-muted);
+    --glass-fill: var(--color-bg-surface);
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --color-focus-ring: Highlight;
+    --color-border-default: CanvasText;
+    --color-border-strong: CanvasText;
+  }
+}

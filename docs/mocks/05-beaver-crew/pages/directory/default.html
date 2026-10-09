@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Builder directory · default — Banaro · Beaver Crew</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="directory">
+<meta name="mock:state" content="default">
+<meta name="description" content="Builder directory as a cut-paper noticeboard: Bram searches with a magnifier, filters live on a paper sidebar and builders appear as cartoon avatar badges.">
+<link rel="stylesheet" href="../../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/tokens.css">
+<link rel="stylesheet" href="../../assets/ui.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+<style>
+  /* one-off: the directory grid is two-up beside the sidebar on wide screens */
+  @media (min-width: 64rem) { .builders--dir { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 90rem) { .builders--dir { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .builders--dir { gap: var(--space-8) var(--space-6); }
+  .pager__list li { display: inline-grid; place-items: center; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
+  <defs>
+    <!-- Hand-cut edge: low-frequency turbulence displaces the outline a few px. -->
+    <filter id="cut" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="11" result="warp"/>
+      <feDisplacementMap in="SourceGraphic" in2="warp" scale="7" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="cut-sm" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="5" result="warp"/>
+      <feDisplacementMap in="SourceGraphic" in2="warp" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <!-- A paper layer in an illustration: cut edge, fibre grain, stacked shadow. -->
+    <filter id="layer" x="-15%" y="-15%" width="130%" height="140%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="3" result="warp"/>
+      <feDisplacementMap in="SourceGraphic" in2="warp" scale="4" xChannelSelector="R" yChannelSelector="G" result="cut"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="8" result="fine"/>
+      <feColorMatrix in="fine" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.8 0 0 0 -0.42" result="speck"/>
+      <feComposite in="speck" in2="cut" operator="in" result="grain"/>
+      <feMerge result="paper"><feMergeNode in="cut"/><feMergeNode in="grain"/></feMerge>
+      <feDropShadow in="paper" dx="0" dy="3" stdDeviation="2" class="paper-shadow"/>
+    </filter>
+    <clipPath id="badge-clip"><circle cx="50" cy="50" r="44"/></clipPath>
+  </defs>
+</svg>
+<header class="site-header">
+  <div class="container site-header__bar">
+    <a class="brand" href="../home/default.html"><svg class="brand__mark" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+      <circle cx="50" cy="50" r="48" class="f-accent"/>
+      <g transform="translate(-15 6) scale(0.5)">
+        <circle cx="80" cy="86" r="15" class="f-fur"/><circle cx="180" cy="86" r="15" class="f-fur"/>
+        <circle cx="130" cy="114" r="56" class="f-fur"/>
+        <ellipse cx="99" cy="138" rx="27" ry="22" class="f-fur"/><ellipse cx="161" cy="138" rx="27" ry="22" class="f-fur"/>
+        <ellipse cx="130" cy="139" rx="32" ry="24" class="f-muzzle"/>
+        <ellipse cx="106" cy="104" rx="7" ry="9" class="f-ink"/><ellipse cx="154" cy="104" rx="7" ry="9" class="f-ink"/>
+        <path d="M116 123 Q130 112 144 123 Q146 133 130 135 Q114 133 116 123 Z" class="f-ink"/>
+        <rect x="121" y="144" width="9" height="15" rx="2.5" class="tooth"/><rect x="130" y="144" width="9" height="15" rx="2.5" class="tooth"/>
+        <path d="M72 82 C 72 30 188 30 188 82 Z" class="f-hat"/><rect x="58" y="76" width="144" height="14" rx="7" class="f-hat-dark"/>
+        <path d="M122 37 Q130 33 138 37 L141 82 L119 82 Z" class="f-hat-light"/>
+      </g>
+    </svg><span class="brand__name">Banaro<span class="brand__tag">with Bram &amp; the crew</span></span></a>
+    <nav class="nav" aria-label="Primary">
+      <button type="button" class="btn btn--sm nav__toggle" popovertarget="primary-menu"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="nav__toggle-label">Menu</span></button>
+      <ul class="nav__list" id="primary-menu" popover>
+        <li><a class="nav__link" href="../directory/default.html" aria-current="page">Builders</a></li>
+        <li><a class="nav__link" href="#results">Projects</a></li>
+        <li><a class="nav__link" href="#results">Events</a></li>
+        <li><a class="nav__link" href="#results">Matching</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="icon-btn" href="#results" aria-label="Notifications, 3 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="count" aria-hidden="true">3</span></a>
+      <a class="icon-btn" href="#results" aria-label="Matches, 2 new"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></svg><span class="count" aria-hidden="true">2</span></a>
+      <a class="user-chip" href="#results" aria-label="Your profile: Amara Osei"><svg class="avatar avatar--sm" viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="--skin: var(--skin-5); --hair: var(--hair-black); --shirt: var(--shirt-4); --badge: var(--paper-5);">
+      <circle cx="50" cy="50" r="49" class="av-rim"/>
+      <g clip-path="url(#badge-clip)">
+        <rect width="100" height="100" class="av-bg"/>
+        <circle cx="23" cy="30" r="14" class="av-hair"/><circle cx="77" cy="30" r="14" class="av-hair"/>
+        <path d="M12 104 C 14 82 32 76 50 76 C 68 76 86 82 88 104 Z" class="av-shirt"/>
+        <rect x="43" y="64" width="14" height="16" rx="4" class="av-skin"/>
+        <g class="avatar__head">
+          <circle cx="23" cy="54" r="6" class="av-skin"/><circle cx="77" cy="54" r="6" class="av-skin"/>
+          <circle cx="50" cy="50" r="26" class="av-skin"/>
+          <ellipse cx="34" cy="59" rx="4.5" ry="3" class="f-blush"/><ellipse cx="66" cy="59" rx="4.5" ry="3" class="f-blush"/>
+          <path d="M24 46 C 24 20 76 20 76 46 C 66 36 34 36 24 46 Z" class="av-hair"/>
+          
+          <ellipse cx="40" cy="50" rx="3" ry="3.8" class="eye eye--l f-ink"/><ellipse cx="60" cy="50" rx="3" ry="3.8" class="eye eye--r f-ink"/>
+          <path d="M42 60 Q50 67 58 60" class="s-ink" stroke-width="2.6"/>
+          
+        </g>
+      </g>
+    </svg><span class="user-chip__name" aria-hidden="true">Amara</span></a>
+    </div>
+  </div>
+</header>
+<main id="main">
+  <div class="container">
+    <section class="dir-hero" aria-labelledby="dir-title">
+      <div class="dir-hero__copy">
+        <p class="eyebrow">Builder directory · signed in as Amara</p>
+        <h1 class="h1" id="dir-title">Find your crew down the street</h1>
+        <form class="search" role="search" action="#results">
+          <label class="visually-hidden" for="q">Search builders by name, skill or project</label>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input class="input" id="q" type="search" name="q" placeholder="Name, skill or project">
+        </form>
+      </div>
+      <svg class="bram dir-hero__bram" viewBox="0 0 260 320" aria-hidden="true" focusable="false">
+    <g filter="url(#layer)">
+      <path d="M150 258 C 178 246 214 222 236 210 C 252 202 262 222 250 234 C 230 254 192 274 160 282 Z" class="f-fur-dark"/>
+      <path d="M182 252 L198 232 M198 246 L214 226 M214 240 L228 222 M230 232 L242 216 M188 240 L206 254 M204 230 L222 246 M222 224 L236 238" class="s-fur" stroke-width="2" opacity="0.7"/>
+    </g>
+    <g filter="url(#layer)">
+      <ellipse cx="104" cy="302" rx="28" ry="12" class="f-fur-dark"/><ellipse cx="158" cy="302" rx="28" ry="12" class="f-fur-dark"/>
+    </g>
+    <g filter="url(#layer)">
+      <path d="M130 150 C 84 150 64 202 66 248 C 68 286 98 304 130 304 C 162 304 192 286 194 248 C 196 202 176 150 130 150 Z" class="f-fur"/>
+      <ellipse cx="130" cy="248" rx="42" ry="50" class="f-belly"/>
+    </g>
+    <g filter="url(#layer)">
+      <path d="M68 236 Q130 256 192 236 L194 252 Q130 274 66 252 Z" class="f-belt"/>
+      <rect x="119" y="245" width="22" height="17" rx="3" class="f-hat"/><rect x="125" y="250" width="10" height="7" rx="1.5" class="f-belt"/>
+      <rect x="162" y="246" width="7" height="24" rx="2" class="f-frame" transform="rotate(-12 165 258)"/><rect x="156" y="242" width="18" height="9" rx="2" class="f-stone" transform="rotate(-12 165 246)"/>
+    </g>
+    <g filter="url(#layer)"><path d="M86 180 Q64 208 80 236" class="s-fur" stroke-width="22"/><circle cx="82" cy="240" r="12" class="f-fur-dark"/></g>
+    <g class="bram__head">
+      <g filter="url(#layer)">
+        <circle cx="80" cy="86" r="15" class="f-fur"/><circle cx="80" cy="86" r="7" class="f-fur-dark"/>
+        <circle cx="180" cy="86" r="15" class="f-fur"/><circle cx="180" cy="86" r="7" class="f-fur-dark"/>
+        <circle cx="130" cy="114" r="56" class="f-fur"/>
+        <ellipse cx="99" cy="138" rx="27" ry="22" class="f-fur"/><ellipse cx="161" cy="138" rx="27" ry="22" class="f-fur"/>
+      </g>
+      <g filter="url(#layer)">
+        <ellipse cx="130" cy="139" rx="32" ry="24" class="f-muzzle"/>
+      </g>
+      <ellipse cx="88" cy="127" rx="9" ry="6" class="f-blush"/><ellipse cx="172" cy="127" rx="9" ry="6" class="f-blush"/>
+      <path d="M96 88 Q105 82 114 87" class="s-ink" stroke-width="3.5"/><path d="M146 87 Q155 82 164 88" class="s-ink" stroke-width="3.5"/>
+      <g class="eye"><ellipse cx="106" cy="104" rx="7" ry="9" class="f-ink"/><circle cx="108.5" cy="100.5" r="2.6" class="f-tooth"/></g>
+      
+      <path d="M116 123 Q130 112 144 123 Q146 133 130 135 Q114 133 116 123 Z" class="f-ink"/>
+      <ellipse cx="125" cy="121" rx="4" ry="2" class="f-tooth" opacity="0.7"/>
+      <path d="M117 143 Q124 149 130 144 Q136 149 143 143" class="s-ink" stroke-width="3"/>
+      <rect x="121" y="146" width="9" height="15" rx="2.5" class="tooth"/><rect x="130" y="146" width="9" height="15" rx="2.5" class="tooth"/>
+      <g filter="url(#layer)">
+        <path d="M72 82 C 72 30 188 30 188 82 Z" class="f-hat"/>
+        <path d="M122 37 Q130 33 138 37 L141 82 L119 82 Z" class="f-hat-light"/>
+        <rect x="58" y="76" width="144" height="14" rx="7" class="f-hat-dark"/>
+        <path d="M88 68 Q91 50 106 42" class="s-hat-light" stroke-width="5"/>
+        <circle cx="164" cy="60" r="10" class="f-paper"/>
+        <text x="164" y="64.5" text-anchor="middle" class="bram__badge-text">B</text>
+      </g>
+    </g>
+    <g class="bram__lens">
+        <g filter="url(#layer)"><path d="M176 184 Q206 180 210 154" class="s-fur" stroke-width="22"/></g>
+        <g filter="url(#layer)">
+          <path d="M178 124 L206 148" class="s-frame" stroke-width="10"/>
+          <circle cx="210" cy="150" r="13" class="f-fur-dark"/>
+          <circle cx="160" cy="104" r="27" class="f-glass"/>
+          <g class="eye"><ellipse cx="158" cy="104" rx="12" ry="15" class="f-ink"/><circle cx="162" cy="98" r="4.5" class="f-tooth"/></g>
+          <circle cx="160" cy="104" r="27" class="s-frame" stroke-width="7"/>
+          <path d="M144 92 Q149 84 158 82" class="s-glare" stroke-width="3.5"/>
+        </g>
+      </g>
+  </svg>
+    </section>
+
+    <div class="dir">
+      <button type="button" class="btn filters-toggle" popovertarget="filters"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filters</button>
+      <form class="filters" id="filters" popover aria-label="Filter builders" action="#results">
+        <div class="filters__head">
+          <h2 class="filters__title">Narrow it down</h2>
+          <button type="button" class="icon-btn filters__close" popovertarget="filters" popovertargetaction="hide" aria-label="Close filters"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        </div>
+        <fieldset class="filters__group"><legend>Role</legend><ul><li><label class="check"><input type="checkbox" name="role" value="Founders"> Founders<span class="check__count">214</span></label></li><li><label class="check"><input type="checkbox" name="role" value="Engineers"> Engineers<span class="check__count">486</span></label></li><li><label class="check"><input type="checkbox" name="role" value="Designers"> Designers<span class="check__count">231</span></label></li><li><label class="check"><input type="checkbox" name="role" value="Product managers"> Product managers<span class="check__count">198</span></label></li><li><label class="check"><input type="checkbox" name="role" value="Other"> Other<span class="check__count">155</span></label></li></ul></fieldset>
+        <fieldset class="filters__group"><legend>Open to</legend><ul><li><label class="check"><input type="checkbox" name="open" value="Co-founding"> Co-founding<span class="check__count">173</span></label></li><li><label class="check"><input type="checkbox" name="open" value="Advising"> Advising<span class="check__count">248</span></label></li><li><label class="check"><input type="checkbox" name="open" value="Contributing"> Contributing<span class="check__count">611</span></label></li></ul></fieldset>
+        <fieldset class="filters__group"><legend>Distance</legend>
+          <label class="field__label" for="distance">Within 40 km of Leslieville</label>
+          <input class="range" id="distance" type="range" min="1" max="80" value="40" aria-valuetext="40 kilometres">
+          <p class="filters__note">From your neighbourhood, Leslieville.</p>
+        </fieldset>
+        <fieldset class="filters__group"><legend>Neighbourhood or city</legend><ul><li><label class="check"><input type="checkbox" name="hood" value="Downtown Toronto"> Downtown Toronto<span class="check__count">512</span></label></li><li><label class="check"><input type="checkbox" name="hood" value="North York"> North York<span class="check__count">141</span></label></li><li><label class="check"><input type="checkbox" name="hood" value="Scarborough"> Scarborough<span class="check__count">96</span></label></li><li><label class="check"><input type="checkbox" name="hood" value="Etobicoke"> Etobicoke<span class="check__count">88</span></label></li><li><label class="check"><input type="checkbox" name="hood" value="Mississauga"> Mississauga<span class="check__count">147</span></label></li><li><label class="check"><input type="checkbox" name="hood" value="Brampton"> Brampton<span class="check__count">74</span></label></li><li><label class="check"><input type="checkbox" name="hood" value="Markham"> Markham<span class="check__count">92</span></label></li><li><label class="check"><input type="checkbox" name="hood" value="Vaughan"> Vaughan<span class="check__count">51</span></label></li><li><label class="check"><input type="checkbox" name="hood" value="Richmond Hill"> Richmond Hill<span class="check__count">38</span></label></li><li><label class="check"><input type="checkbox" name="hood" value="Oakville"> Oakville<span class="check__count">45</span></label></li></ul></fieldset>
+        <fieldset class="filters__group"><legend>Popular skills</legend><div class="chips"><button type="button" class="chip" aria-pressed="false">React <span>203</span></button><button type="button" class="chip" aria-pressed="false">Figma <span>187</span></button><button type="button" class="chip" aria-pressed="false">Python <span>174</span></button><button type="button" class="chip" aria-pressed="false">Product strategy <span>156</span></button><button type="button" class="chip" aria-pressed="false">User research <span>112</span></button><button type="button" class="chip" aria-pressed="false">Laravel <span>96</span></button><button type="button" class="chip" aria-pressed="false">Data/ML <span>89</span></button><button type="button" class="chip" aria-pressed="false">Marketing <span>77</span></button><button type="button" class="chip" aria-pressed="false">Angular <span>74</span></button><button type="button" class="chip" aria-pressed="false">Swift <span>61</span></button><button type="button" class="chip" aria-pressed="false">Kotlin <span>48</span></button><button type="button" class="chip" aria-pressed="false">Fundraising <span>41</span></button></div></fieldset>
+        <div class="toolbar"><button type="reset" class="btn btn--sm">Clear all</button></div>
+      </form>
+
+      <section id="results" aria-labelledby="results-title">
+        <h2 class="visually-hidden" id="results-title">Results</h2>
+        <div class="results-bar">
+          <p class="results-bar__count" aria-live="polite"><strong>1,284 builders</strong> in Toronto and the GTA <span class="muted" style="font: var(--text-body-sm);">· showing 1–12</span></p>
+          <div class="sort"><label for="sort">Sort by</label><select class="select" id="sort" name="sort"><option selected>Best match</option><option>Nearest</option><option>Recently active</option><option>Newest</option></select></div>
+        </div>
+        <ul class="builders builders--dir">
+        <li class="builder paper  paper--tilt-l" id="b-daniel-reyes">
+          <span class="match paper paper--sm">94% match</span>
+          <div class="builder__top">
+            <svg class="avatar " viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="--skin: var(--skin-3); --hair: var(--hair-black); --shirt: var(--shirt-1); --badge: var(--paper-2);">
+      <circle cx="50" cy="50" r="49" class="av-rim"/>
+      <g clip-path="url(#badge-clip)">
+        <rect width="100" height="100" class="av-bg"/>
+        
+        <path d="M12 104 C 14 82 32 76 50 76 C 68 76 86 82 88 104 Z" class="av-shirt"/>
+        <rect x="43" y="64" width="14" height="16" rx="4" class="av-skin"/>
+        <g class="avatar__head">
+          <circle cx="23" cy="54" r="6" class="av-skin"/><circle cx="77" cy="54" r="6" class="av-skin"/>
+          <circle cx="50" cy="50" r="26" class="av-skin"/>
+          <ellipse cx="34" cy="59" rx="4.5" ry="3" class="f-blush"/><ellipse cx="66" cy="59" rx="4.5" ry="3" class="f-blush"/>
+          <path d="M24 46 C 24 18 76 18 76 46 C 70 36 60 32 50 34 C 40 32 30 36 24 46 Z" class="av-hair"/>
+          <g class="s-ink" stroke-width="2.3"><circle cx="40" cy="50" r="7.5"/><circle cx="60" cy="50" r="7.5"/><path d="M47.5 50 L52.5 50"/></g><path d="M25 52 C 26 84 74 84 75 52 C 71 66 62 71 50 71 C 38 71 29 66 25 52 Z" class="av-hair"/>
+          <ellipse cx="40" cy="50" rx="3" ry="3.8" class="eye eye--l f-ink"/><ellipse cx="60" cy="50" rx="3" ry="3.8" class="eye eye--r f-ink"/>
+          <path d="M42 60 Q50 67 58 60" class="s-ink" stroke-width="2.6"/>
+          
+        </g>
+      </g>
+    </svg>
+            <div class="builder__who">
+              <h3 class="builder__name">Daniel Reyes</h3>
+              <p class="builder__role">Full-stack engineer</p>
+              <span class="status status--online">Online now</span>
+            </div>
+          </div>
+          <p class="builder__where"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Mississauga · 26.9 km</span></p>
+          <ul class="tags" aria-label="Skills"><li class="tag">Laravel</li><li class="tag">Angular</li><li class="tag">PostgreSQL</li></ul>
+          <p class="builder__building">Building <strong>Psalter</strong></p>
+          <div class="builder__foot">
+            <span class="pill pill--open">Open to co-founding</span>
+            <span class="builder__actions"><button type="button" class="btn btn--sm">View profile</button><button type="button" class="btn btn--sm btn--ink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18l-1 3 4-2h9a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/></svg>Connect</button></span>
+          </div>
+        </li>
+        <li class="builder paper paper--blue " id="b-grace-liu">
+          <span class="match paper paper--sm">91% match</span>
+          <div class="builder__top">
+            <svg class="avatar " viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="--skin: var(--skin-2); --hair: var(--hair-black); --shirt: var(--shirt-5); --badge: var(--paper-6);">
+      <circle cx="50" cy="50" r="49" class="av-rim"/>
+      <g clip-path="url(#badge-clip)">
+        <rect width="100" height="100" class="av-bg"/>
+        <path d="M22 50 C 16 14 84 14 78 50 L82 98 L18 98 Z" class="av-hair"/>
+        <path d="M12 104 C 14 82 32 76 50 76 C 68 76 86 82 88 104 Z" class="av-shirt"/>
+        <rect x="43" y="64" width="14" height="16" rx="4" class="av-skin"/>
+        <g class="avatar__head">
+          <circle cx="23" cy="54" r="6" class="av-skin"/><circle cx="77" cy="54" r="6" class="av-skin"/>
+          <circle cx="50" cy="50" r="26" class="av-skin"/>
+          <ellipse cx="34" cy="59" rx="4.5" ry="3" class="f-blush"/><ellipse cx="66" cy="59" rx="4.5" ry="3" class="f-blush"/>
+          <path d="M24 46 C 26 22 74 22 76 46 C 70 36 62 33 56 35 C 50 30 36 34 24 46 Z" class="av-hair"/>
+          
+          <ellipse cx="40" cy="50" rx="3" ry="3.8" class="eye eye--l f-ink"/><ellipse cx="60" cy="50" rx="3" ry="3.8" class="eye eye--r f-ink"/>
+          <path d="M42 60 Q50 67 58 60" class="s-ink" stroke-width="2.6"/>
+          
+        </g>
+      </g>
+    </svg>
+            <div class="builder__who">
+              <h3 class="builder__name">Grace Liu</h3>
+              <p class="builder__role">Product designer</p>
+              <span class="status status--online">Online now</span>
+            </div>
+          </div>
+          <p class="builder__where"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Markham · 24.3 km</span></p>
+          <ul class="tags" aria-label="Skills"><li class="tag">Figma</li><li class="tag">Design systems</li><li class="tag">Prototyping</li></ul>
+          <p class="builder__building">Building <strong>Gather</strong></p>
+          <div class="builder__foot">
+            <span class="pill pill--open">Open to contributing</span>
+            <span class="builder__actions"><button type="button" class="btn btn--sm">View profile</button><button type="button" class="btn btn--sm btn--ink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18l-1 3 4-2h9a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/></svg>Say hello</button></span>
+          </div>
+        </li>
+        <li class="builder paper  paper--tilt-r" id="b-noah-fischer">
+          <span class="match paper paper--sm">88% match</span>
+          <div class="builder__top">
+            <svg class="avatar " viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="--skin: var(--skin-1); --hair: var(--hair-brown); --shirt: var(--shirt-2); --badge: var(--paper-3);">
+      <circle cx="50" cy="50" r="49" class="av-rim"/>
+      <g clip-path="url(#badge-clip)">
+        <rect width="100" height="100" class="av-bg"/>
+        
+        <path d="M12 104 C 14 82 32 76 50 76 C 68 76 86 82 88 104 Z" class="av-shirt"/>
+        <rect x="43" y="64" width="14" height="16" rx="4" class="av-skin"/>
+        <g class="avatar__head">
+          <circle cx="23" cy="54" r="6" class="av-skin"/><circle cx="77" cy="54" r="6" class="av-skin"/>
+          <circle cx="50" cy="50" r="26" class="av-skin"/>
+          <ellipse cx="34" cy="59" rx="4.5" ry="3" class="f-blush"/><ellipse cx="66" cy="59" rx="4.5" ry="3" class="f-blush"/>
+          <path d="M23 50 C 18 18 72 12 79 44 C 72 36 60 30 44 34 C 34 37 28 42 23 50 Z" class="av-hair"/>
+          <g class="s-ink" stroke-width="2.3"><circle cx="40" cy="50" r="7.5"/><circle cx="60" cy="50" r="7.5"/><path d="M47.5 50 L52.5 50"/></g>
+          <ellipse cx="40" cy="50" rx="3" ry="3.8" class="eye eye--l f-ink"/><ellipse cx="60" cy="50" rx="3" ry="3.8" class="eye eye--r f-ink"/>
+          <path d="M42 60 Q50 67 58 60" class="s-ink" stroke-width="2.6"/>
+          
+        </g>
+      </g>
+    </svg>
+            <div class="builder__who">
+              <h3 class="builder__name">Noah Fischer</h3>
+              <p class="builder__role">Backend & data engineer</p>
+              <span class="status">Seen 1 h ago</span>
+            </div>
+          </div>
+          <p class="builder__where"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>The Annex · 5.8 km</span></p>
+          <ul class="tags" aria-label="Skills"><li class="tag">Python</li><li class="tag">PostgreSQL</li><li class="tag">Data pipelines</li></ul>
+          <p class="builder__building">Building <strong>Ledgerline</strong></p>
+          <div class="builder__foot">
+            <span class="pill pill--open">Open to co-founding</span>
+            <span class="builder__actions"><button type="button" class="btn btn--sm">View profile</button><button type="button" class="btn btn--sm btn--ink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18l-1 3 4-2h9a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/></svg>Connect</button></span>
+          </div>
+        </li>
+        <li class="builder paper paper--green paper--tilt-l" id="b-caleb-morgan">
+          <span class="match paper paper--sm">85% match</span>
+          <div class="builder__top">
+            <svg class="avatar " viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="--skin: var(--skin-2); --hair: var(--hair-blonde); --shirt: var(--shirt-1); --badge: var(--paper-2);">
+      <circle cx="50" cy="50" r="49" class="av-rim"/>
+      <g clip-path="url(#badge-clip)">
+        <rect width="100" height="100" class="av-bg"/>
+        
+        <path d="M12 104 C 14 82 32 76 50 76 C 68 76 86 82 88 104 Z" class="av-shirt"/>
+        <rect x="43" y="64" width="14" height="16" rx="4" class="av-skin"/>
+        <g class="avatar__head">
+          <circle cx="23" cy="54" r="6" class="av-skin"/><circle cx="77" cy="54" r="6" class="av-skin"/>
+          <circle cx="50" cy="50" r="26" class="av-skin"/>
+          <ellipse cx="34" cy="59" rx="4.5" ry="3" class="f-blush"/><ellipse cx="66" cy="59" rx="4.5" ry="3" class="f-blush"/>
+          <path d="M24 46 C 24 18 76 18 76 46 C 70 36 60 32 50 34 C 40 32 30 36 24 46 Z" class="av-hair"/>
+          
+          <ellipse cx="40" cy="50" rx="3" ry="3.8" class="eye eye--l f-ink"/><ellipse cx="60" cy="50" rx="3" ry="3.8" class="eye eye--r f-ink"/>
+          <path d="M42 60 Q50 67 58 60" class="s-ink" stroke-width="2.6"/>
+          
+        </g>
+      </g>
+    </svg>
+            <div class="builder__who">
+              <h3 class="builder__name">Caleb Morgan</h3>
+              <p class="builder__role">Frontend engineer</p>
+              <span class="status status--online">Online now</span>
+            </div>
+          </div>
+          <p class="builder__where"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Etobicoke · 17.8 km</span></p>
+          <ul class="tags" aria-label="Skills"><li class="tag">Angular</li><li class="tag">TypeScript</li><li class="tag">Accessibility</li></ul>
+          <p class="builder__building">No project listed yet</p>
+          <div class="builder__foot">
+            <span class="pill pill--open">Open to contributing</span>
+            <span class="builder__actions"><button type="button" class="btn btn--sm">View profile</button><button type="button" class="btn btn--sm btn--ink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18l-1 3 4-2h9a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/></svg>Say hello</button></span>
+          </div>
+        </li>
+        <li class="builder paper  " id="b-sofia-marquez">
+          <span class="match paper paper--sm">82% match</span>
+          <div class="builder__top">
+            <svg class="avatar " viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="--skin: var(--skin-3); --hair: var(--hair-brown); --shirt: var(--shirt-3); --badge: var(--paper-4);">
+      <circle cx="50" cy="50" r="49" class="av-rim"/>
+      <g clip-path="url(#badge-clip)">
+        <rect width="100" height="100" class="av-bg"/>
+        <path d="M20 52 C 12 14 88 14 80 52 C 86 66 78 76 84 92 L16 92 C 22 76 14 66 20 52 Z" class="av-hair"/>
+        <path d="M12 104 C 14 82 32 76 50 76 C 68 76 86 82 88 104 Z" class="av-shirt"/>
+        <rect x="43" y="64" width="14" height="16" rx="4" class="av-skin"/>
+        <g class="avatar__head">
+          <circle cx="23" cy="54" r="6" class="av-skin"/><circle cx="77" cy="54" r="6" class="av-skin"/>
+          <circle cx="50" cy="50" r="26" class="av-skin"/>
+          <ellipse cx="34" cy="59" rx="4.5" ry="3" class="f-blush"/><ellipse cx="66" cy="59" rx="4.5" ry="3" class="f-blush"/>
+          <path d="M24 48 C 22 22 70 16 78 44 C 66 30 46 30 36 40 C 32 44 28 46 24 48 Z" class="av-hair"/>
+          
+          <ellipse cx="40" cy="50" rx="3" ry="3.8" class="eye eye--l f-ink"/><ellipse cx="60" cy="50" rx="3" ry="3.8" class="eye eye--r f-ink"/>
+          <path d="M42 60 Q50 67 58 60" class="s-ink" stroke-width="2.6"/>
+          
+        </g>
+      </g>
+    </svg>
+            <div class="builder__who">
+              <h3 class="builder__name">Sofia Marquez</h3>
+              <p class="builder__role">Growth & marketing</p>
+              <span class="status">Seen 3 h ago</span>
+            </div>
+          </div>
+          <p class="builder__where"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Liberty Village · 6.1 km</span></p>
+          <ul class="tags" aria-label="Skills"><li class="tag">Lifecycle marketing</li><li class="tag">SEO</li><li class="tag">Community</li></ul>
+          <p class="builder__building">Building <strong>Kindred</strong></p>
+          <div class="builder__foot">
+            <span class="pill pill--open">Open to contributing</span>
+            <span class="builder__actions"><button type="button" class="btn btn--sm">View profile</button><button type="button" class="btn btn--sm btn--ink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18l-1 3 4-2h9a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/></svg>Say hello</button></span>
+          </div>
+        </li>
+        <li class="builder paper paper--pink paper--tilt-r" id="b-hannah-kowalski">
+          <span class="match paper paper--sm">80% match</span>
+          <div class="builder__top">
+            <svg class="avatar " viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="--skin: var(--skin-1); --hair: var(--hair-blonde); --shirt: var(--shirt-4); --badge: var(--paper-5);">
+      <circle cx="50" cy="50" r="49" class="av-rim"/>
+      <g clip-path="url(#badge-clip)">
+        <rect width="100" height="100" class="av-bg"/>
+        <circle cx="50" cy="19" r="11" class="av-hair"/>
+        <path d="M12 104 C 14 82 32 76 50 76 C 68 76 86 82 88 104 Z" class="av-shirt"/>
+        <rect x="43" y="64" width="14" height="16" rx="4" class="av-skin"/>
+        <g class="avatar__head">
+          <circle cx="23" cy="54" r="6" class="av-skin"/><circle cx="77" cy="54" r="6" class="av-skin"/>
+          <circle cx="50" cy="50" r="26" class="av-skin"/>
+          <ellipse cx="34" cy="59" rx="4.5" ry="3" class="f-blush"/><ellipse cx="66" cy="59" rx="4.5" ry="3" class="f-blush"/>
+          <path d="M24 46 C 24 20 76 20 76 46 C 70 36 60 32 50 34 C 40 32 30 36 24 46 Z" class="av-hair"/>
+          <g class="s-ink" stroke-width="2.3"><circle cx="40" cy="50" r="7.5"/><circle cx="60" cy="50" r="7.5"/><path d="M47.5 50 L52.5 50"/></g>
+          <ellipse cx="40" cy="50" rx="3" ry="3.8" class="eye eye--l f-ink"/><ellipse cx="60" cy="50" rx="3" ry="3.8" class="eye eye--r f-ink"/>
+          <path d="M42 60 Q50 67 58 60" class="s-ink" stroke-width="2.6"/>
+          
+        </g>
+      </g>
+    </svg>
+            <div class="builder__who">
+              <h3 class="builder__name">Hannah Kowalski</h3>
+              <p class="builder__role">UX researcher</p>
+              <span class="status">Seen yesterday</span>
+            </div>
+          </div>
+          <p class="builder__where"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Roncesvalles · 7.2 km</span></p>
+          <ul class="tags" aria-label="Skills"><li class="tag">User interviews</li><li class="tag">Usability testing</li><li class="tag">Synthesis</li></ul>
+          <p class="builder__building">No project listed yet</p>
+          <div class="builder__foot">
+            <span class="pill pill--open">Open to advising</span>
+            <span class="builder__actions"><button type="button" class="btn btn--sm">View profile</button><button type="button" class="btn btn--sm btn--ink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18l-1 3 4-2h9a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/></svg>Say hello</button></span>
+          </div>
+        </li>
+        <li class="builder paper  paper--tilt-l" id="b-marcus-bennett">
+          <span class="match paper paper--sm">78% match</span>
+          <div class="builder__top">
+            <svg class="avatar " viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="--skin: var(--skin-5); --hair: var(--hair-grey); --shirt: var(--shirt-2); --badge: var(--paper-3);">
+      <circle cx="50" cy="50" r="49" class="av-rim"/>
+      <g clip-path="url(#badge-clip)">
+        <rect width="100" height="100" class="av-bg"/>
+        
+        <path d="M12 104 C 14 82 32 76 50 76 C 68 76 86 82 88 104 Z" class="av-shirt"/>
+        <rect x="43" y="64" width="14" height="16" rx="4" class="av-skin"/>
+        <g class="avatar__head">
+          <circle cx="23" cy="54" r="6" class="av-skin"/><circle cx="77" cy="54" r="6" class="av-skin"/>
+          <circle cx="50" cy="50" r="26" class="av-skin"/>
+          <ellipse cx="34" cy="59" rx="4.5" ry="3" class="f-blush"/><ellipse cx="66" cy="59" rx="4.5" ry="3" class="f-blush"/>
+          <path d="M26 40 C 30 30 36 27 40 26 C 34 32 30 36 26 40 Z M74 40 C 70 30 64 27 60 26 C 66 32 70 36 74 40 Z" class="av-hair"/>
+          <path d="M25 52 C 26 84 74 84 75 52 C 71 66 62 71 50 71 C 38 71 29 66 25 52 Z" class="av-hair"/>
+          <ellipse cx="40" cy="50" rx="3" ry="3.8" class="eye eye--l f-ink"/><ellipse cx="60" cy="50" rx="3" ry="3.8" class="eye eye--r f-ink"/>
+          <path d="M42 60 Q50 67 58 60" class="s-ink" stroke-width="2.6"/>
+          
+        </g>
+      </g>
+    </svg>
+            <div class="builder__who">
+              <h3 class="builder__name">Marcus Bennett</h3>
+              <p class="builder__role">Engineering leader (ex-CTO)</p>
+              <span class="status">Seen 2 h ago</span>
+            </div>
+          </div>
+          <p class="builder__where"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>North York · 14.2 km</span></p>
+          <ul class="tags" aria-label="Skills"><li class="tag">Architecture</li><li class="tag">Hiring</li><li class="tag">Laravel</li></ul>
+          <p class="builder__building">No project listed yet</p>
+          <div class="builder__foot">
+            <span class="pill pill--open">Open to advising</span>
+            <span class="builder__actions"><button type="button" class="btn btn--sm">View profile</button><button type="button" class="btn btn--sm btn--ink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18l-1 3 4-2h9a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/></svg>Say hello</button></span>
+          </div>
+        </li>
+        <li class="builder paper paper--blue " id="b-ruth-alvarez">
+          <span class="match paper paper--sm">76% match</span>
+          <div class="builder__top">
+            <svg class="avatar " viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="--skin: var(--skin-3); --hair: var(--hair-black); --shirt: var(--shirt-3); --badge: var(--paper-4);">
+      <circle cx="50" cy="50" r="49" class="av-rim"/>
+      <g clip-path="url(#badge-clip)">
+        <rect width="100" height="100" class="av-bg"/>
+        <ellipse cx="80" cy="62" rx="9" ry="19" class="av-hair" transform="rotate(-14 80 62)"/>
+        <path d="M12 104 C 14 82 32 76 50 76 C 68 76 86 82 88 104 Z" class="av-shirt"/>
+        <rect x="43" y="64" width="14" height="16" rx="4" class="av-skin"/>
+        <g class="avatar__head">
+          <circle cx="23" cy="54" r="6" class="av-skin"/><circle cx="77" cy="54" r="6" class="av-skin"/>
+          <circle cx="50" cy="50" r="26" class="av-skin"/>
+          <ellipse cx="34" cy="59" rx="4.5" ry="3" class="f-blush"/><ellipse cx="66" cy="59" rx="4.5" ry="3" class="f-blush"/>
+          <path d="M24 48 C 22 20 78 20 76 48 C 68 34 40 30 24 48 Z" class="av-hair"/>
+          
+          <ellipse cx="40" cy="50" rx="3" ry="3.8" class="eye eye--l f-ink"/><ellipse cx="60" cy="50" rx="3" ry="3.8" class="eye eye--r f-ink"/>
+          <path d="M42 60 Q50 67 58 60" class="s-ink" stroke-width="2.6"/>
+          
+        </g>
+      </g>
+    </svg>
+            <div class="builder__who">
+              <h3 class="builder__name">Ruth Alvarez</h3>
+              <p class="builder__role">Product manager, health tech</p>
+              <span class="status status--online">Online now</span>
+            </div>
+          </div>
+          <p class="builder__where"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Scarborough · 13.5 km</span></p>
+          <ul class="tags" aria-label="Skills"><li class="tag">Roadmapping</li><li class="tag">Healthcare</li><li class="tag">Analytics</li></ul>
+          <p class="builder__building">Building <strong>Sabbath</strong></p>
+          <div class="builder__foot">
+            <span class="pill pill--open">Open to co-founding</span>
+            <span class="builder__actions"><button type="button" class="btn btn--sm">View profile</button><button type="button" class="btn btn--sm btn--ink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18l-1 3 4-2h9a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/></svg>Connect</button></span>
+          </div>
+        </li>
+        <li class="builder paper  paper--tilt-r" id="b-leah-thompson">
+          <span class="match paper paper--sm">73% match</span>
+          <div class="builder__top">
+            <svg class="avatar " viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="--skin: var(--skin-1); --hair: var(--hair-red); --shirt: var(--shirt-5); --badge: var(--paper-6);">
+      <circle cx="50" cy="50" r="49" class="av-rim"/>
+      <g clip-path="url(#badge-clip)">
+        <rect width="100" height="100" class="av-bg"/>
+        <g class="av-hair"><circle cx="27" cy="36" r="12"/><circle cx="37" cy="24" r="12"/><circle cx="50" cy="20" r="12"/><circle cx="63" cy="24" r="12"/><circle cx="73" cy="36" r="12"/><circle cx="24" cy="53" r="10"/><circle cx="76" cy="53" r="10"/><circle cx="25" cy="70" r="10"/><circle cx="75" cy="70" r="10"/></g>
+        <path d="M12 104 C 14 82 32 76 50 76 C 68 76 86 82 88 104 Z" class="av-shirt"/>
+        <rect x="43" y="64" width="14" height="16" rx="4" class="av-skin"/>
+        <g class="avatar__head">
+          <circle cx="23" cy="54" r="6" class="av-skin"/><circle cx="77" cy="54" r="6" class="av-skin"/>
+          <circle cx="50" cy="50" r="26" class="av-skin"/>
+          <ellipse cx="34" cy="59" rx="4.5" ry="3" class="f-blush"/><ellipse cx="66" cy="59" rx="4.5" ry="3" class="f-blush"/>
+          <g class="av-hair"><circle cx="35" cy="33" r="9"/><circle cx="50" cy="29" r="9"/><circle cx="65" cy="33" r="9"/></g>
+          
+          <ellipse cx="40" cy="50" rx="3" ry="3.8" class="eye eye--l f-ink"/><ellipse cx="60" cy="50" rx="3" ry="3.8" class="eye eye--r f-ink"/>
+          <path d="M42 60 Q50 67 58 60" class="s-ink" stroke-width="2.6"/>
+          
+        </g>
+      </g>
+    </svg>
+            <div class="builder__who">
+              <h3 class="builder__name">Leah Thompson</h3>
+              <p class="builder__role">Brand & illustration designer</p>
+              <span class="status">Seen 5 h ago</span>
+            </div>
+          </div>
+          <p class="builder__where"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Kensington Market · 4.6 km</span></p>
+          <ul class="tags" aria-label="Skills"><li class="tag">Illustration</li><li class="tag">Branding</li><li class="tag">Motion</li></ul>
+          <p class="builder__building">No project listed yet</p>
+          <div class="builder__foot">
+            <span class="pill pill--open">Open to contributing</span>
+            <span class="builder__actions"><button type="button" class="btn btn--sm">View profile</button><button type="button" class="btn btn--sm btn--ink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18l-1 3 4-2h9a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/></svg>Say hello</button></span>
+          </div>
+        </li>
+        <li class="builder paper paper--green paper--tilt-l" id="b-elijah-brooks">
+          <span class="match paper paper--sm">70% match</span>
+          <div class="builder__top">
+            <svg class="avatar " viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="--skin: var(--skin-4); --hair: var(--hair-black); --shirt: var(--shirt-1); --badge: var(--paper-2);">
+      <circle cx="50" cy="50" r="49" class="av-rim"/>
+      <g clip-path="url(#badge-clip)">
+        <rect width="100" height="100" class="av-bg"/>
+        
+        <path d="M12 104 C 14 82 32 76 50 76 C 68 76 86 82 88 104 Z" class="av-shirt"/>
+        <rect x="43" y="64" width="14" height="16" rx="4" class="av-skin"/>
+        <g class="avatar__head">
+          <circle cx="23" cy="54" r="6" class="av-skin"/><circle cx="77" cy="54" r="6" class="av-skin"/>
+          <circle cx="50" cy="50" r="26" class="av-skin"/>
+          <ellipse cx="34" cy="59" rx="4.5" ry="3" class="f-blush"/><ellipse cx="66" cy="59" rx="4.5" ry="3" class="f-blush"/>
+          <path d="M24 46 C 24 18 76 18 76 46 C 70 36 60 32 50 34 C 40 32 30 36 24 46 Z" class="av-hair"/>
+          
+          <ellipse cx="40" cy="50" rx="3" ry="3.8" class="eye eye--l f-ink"/><ellipse cx="60" cy="50" rx="3" ry="3.8" class="eye eye--r f-ink"/>
+          <path d="M42 60 Q50 67 58 60" class="s-ink" stroke-width="2.6"/>
+          <path d="M22 40 C 22 8 78 8 78 40 Z" class="f-hat"/><rect x="15" y="36" width="70" height="8" rx="4" class="f-hat-dark"/>
+        </g>
+      </g>
+    </svg>
+            <div class="builder__who">
+              <h3 class="builder__name">Elijah Brooks</h3>
+              <p class="builder__role">Hardware founder</p>
+              <span class="status">Seen yesterday</span>
+            </div>
+          </div>
+          <p class="builder__where"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Oakville · 36.4 km</span></p>
+          <ul class="tags" aria-label="Skills"><li class="tag">Embedded C</li><li class="tag">IoT</li><li class="tag">Manufacturing</li></ul>
+          <p class="builder__building">Building <strong>Wellspring</strong></p>
+          <div class="builder__foot">
+            <span class="pill pill--open">Open to co-founding</span>
+            <span class="builder__actions"><button type="button" class="btn btn--sm">View profile</button><button type="button" class="btn btn--sm btn--ink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18l-1 3 4-2h9a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/></svg>Connect</button></span>
+          </div>
+        </li>
+        <li class="builder paper  " id="b-peter-walsh">
+          <span class="match paper paper--sm">68% match</span>
+          <div class="builder__top">
+            <svg class="avatar " viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="--skin: var(--skin-1); --hair: var(--hair-grey); --shirt: var(--shirt-4); --badge: var(--paper-5);">
+      <circle cx="50" cy="50" r="49" class="av-rim"/>
+      <g clip-path="url(#badge-clip)">
+        <rect width="100" height="100" class="av-bg"/>
+        
+        <path d="M12 104 C 14 82 32 76 50 76 C 68 76 86 82 88 104 Z" class="av-shirt"/>
+        <rect x="43" y="64" width="14" height="16" rx="4" class="av-skin"/>
+        <g class="avatar__head">
+          <circle cx="23" cy="54" r="6" class="av-skin"/><circle cx="77" cy="54" r="6" class="av-skin"/>
+          <circle cx="50" cy="50" r="26" class="av-skin"/>
+          <ellipse cx="34" cy="59" rx="4.5" ry="3" class="f-blush"/><ellipse cx="66" cy="59" rx="4.5" ry="3" class="f-blush"/>
+          <path d="M23 50 C 18 18 72 12 79 44 C 72 36 60 30 44 34 C 34 37 28 42 23 50 Z" class="av-hair"/>
+          
+          <ellipse cx="40" cy="50" rx="3" ry="3.8" class="eye eye--l f-ink"/><ellipse cx="60" cy="50" rx="3" ry="3.8" class="eye eye--r f-ink"/>
+          <path d="M42 60 Q50 67 58 60" class="s-ink" stroke-width="2.6"/>
+          
+        </g>
+      </g>
+    </svg>
+            <div class="builder__who">
+              <h3 class="builder__name">Peter Walsh</h3>
+              <p class="builder__role">Angel investor & advisor</p>
+              <span class="status">Seen 2 days ago</span>
+            </div>
+          </div>
+          <p class="builder__where"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Richmond Hill · 27.6 km</span></p>
+          <ul class="tags" aria-label="Skills"><li class="tag">Fundraising</li><li class="tag">Go-to-market</li><li class="tag">SaaS</li></ul>
+          <p class="builder__building">No project listed yet</p>
+          <div class="builder__foot">
+            <span class="pill pill--open">Open to advising</span>
+            <span class="builder__actions"><button type="button" class="btn btn--sm">View profile</button><button type="button" class="btn btn--sm btn--ink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18l-1 3 4-2h9a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/></svg>Say hello</button></span>
+          </div>
+        </li>
+        <li class="builder paper paper--pink paper--tilt-r" id="b-esther-nguyen">
+          <span class="match paper paper--sm">66% match</span>
+          <div class="builder__top">
+            <svg class="avatar " viewBox="0 0 100 100" aria-hidden="true" focusable="false" style="--skin: var(--skin-2); --hair: var(--hair-black); --shirt: var(--shirt-2); --badge: var(--paper-3);">
+      <circle cx="50" cy="50" r="49" class="av-rim"/>
+      <g clip-path="url(#badge-clip)">
+        <rect width="100" height="100" class="av-bg"/>
+        <circle cx="50" cy="19" r="11" class="av-hair"/>
+        <path d="M12 104 C 14 82 32 76 50 76 C 68 76 86 82 88 104 Z" class="av-shirt"/>
+        <rect x="43" y="64" width="14" height="16" rx="4" class="av-skin"/>
+        <g class="avatar__head">
+          <circle cx="23" cy="54" r="6" class="av-skin"/><circle cx="77" cy="54" r="6" class="av-skin"/>
+          <circle cx="50" cy="50" r="26" class="av-skin"/>
+          <ellipse cx="34" cy="59" rx="4.5" ry="3" class="f-blush"/><ellipse cx="66" cy="59" rx="4.5" ry="3" class="f-blush"/>
+          <path d="M24 46 C 24 20 76 20 76 46 C 70 36 60 32 50 34 C 40 32 30 36 24 46 Z" class="av-hair"/>
+          <g class="s-ink" stroke-width="2.3"><circle cx="40" cy="50" r="7.5"/><circle cx="60" cy="50" r="7.5"/><path d="M47.5 50 L52.5 50"/></g>
+          <ellipse cx="40" cy="50" rx="3" ry="3.8" class="eye eye--l f-ink"/><ellipse cx="60" cy="50" rx="3" ry="3.8" class="eye eye--r f-ink"/>
+          <path d="M42 60 Q50 67 58 60" class="s-ink" stroke-width="2.6"/>
+          
+        </g>
+      </g>
+    </svg>
+            <div class="builder__who">
+              <h3 class="builder__name">Esther Nguyen</h3>
+              <p class="builder__role">Product designer</p>
+              <span class="status">Seen 4 h ago</span>
+            </div>
+          </div>
+          <p class="builder__where"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Riverdale · 1.4 km</span></p>
+          <ul class="tags" aria-label="Skills"><li class="tag">Figma</li><li class="tag">Service design</li><li class="tag">Workshops</li></ul>
+          <p class="builder__building">No project listed yet</p>
+          <div class="builder__foot">
+            <span class="pill pill--open">Open to co-founding</span>
+            <span class="builder__actions"><button type="button" class="btn btn--sm">View profile</button><button type="button" class="btn btn--sm btn--ink"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18l-1 3 4-2h9a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/></svg>Connect</button></span>
+          </div>
+        </li>
+        </ul>
+        <nav class="pager" aria-label="Pagination">
+          <button type="button" class="btn btn--primary btn--lg">Show 12 more builders</button>
+          <ul class="pager__list">
+            <li><a href="#results" aria-current="page" aria-label="Page 1">1</a></li>
+            <li><a href="#results" aria-label="Page 2">2</a></li>
+            <li><a href="#results" aria-label="Page 3">3</a></li>
+            <li><span class="muted" aria-hidden="true">…</span></li>
+            <li><a href="#results" aria-label="Page 107">107</a></li>
+          </ul>
+        </nav>
+      </section>
+    </div>
+  </div>
+  <p class="mock-note" style="top: 14rem; right: 1rem;">Bram bobs his magnifier while you search; card avatars wink on hover. Filters open as a bottom sheet under 1024px.</p>
+</main>
+<footer class="site-footer" id="site-footer">
+  <div class="container footer__grid">
+    <div style="display:grid; gap: var(--space-4);">
+      <p class="footer__brand"><svg class="brand__mark" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+      <circle cx="50" cy="50" r="48" class="f-accent"/>
+      <g transform="translate(-15 6) scale(0.5)">
+        <circle cx="80" cy="86" r="15" class="f-fur"/><circle cx="180" cy="86" r="15" class="f-fur"/>
+        <circle cx="130" cy="114" r="56" class="f-fur"/>
+        <ellipse cx="99" cy="138" rx="27" ry="22" class="f-fur"/><ellipse cx="161" cy="138" rx="27" ry="22" class="f-fur"/>
+        <ellipse cx="130" cy="139" rx="32" ry="24" class="f-muzzle"/>
+        <ellipse cx="106" cy="104" rx="7" ry="9" class="f-ink"/><ellipse cx="154" cy="104" rx="7" ry="9" class="f-ink"/>
+        <path d="M116 123 Q130 112 144 123 Q146 133 130 135 Q114 133 116 123 Z" class="f-ink"/>
+        <rect x="121" y="144" width="9" height="15" rx="2.5" class="tooth"/><rect x="130" y="144" width="9" height="15" rx="2.5" class="tooth"/>
+        <path d="M72 82 C 72 30 188 30 188 82 Z" class="f-hat"/><rect x="58" y="76" width="144" height="14" rx="7" class="f-hat-dark"/>
+        <path d="M122 37 Q130 33 138 37 L141 82 L119 82 Z" class="f-hat-light"/>
+      </g>
+    </svg>Banaro</p>
+      <p class="footer__made">Made in Toronto. © 2026 Banaro.</p>
+    </div>
+    <div style="display:grid; gap: var(--space-6);">
+      <ul class="footer__links"><li><a href="#site-footer">About</a></li><li><a href="#site-footer">Code of conduct</a></li><li><a href="#site-footer">Privacy</a></li><li><a href="#site-footer">Contact</a></li></ul>
+      <p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+    </div>
+  </div>
+</footer>
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../../index.html" aria-label="All concepts">⌂</a>
+  <a class="mock-bar__home" href="../../../04-material-you/pages/directory/default.html" aria-label="Previous concept: Material You">‹</a>
+  <span class="mock-bar__screen">05 · Beaver Crew</span>
+  <ul class="mock-bar__states">
+    <li><a href="../home/default.html">Home</a></li>
+    <li><a href="default.html" aria-current="page">Directory</a></li>
+  </ul>
+  <a class="mock-bar__home" href="../../../06-raw-brutalist/pages/directory/default.html" aria-label="Next concept: Raw">›</a>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

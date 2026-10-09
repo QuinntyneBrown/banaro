@@ -1,0 +1,445 @@
+/* ==========================================================================
+   Banaro · 02 Keynote — design tokens
+   Product-launch storytelling: near-black ink on white and #f5f5f7 "silver",
+   black showcase sections, one action blue, tight-tracked display type in
+   Inter, generous radii (18 / 28), pill buttons and frosted bars.
+
+   Tiers: primitives (--palette-*) → semantic (--color-*, --text-*, ...) →
+   component knobs in ui.css (--kn-*). Dark theme swaps silver for graphite
+   and keeps the blue; showcase sections are dark in both themes.
+   ========================================================================== */
+
+:root {
+  /* ---------- Primitives: colour --------------------------------------- */
+  --palette-white: #ffffff;
+  --palette-silver: #f5f5f7;
+  --palette-silver-2: #e8e8ed;
+  --palette-silver-3: #d2d2d7;
+  --palette-gray-500: #86868b;
+  --palette-gray-600: #6e6e73;
+  --palette-gray-700: #424245;
+  --palette-ink: #1d1d1f;
+  --palette-graphite: #161617;
+  --palette-graphite-2: #1d1d1f;
+  --palette-graphite-3: #2c2c2e;
+  --palette-graphite-4: #3a3a3c;
+  --palette-black: #000000;
+  --palette-chalk: #f5f5f7;
+  --palette-chalk-muted: #a1a1a6;
+
+  --palette-blue-500: #0071e3;   /* action blue (buttons) */
+  --palette-blue-600: #0066cc;   /* link blue on white */
+  --palette-blue-700: #0058b0;
+  --palette-blue-800: #004a94;
+  --palette-blue-300: #2997ff;   /* link blue on black */
+  --palette-blue-200: #5eb0ff;
+  --palette-blue-50: #e8f2fd;
+  --palette-blue-950: #0a2540;
+
+  --palette-orange-600: #b64400; /* "New" eyebrow on white */
+  --palette-orange-300: #ff9f45; /* eyebrow on black */
+  --palette-green-600: #1b7a35;
+  --palette-green-300: #4cd964;
+  --palette-red-600: #d70015;
+  --palette-red-300: #ff6961;
+  --palette-amber-700: #8a5300;
+  --palette-amber-300: #ffd60a;
+
+  --palette-grad-1: #2997ff;     /* statistic gradient */
+  --palette-grad-2: #a259ff;
+  --palette-grad-3: #ff6a88;
+
+  /* ---------- Primitives: typography ----------------------------------- */
+  --font-family-sans: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  --font-family-display: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+
+  --font-size-xs: 0.75rem;      /* 12  global nav, footer */
+  --font-size-sm: 0.875rem;     /* 14  captions, specs */
+  --font-size-md: 1.0625rem;    /* 17  body (the house size) */
+  --font-size-lg: 1.3125rem;    /* 21  intro, sub-nav title */
+  --font-size-xl: 1.5rem;       /* 24  card titles */
+  --font-size-2xl: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem);   /* tile headlines */
+  --font-size-3xl: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);   /* section headlines */
+  --font-size-4xl: clamp(2.5rem, 1.6rem + 3.8vw, 4.5rem);    /* page headline */
+  --font-size-5xl: clamp(2.75rem, 1.4rem + 5.6vw, 6rem);     /* hero */
+  --font-size-stat: clamp(3.5rem, 2rem + 6vw, 7.5rem);
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.05;
+  --line-height-snug: 1.17;
+  --line-height-normal: 1.47;
+  --line-height-relaxed: 1.6;
+
+  --letter-spacing-tight: -0.022em;
+  --letter-spacing-display: -0.035em;
+  --letter-spacing-normal: -0.01em;
+  --letter-spacing-wide: 0.01em;
+
+  /* ---------- Semantic: colour (light) --------------------------------- */
+  --color-bg-canvas: var(--palette-white);
+  --color-bg-surface: var(--palette-white);
+  --color-bg-surface-raised: var(--palette-white);
+  --color-bg-surface-sunken: var(--palette-silver);
+  --color-bg-subtle: var(--palette-silver);
+  --color-bg-subtle-hover: var(--palette-silver-2);
+  --color-bg-inverse: var(--palette-ink);
+  --color-bg-backdrop: rgba(0, 0, 0, 0.4);
+  --color-bg-alt: var(--palette-silver);                 /* alternating sections */
+  --color-bg-showcase: var(--palette-black);             /* black sections, both themes */
+  --color-bg-showcase-tile: var(--palette-graphite-2);
+  --color-bg-bar: rgba(251, 251, 253, 0.8);              /* frosted global nav */
+  --color-bg-subnav: rgba(255, 255, 255, 0.72);          /* frosted sub-nav */
+
+  --color-fg-default: var(--palette-ink);
+  --color-fg-muted: var(--palette-gray-600);
+  --color-fg-subtle: var(--palette-gray-600);
+  --color-fg-disabled: var(--palette-silver-3);
+  --color-fg-inverse: var(--palette-white);
+  --color-fg-link: var(--palette-blue-600);
+  --color-fg-link-hover: var(--palette-blue-700);
+  --color-fg-eyebrow: var(--palette-orange-600);
+  --color-fg-showcase: var(--palette-chalk);
+  --color-fg-showcase-muted: var(--palette-chalk-muted);
+  --color-fg-showcase-link: var(--palette-blue-300);
+  --color-fg-showcase-eyebrow: var(--palette-orange-300);
+  --color-fg-on-light: var(--palette-ink);
+
+  --color-border-default: var(--palette-silver-3);
+  --color-border-strong: var(--palette-gray-600);
+  --color-border-inverse: var(--palette-graphite-4);
+
+  --color-accent: var(--palette-blue-500);
+  --color-accent-hover: var(--palette-blue-700);
+  --color-accent-active: var(--palette-blue-800);
+  --color-accent-subtle: var(--palette-blue-50);
+  --color-accent-subtle-hover: #d6e8fb;
+  --color-fg-on-accent: var(--palette-white);
+  --color-fg-accent: var(--palette-blue-600);
+
+  --color-focus-ring: var(--palette-blue-500);
+  --color-focus-ring-offset: var(--color-bg-canvas);
+
+  --color-gradient-stat: linear-gradient(90deg, var(--palette-grad-1), var(--palette-grad-2) 55%, var(--palette-grad-3));
+
+  --color-info-bg: var(--palette-blue-50);
+  --color-info-fg: var(--palette-blue-800);
+  --color-info-border: var(--palette-blue-200);
+  --color-info-icon: var(--palette-blue-500);
+  --color-info-solid: var(--palette-blue-500);
+
+  --color-success-bg: #e9f7ec;
+  --color-success-fg: var(--palette-green-600);
+  --color-success-border: #9fdcae;
+  --color-success-icon: var(--palette-green-600);
+  --color-success-solid: var(--palette-green-600);
+
+  --color-warning-bg: #fff6e0;
+  --color-warning-fg: var(--palette-amber-700);
+  --color-warning-border: #f2cf73;
+  --color-warning-icon: var(--palette-amber-700);
+  --color-warning-solid: var(--palette-amber-700);
+
+  --color-danger-bg: #fdecee;
+  --color-danger-fg: #b00012;
+  --color-danger-border: #f5a3ab;
+  --color-danger-icon: var(--palette-red-600);
+  --color-danger-solid: var(--palette-red-600);
+  --color-danger-solid-hover: #b00012;
+  --color-fg-on-danger: var(--palette-white);
+
+  /* ---------- Semantic: typography roles ------------------------------- */
+  --text-display: var(--font-weight-semibold) var(--font-size-5xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h1: var(--font-weight-semibold) var(--font-size-4xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h2: var(--font-weight-semibold) var(--font-size-3xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h3: var(--font-weight-semibold) var(--font-size-2xl) / var(--line-height-snug) var(--font-family-display);
+  --text-h4: var(--font-weight-semibold) var(--font-size-xl) / var(--line-height-snug) var(--font-family-display);
+  --text-body-lg: var(--font-weight-regular) var(--font-size-lg) / 1.38 var(--font-family-sans);
+  --text-body: var(--font-weight-regular) var(--font-size-md) / var(--line-height-normal) var(--font-family-sans);
+  --text-body-sm: var(--font-weight-regular) var(--font-size-sm) / 1.43 var(--font-family-sans);
+  --text-caption: var(--font-weight-regular) var(--font-size-xs) / 1.33 var(--font-family-sans);
+  --text-label: var(--font-weight-regular) var(--font-size-sm) / 1.29 var(--font-family-sans);
+  --text-overline: var(--font-weight-semibold) var(--font-size-md) / var(--line-height-snug) var(--font-family-sans);
+  --text-code: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-mono);
+
+  /* ---------- Semantic: spacing ---------------------------------------- */
+  --space-0: 0;
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+  --space-40: 10rem;
+
+  /* ---------- Semantic: layout ----------------------------------------- */
+  --layout-breakpoint-sm: 40rem;
+  --layout-breakpoint-md: 48rem;
+  --layout-breakpoint-lg: 64rem;
+  --layout-breakpoint-xl: 80rem;
+  --layout-breakpoint-2xl: 96rem;
+
+  --layout-columns: 4;
+  --layout-gutter: var(--space-4);
+  --layout-margin: var(--space-4);
+  --layout-container-max: 61.25rem;   /* 980: the house content width */
+  --layout-container-wide: 80rem;     /* 1280: tiles and galleries */
+  --layout-measure: 40rem;
+  --layout-sidebar-width: 16rem;
+  --layout-topbar-height: 2.75rem;    /* 44 global nav */
+  --layout-subnav-height: 3.25rem;    /* 52 sub-nav */
+
+  /* ---------- Semantic: shape ------------------------------------------ */
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.75rem;
+  --radius-md: 1.125rem;   /* 18 cards */
+  --radius-lg: 1.75rem;    /* 28 tiles, hero image */
+  --radius-xl: 2.25rem;
+  --radius-full: 980px;    /* pills */
+
+  --border-width-hairline: 1px;
+  --border-width-thick: 2px;
+
+  /* ---------- Semantic: elevation -------------------------------------- */
+  --shadow-color: 0 0 0;
+  --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.04);
+  --shadow-2: 2px 4px 12px rgb(var(--shadow-color) / 0.08);
+  --shadow-3: 2px 4px 16px rgb(var(--shadow-color) / 0.16);
+  --shadow-4: 0 24px 64px rgb(var(--shadow-color) / 0.22);
+  --shadow-focus: 0 0 0 4px rgb(0 113 227 / 0.6);
+
+  /* ---------- Semantic: motion (long, smooth, decelerating) ------------ */
+  --duration-instant: 0ms;
+  --duration-fast: 160ms;
+  --duration-base: 320ms;
+  --duration-slow: 480ms;
+  --duration-deliberate: 800ms;
+  --ease-standard: cubic-bezier(0.28, 0.11, 0.32, 1);
+  --ease-enter: cubic-bezier(0, 0, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  /* ---------- Semantic: z-order ---------------------------------------- */
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 100;
+  --z-dropdown: 1000;
+  --z-overlay: 1200;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+  --z-tooltip: 1600;
+
+  /* ---------- Semantic: interaction ------------------------------------ */
+  --target-min: 1.5rem;
+  --target-comfortable: 2.75rem;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --control-height-sm: 1.75rem;
+  --control-height-md: 2.75rem;
+  --control-height-lg: 3.5rem;
+
+  color-scheme: light;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --layout-columns: 8;
+    --layout-gutter: var(--space-5);
+    --layout-margin: var(--space-8);
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --layout-columns: 12;
+    --layout-gutter: var(--space-5);
+    --layout-margin: var(--space-10);
+  }
+}
+
+/* ---------- Dark theme: graphite instead of silver ------------------------ */
+[data-theme="dark"] {
+  --color-bg-canvas: var(--palette-black);
+  --color-bg-surface: var(--palette-graphite-2);
+  --color-bg-surface-raised: var(--palette-graphite-3);
+  --color-bg-surface-sunken: var(--palette-graphite);
+  --color-bg-subtle: var(--palette-graphite-2);
+  --color-bg-subtle-hover: var(--palette-graphite-3);
+  --color-bg-inverse: var(--palette-chalk);
+  --color-bg-backdrop: rgba(0, 0, 0, 0.6);
+  --color-bg-alt: var(--palette-graphite);
+  --color-bg-showcase: var(--palette-black);
+  --color-bg-showcase-tile: var(--palette-graphite-2);
+  --color-bg-bar: rgba(22, 22, 23, 0.8);
+  --color-bg-subnav: rgba(29, 29, 31, 0.72);
+
+  --color-fg-default: var(--palette-chalk);
+  --color-fg-muted: var(--palette-chalk-muted);
+  --color-fg-subtle: var(--palette-chalk-muted);
+  --color-fg-disabled: var(--palette-gray-700);
+  --color-fg-inverse: var(--palette-ink);
+  --color-fg-link: var(--palette-blue-300);
+  --color-fg-link-hover: var(--palette-blue-200);
+  --color-fg-eyebrow: var(--palette-orange-300);
+
+  --color-border-default: var(--palette-graphite-4);
+  --color-border-strong: var(--palette-gray-500);
+  --color-border-inverse: var(--palette-silver-3);
+
+  --color-accent: var(--palette-blue-500);
+  --color-accent-hover: var(--palette-blue-700);
+  --color-accent-active: var(--palette-blue-700);
+  --color-accent-subtle: var(--palette-blue-950);
+  --color-accent-subtle-hover: #0d3157;
+  --color-fg-on-accent: var(--palette-white);
+  --color-fg-accent: var(--palette-blue-300);
+
+  --color-focus-ring: var(--palette-blue-300);
+
+  --color-info-bg: var(--palette-blue-950);
+  --color-info-fg: var(--palette-blue-200);
+  --color-info-border: var(--palette-blue-700);
+  --color-info-icon: var(--palette-blue-300);
+  --color-info-solid: var(--palette-blue-300);
+
+  --color-success-bg: #0c2614;
+  --color-success-fg: var(--palette-green-300);
+  --color-success-border: var(--palette-green-600);
+  --color-success-icon: var(--palette-green-300);
+  --color-success-solid: var(--palette-green-300);
+
+  --color-warning-bg: #2b2205;
+  --color-warning-fg: var(--palette-amber-300);
+  --color-warning-border: var(--palette-amber-700);
+  --color-warning-icon: var(--palette-amber-300);
+  --color-warning-solid: var(--palette-amber-300);
+
+  --color-danger-bg: #2e0a0d;
+  --color-danger-fg: var(--palette-red-300);
+  --color-danger-border: #8a1520;
+  --color-danger-icon: var(--palette-red-300);
+  --color-danger-solid: var(--palette-red-300);
+  --color-danger-solid-hover: #ff8c86;
+  --color-fg-on-danger: var(--palette-black);
+
+  --shadow-color: 0 0 0;
+  --shadow-2: 2px 4px 12px rgb(var(--shadow-color) / 0.5);
+  --shadow-3: 2px 4px 16px rgb(var(--shadow-color) / 0.6);
+  --shadow-4: 0 24px 64px rgb(var(--shadow-color) / 0.7);
+
+  color-scheme: dark;
+}
+
+/* Follow the OS preference unless the page has explicitly chosen light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-canvas: var(--palette-black);
+    --color-bg-surface: var(--palette-graphite-2);
+    --color-bg-surface-raised: var(--palette-graphite-3);
+    --color-bg-surface-sunken: var(--palette-graphite);
+    --color-bg-subtle: var(--palette-graphite-2);
+    --color-bg-subtle-hover: var(--palette-graphite-3);
+    --color-bg-inverse: var(--palette-chalk);
+    --color-bg-backdrop: rgba(0, 0, 0, 0.6);
+    --color-bg-alt: var(--palette-graphite);
+    --color-bg-showcase: var(--palette-black);
+    --color-bg-showcase-tile: var(--palette-graphite-2);
+    --color-bg-bar: rgba(22, 22, 23, 0.8);
+    --color-bg-subnav: rgba(29, 29, 31, 0.72);
+
+    --color-fg-default: var(--palette-chalk);
+    --color-fg-muted: var(--palette-chalk-muted);
+    --color-fg-subtle: var(--palette-chalk-muted);
+    --color-fg-disabled: var(--palette-gray-700);
+    --color-fg-inverse: var(--palette-ink);
+    --color-fg-link: var(--palette-blue-300);
+    --color-fg-link-hover: var(--palette-blue-200);
+    --color-fg-eyebrow: var(--palette-orange-300);
+
+    --color-border-default: var(--palette-graphite-4);
+    --color-border-strong: var(--palette-gray-500);
+    --color-border-inverse: var(--palette-silver-3);
+
+    --color-accent: var(--palette-blue-500);
+    --color-accent-hover: var(--palette-blue-700);
+    --color-accent-active: var(--palette-blue-700);
+    --color-accent-subtle: var(--palette-blue-950);
+    --color-accent-subtle-hover: #0d3157;
+    --color-fg-on-accent: var(--palette-white);
+    --color-fg-accent: var(--palette-blue-300);
+
+    --color-focus-ring: var(--palette-blue-300);
+
+    --color-info-bg: var(--palette-blue-950);
+    --color-info-fg: var(--palette-blue-200);
+    --color-info-border: var(--palette-blue-700);
+    --color-info-icon: var(--palette-blue-300);
+    --color-info-solid: var(--palette-blue-300);
+
+    --color-success-bg: #0c2614;
+    --color-success-fg: var(--palette-green-300);
+    --color-success-border: var(--palette-green-600);
+    --color-success-icon: var(--palette-green-300);
+    --color-success-solid: var(--palette-green-300);
+
+    --color-warning-bg: #2b2205;
+    --color-warning-fg: var(--palette-amber-300);
+    --color-warning-border: var(--palette-amber-700);
+    --color-warning-icon: var(--palette-amber-300);
+    --color-warning-solid: var(--palette-amber-300);
+
+    --color-danger-bg: #2e0a0d;
+    --color-danger-fg: var(--palette-red-300);
+    --color-danger-border: #8a1520;
+    --color-danger-icon: var(--palette-red-300);
+    --color-danger-solid: var(--palette-red-300);
+    --color-danger-solid-hover: #ff8c86;
+    --color-fg-on-danger: var(--palette-black);
+
+    --shadow-color: 0 0 0;
+    --shadow-2: 2px 4px 12px rgb(var(--shadow-color) / 0.5);
+    --shadow-3: 2px 4px 16px rgb(var(--shadow-color) / 0.6);
+    --shadow-4: 0 24px 64px rgb(var(--shadow-color) / 0.7);
+
+    color-scheme: dark;
+  }
+}
+
+/* ---------- Preference overrides ------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0.01ms;
+    --duration-base: 0.01ms;
+    --duration-slow: 0.01ms;
+    --duration-deliberate: 0.01ms;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-border-default: var(--color-border-strong);
+    --color-fg-muted: var(--color-fg-default);
+    --color-fg-subtle: var(--color-fg-muted);
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --color-focus-ring: Highlight;
+    --color-border-default: CanvasText;
+    --color-border-strong: CanvasText;
+  }
+}

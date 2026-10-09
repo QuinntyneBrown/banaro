@@ -1,0 +1,423 @@
+/* ==========================================================================
+   Banaro · Neo Brutal — design tokens
+   Gumroad-style neo-brutalism: chunky ink outlines, offset hard shadows,
+   saturated pastel blocks, sticker badges and springy presses.
+   Light: cream paper, ink outlines, ink shadows.
+   Dark: aubergine night, cream outlines, hot-pink hard shadows; pastel
+   blocks keep their ink text in both themes.
+   ========================================================================== */
+
+:root {
+  /* ---------- Primitives: colour --------------------------------------- */
+  --palette-white: #ffffff;
+  --palette-black: #000000;
+  --palette-ink: #111111;
+  --palette-ink-800: #2b2b2b;
+  --palette-ink-600: #4a4a4a;
+  --palette-cream: #fff6e9;
+  --palette-cream-200: #f6e8d2;
+  --palette-cream-300: #ead8bb;
+
+  --palette-pink: #ff9ed8;
+  --palette-pink-hot: #ff6fc3;
+  --palette-pink-deep: #a3166f;
+  --palette-pink-wash: #ffe1f3;
+  --palette-lime: #c5f36a;
+  --palette-lime-wash: #effcd5;
+  --palette-lime-deep: #3d6b00;
+  --palette-lilac: #c9b8ff;
+  --palette-lilac-wash: #ece6ff;
+  --palette-lilac-deep: #4b2bb3;
+  --palette-butter: #ffe27a;
+  --palette-butter-wash: #fff5cf;
+  --palette-butter-deep: #7a5b00;
+  --palette-sky: #9fdbff;
+  --palette-sky-wash: #e1f4ff;
+  --palette-sky-deep: #0f5c8a;
+  --palette-tangerine: #ffb27a;
+  --palette-red: #e5322d;
+  --palette-red-deep: #a41510;
+  --palette-red-wash: #ffe0de;
+
+  --palette-night-950: #17141c;
+  --palette-night-900: #221e29;
+  --palette-night-850: #2b2634;
+  --palette-night-800: #352f40;
+  --palette-night-600: #5e566b;
+  --palette-night-300: #c9c0d6;
+  --palette-night-200: #ddd6e8;
+
+  /* ---------- Primitives: typography ----------------------------------- */
+  --font-family-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-family-display: "Archivo", "Arial Black", ui-sans-serif, system-ui, sans-serif;
+  --font-family-mono: "Space Mono", ui-monospace, Menlo, Consolas, monospace;
+  --font-stretch-display: 125%;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.1875rem;
+  --font-size-xl: 1.375rem;
+  --font-size-2xl: 1.75rem;
+  --font-size-3xl: clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
+  --font-size-4xl: clamp(2.5rem, 1.6rem + 4vw, 4.75rem);
+  --font-size-5xl: clamp(2.5rem, 1.4rem + 4.6vw, 5.25rem);
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-black: 900;
+
+  --line-height-tight: 0.98;
+  --line-height-snug: 1.15;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+
+  --letter-spacing-tight: -0.035em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.08em;
+
+  /* ---------- Semantic: colour (light) --------------------------------- */
+  --color-bg-canvas: var(--palette-cream);
+  --color-bg-surface: var(--palette-white);
+  --color-bg-surface-raised: var(--palette-white);
+  --color-bg-surface-sunken: var(--palette-cream-200);
+  --color-bg-subtle: var(--palette-cream-200);
+  --color-bg-subtle-hover: var(--palette-cream-300);
+  --color-bg-inverse: var(--palette-ink);
+  --color-bg-backdrop: rgba(17, 17, 17, 0.6);
+
+  --color-fg-default: var(--palette-ink);
+  --color-fg-muted: var(--palette-ink-800);
+  --color-fg-subtle: var(--palette-ink-600);
+  --color-fg-disabled: var(--palette-cream-300);
+  --color-fg-inverse: var(--palette-cream);
+  --color-fg-link: var(--palette-lilac-deep);
+  --color-fg-link-hover: var(--palette-ink);
+
+  --color-border-default: var(--palette-ink);
+  --color-border-strong: var(--palette-ink);
+  --color-border-inverse: var(--palette-cream);
+
+  --color-accent: var(--palette-pink);
+  --color-accent-hover: var(--palette-pink-hot);
+  --color-accent-active: var(--palette-pink-hot);
+  --color-accent-subtle: var(--palette-pink-wash);
+  --color-accent-subtle-hover: var(--palette-pink);
+  --color-fg-on-accent: var(--palette-ink);
+  --color-fg-accent: var(--palette-pink-deep);
+
+  --color-focus-ring: var(--palette-lilac-deep);
+  --color-focus-ring-offset: var(--color-bg-canvas);
+
+  --color-info-bg: var(--palette-sky-wash);
+  --color-info-fg: var(--palette-sky-deep);
+  --color-info-border: var(--palette-ink);
+  --color-info-icon: var(--palette-sky-deep);
+  --color-info-solid: var(--palette-sky);
+
+  --color-success-bg: var(--palette-lime-wash);
+  --color-success-fg: var(--palette-lime-deep);
+  --color-success-border: var(--palette-ink);
+  --color-success-icon: var(--palette-lime-deep);
+  --color-success-solid: var(--palette-lime);
+
+  --color-warning-bg: var(--palette-butter-wash);
+  --color-warning-fg: var(--palette-butter-deep);
+  --color-warning-border: var(--palette-ink);
+  --color-warning-icon: var(--palette-butter-deep);
+  --color-warning-solid: var(--palette-butter);
+
+  --color-danger-bg: var(--palette-red-wash);
+  --color-danger-fg: var(--palette-red-deep);
+  --color-danger-border: var(--palette-ink);
+  --color-danger-icon: var(--palette-red);
+  --color-danger-solid: var(--palette-red-deep);
+  --color-danger-solid-hover: var(--palette-ink);
+  --color-fg-on-danger: var(--palette-white);
+
+  /* Concept tokens: outlines, hard shadows, pastel blocks (ink text on all of them). */
+  --nb-line: 3px;
+  --nb-line-thin: 2px;
+  --nb-outline: var(--palette-ink);
+  --nb-shadow-color: var(--palette-ink);
+  --nb-offset: 6px;
+  --nb-offset-sm: 3px;
+  --nb-offset-lg: 10px;
+  --color-pastel-pink: var(--palette-pink);
+  --color-pastel-lime: var(--palette-lime);
+  --color-pastel-lilac: var(--palette-lilac);
+  --color-pastel-butter: var(--palette-butter);
+  --color-pastel-sky: var(--palette-sky);
+  --color-pastel-tangerine: var(--palette-tangerine);
+  --color-fg-on-pastel: var(--palette-ink);
+  --color-fg-on-pastel-muted: var(--palette-ink-800);
+  --color-sticker: var(--palette-butter);
+  --color-footer-bg: var(--palette-ink);
+  --color-footer-fg: var(--palette-cream);
+  --color-online: var(--palette-lime);
+
+  /* ---------- Semantic: typography roles ------------------------------- */
+  --text-display: var(--font-weight-black) var(--font-size-5xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h1: var(--font-weight-black) var(--font-size-4xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h2: var(--font-weight-black) var(--font-size-3xl) / 1 var(--font-family-display);
+  --text-h3: 800 var(--font-size-xl) / var(--line-height-snug) var(--font-family-display);
+  --text-h4: var(--font-weight-bold) var(--font-size-lg) / var(--line-height-snug) var(--font-family-sans);
+  --text-body-lg: var(--font-weight-medium) var(--font-size-lg) / var(--line-height-normal) var(--font-family-sans);
+  --text-body: var(--font-weight-regular) var(--font-size-md) / var(--line-height-normal) var(--font-family-sans);
+  --text-body-sm: var(--font-weight-medium) var(--font-size-sm) / var(--line-height-normal) var(--font-family-sans);
+  --text-caption: var(--font-weight-semibold) var(--font-size-xs) / var(--line-height-normal) var(--font-family-sans);
+  --text-label: var(--font-weight-bold) var(--font-size-md) / 1.2 var(--font-family-sans);
+  --text-overline: var(--font-weight-bold) var(--font-size-xs) / var(--line-height-normal) var(--font-family-mono);
+  --text-code: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-mono);
+
+  /* ---------- Semantic: spacing ---------------------------------------- */
+  --space-0: 0;
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* ---------- Semantic: layout ----------------------------------------- */
+  --layout-breakpoint-sm: 40rem;
+  --layout-breakpoint-md: 48rem;
+  --layout-breakpoint-lg: 64rem;
+  --layout-breakpoint-xl: 80rem;
+  --layout-breakpoint-2xl: 96rem;
+  --layout-columns: 4;
+  --layout-gutter: var(--space-4);
+  --layout-margin: var(--space-4);
+  --layout-container-max: 78rem;
+  --layout-measure: 60ch;
+  --layout-sidebar-width: 17rem;
+  --layout-topbar-height: 4.5rem;
+
+  /* ---------- Semantic: shape ------------------------------------------ */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+  --border-width-hairline: 2px;
+  --border-width-thick: 3px;
+
+  /* ---------- Semantic: elevation = hard offset shadows ---------------- */
+  --shadow-color: 17 17 17;
+  --shadow-1: var(--nb-offset-sm) var(--nb-offset-sm) 0 0 var(--nb-shadow-color);
+  --shadow-2: var(--nb-offset) var(--nb-offset) 0 0 var(--nb-shadow-color);
+  --shadow-3: 8px 8px 0 0 var(--nb-shadow-color);
+  --shadow-4: var(--nb-offset-lg) var(--nb-offset-lg) 0 0 var(--nb-shadow-color);
+  --shadow-focus: 0 0 0 3px var(--color-focus-ring-offset), 0 0 0 6px var(--color-focus-ring);
+
+  /* ---------- Semantic: motion (springy) ------------------------------- */
+  --duration-instant: 0ms;
+  --duration-fast: 110ms;
+  --duration-base: 180ms;
+  --duration-slow: 300ms;
+  --duration-deliberate: 500ms;
+  --duration-marquee: 38s;
+  --duration-spin: 22s;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.8, 0.5, 1);
+  --ease-wobble: cubic-bezier(0.5, -0.6, 0.4, 1.8);
+
+  /* ---------- Semantic: z-order ---------------------------------------- */
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 100;
+  --z-dropdown: 1000;
+  --z-overlay: 1200;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+  --z-tooltip: 1600;
+
+  /* ---------- Semantic: interaction ------------------------------------ */
+  --target-min: 1.5rem;
+  --target-comfortable: 2.75rem;
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 3px;
+  --control-height-sm: 2.25rem;
+  --control-height-md: 2.75rem;
+  --control-height-lg: 3.5rem;
+
+  color-scheme: light;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --layout-columns: 8;
+    --layout-gutter: var(--space-6);
+    --layout-margin: var(--space-8);
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --layout-columns: 12;
+    --layout-gutter: var(--space-8);
+    --layout-margin: var(--space-12);
+  }
+}
+
+/* ---------- Dark theme: aubergine night, cream outlines, pink shadows ---- */
+/* dark:start */
+[data-theme="dark"] {
+  --color-bg-canvas: var(--palette-night-950);
+  --color-bg-surface: var(--palette-night-900);
+  --color-bg-surface-raised: var(--palette-night-850);
+  --color-bg-surface-sunken: var(--palette-night-850);
+  --color-bg-subtle: var(--palette-night-800);
+  --color-bg-subtle-hover: var(--palette-night-600);
+  --color-bg-inverse: var(--palette-cream);
+  --color-bg-backdrop: rgba(0, 0, 0, 0.7);
+  --color-fg-default: var(--palette-cream);
+  --color-fg-muted: var(--palette-night-200);
+  --color-fg-subtle: var(--palette-night-300);
+  --color-fg-disabled: var(--palette-night-600);
+  --color-fg-inverse: var(--palette-ink);
+  --color-fg-link: var(--palette-lilac);
+  --color-fg-link-hover: var(--palette-pink);
+  --color-border-default: var(--palette-cream);
+  --color-border-strong: var(--palette-cream);
+  --color-border-inverse: var(--palette-ink);
+  --color-accent: var(--palette-pink);
+  --color-accent-hover: var(--palette-pink-hot);
+  --color-accent-active: var(--palette-pink-hot);
+  --color-accent-subtle: var(--palette-night-800);
+  --color-accent-subtle-hover: var(--palette-night-600);
+  --color-fg-on-accent: var(--palette-ink);
+  --color-fg-accent: var(--palette-pink);
+  --color-focus-ring: var(--palette-lime);
+  --color-info-bg: var(--palette-night-850);
+  --color-info-fg: var(--palette-sky);
+  --color-info-border: var(--palette-cream);
+  --color-info-icon: var(--palette-sky);
+  --color-info-solid: var(--palette-sky);
+  --color-success-bg: var(--palette-night-850);
+  --color-success-fg: var(--palette-lime);
+  --color-success-border: var(--palette-cream);
+  --color-success-icon: var(--palette-lime);
+  --color-success-solid: var(--palette-lime);
+  --color-warning-bg: var(--palette-night-850);
+  --color-warning-fg: var(--palette-butter);
+  --color-warning-border: var(--palette-cream);
+  --color-warning-icon: var(--palette-butter);
+  --color-warning-solid: var(--palette-butter);
+  --color-danger-bg: var(--palette-night-850);
+  --color-danger-fg: var(--palette-pink);
+  --color-danger-border: var(--palette-cream);
+  --color-danger-icon: var(--palette-pink);
+  --color-danger-solid: var(--palette-pink);
+  --color-danger-solid-hover: var(--palette-pink-hot);
+  --color-fg-on-danger: var(--palette-ink);
+  --nb-outline: var(--palette-cream);
+  --nb-shadow-color: var(--palette-pink-hot);
+  --color-sticker: var(--palette-lime);
+  --color-footer-bg: var(--palette-lilac);
+  --color-footer-fg: var(--palette-ink);
+  --shadow-color: 255 111 195;
+  color-scheme: dark;
+}
+/* dark:end */
+
+/* auto-dark:start (generated from the dark block) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-canvas: var(--palette-night-950);
+    --color-bg-surface: var(--palette-night-900);
+    --color-bg-surface-raised: var(--palette-night-850);
+    --color-bg-surface-sunken: var(--palette-night-850);
+    --color-bg-subtle: var(--palette-night-800);
+    --color-bg-subtle-hover: var(--palette-night-600);
+    --color-bg-inverse: var(--palette-cream);
+    --color-bg-backdrop: rgba(0, 0, 0, 0.7);
+    --color-fg-default: var(--palette-cream);
+    --color-fg-muted: var(--palette-night-200);
+    --color-fg-subtle: var(--palette-night-300);
+    --color-fg-disabled: var(--palette-night-600);
+    --color-fg-inverse: var(--palette-ink);
+    --color-fg-link: var(--palette-lilac);
+    --color-fg-link-hover: var(--palette-pink);
+    --color-border-default: var(--palette-cream);
+    --color-border-strong: var(--palette-cream);
+    --color-border-inverse: var(--palette-ink);
+    --color-accent: var(--palette-pink);
+    --color-accent-hover: var(--palette-pink-hot);
+    --color-accent-active: var(--palette-pink-hot);
+    --color-accent-subtle: var(--palette-night-800);
+    --color-accent-subtle-hover: var(--palette-night-600);
+    --color-fg-on-accent: var(--palette-ink);
+    --color-fg-accent: var(--palette-pink);
+    --color-focus-ring: var(--palette-lime);
+    --color-info-bg: var(--palette-night-850);
+    --color-info-fg: var(--palette-sky);
+    --color-info-border: var(--palette-cream);
+    --color-info-icon: var(--palette-sky);
+    --color-info-solid: var(--palette-sky);
+    --color-success-bg: var(--palette-night-850);
+    --color-success-fg: var(--palette-lime);
+    --color-success-border: var(--palette-cream);
+    --color-success-icon: var(--palette-lime);
+    --color-success-solid: var(--palette-lime);
+    --color-warning-bg: var(--palette-night-850);
+    --color-warning-fg: var(--palette-butter);
+    --color-warning-border: var(--palette-cream);
+    --color-warning-icon: var(--palette-butter);
+    --color-warning-solid: var(--palette-butter);
+    --color-danger-bg: var(--palette-night-850);
+    --color-danger-fg: var(--palette-pink);
+    --color-danger-border: var(--palette-cream);
+    --color-danger-icon: var(--palette-pink);
+    --color-danger-solid: var(--palette-pink);
+    --color-danger-solid-hover: var(--palette-pink-hot);
+    --color-fg-on-danger: var(--palette-ink);
+    --nb-outline: var(--palette-cream);
+    --nb-shadow-color: var(--palette-pink-hot);
+    --color-sticker: var(--palette-lime);
+    --color-footer-bg: var(--palette-lilac);
+    --color-footer-fg: var(--palette-ink);
+    --shadow-color: 255 111 195;
+    color-scheme: dark;
+  }
+}
+/* auto-dark:end */
+
+/* ---------- Preference overrides ------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0.01ms;
+    --duration-base: 0.01ms;
+    --duration-slow: 0.01ms;
+    --duration-deliberate: 0.01ms;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-border-default: var(--color-border-strong);
+    --color-fg-muted: var(--color-fg-default);
+    --color-fg-subtle: var(--color-fg-muted);
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --color-focus-ring: Highlight;
+    --color-border-default: CanvasText;
+    --color-border-strong: CanvasText;
+  }
+}

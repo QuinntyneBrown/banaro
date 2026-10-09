@@ -1,0 +1,491 @@
+/* ==========================================================================
+Kraft & Letterpress — tokens. Printed matter: kraft board and cream
+   linen stock, two inks (terracotta and olive) pressed into the paper,
+   rubber stamps and taped polaroids. Dark theme is walnut and oiled
+   leather printed in cream ink.
+
+   Tiers: primitives (--palette-*, --font-*, --size-*) feed semantic tokens
+   (--color-*, --text-*, --space-*, --radius-*, --shadow-*, --duration-*,
+   --ease-*, --z-*, --layout-*), which ui.css consumes. Light is :root; dark
+   applies with [data-theme="dark"] or the OS preference unless the page has
+   chosen [data-theme="light"]. Colour values live in this file only.
+   ========================================================================== */
+
+:root {
+  /* ---------- Primitives: colour --------------------------------------- */
+  --palette-kraft-100: #e6d3b3;
+  --palette-kraft-200: #dcc29b;
+  --palette-kraft-300: #cfb084;
+  --palette-kraft-400: #bf9c6c;
+  --palette-kraft-500: #a8845a;
+  --palette-cream-50: #fcf8ef;
+  --palette-cream-100: #f6efdf;
+  --palette-cream-200: #eee3cb;
+  --palette-cream-300: #e2d3b2;
+  --palette-ink-950: #1e140c;
+  --palette-ink-900: #2b1d12;
+  --palette-ink-800: #3d2a1b;
+  --palette-ink-700: #553c27;
+  --palette-ink-600: #6b4d33;
+  --palette-ink-500: #7e5c3e;
+  --palette-terracotta-300: #eda17e;
+  --palette-terracotta-400: #e08a62;
+  --palette-terracotta-500: #b8532f;
+  --palette-terracotta-600: #9c4024;
+  --palette-terracotta-700: #80331c;
+  --palette-terracotta-900: #3e1a0e;
+  --palette-olive-300: #c3cc86;
+  --palette-olive-400: #a9b36a;
+  --palette-olive-600: #56611f;
+  --palette-olive-700: #434c17;
+  --palette-olive-900: #262b0d;
+  --palette-walnut-950: #1c130d;
+  --palette-walnut-900: #261a12;
+  --palette-walnut-850: #2f2117;
+  --palette-walnut-800: #3a2a1d;
+  --palette-walnut-700: #4b3626;
+  --palette-walnut-600: #634a35;
+  --palette-parchment-100: #f3e6c8;
+  --palette-parchment-200: #e3d0a8;
+  --palette-parchment-300: #cdb68b;
+  --palette-polaroid: #fbfaf5;
+
+  /* ---------- Primitives: typography ----------------------------------- */
+  --font-family-display: "Fraunces", "EB Garamond", Georgia, serif;
+  --font-family-serif: "EB Garamond", "Fraunces", Georgia, "Times New Roman", serif;
+  --font-family-sans: var(--font-family-serif);
+  --font-family-mono: "Space Mono", "Courier New", ui-monospace, monospace;
+  --font-family-hand: "Caveat", "Segoe Print", cursive;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.9375rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.3125rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 1.875rem;
+  --font-size-3xl: clamp(2.125rem, 1.6rem + 2.2vw, 3.25rem);
+  --font-size-4xl: clamp(2.5rem, 1.7rem + 3.4vw, 4.25rem);
+  --font-size-5xl: clamp(2.875rem, 1.4rem + 5.6vw, 6.25rem);
+  --font-size-label: 0.75rem;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-black: 900;
+
+  --line-height-tight: 1.04;
+  --line-height-snug: 1.2;
+  --line-height-normal: 1.55;
+  --line-height-relaxed: 1.7;
+
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.14em;
+  --letter-spacing-stamp: 0.18em;
+
+  /* ---------- Semantic: colour (light) --------------------------------- */
+  --color-bg-canvas: var(--palette-kraft-200);
+  --color-bg-surface: var(--palette-cream-100);
+  --color-bg-surface-raised: var(--palette-cream-50);
+  --color-bg-surface-sunken: var(--palette-cream-200);
+  --color-bg-subtle: var(--palette-cream-200);
+  --color-bg-subtle-hover: var(--palette-cream-300);
+  --color-bg-inverse: var(--palette-ink-900);
+  --color-bg-backdrop: rgb(30 20 12 / 0.6);
+  --color-bg-linen: var(--palette-cream-200);
+  --color-bg-kraft-deep: var(--palette-kraft-400);
+  --color-bg-tag: var(--palette-kraft-100);
+  --color-bg-polaroid: var(--palette-polaroid);
+  --color-bg-envelope: var(--palette-cream-50);
+  --color-bg-envelope-flap: var(--palette-cream-300);
+
+  --color-fg-default: var(--palette-ink-900);
+  --color-fg-muted: var(--palette-ink-700);
+  --color-fg-subtle: var(--palette-ink-700);
+  --color-fg-disabled: var(--palette-ink-500);
+  --color-fg-inverse: var(--palette-cream-100);
+  --color-fg-link: var(--palette-terracotta-700);
+  --color-fg-link-hover: var(--palette-ink-900);
+  --color-fg-on-polaroid: var(--palette-ink-800);
+
+  --color-border-default: var(--palette-cream-300);
+  --color-border-strong: var(--palette-ink-600);
+  --color-border-inverse: var(--palette-ink-700);
+  --color-stitch: var(--palette-terracotta-600);
+  --color-stitch-quiet: var(--palette-ink-500);
+  --color-rule: var(--palette-terracotta-500);
+  --color-rule-faint: rgb(85 60 39 / 0.16);
+  --color-string: var(--palette-ink-600);
+
+  --color-accent: var(--palette-terracotta-600);
+  --color-accent-hover: var(--palette-terracotta-700);
+  --color-accent-active: var(--palette-ink-900);
+  --color-accent-subtle: var(--palette-cream-200);
+  --color-accent-subtle-hover: var(--palette-cream-300);
+  --color-fg-on-accent: var(--palette-cream-50);
+  --color-fg-accent: var(--palette-terracotta-700);
+  --color-olive: var(--palette-olive-600);
+  --color-fg-olive: var(--palette-olive-700);
+  --color-fg-on-olive: var(--palette-cream-50);
+  --color-stamp: var(--palette-terracotta-600);
+  --color-stamp-olive: var(--palette-olive-600);
+  --color-seal: var(--palette-terracotta-600);
+  --color-fg-on-seal: var(--palette-cream-100);
+
+  /* letterpress: a deboss reads as a lit lower lip and a shaded upper lip */
+  --color-press-highlight: rgb(255 248 230 / 0.55);
+  --color-press-shade: rgb(43 29 18 / 0.28);
+  --color-tape: rgb(240 230 200 / 0.72);
+  --color-tape-edge: rgb(120 95 60 / 0.18);
+  --color-grain: rgb(60 40 20 / 0.5);
+  --color-fibre: rgb(90 60 30 / 0.07);
+  --grain-opacity: 0.32;
+  --grain-blend: multiply;
+
+  --color-focus-ring: var(--palette-terracotta-700);
+  --color-focus-ring-offset: var(--color-bg-surface);
+
+  --color-info-bg: var(--palette-cream-200);
+  --color-info-fg: var(--palette-ink-800);
+  --color-info-border: var(--palette-ink-500);
+  --color-info-icon: var(--palette-ink-700);
+  --color-info-solid: var(--palette-ink-800);
+  --color-success-bg: var(--palette-cream-200);
+  --color-success-fg: var(--palette-olive-700);
+  --color-success-border: var(--palette-olive-400);
+  --color-success-icon: var(--palette-olive-600);
+  --color-success-solid: var(--palette-olive-600);
+  --color-warning-bg: var(--palette-cream-200);
+  --color-warning-fg: var(--palette-terracotta-700);
+  --color-warning-border: var(--palette-terracotta-300);
+  --color-warning-icon: var(--palette-terracotta-600);
+  --color-warning-solid: var(--palette-terracotta-600);
+  --color-danger-bg: var(--palette-cream-200);
+  --color-danger-fg: var(--palette-terracotta-700);
+  --color-danger-border: var(--palette-terracotta-500);
+  --color-danger-icon: var(--palette-terracotta-600);
+  --color-danger-solid: var(--palette-terracotta-700);
+  --color-danger-solid-hover: var(--palette-ink-900);
+  --color-fg-on-danger: var(--palette-cream-50);
+
+  /* ---------- Semantic: typography roles ------------------------------- */
+  --text-display: var(--font-weight-black) var(--font-size-5xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h1: var(--font-weight-black) var(--font-size-4xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h2: var(--font-weight-bold) var(--font-size-3xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h3: var(--font-weight-bold) var(--font-size-2xl) / var(--line-height-snug) var(--font-family-display);
+  --text-h4: var(--font-weight-bold) var(--font-size-xl) / var(--line-height-snug) var(--font-family-display);
+  --text-body-lg: var(--font-weight-regular) var(--font-size-lg) / var(--line-height-normal) var(--font-family-serif);
+  --text-body: var(--font-weight-regular) var(--font-size-md) / var(--line-height-normal) var(--font-family-serif);
+  --text-body-sm: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-serif);
+  --text-caption: var(--font-weight-regular) var(--font-size-xs) / var(--line-height-normal) var(--font-family-mono);
+  --text-label: var(--font-weight-bold) var(--font-size-label) / var(--line-height-normal) var(--font-family-mono);
+  --text-overline: var(--font-weight-bold) var(--font-size-xs) / var(--line-height-normal) var(--font-family-mono);
+  --text-code: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-mono);
+  --text-hand: var(--font-weight-semibold) var(--font-size-lg) / 1.1 var(--font-family-hand);
+  --text-stamp: var(--font-weight-bold) var(--font-size-sm) / 1.15 var(--font-family-mono);
+
+  /* ---------- Semantic: spacing (4px base) ----------------------------- */
+  --space-0: 0;
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* ---------- Semantic: layout ----------------------------------------- */
+  --layout-breakpoint-sm: 40rem;
+  --layout-breakpoint-md: 48rem;
+  --layout-breakpoint-lg: 64rem;
+  --layout-breakpoint-xl: 80rem;
+  --layout-breakpoint-2xl: 96rem;
+  --layout-columns: 4;
+  --layout-gutter: var(--space-4);
+  --layout-margin: var(--space-4);
+  --layout-container-max: 74rem;
+  --layout-measure: 62ch;
+  --layout-sidebar-width: 16rem;
+  --layout-topbar-height: 4.5rem;
+  --stitch-inset: -0.5rem;
+
+  /* ---------- Semantic: shape ------------------------------------------ */
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
+  --radius-full: 9999px;
+  --border-width-hairline: 1px;
+  --border-width-thick: 2px;
+  --border-width-stitch: 1.5px;
+
+  /* ---------- Semantic: elevation (paper resting on paper) ------------- */
+  --shadow-color: 60 38 18;
+  --shadow-1: 0 1px 1px rgb(var(--shadow-color) / 0.18), 0 2px 4px rgb(var(--shadow-color) / 0.1);
+  --shadow-2: 0 2px 2px rgb(var(--shadow-color) / 0.16), 0 6px 14px rgb(var(--shadow-color) / 0.16);
+  --shadow-3: 0 4px 6px rgb(var(--shadow-color) / 0.18), 0 14px 30px rgb(var(--shadow-color) / 0.22);
+  --shadow-4: 0 8px 12px rgb(var(--shadow-color) / 0.2), 0 24px 56px rgb(var(--shadow-color) / 0.3);
+  --shadow-press: inset 0 2px 3px rgb(var(--shadow-color) / 0.28), inset 0 -1px 0 rgb(255 248 230 / 0.5);
+  --shadow-focus: 0 0 0 2px var(--color-focus-ring-offset), 0 0 0 4px var(--color-focus-ring);
+
+  /* ---------- Semantic: motion ----------------------------------------- */
+  --duration-instant: 0ms;
+  --duration-fast: 140ms;
+  --duration-base: 240ms;
+  --duration-slow: 380ms;
+  --duration-deliberate: 520ms;
+  --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-enter: cubic-bezier(0, 0, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-stamp: cubic-bezier(0.2, 1.6, 0.4, 1);
+
+  /* ---------- Semantic: z-order ---------------------------------------- */
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 100;
+  --z-dropdown: 1000;
+  --z-overlay: 1200;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+  --z-tooltip: 1600;
+
+  /* ---------- Semantic: interaction ------------------------------------ */
+  --target-min: 1.5rem;
+  --target-comfortable: 2.75rem;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 3px;
+  --control-height-sm: 2.25rem;
+  --control-height-md: 2.75rem;
+  --control-height-lg: 3.25rem;
+
+  color-scheme: light;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --layout-columns: 8;
+    --layout-gutter: var(--space-6);
+    --layout-margin: var(--space-8);
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --layout-columns: 12;
+    --layout-gutter: var(--space-8);
+    --layout-margin: var(--space-12);
+  }
+}
+
+/* ---------- Dark theme ----------------------------------------------------- */
+[data-theme="dark"] {
+  --color-bg-canvas: var(--palette-walnut-900);
+  --color-bg-surface: var(--palette-walnut-800);
+  --color-bg-surface-raised: var(--palette-walnut-700);
+  --color-bg-surface-sunken: var(--palette-walnut-950);
+  --color-bg-subtle: var(--palette-walnut-850);
+  --color-bg-subtle-hover: var(--palette-walnut-700);
+  --color-bg-inverse: var(--palette-parchment-100);
+  --color-bg-backdrop: rgb(0 0 0 / 0.7);
+  --color-bg-linen: var(--palette-walnut-850);
+  --color-bg-kraft-deep: var(--palette-walnut-950);
+  --color-bg-tag: var(--palette-walnut-700);
+  --color-bg-polaroid: var(--palette-parchment-100);
+  --color-bg-envelope: var(--palette-walnut-800);
+  --color-bg-envelope-flap: var(--palette-walnut-700);
+  --color-fg-default: var(--palette-parchment-100);
+  --color-fg-muted: var(--palette-parchment-200);
+  --color-fg-subtle: var(--palette-parchment-300);
+  --color-fg-disabled: var(--palette-walnut-600);
+  --color-fg-inverse: var(--palette-ink-900);
+  --color-fg-link: var(--palette-terracotta-300);
+  --color-fg-link-hover: var(--palette-parchment-100);
+  --color-fg-on-polaroid: var(--palette-ink-800);
+  --color-border-default: var(--palette-walnut-700);
+  --color-border-strong: var(--palette-parchment-300);
+  --color-border-inverse: var(--palette-parchment-300);
+  --color-stitch: var(--palette-terracotta-400);
+  --color-stitch-quiet: var(--palette-parchment-300);
+  --color-rule: var(--palette-terracotta-400);
+  --color-rule-faint: rgb(243 230 200 / 0.08);
+  --color-string: var(--palette-parchment-300);
+  --color-accent: var(--palette-terracotta-300);
+  --color-accent-hover: var(--palette-parchment-100);
+  --color-accent-active: var(--palette-parchment-100);
+  --color-accent-subtle: var(--palette-walnut-850);
+  --color-accent-subtle-hover: var(--palette-walnut-700);
+  --color-fg-on-accent: var(--palette-walnut-950);
+  --color-fg-accent: var(--palette-terracotta-300);
+  --color-olive: var(--palette-olive-300);
+  --color-fg-olive: var(--palette-olive-300);
+  --color-fg-on-olive: var(--palette-walnut-950);
+  --color-stamp: var(--palette-terracotta-400);
+  --color-stamp-olive: var(--palette-olive-400);
+  --color-seal: var(--palette-terracotta-600);
+  --color-fg-on-seal: var(--palette-parchment-100);
+  --color-press-highlight: rgb(255 240 210 / 0.12);
+  --color-press-shade: rgb(0 0 0 / 0.55);
+  --color-tape: rgb(225 205 160 / 0.42);
+  --color-tape-edge: rgb(0 0 0 / 0.2);
+  --color-grain: rgb(0 0 0 / 0.7);
+  --color-fibre: rgb(255 230 190 / 0.035);
+  --grain-opacity: 0.45;
+  --grain-blend: multiply;
+  --color-focus-ring: var(--palette-terracotta-300);
+  --color-focus-ring-offset: var(--palette-walnut-900);
+  --color-info-bg: var(--palette-walnut-850);
+  --color-info-fg: var(--palette-parchment-100);
+  --color-info-border: var(--palette-parchment-300);
+  --color-info-icon: var(--palette-parchment-200);
+  --color-info-solid: var(--palette-parchment-200);
+  --color-success-bg: var(--palette-olive-900);
+  --color-success-fg: var(--palette-olive-300);
+  --color-success-border: var(--palette-olive-600);
+  --color-success-icon: var(--palette-olive-300);
+  --color-success-solid: var(--palette-olive-300);
+  --color-warning-bg: var(--palette-terracotta-900);
+  --color-warning-fg: var(--palette-terracotta-300);
+  --color-warning-border: var(--palette-terracotta-600);
+  --color-warning-icon: var(--palette-terracotta-300);
+  --color-warning-solid: var(--palette-terracotta-300);
+  --color-danger-bg: var(--palette-terracotta-900);
+  --color-danger-fg: var(--palette-terracotta-300);
+  --color-danger-border: var(--palette-terracotta-600);
+  --color-danger-icon: var(--palette-terracotta-300);
+  --color-danger-solid: var(--palette-terracotta-300);
+  --color-danger-solid-hover: var(--palette-parchment-100);
+  --color-fg-on-danger: var(--palette-walnut-950);
+  --shadow-color: 0 0 0;
+  --shadow-1: 0 1px 1px rgb(var(--shadow-color) / 0.4), 0 2px 4px rgb(var(--shadow-color) / 0.3);
+  --shadow-2: 0 2px 2px rgb(var(--shadow-color) / 0.4), 0 6px 14px rgb(var(--shadow-color) / 0.4);
+  --shadow-3: 0 4px 6px rgb(var(--shadow-color) / 0.45), 0 14px 30px rgb(var(--shadow-color) / 0.5);
+  --shadow-4: 0 8px 12px rgb(var(--shadow-color) / 0.5), 0 24px 56px rgb(var(--shadow-color) / 0.6);
+  --shadow-press: inset 0 2px 3px rgb(0 0 0 / 0.5), inset 0 -1px 0 rgb(255 240 210 / 0.1);
+  color-scheme: dark;
+}
+
+/* Follow the OS preference unless the page has explicitly chosen light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-canvas: var(--palette-walnut-900);
+    --color-bg-surface: var(--palette-walnut-800);
+    --color-bg-surface-raised: var(--palette-walnut-700);
+    --color-bg-surface-sunken: var(--palette-walnut-950);
+    --color-bg-subtle: var(--palette-walnut-850);
+    --color-bg-subtle-hover: var(--palette-walnut-700);
+    --color-bg-inverse: var(--palette-parchment-100);
+    --color-bg-backdrop: rgb(0 0 0 / 0.7);
+    --color-bg-linen: var(--palette-walnut-850);
+    --color-bg-kraft-deep: var(--palette-walnut-950);
+    --color-bg-tag: var(--palette-walnut-700);
+    --color-bg-polaroid: var(--palette-parchment-100);
+    --color-bg-envelope: var(--palette-walnut-800);
+    --color-bg-envelope-flap: var(--palette-walnut-700);
+    --color-fg-default: var(--palette-parchment-100);
+    --color-fg-muted: var(--palette-parchment-200);
+    --color-fg-subtle: var(--palette-parchment-300);
+    --color-fg-disabled: var(--palette-walnut-600);
+    --color-fg-inverse: var(--palette-ink-900);
+    --color-fg-link: var(--palette-terracotta-300);
+    --color-fg-link-hover: var(--palette-parchment-100);
+    --color-fg-on-polaroid: var(--palette-ink-800);
+    --color-border-default: var(--palette-walnut-700);
+    --color-border-strong: var(--palette-parchment-300);
+    --color-border-inverse: var(--palette-parchment-300);
+    --color-stitch: var(--palette-terracotta-400);
+    --color-stitch-quiet: var(--palette-parchment-300);
+    --color-rule: var(--palette-terracotta-400);
+    --color-rule-faint: rgb(243 230 200 / 0.08);
+    --color-string: var(--palette-parchment-300);
+    --color-accent: var(--palette-terracotta-300);
+    --color-accent-hover: var(--palette-parchment-100);
+    --color-accent-active: var(--palette-parchment-100);
+    --color-accent-subtle: var(--palette-walnut-850);
+    --color-accent-subtle-hover: var(--palette-walnut-700);
+    --color-fg-on-accent: var(--palette-walnut-950);
+    --color-fg-accent: var(--palette-terracotta-300);
+    --color-olive: var(--palette-olive-300);
+    --color-fg-olive: var(--palette-olive-300);
+    --color-fg-on-olive: var(--palette-walnut-950);
+    --color-stamp: var(--palette-terracotta-400);
+    --color-stamp-olive: var(--palette-olive-400);
+    --color-seal: var(--palette-terracotta-600);
+    --color-fg-on-seal: var(--palette-parchment-100);
+    --color-press-highlight: rgb(255 240 210 / 0.12);
+    --color-press-shade: rgb(0 0 0 / 0.55);
+    --color-tape: rgb(225 205 160 / 0.42);
+    --color-tape-edge: rgb(0 0 0 / 0.2);
+    --color-grain: rgb(0 0 0 / 0.7);
+    --color-fibre: rgb(255 230 190 / 0.035);
+    --grain-opacity: 0.45;
+    --grain-blend: multiply;
+    --color-focus-ring: var(--palette-terracotta-300);
+    --color-focus-ring-offset: var(--palette-walnut-900);
+    --color-info-bg: var(--palette-walnut-850);
+    --color-info-fg: var(--palette-parchment-100);
+    --color-info-border: var(--palette-parchment-300);
+    --color-info-icon: var(--palette-parchment-200);
+    --color-info-solid: var(--palette-parchment-200);
+    --color-success-bg: var(--palette-olive-900);
+    --color-success-fg: var(--palette-olive-300);
+    --color-success-border: var(--palette-olive-600);
+    --color-success-icon: var(--palette-olive-300);
+    --color-success-solid: var(--palette-olive-300);
+    --color-warning-bg: var(--palette-terracotta-900);
+    --color-warning-fg: var(--palette-terracotta-300);
+    --color-warning-border: var(--palette-terracotta-600);
+    --color-warning-icon: var(--palette-terracotta-300);
+    --color-warning-solid: var(--palette-terracotta-300);
+    --color-danger-bg: var(--palette-terracotta-900);
+    --color-danger-fg: var(--palette-terracotta-300);
+    --color-danger-border: var(--palette-terracotta-600);
+    --color-danger-icon: var(--palette-terracotta-300);
+    --color-danger-solid: var(--palette-terracotta-300);
+    --color-danger-solid-hover: var(--palette-parchment-100);
+    --color-fg-on-danger: var(--palette-walnut-950);
+    --shadow-color: 0 0 0;
+    --shadow-1: 0 1px 1px rgb(var(--shadow-color) / 0.4), 0 2px 4px rgb(var(--shadow-color) / 0.3);
+    --shadow-2: 0 2px 2px rgb(var(--shadow-color) / 0.4), 0 6px 14px rgb(var(--shadow-color) / 0.4);
+    --shadow-3: 0 4px 6px rgb(var(--shadow-color) / 0.45), 0 14px 30px rgb(var(--shadow-color) / 0.5);
+    --shadow-4: 0 8px 12px rgb(var(--shadow-color) / 0.5), 0 24px 56px rgb(var(--shadow-color) / 0.6);
+    --shadow-press: inset 0 2px 3px rgb(0 0 0 / 0.5), inset 0 -1px 0 rgb(255 240 210 / 0.1);
+    color-scheme: dark;
+  }
+}
+
+/* ---------- Preference overrides ------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0.01ms;
+    --duration-base: 0.01ms;
+    --duration-slow: 0.01ms;
+    --duration-deliberate: 0.01ms;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-border-default: var(--color-border-strong);
+    --color-fg-muted: var(--color-fg-default);
+    --color-fg-subtle: var(--color-fg-muted);
+  }
+}
+
+/* Windows High Contrast / forced colours: hand control to system colours. */
+@media (forced-colors: active) {
+  :root {
+    --color-focus-ring: Highlight;
+    --color-border-default: CanvasText;
+    --color-border-strong: CanvasText;
+  }
+}

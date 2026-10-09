@@ -1,0 +1,470 @@
+/* ==========================================================================
+   Banaro · Aurora — design tokens.
+   Night-sky canvases, borealis green, glacier cyan, iris violet and rose,
+   read at runtime by the WebGPU hero shader (getComputedStyle) and by the
+   CSS @property fallback. Unbounded display, Google Sans Flex text,
+   Instrument Serif italic accents.
+   Tiers: primitives (--palette-*, --font-*) -> semantic (--color-*, --text-*,
+   --space-*, --radius-*, --shadow-*, --duration-*, --ease-*, --z-*, --layout-*)
+   -> concept tokens (prefixed per concept). Light is :root; dark applies with
+   [data-theme="dark"] or the OS preference unless [data-theme="light"].
+   ========================================================================== */
+
+:root {
+  /* ---------- Primitives: colour --------------------------------------- */
+  --palette-white: #ffffff;
+  --palette-black: #000000;
+  --palette-night-950: #03050d;
+  --palette-night-900: #070b1a;
+  --palette-night-850: #0c1226;
+  --palette-night-800: #131a33;
+  --palette-night-750: #19213f;
+  --palette-night-700: #1e2747;
+  --palette-night-600: #2d3760;
+  --palette-night-550: #4f5880;
+  --palette-night-500: #5f6890;
+  --palette-night-400: #8a93b8;
+  --palette-night-300: #b6bdd9;
+  --palette-night-200: #d8dcef;
+  --palette-night-100: #eceefa;
+  --palette-night-50: #f5f6fd;
+  --palette-night-650: #3a4268;
+  --palette-borealis-50: #e6fbf2;
+  --palette-borealis-300: #6dffbf;
+  --palette-borealis-400: #34f0a0;
+  --palette-borealis-600: #0f9e66;
+  --palette-borealis-700: #0b7a50;
+  --palette-borealis-950: #03261a;
+  --palette-borealis-975: #053522;
+  --palette-glacier-50: #e6f8fc;
+  --palette-glacier-200: #b3f0ff;
+  --palette-glacier-300: #7ee8ff;
+  --palette-glacier-400: #2fd3f0;
+  --palette-glacier-700: #0b6f86;
+  --palette-glacier-800: #095a6d;
+  --palette-glacier-950: #04232c;
+  --palette-iris-50: #f1edff;
+  --palette-iris-100: #e3dbff;
+  --palette-iris-300: #b8a6ff;
+  --palette-iris-400: #9b85ff;
+  --palette-iris-600: #6a4ff0;
+  --palette-iris-700: #5639d6;
+  --palette-iris-800: #432bb0;
+  --palette-iris-900: #35208f;
+  --palette-iris-950: #1a1240;
+  --palette-rose-300: #ff9bd2;
+  --palette-rose-400: #f472b6;
+  --palette-rose-700: #b0246f;
+  --palette-rose-950: #3a0b25;
+  --palette-amber-50: #fff6df;
+  --palette-amber-300: #ffd36b;
+  --palette-amber-500: #c48a00;
+  --palette-amber-700: #875a00;
+  --palette-amber-950: #2c1f04;
+  --palette-red-50: #ffecef;
+  --palette-red-300: #ff9aa8;
+  --palette-red-500: #e5384f;
+  --palette-red-700: #b3203a;
+  --palette-red-950: #3b0c15;
+
+  /* ---------- Primitives: typography ----------------------------------- */
+  --font-family-display: "Unbounded", "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
+  --font-family-sans: "Google Sans Flex", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-family-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-family-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: clamp(1.625rem, 1.2rem + 1.6vw, 2.5rem);
+  --font-size-4xl: clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
+  --font-size-5xl: clamp(2.5rem, 1.2rem + 5.4vw, 5.5rem);
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 560;
+  --font-weight-bold: 640;
+  --line-height-tight: 1.04;
+  --line-height-snug: 1.2;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.65;
+  --letter-spacing-tight: -0.035em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.14em;
+
+  /* ---------- Semantic: colour (light) --------------------------------- */
+  --color-bg-canvas: var(--palette-night-50);
+  --color-bg-surface: var(--palette-white);
+  --color-bg-surface-raised: var(--palette-white);
+  --color-bg-surface-sunken: var(--palette-night-100);
+  --color-bg-subtle: var(--palette-night-100);
+  --color-bg-subtle-hover: var(--palette-night-200);
+  --color-bg-inverse: var(--palette-night-900);
+  --color-bg-backdrop: rgb(7 11 26 / 0.5);
+  --color-fg-default: var(--palette-night-900);
+  --color-fg-muted: var(--palette-night-650);
+  --color-fg-subtle: var(--palette-night-550);
+  --color-fg-disabled: var(--palette-night-400);
+  --color-fg-inverse: var(--palette-white);
+  --color-fg-link: var(--palette-iris-700);
+  --color-fg-link-hover: var(--palette-iris-800);
+  --color-border-default: var(--palette-night-200);
+  --color-border-strong: var(--palette-night-500);
+  --color-border-inverse: var(--palette-night-700);
+  --color-accent: var(--palette-iris-700);
+  --color-accent-hover: var(--palette-iris-800);
+  --color-accent-active: var(--palette-iris-900);
+  --color-accent-subtle: var(--palette-iris-50);
+  --color-accent-subtle-hover: var(--palette-iris-100);
+  --color-fg-on-accent: var(--palette-white);
+  --color-fg-accent: var(--palette-iris-700);
+  --color-focus-ring: var(--palette-iris-600);
+  --color-info-bg: var(--palette-glacier-50);
+  --color-info-fg: var(--palette-glacier-800);
+  --color-info-border: var(--palette-glacier-300);
+  --color-info-icon: var(--palette-glacier-700);
+  --color-info-solid: var(--palette-glacier-700);
+  --color-success-bg: var(--palette-borealis-50);
+  --color-success-fg: var(--palette-borealis-700);
+  --color-success-border: var(--palette-borealis-300);
+  --color-success-icon: var(--palette-borealis-600);
+  --color-success-solid: var(--palette-borealis-700);
+  --color-warning-bg: var(--palette-amber-50);
+  --color-warning-fg: var(--palette-amber-700);
+  --color-warning-border: var(--palette-amber-300);
+  --color-warning-icon: var(--palette-amber-500);
+  --color-warning-solid: var(--palette-amber-700);
+  --color-danger-bg: var(--palette-red-50);
+  --color-danger-fg: var(--palette-red-700);
+  --color-danger-border: var(--palette-red-300);
+  --color-danger-icon: var(--palette-red-500);
+  --color-danger-solid: var(--palette-red-700);
+  --color-danger-solid-hover: var(--palette-red-950);
+  --color-fg-on-danger: var(--palette-white);
+  --color-focus-ring-offset: var(--color-bg-surface);
+
+  /* ---------- Concept: Aurora ------------------------------------------ */
+  /* The hero shader and the CSS fallback both read these five colours. */
+  --aurora-sky: #e9ecff;
+  --aurora-sky-2: var(--palette-night-50);
+  --aurora-1: #2fd59a;
+  --aurora-2: #27c3e6;
+  --aurora-3: #8d6cff;
+  --aurora-4: #f27ac0;
+  --aurora-strength: 0.62;
+  --aurora-blend: multiply;
+  --aurora-star: rgb(7 11 26 / 0);
+  --aurora-scrim: rgb(245 246 253 / 0.55);
+  --color-glass-bg: rgb(255 255 255 / 0.66);
+  --color-glass-border: rgb(255 255 255 / 0.9);
+  --color-glass-edge: rgb(7 11 26 / 0.08);
+  --color-glass-sheen: rgb(255 255 255 / 0.7);
+  --color-hero-fg: var(--palette-night-900);
+  --color-hero-muted: var(--palette-night-650);
+  --color-skyline: var(--palette-night-50);
+  --color-skyline-far: var(--palette-night-200);
+  --color-online: var(--palette-borealis-600);
+  --color-ring-1: var(--palette-borealis-600);
+  --color-ring-2: var(--palette-glacier-400);
+  --color-ring-3: var(--palette-iris-600);
+  --color-tooltip-bg: var(--palette-night-900);
+  --color-tooltip-fg: var(--palette-night-50);
+  --glass-blur: 18px;
+
+  /* ---------- Semantic: typography roles ------------------------------- */
+  --text-display: var(--font-weight-semibold) var(--font-size-5xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h1: var(--font-weight-bold) var(--font-size-4xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h2: var(--font-weight-medium) var(--font-size-3xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h3: var(--font-weight-medium) var(--font-size-2xl) / var(--line-height-snug) var(--font-family-display);
+  --text-h4: var(--font-weight-semibold) var(--font-size-lg) / var(--line-height-snug) var(--font-family-display);
+  --text-body-lg: var(--font-weight-regular) var(--font-size-lg) / var(--line-height-normal) var(--font-family-sans);
+  --text-body: var(--font-weight-regular) var(--font-size-md) / var(--line-height-normal) var(--font-family-sans);
+  --text-body-sm: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-sans);
+  --text-caption: var(--font-weight-regular) var(--font-size-xs) / var(--line-height-normal) var(--font-family-sans);
+  --text-label: var(--font-weight-medium) var(--font-size-sm) / var(--line-height-normal) var(--font-family-sans);
+  --text-overline: var(--font-weight-semibold) var(--font-size-xs) / var(--line-height-normal) var(--font-family-sans);
+  --text-code: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-mono);
+
+  /* ---------- Semantic: spacing (4px base) ----------------------------- */
+  --space-0: 0;
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* ---------- Semantic: layout ----------------------------------------- */
+  --layout-breakpoint-sm: 40rem;
+  --layout-breakpoint-md: 48rem;
+  --layout-breakpoint-lg: 64rem;
+  --layout-breakpoint-xl: 80rem;
+  --layout-breakpoint-2xl: 96rem;
+  --layout-columns: 4;
+  --layout-gutter: var(--space-4);
+  --layout-margin: var(--space-4);
+  --layout-container-max: 78rem;
+  --layout-measure: 65ch;
+  --layout-sidebar-width: 16rem;
+  --layout-topbar-height: 4rem;
+
+  /* ---------- Semantic: shape ------------------------------------------ */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-full: 9999px;
+
+  /* ---------- Semantic: elevation -------------------------------------- */
+  --shadow-color: 40 30 120;
+  --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.06), 0 4px 16px rgb(var(--shadow-color) / 0.05);
+  --shadow-2: 0 8px 24px rgb(var(--shadow-color) / 0.1), 0 2px 6px rgb(var(--shadow-color) / 0.06);
+  --shadow-3: 0 18px 48px rgb(var(--shadow-color) / 0.16), 0 4px 12px rgb(var(--shadow-color) / 0.08);
+  --shadow-4: 0 32px 80px rgb(var(--shadow-color) / 0.24), 0 6px 18px rgb(var(--shadow-color) / 0.1);
+  --shadow-focus: 0 0 0 var(--focus-ring-offset) var(--color-focus-ring-offset), 0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width)) var(--color-focus-ring);
+
+  /* ---------- Semantic: motion ----------------------------------------- */
+  --duration-instant: 0ms;
+  --duration-fast: 140ms;
+  --duration-base: 240ms;
+  --duration-slow: 420ms;
+  --duration-deliberate: 640ms;
+  --duration-aurora: 28s;          /* CSS fallback drift cycle */
+  --duration-view: 380ms;          /* cross-document view transition */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---------- Semantic: z-order ---------------------------------------- */
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 100;
+  --z-dropdown: 1000;
+  --z-overlay: 1200;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+  --z-tooltip: 1600;
+
+  /* ---------- Semantic: interaction ------------------------------------ */
+  --target-min: 1.5rem;
+  --target-comfortable: 2.75rem;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --control-height-sm: 2rem;
+  --control-height-md: 2.5rem;
+  --control-height-lg: 3rem;
+  --border-width-hairline: 1px;
+  --border-width-thick: 2px;
+
+  color-scheme: light;
+}
+
+@media (min-width: 48rem) {
+  :root { --layout-columns: 8; --layout-gutter: var(--space-6); --layout-margin: var(--space-8); }
+}
+@media (min-width: 64rem) {
+  :root { --layout-columns: 12; --layout-gutter: var(--space-8); --layout-margin: var(--space-12); }
+}
+
+/* ---------- Dark theme ----------------------------------------------------- */
+[data-theme="dark"] {
+  --color-bg-canvas: var(--palette-night-950);
+  --color-bg-surface: var(--palette-night-900);
+  --color-bg-surface-raised: var(--palette-night-850);
+  --color-bg-surface-sunken: #05081a;
+  --color-bg-subtle: var(--palette-night-800);
+  --color-bg-subtle-hover: var(--palette-night-700);
+  --color-bg-inverse: var(--palette-night-100);
+  --color-bg-backdrop: rgb(0 0 0 / 0.65);
+  --color-fg-default: #eef1ff;
+  --color-fg-muted: var(--palette-night-300);
+  --color-fg-subtle: var(--palette-night-400);
+  --color-fg-disabled: var(--palette-night-600);
+  --color-fg-inverse: var(--palette-night-900);
+  --color-fg-link: var(--palette-glacier-300);
+  --color-fg-link-hover: var(--palette-glacier-200);
+  --color-border-default: var(--palette-night-750);
+  --color-border-strong: var(--palette-night-500);
+  --color-border-inverse: var(--palette-night-300);
+  --color-accent: var(--palette-borealis-400);
+  --color-accent-hover: var(--palette-borealis-300);
+  --color-accent-active: var(--palette-borealis-50);
+  --color-accent-subtle: var(--palette-borealis-950);
+  --color-accent-subtle-hover: var(--palette-borealis-975);
+  --color-fg-on-accent: var(--palette-borealis-950);
+  --color-fg-accent: var(--palette-borealis-300);
+  --color-focus-ring: var(--palette-glacier-300);
+  --color-info-bg: var(--palette-glacier-950);
+  --color-info-fg: var(--palette-glacier-200);
+  --color-info-border: var(--palette-glacier-700);
+  --color-info-icon: var(--palette-glacier-300);
+  --color-info-solid: var(--palette-glacier-300);
+  --color-success-bg: var(--palette-borealis-950);
+  --color-success-fg: var(--palette-borealis-300);
+  --color-success-border: var(--palette-borealis-700);
+  --color-success-icon: var(--palette-borealis-300);
+  --color-success-solid: var(--palette-borealis-300);
+  --color-warning-bg: var(--palette-amber-950);
+  --color-warning-fg: var(--palette-amber-300);
+  --color-warning-border: var(--palette-amber-700);
+  --color-warning-icon: var(--palette-amber-300);
+  --color-warning-solid: var(--palette-amber-300);
+  --color-danger-bg: var(--palette-red-950);
+  --color-danger-fg: var(--palette-red-300);
+  --color-danger-border: var(--palette-red-700);
+  --color-danger-icon: var(--palette-red-300);
+  --color-danger-solid: var(--palette-red-300);
+  --color-danger-solid-hover: var(--palette-red-50);
+  --color-fg-on-danger: var(--palette-red-950);
+  --aurora-sky: #03050d;
+  --aurora-sky-2: #070b1a;
+  --aurora-1: #3dffa8;
+  --aurora-2: #2fd3f0;
+  --aurora-3: #8f6bff;
+  --aurora-4: #ff6ec7;
+  --aurora-strength: 0.78;
+  --aurora-blend: screen;
+  --aurora-star: rgb(238 241 255 / 0.8);
+  --aurora-scrim: rgb(3 5 13 / 0.72);
+  --color-glass-bg: rgb(12 18 38 / 0.58);
+  --color-glass-border: rgb(255 255 255 / 0.1);
+  --color-glass-edge: rgb(0 0 0 / 0.4);
+  --color-glass-sheen: rgb(255 255 255 / 0.06);
+  --color-hero-fg: #eef1ff;
+  --color-hero-muted: var(--palette-night-300);
+  --color-skyline: var(--palette-night-950);
+  --color-skyline-far: var(--palette-night-800);
+  --color-online: var(--palette-borealis-400);
+  --color-ring-1: var(--palette-borealis-400);
+  --color-ring-2: var(--palette-glacier-400);
+  --color-ring-3: var(--palette-iris-400);
+  --color-tooltip-bg: var(--palette-night-100);
+  --color-tooltip-fg: var(--palette-night-900);
+  --shadow-color: 0 0 0;
+  --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.5), 0 0 0 1px rgb(255 255 255 / 0.03);
+  --shadow-2: 0 10px 30px rgb(var(--shadow-color) / 0.55), 0 0 40px rgb(61 255 168 / 0.05);
+  --shadow-3: 0 20px 56px rgb(var(--shadow-color) / 0.6), 0 0 60px rgb(143 107 255 / 0.08);
+  --shadow-4: 0 32px 90px rgb(var(--shadow-color) / 0.7), 0 0 80px rgb(143 107 255 / 0.1);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-canvas: var(--palette-night-950);
+    --color-bg-surface: var(--palette-night-900);
+    --color-bg-surface-raised: var(--palette-night-850);
+    --color-bg-surface-sunken: #05081a;
+    --color-bg-subtle: var(--palette-night-800);
+    --color-bg-subtle-hover: var(--palette-night-700);
+    --color-bg-inverse: var(--palette-night-100);
+    --color-bg-backdrop: rgb(0 0 0 / 0.65);
+    --color-fg-default: #eef1ff;
+    --color-fg-muted: var(--palette-night-300);
+    --color-fg-subtle: var(--palette-night-400);
+    --color-fg-disabled: var(--palette-night-600);
+    --color-fg-inverse: var(--palette-night-900);
+    --color-fg-link: var(--palette-glacier-300);
+    --color-fg-link-hover: var(--palette-glacier-200);
+    --color-border-default: var(--palette-night-750);
+    --color-border-strong: var(--palette-night-500);
+    --color-border-inverse: var(--palette-night-300);
+    --color-accent: var(--palette-borealis-400);
+    --color-accent-hover: var(--palette-borealis-300);
+    --color-accent-active: var(--palette-borealis-50);
+    --color-accent-subtle: var(--palette-borealis-950);
+    --color-accent-subtle-hover: var(--palette-borealis-975);
+    --color-fg-on-accent: var(--palette-borealis-950);
+    --color-fg-accent: var(--palette-borealis-300);
+    --color-focus-ring: var(--palette-glacier-300);
+    --color-info-bg: var(--palette-glacier-950);
+    --color-info-fg: var(--palette-glacier-200);
+    --color-info-border: var(--palette-glacier-700);
+    --color-info-icon: var(--palette-glacier-300);
+    --color-info-solid: var(--palette-glacier-300);
+    --color-success-bg: var(--palette-borealis-950);
+    --color-success-fg: var(--palette-borealis-300);
+    --color-success-border: var(--palette-borealis-700);
+    --color-success-icon: var(--palette-borealis-300);
+    --color-success-solid: var(--palette-borealis-300);
+    --color-warning-bg: var(--palette-amber-950);
+    --color-warning-fg: var(--palette-amber-300);
+    --color-warning-border: var(--palette-amber-700);
+    --color-warning-icon: var(--palette-amber-300);
+    --color-warning-solid: var(--palette-amber-300);
+    --color-danger-bg: var(--palette-red-950);
+    --color-danger-fg: var(--palette-red-300);
+    --color-danger-border: var(--palette-red-700);
+    --color-danger-icon: var(--palette-red-300);
+    --color-danger-solid: var(--palette-red-300);
+    --color-danger-solid-hover: var(--palette-red-50);
+    --color-fg-on-danger: var(--palette-red-950);
+    --aurora-sky: #03050d;
+    --aurora-sky-2: #070b1a;
+    --aurora-1: #3dffa8;
+    --aurora-2: #2fd3f0;
+    --aurora-3: #8f6bff;
+    --aurora-4: #ff6ec7;
+    --aurora-strength: 0.78;
+    --aurora-blend: screen;
+    --aurora-star: rgb(238 241 255 / 0.8);
+    --aurora-scrim: rgb(3 5 13 / 0.72);
+    --color-glass-bg: rgb(12 18 38 / 0.58);
+    --color-glass-border: rgb(255 255 255 / 0.1);
+    --color-glass-edge: rgb(0 0 0 / 0.4);
+    --color-glass-sheen: rgb(255 255 255 / 0.06);
+    --color-hero-fg: #eef1ff;
+    --color-hero-muted: var(--palette-night-300);
+    --color-skyline: var(--palette-night-950);
+    --color-skyline-far: var(--palette-night-800);
+    --color-online: var(--palette-borealis-400);
+    --color-ring-1: var(--palette-borealis-400);
+    --color-ring-2: var(--palette-glacier-400);
+    --color-ring-3: var(--palette-iris-400);
+    --color-tooltip-bg: var(--palette-night-100);
+    --color-tooltip-fg: var(--palette-night-900);
+    --shadow-color: 0 0 0;
+    --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.5), 0 0 0 1px rgb(255 255 255 / 0.03);
+    --shadow-2: 0 10px 30px rgb(var(--shadow-color) / 0.55), 0 0 40px rgb(61 255 168 / 0.05);
+    --shadow-3: 0 20px 56px rgb(var(--shadow-color) / 0.6), 0 0 60px rgb(143 107 255 / 0.08);
+    --shadow-4: 0 32px 90px rgb(var(--shadow-color) / 0.7), 0 0 80px rgb(143 107 255 / 0.1);
+    color-scheme: dark;
+  }
+}
+
+/* ---------- Preference overrides ------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0.01ms;
+    --duration-base: 0.01ms;
+    --duration-slow: 0.01ms;
+    --duration-deliberate: 0.01ms;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-border-default: var(--color-border-strong);
+    --color-fg-muted: var(--color-fg-default);
+    --color-fg-subtle: var(--color-fg-muted);
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --color-focus-ring: Highlight;
+    --color-border-default: CanvasText;
+    --color-border-strong: CanvasText;
+  }
+}

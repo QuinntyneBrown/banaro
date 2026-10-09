@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Builder directory · default — Banaro · The Banaro Courier</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="directory">
+<meta name="mock:state" content="default">
+<meta name="description" content="Signed-in directory as the Courier's classifieds page: Builders Wanted &amp; Available, an index of classifications with dot leaders, and 23 builders set as dense classified ads in five columns.">
+<link rel="stylesheet" href="../../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/tokens.css">
+<link rel="stylesheet" href="../../assets/ui.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+<style>
+  .masthead--section .masthead__title { font-size: min(9cqi, 4.5rem); }
+  .masthead--section .masthead__ears { padding-block: var(--space-2) var(--space-1); }
+  .tools { display: grid; gap: var(--space-3); padding-block: var(--space-3); }
+  .classindex { padding-top: var(--space-3); }
+  .classindex__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); padding-top: var(--space-2); border-top: var(--print-rule) solid var(--color-border-default); font: var(--text-caption); color: var(--color-fg-muted); }
+  .rates { font: var(--text-caption); color: var(--color-fg-muted); text-align: center; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead masthead--section paper">
+  <div class="masthead__top">
+    <span>Classifieds · Section F</span>
+    <span class="masthead__top-links">
+      <button type="button" class="btn btn--sm notices-btn" aria-label="Notices, 3 unread">Notices <span class="notices-btn__count" aria-hidden="true">3</span></button>
+      <a class="btn btn--sm" href="#classifieds">2 new matches</a>
+      <button type="button" class="reader" aria-label="Your account: Amara Osei" style="border: 0; background: none; cursor: pointer; padding: 0;">
+        <span class="reader__photo photo" aria-hidden="true"><span class="photo__plate" style="display: block;"><span class="photo__screen" style="display: block;"><img src="../../../assets/photos/amara-osei.jpg" alt="" width="480" height="480"></span></span></span>
+        <span>Amara Osei</span>
+      </button>
+    </span>
+  </div>
+  <hr class="rule rule--thick-thin">
+  <div class="masthead__ears">
+    <aside class="ear" aria-label="Subscriber">
+      <span class="ear__label">Reader's copy</span>
+      Amara Osei · Leslieville. Seeking a technical co-founder for <em>Harvest</em>.
+    </aside>
+    <div class="masthead__brand"><p class="masthead__title"><a href="../home/default.html">The Banaro Courier</a></p></div>
+    <aside class="ear" aria-label="Rates">
+      <span class="ear__label">Rates</span>
+      Listing: free. Saying hello: free. Coffee: your shout.
+    </aside>
+  </div>
+  <hr class="rule rule--double">
+  <p class="edition"><span class="edition__item">Vol. III</span><span class="edition__item">No. 41</span><span class="edition__item">Friday, October 9, 2026</span><span class="edition__item edition__item--hide-sm">Toronto &amp; GTA Edition</span><span class="edition__item">Free</span></p>
+  <hr class="rule rule--double">
+  <nav class="sections" aria-label="Primary">
+    <ul class="sections__list">
+      <li><a href="default.html" aria-current="page">Builders</a></li>
+      <li><a href="../home/default.html#projects">Projects</a></li>
+      <li><a href="../home/default.html#events">Events</a></li>
+      <li><a href="../home/default.html#matching">Matching</a></li>
+    </ul>
+  </nav>
+  <hr class="rule">
+</header>
+
+<main id="main" class="paper">
+  <div class="classhead">
+    <span class="kicker">Classifieds · Toronto &amp; the GTA</span>
+    <h1 class="classhead__title">Builders Wanted <span>&amp;</span> Available</h1>
+    <p class="classhead__sub">1,284 builders in Toronto and the GTA, arranged by best match for a reader in Leslieville.</p>
+  </div>
+  <hr class="rule rule--heavy">
+
+  <div class="tools">
+    <form class="finder" role="search" action="#classifieds">
+      <label class="finder__label" for="q">Search the classifieds</label>
+      <input class="finder__input" id="q" name="q" type="search" placeholder="A skill, a role or a neighbourhood" aria-label="Search the classifieds">
+      <button class="btn btn--primary" type="submit">Find</button>
+    </form>
+
+    <div class="classindex-toggle" role="group" aria-label="Quick classifications">
+      <button type="button" class="btn btn--sm btn--primary" aria-controls="classindex" aria-expanded="false" data-index-toggle>Index of classifications</button>
+      <button type="button" class="btn btn--sm" aria-pressed="false">Co-founding 173</button>
+      <button type="button" class="btn btn--sm" aria-pressed="false">Engineers 486</button>
+      <button type="button" class="btn btn--sm" aria-pressed="false">Designers 231</button>
+      <button type="button" class="btn btn--sm" aria-pressed="false">Within 40 km</button>
+    </div>
+
+    <form class="classindex box" id="classindex" aria-labelledby="classindex-hed" action="#classifieds">
+      <h2 class="box__title" id="classindex-hed">Index of classifications <span>Tick to narrow</span></h2>
+      <div class="classindex__cols">
+<!--gen:index-->
+        <fieldset class="cgroup">
+          <legend>Role</legend>
+          <label class="leader"><input type="checkbox" name="role" value="Founders"><span class="leader__name">Founders</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">214</span></label>
+          <label class="leader"><input type="checkbox" name="role" value="Engineers"><span class="leader__name">Engineers</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">486</span></label>
+          <label class="leader"><input type="checkbox" name="role" value="Designers"><span class="leader__name">Designers</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">231</span></label>
+          <label class="leader"><input type="checkbox" name="role" value="Product managers"><span class="leader__name">Product managers</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">198</span></label>
+          <label class="leader"><input type="checkbox" name="role" value="Other"><span class="leader__name">Other</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">155</span></label>
+        </fieldset>
+        <fieldset class="cgroup">
+          <legend>Open to</legend>
+          <label class="leader"><input type="checkbox" name="open" value="Co-founding"><span class="leader__name">Co-founding</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">173</span></label>
+          <label class="leader"><input type="checkbox" name="open" value="Advising"><span class="leader__name">Advising</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">248</span></label>
+          <label class="leader"><input type="checkbox" name="open" value="Contributing"><span class="leader__name">Contributing</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">611</span></label>
+        </fieldset>
+        <div class="cgroup">
+          <label class="cgroup__label" for="distance">Distance</label>
+          <select class="select" id="distance" name="distance">
+            <option>Within 5 km of Leslieville</option>
+            <option>Within 10 km of Leslieville</option>
+            <option>Within 20 km of Leslieville</option>
+            <option selected>Within 40 km of Leslieville</option>
+            <option>Anywhere in the GTA</option>
+          </select>
+        </div>
+        <fieldset class="cgroup">
+          <legend>Neighbourhood or city</legend>
+          <label class="leader"><input type="checkbox" name="hood" value="Downtown Toronto"><span class="leader__name">Downtown Toronto</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">512</span></label>
+          <label class="leader"><input type="checkbox" name="hood" value="North York"><span class="leader__name">North York</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">141</span></label>
+          <label class="leader"><input type="checkbox" name="hood" value="Scarborough"><span class="leader__name">Scarborough</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">96</span></label>
+          <label class="leader"><input type="checkbox" name="hood" value="Etobicoke"><span class="leader__name">Etobicoke</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">88</span></label>
+          <label class="leader"><input type="checkbox" name="hood" value="Mississauga"><span class="leader__name">Mississauga</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">147</span></label>
+          <label class="leader"><input type="checkbox" name="hood" value="Brampton"><span class="leader__name">Brampton</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">74</span></label>
+          <label class="leader"><input type="checkbox" name="hood" value="Markham"><span class="leader__name">Markham</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">92</span></label>
+          <label class="leader"><input type="checkbox" name="hood" value="Vaughan"><span class="leader__name">Vaughan</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">51</span></label>
+          <label class="leader"><input type="checkbox" name="hood" value="Richmond Hill"><span class="leader__name">Richmond Hill</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">38</span></label>
+          <label class="leader"><input type="checkbox" name="hood" value="Oakville"><span class="leader__name">Oakville</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">45</span></label>
+        </fieldset>
+        <fieldset class="cgroup">
+          <legend>Skills</legend>
+          <label class="leader"><input type="checkbox" name="skill" value="React"><span class="leader__name">React</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">203</span></label>
+          <label class="leader"><input type="checkbox" name="skill" value="Figma"><span class="leader__name">Figma</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">187</span></label>
+          <label class="leader"><input type="checkbox" name="skill" value="Python"><span class="leader__name">Python</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">174</span></label>
+          <label class="leader"><input type="checkbox" name="skill" value="Product strategy"><span class="leader__name">Product strategy</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">156</span></label>
+          <label class="leader"><input type="checkbox" name="skill" value="User research"><span class="leader__name">User research</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">112</span></label>
+          <label class="leader"><input type="checkbox" name="skill" value="Laravel"><span class="leader__name">Laravel</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">96</span></label>
+          <label class="leader"><input type="checkbox" name="skill" value="Data/ML"><span class="leader__name">Data/ML</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">89</span></label>
+          <label class="leader"><input type="checkbox" name="skill" value="Marketing"><span class="leader__name">Marketing</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">77</span></label>
+          <label class="leader"><input type="checkbox" name="skill" value="Angular"><span class="leader__name">Angular</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">74</span></label>
+          <label class="leader"><input type="checkbox" name="skill" value="Swift"><span class="leader__name">Swift</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">61</span></label>
+          <label class="leader"><input type="checkbox" name="skill" value="Kotlin"><span class="leader__name">Kotlin</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">48</span></label>
+          <label class="leader"><input type="checkbox" name="skill" value="Fundraising"><span class="leader__name">Fundraising</span><span class="leader__dots" aria-hidden="true"></span><span class="leader__count">41</span></label>
+        </fieldset>
+<!--/gen:index-->
+      </div>
+      <div class="classindex__foot">
+        <span>No classifications ticked: showing every builder within 40 km.</span>
+        <span style="display: flex; gap: var(--space-2);"><button type="reset" class="btn btn--sm">Clear</button><button type="submit" class="btn btn--sm btn--primary">Apply</button></span>
+      </div>
+    </form>
+  </div>
+
+  <section id="classifieds" aria-labelledby="classifieds-hed">
+    <h2 class="visually-hidden" id="classifieds-hed">Classified listings</h2>
+    <div class="resultline">
+      <p class="resultline__count" aria-live="polite">1,284 builders in Toronto and the GTA <span>· showing 1–23</span></p>
+      <div class="resultline__sort">
+        <label for="sort">Arranged by</label>
+        <select class="select select--inline" id="sort" name="sort">
+          <option selected>Best match</option>
+          <option>Nearest</option>
+          <option>Recently active</option>
+          <option>Newest</option>
+        </select>
+      </div>
+    </div>
+    <ol class="classifieds">
+<!--gen:ads-->
+      <li class="cad cad--display" id="ad-1">
+        <span class="cad__flag">Top match</span><div class="cad__class"><h3 class="cad__role">Full-stack engineer</h3><span class="cad__match" aria-label="94% match">94%</span></div>
+        <figure class="photo"><div class="photo__plate"><div class="photo__screen" style="--ratio: 4 / 3;"><img src="../../../assets/photos/daniel-reyes.jpg" alt="" width="480" height="480"></div></div></figure><p><span class="cad__name">Daniel Reyes</span> Mississauga (26.9 km). Laravel, Angular, PostgreSQL. Building <em>Psalter</em>. <span class="cad__want">Open to co-founding.</span> “Ten years shipping Laravel apps; now building Psalter after hours and looking for a founder to go full time with.” <span class="cad__seen cad__seen--online">Online now</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm btn--primary" aria-label="Say hello to Daniel Reyes">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Daniel Reyes's profile">View profile</button></div>
+      </li>
+      <li class="cad cad--display" id="ad-2">
+        <span class="cad__flag">Strong match</span><div class="cad__class"><h3 class="cad__role">Product designer</h3><span class="cad__match" aria-label="91% match">91%</span></div>
+        <figure class="photo"><div class="photo__plate"><div class="photo__screen" style="--ratio: 4 / 3;"><img src="../../../assets/photos/grace-liu.jpg" alt="" width="480" height="480"></div></div></figure><p><span class="cad__name">Grace Liu</span> Markham (24.3 km). Figma, Design systems, Prototyping. Building <em>Gather</em>. <span class="cad__want">Open to contributing.</span> “Designs calm interfaces for churches and charities; happiest in a Figma file with a coffee.” <span class="cad__seen cad__seen--online">Online now</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Grace Liu">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Grace Liu's profile">View profile</button></div>
+      </li>
+      <li class="cad cad--display" id="ad-3">
+        <span class="cad__flag">Strong match</span><div class="cad__class"><h3 class="cad__role">Backend &amp; data engineer</h3><span class="cad__match" aria-label="88% match">88%</span></div>
+        <figure class="photo"><div class="photo__plate"><div class="photo__screen" style="--ratio: 4 / 3;"><img src="../../../assets/photos/noah-fischer.jpg" alt="" width="480" height="480"></div></div></figure><p><span class="cad__name">Noah Fischer</span> The Annex (5.8 km). Python, PostgreSQL, Data pipelines. Building <em>Ledgerline</em>. <span class="cad__want">Open to co-founding.</span> “Turns messy spreadsheets into honest dashboards for charities.” <span class="cad__seen">Seen 1 h ago</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm btn--primary" aria-label="Say hello to Noah Fischer">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Noah Fischer's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-4">
+        <div class="cad__class"><h3 class="cad__role">Frontend engineer</h3><span class="cad__match" aria-label="85% match">85%</span></div>
+        <p><span class="cad__name">Caleb Morgan</span>, Etobicoke (17.8 km). Angular, TypeScript, Accessibility. <span class="cad__want">Open to contributing.</span> “Two years into frontend and looking for a real product to learn on.” <span class="cad__seen cad__seen--online">Online now</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Caleb Morgan">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Caleb Morgan's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-5">
+        <div class="cad__class"><h3 class="cad__role">Growth &amp; marketing</h3><span class="cad__match" aria-label="82% match">82%</span></div>
+        <p><span class="cad__name">Sofia Marquez</span>, Liberty Village (6.1 km). Lifecycle marketing, SEO, Community. Building <em>Kindred</em>. <span class="cad__want">Open to contributing.</span> “Helped three newcomer programmes grow past 1,000 members.” <span class="cad__seen">Seen 3 h ago</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Sofia Marquez">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Sofia Marquez's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-6">
+        <div class="cad__class"><h3 class="cad__role">UX researcher</h3><span class="cad__match" aria-label="80% match">80%</span></div>
+        <p><span class="cad__name">Hannah Kowalski</span>, Roncesvalles (7.2 km). User interviews, Usability testing, Synthesis. <span class="cad__want">Open to advising.</span> “Listens for a living; advises early teams on what to build first.” <span class="cad__seen">Seen yesterday</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Hannah Kowalski">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Hannah Kowalski's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-7">
+        <div class="cad__class"><h3 class="cad__role">Engineering leader (ex-CTO)</h3><span class="cad__match" aria-label="78% match">78%</span></div>
+        <p><span class="cad__name">Marcus Bennett</span>, North York (14.2 km). Architecture, Hiring, Laravel. <span class="cad__want">Open to advising.</span> <span class="cad__seen">Seen 2 h ago</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Marcus Bennett">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Marcus Bennett's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-8">
+        <div class="cad__class"><h3 class="cad__role">Product manager, health tech</h3><span class="cad__match" aria-label="76% match">76%</span></div>
+        <p><span class="cad__name">Ruth Alvarez</span>, Scarborough (13.5 km). Roadmapping, Healthcare, Analytics. Building <em>Sabbath</em>. <span class="cad__want">Open to co-founding.</span> <span class="cad__seen cad__seen--online">Online now</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm btn--primary" aria-label="Say hello to Ruth Alvarez">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Ruth Alvarez's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-9">
+        <div class="cad__class"><h3 class="cad__role">Brand &amp; illustration designer</h3><span class="cad__match" aria-label="73% match">73%</span></div>
+        <p><span class="cad__name">Leah Thompson</span>, Kensington Market (4.6 km). Illustration, Branding, Motion. <span class="cad__want">Open to contributing.</span> <span class="cad__seen">Seen 5 h ago</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Leah Thompson">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Leah Thompson's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-10">
+        <div class="cad__class"><h3 class="cad__role">Hardware founder</h3><span class="cad__match" aria-label="70% match">70%</span></div>
+        <p><span class="cad__name">Elijah Brooks</span>, Oakville (36.4 km). Embedded C, IoT, Manufacturing. Building <em>Wellspring</em>. <span class="cad__want">Open to co-founding.</span> <span class="cad__seen">Seen yesterday</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm btn--primary" aria-label="Say hello to Elijah Brooks">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Elijah Brooks's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-11">
+        <div class="cad__class"><h3 class="cad__role">Angel investor &amp; advisor</h3><span class="cad__match" aria-label="68% match">68%</span></div>
+        <p><span class="cad__name">Peter Walsh</span>, Richmond Hill (27.6 km). Fundraising, Go-to-market, SaaS. <span class="cad__want">Open to advising.</span> <span class="cad__seen">Seen 2 days ago</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Peter Walsh">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Peter Walsh's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-12">
+        <div class="cad__class"><h3 class="cad__role">Product designer</h3><span class="cad__match" aria-label="66% match">66%</span></div>
+        <p><span class="cad__name">Esther Nguyen</span>, Riverdale (1.4 km). Figma, Service design, Workshops. <span class="cad__want">Open to co-founding.</span> <span class="cad__seen">Seen 4 h ago</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm btn--primary" aria-label="Say hello to Esther Nguyen">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Esther Nguyen's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-13">
+        <div class="cad__class"><h3 class="cad__role">Backend engineer</h3><span class="cad__match" aria-label="64% match">64%</span></div>
+        <p><span class="cad__name">Isaac Mensah</span>, Pickering (31.2 km). Go, Kubernetes, gRPC. <span class="cad__want">Open to co-founding.</span> <span class="cad__seen cad__seen--online">Online now</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm btn--primary" aria-label="Say hello to Isaac Mensah">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Isaac Mensah's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-14">
+        <div class="cad__class"><h3 class="cad__role">Community lead</h3><span class="cad__match" aria-label="62% match">62%</span></div>
+        <p><span class="cad__name">Naomi Fraser</span>, The Danforth (2.1 km). Events, Partnerships, Facilitation. <span class="cad__want">Open to contributing.</span> <span class="cad__seen">Seen 1 h ago</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Naomi Fraser">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Naomi Fraser's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-15">
+        <div class="cad__class"><h3 class="cad__role">iOS engineer</h3><span class="cad__match" aria-label="61% match">61%</span></div>
+        <p><span class="cad__name">Joshua Kim</span>, Willowdale (17.0 km). Swift, SwiftUI, Core Data. <span class="cad__want">Open to contributing.</span> <span class="cad__seen">Seen 6 h ago</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Joshua Kim">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Joshua Kim's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-16">
+        <div class="cad__class"><h3 class="cad__role">Data scientist</h3><span class="cad__match" aria-label="59% match">59%</span></div>
+        <p><span class="cad__name">Priya Sharma</span>, Brampton (33.8 km). Python, Machine learning, dbt. <span class="cad__want">Open to advising.</span> <span class="cad__seen">Seen yesterday</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Priya Sharma">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Priya Sharma's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-17">
+        <div class="cad__class"><h3 class="cad__role">Fintech founder</h3><span class="cad__match" aria-label="57% match">57%</span></div>
+        <p><span class="cad__name">Jonathan Clarke</span>, Oakville (36.9 km). Payments, Compliance, Sales. Building <em>Tally</em>. <span class="cad__want">Open to co-founding.</span> <span class="cad__seen">Seen 3 days ago</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm btn--primary" aria-label="Say hello to Jonathan Clarke">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Jonathan Clarke's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-18">
+        <div class="cad__class"><h3 class="cad__role">Content strategist</h3><span class="cad__match" aria-label="55% match">55%</span></div>
+        <p><span class="cad__name">Abigail Turner</span>, The Junction (9.4 km). UX writing, Content design, Editing. <span class="cad__want">Open to contributing.</span> <span class="cad__seen">Seen 2 h ago</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Abigail Turner">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Abigail Turner's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-19">
+        <div class="cad__class"><h3 class="cad__role">DevOps engineer</h3><span class="cad__match" aria-label="53% match">53%</span></div>
+        <p><span class="cad__name">Matthew Okoro</span>, Ajax (34.5 km). AWS, Terraform, CI/CD. <span class="cad__want">Open to contributing.</span> <span class="cad__seen">Seen yesterday</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Matthew Okoro">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Matthew Okoro's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-20">
+        <div class="cad__class"><h3 class="cad__role">Product manager, edtech</h3><span class="cad__match" aria-label="51% match">51%</span></div>
+        <p><span class="cad__name">Chloe Martin</span>, Vaughan (28.7 km). Discovery, Edtech, Experimentation. <span class="cad__want">Open to advising.</span> <span class="cad__seen">Seen 4 days ago</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Chloe Martin">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Chloe Martin's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-21">
+        <div class="cad__class"><h3 class="cad__role">Machine-learning engineer</h3><span class="cad__match" aria-label="49% match">49%</span></div>
+        <p><span class="cad__name">Benjamin Ho</span>, Markham (23.9 km). PyTorch, NLP, MLOps. <span class="cad__want">Open to contributing.</span> <span class="cad__seen">Seen 1 h ago</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to Benjamin Ho">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Benjamin Ho's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-22">
+        <div class="cad__class"><h3 class="cad__role">Security engineer</h3><span class="cad__match" aria-label="47% match">47%</span></div>
+        <p><span class="cad__name">David Petrov</span>, Etobicoke (18.5 km). AppSec, Pen testing, OWASP. <span class="cad__want">Open to advising.</span> <span class="cad__seen">Seen yesterday</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm" aria-label="Say hello to David Petrov">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View David Petrov's profile">View profile</button></div>
+      </li>
+      <li class="cad" id="ad-23">
+        <div class="cad__class"><h3 class="cad__role">Nonprofit tech founder</h3><span class="cad__match" aria-label="45% match">45%</span></div>
+        <p><span class="cad__name">Miriam Haddad</span>, Mississauga (25.6 km). Fundraising, Operations, No-code. Building <em>Open Table GTA</em>. <span class="cad__want">Open to co-founding.</span> <span class="cad__seen">Seen 5 h ago</span></p>
+        <div class="cad__actions"><button type="button" class="btn btn--sm btn--primary" aria-label="Say hello to Miriam Haddad">Say hello</button><button type="button" class="btn btn--link btn--sm" aria-label="View Miriam Haddad's profile">View profile</button></div>
+      </li>
+<!--/gen:ads-->
+    </ol>
+    <nav class="pager" aria-label="Pages">
+      <p class="pager__cont">Continued on page 2 — 1,261 more builders.</p>
+      <ul class="pager__list">
+        <li><a href="#classifieds" aria-current="page">1</a></li>
+        <li><a href="#classifieds">2</a></li>
+        <li><a href="#classifieds">3</a></li>
+        <li><span class="pager__gap" aria-hidden="true">…</span></li>
+        <li><a href="#classifieds">56</a></li>
+      </ul>
+      <p class="rates">Listings are free and placed by the builders themselves. Report a listing under the Code of conduct.</p>
+    </nav>
+  </section>
+</main>
+
+<footer class="imprint paper">
+  <hr class="rule rule--heavy">
+  <div class="imprint__grid">
+    <p class="imprint__mast">The Banaro Courier</p>
+    <nav aria-label="Footer">
+      <ul class="imprint__links">
+        <li><a href="../home/default.html#main">About</a></li>
+        <li><a href="../home/default.html#main">Code of conduct</a></li>
+        <li><a href="../home/default.html#main">Privacy</a></li>
+        <li><a href="../home/default.html#main">Contact</a></li>
+      </ul>
+    </nav>
+    <p class="imprint__small">Made in Toronto. © 2026 Banaro.</p>
+  </div>
+</footer>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../../index.html" aria-label="All concepts">⌂</a>
+  <a class="mock-bar__home" href="../../../25-clay/pages/directory/default.html" aria-label="Previous concept: Clay">‹</a>
+  <span class="mock-bar__screen">26 · The Banaro Courier</span>
+  <ul class="mock-bar__states">
+    <li><a href="../home/default.html">Home</a></li>
+    <li><a href="default.html" aria-current="page">Directory</a></li>
+  </ul>
+  <a class="mock-bar__home" href="../../../27-y2k-chrome/pages/directory/default.html" aria-label="Next concept: Y2K Chrome">›</a>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+<script>
+  /* Progressive: on small screens the index of classifications opens from its button. */
+  (function () {
+    var toggle = document.querySelector('[data-index-toggle]');
+    var panel = document.getElementById('classindex');
+    if (!toggle || !panel) return;
+    toggle.addEventListener('click', function () {
+      var open = panel.classList.toggle('classindex--open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  })();
+</script>
+</body>
+</html>

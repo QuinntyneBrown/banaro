@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home · default — Banaro · Live Pulse</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="home">
+<meta name="mock:state" content="default">
+<meta name="description" content="Live Pulse home: a dark-first live console with presence, a streaming activity feed, a Demo Night countdown and live RSVP seats.">
+<link rel="stylesheet" href="../../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/tokens.css">
+<link rel="stylesheet" href="../../assets/ui.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+<style>
+  .hero { padding-block: var(--space-8) var(--space-4); background: radial-gradient(60rem 30rem at 85% -10%, var(--color-hero-glow-2), transparent 70%), radial-gradient(50rem 30rem at -10% 20%, var(--color-hero-glow-1), transparent 70%); }
+  .hero__grid { display: grid; gap: var(--space-8); align-items: center; }
+  .hero__copy { display: grid; gap: var(--space-5); justify-items: start; }
+  .hero__title { font: var(--text-display); letter-spacing: var(--letter-spacing-tight); max-width: 16ch; }
+  .hero__accent { color: var(--color-fg-accent); }
+  .hero__lede { font: var(--text-body-lg); color: var(--color-fg-muted); max-width: 34rem; }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .hero__stats { margin: var(--space-10) 0 0; }
+  .console__event { margin-bottom: var(--space-3); }
+  .console__event-title { font: var(--font-weight-semibold) var(--font-size-lg) / 1.3 var(--font-family-display); margin-top: var(--space-1); }
+  .console .meter { margin-top: var(--space-3); }
+  @media (min-width: 64rem) { .hero { padding-block: var(--space-16) var(--space-4); } .hero__grid { grid-template-columns: 1.1fr 0.9fr; gap: var(--space-12); } }
+  .section--tint { background: var(--color-bg-surface-sunken); border-block: 1px solid var(--color-border-default); }
+  .areas { display: grid; gap: var(--space-4); }
+  .areas > li { display: grid; }
+  @media (min-width: 40rem) { .areas { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 64rem) { .areas { grid-template-columns: repeat(4, 1fr); } }
+  .bgrid { display: grid; gap: var(--space-4); }
+  @media (min-width: 40rem) { .bgrid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 64rem) { .bgrid { grid-template-columns: repeat(3, 1fr); } }
+  .events { display: grid; gap: var(--space-4); }
+  .events__list { display: grid; gap: var(--space-4); }
+  .event-feature__body { display: grid; gap: var(--space-4); }
+  .event-feature__title { font: var(--text-h2); }
+  @media (min-width: 64rem) { .events { grid-template-columns: 1.1fr 1fr; } }
+  .match { display: grid; gap: var(--space-8); align-items: center; }
+  .match__copy { display: grid; gap: var(--space-4); justify-items: start; }
+  .match__stat { font: var(--text-body-sm); color: var(--color-fg-muted); }
+  .match__stat strong { color: var(--color-fg-default); font-size: var(--font-size-lg); }
+  @media (min-width: 64rem) { .match { grid-template-columns: 1fr 1fr; gap: var(--space-16); } }
+  .join { border-top: 1px solid var(--color-border-default); }
+  .join__inner { display: grid; gap: var(--space-8); }
+  .join__quote { margin: 0; display: grid; gap: var(--space-4); padding: var(--space-6); border-radius: var(--radius-lg); background: var(--color-bg-surface); border: 1px solid var(--color-border-default); }
+  .join__quote blockquote { margin: 0; font: var(--font-weight-semibold) var(--font-size-xl) / 1.4 var(--font-family-display); letter-spacing: var(--letter-spacing-tight); text-wrap: pretty; }
+  .join__quote figcaption { display: flex; align-items: center; gap: var(--space-3); font: var(--text-body-sm); color: var(--color-fg-muted); }
+  .join__quote figcaption strong { color: var(--color-fg-default); }
+  .join__cta { display: grid; gap: var(--space-4); align-content: center; }
+  @media (min-width: 64rem) { .join__inner { grid-template-columns: 1fr 1fr; gap: var(--space-16); } }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar">
+  <div class="container topbar__inner">
+    <a class="brand" href="../home/default.html"><span class="brand__mark"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></span>Banaro</a>
+    <nav class="nav" aria-label="Primary">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="../directory/default.html">Builders <span class="nav__count"><span class="ticker" data-online>38</span> on</span></a></li>
+        <li><a class="nav__link" href="#projects">Projects</a></li>
+        <li><a class="nav__link" href="#events">Events</a></li>
+        <li><a class="nav__link" href="#matching">Matching</a></li>
+      </ul>
+    </nav>
+    <div class="topbar__actions">
+      <span class="live-pill" role="status" data-connection="live"><span class="dot dot--live"></span><span data-connection-label>Live</span></span>
+      <a class="btn btn--ghost btn--sm topbar__signin" href="#join">Sign in</a>
+      <a class="btn btn--primary btn--sm" href="#join">Join Banaro</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero__grid">
+      <div class="hero__copy">
+        <p class="livetag"><span class="dot dot--live"></span><strong>Live</strong> Toronto &amp; the GTA · Fri 9 Oct</p>
+        <h1 id="hero-title" class="hero__title">Build what matters, with believers <span class="hero__accent">down the street.</span></h1>
+        <p class="hero__lede">Banaro connects Christian founders, engineers, designers and product managers across Toronto and the GTA — so you can find collaborators, share what you're making, and meet in person.</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary btn--lg" href="#join">Join Banaro <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="btn btn--lg" href="../directory/default.html">Browse builders</a>
+        </div>
+        <div class="presence">
+          <div class="presence__stack"><span class="avatar"><img src="../../../assets/photos/daniel-reyes.jpg" alt="" width="480" height="480"><span class="dot"></span></span><span class="avatar"><img src="../../../assets/photos/grace-liu.jpg" alt="" width="480" height="480"><span class="dot"></span></span><span class="avatar"><img src="../../../assets/photos/caleb-morgan.jpg" alt="" width="480" height="480"><span class="dot"></span></span><span class="avatar"><img src="../../../assets/photos/ruth-alvarez.jpg" alt="" width="480" height="480"><span class="dot"></span></span><span class="presence__more" aria-hidden="true">+34</span></div>
+          <p class="presence__label"><strong class="ticker" data-online>38</strong> builders online now</p>
+        </div>
+      </div>
+      <section class="panel console hero__console" aria-labelledby="console-title">
+        <div class="panel__head">
+          <h2 class="panel__title" id="console-title"><span class="dot dot--live"></span>Happening now</h2>
+          <button type="button" class="btn btn--sm btn--ghost" data-live-toggle aria-pressed="false"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5v14M15 5v14"/></svg><span data-live-toggle-label>Pause updates</span></button>
+        </div>
+        <div class="console__grid">
+          <div class="console__cell">
+            <ul class="feed" id="feed" aria-live="polite" aria-relevant="additions" data-feed>
+        <li class="feed__item"><span class="feed__icon feed__icon--rsvp"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6z"/></svg></span><p class="feed__text"><strong>Grace Liu</strong> RSVP'd to Fall Demo Night<span class="feed__time">2 min ago</span></p></li>
+        <li class="feed__item"><span class="feed__icon feed__icon--post"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></span><p class="feed__text"><strong>Daniel Reyes</strong> posted an update to Psalter<span class="feed__time">5 min ago</span></p></li>
+        <li class="feed__item"><span class="feed__icon feed__icon--match"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg></span><p class="feed__text"><strong>Noah Fischer</strong> and <strong>Amara Osei</strong> matched<span class="feed__time">12 min ago</span></p></li>
+        <li class="feed__item"><span class="feed__icon feed__icon--ask"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></span><p class="feed__text"><strong>Ruth Alvarez</strong> asked for feedback on Sabbath<span class="feed__time">18 min ago</span></p></li>
+        <li class="feed__item"><span class="feed__icon feed__icon--rsvp"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span><p class="feed__text"><strong>Fall Demo Night:</strong> <span data-spots>16</span> spots left<span class="feed__time">Live</span></p></li>
+      </ul>
+          </div>
+          <div class="console__cell">
+            <div class="console__event">
+              <p class="overline"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg> Next up · Thu 15 Oct, 7:00 pm</p>
+              <h3 class="console__event-title">Fall Demo Night starts in</h3>
+            </div>
+            <div class="countdown" role="timer" aria-label="Time until Fall Demo Night">
+          <div class="countdown__unit"><span class="countdown__value" data-cd="d">5</span><span class="countdown__label">days</span></div>
+          <div class="countdown__unit"><span class="countdown__value" data-cd="h">23</span><span class="countdown__label">hrs</span></div>
+          <div class="countdown__unit"><span class="countdown__value" data-cd="m">12</span><span class="countdown__label">min</span></div>
+          <div class="countdown__unit"><span class="countdown__value" data-cd="s">00</span><span class="countdown__label">sec</span></div>
+        </div>
+            <div class="meter">
+          <div class="meter__track" role="meter" aria-label="Fall Demo Night seats taken" aria-valuemin="0" aria-valuemax="80" aria-valuenow="64" data-meter><span class="meter__fill" style="--bn-meter: 80%"></span></div>
+          <p class="meter__legend"><span><strong data-going>64</strong> going</span><span><strong data-spots>16</strong> spots left</span><span><strong>6</strong> demos</span></p>
+        </div>
+            <div class="typing" style="margin-top: var(--space-3)"><span class="typing__dots" aria-hidden="true"><span></span><span></span><span></span></span>Grace is typing in #demo-night…</div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div class="container">
+      <dl class="stats hero__stats">
+        <div class="stats__item"><dt class="stats__label">Builders</dt><dd class="stats__value" style="margin: 0">1,284</dd><dd class="stats__delta" style="margin: 0"><span class="ticker" data-online>38</span> online now</dd></div>
+        <div class="stats__item"><dt class="stats__label">Projects</dt><dd class="stats__value" style="margin: 0">312</dd><dd class="stats__delta" style="margin: 0">Psalter updated 5 min ago</dd></div>
+        <div class="stats__item"><dt class="stats__label">Co-founder matches</dt><dd class="stats__value" style="margin: 0">96</dd><dd class="stats__delta" style="margin: 0">Latest 12 min ago</dd></div>
+        <div class="stats__item"><dt class="stats__label">Events in 2026</dt><dd class="stats__value" style="margin: 0">48</dd><dd class="stats__delta" style="margin: 0"><span data-spots>16</span> Demo Night spots left</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" id="areas" aria-labelledby="areas-title">
+    <div class="container">
+      <div class="section__head">
+        <div>
+          <p class="overline">Four channels, one community</p>
+          <h2 class="section__title" id="areas-title">Everything Banaro does, live</h2>
+        </div>
+      </div>
+      <ul class="areas">
+        <li><a class="area" href="../directory/default.html"><span class="area__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1"/><circle cx="9.5" cy="8" r="3.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.87"/><path d="M16 4.13a3.5 3.5 0 0 1 0 6.75"/></svg></span><h3 class="area__title">Builder directory</h3><p class="area__text">Find local builders by skill, role and neighbourhood.</p><span class="area__live"><span class="dot"></span><strong class="ticker" data-online>38</strong> online now · 1,284 builders</span></a></li>
+        <li><a class="area" href="#projects"><span class="area__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><h3 class="area__title">Project showcase</h3><p class="area__text">Share what you're building, ask for feedback, find collaborators.</p><span class="area__live"><span class="dot dot--count"></span>Psalter updated · 5 min ago</span></a></li>
+        <li><a class="area" href="#events"><span class="area__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span><h3 class="area__title">Meetups and events</h3><p class="area__text">Demo nights, prayer breakfasts and workshops across the GTA.</p><span class="area__live"><span class="dot dot--live"></span>Demo Night · <strong data-spots>16</strong>&nbsp;spots left</span></a></li>
+        <li><a class="area" href="#matching"><span class="area__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg></span><h3 class="area__title">Co-founder matching</h3><p class="area__text">Meet a co-founder, an advisor or a contributor who shares your faith.</p><span class="area__live"><span class="dot"></span>New match · 12 min ago</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--tint" id="builders" aria-labelledby="builders-title">
+    <div class="container">
+      <div class="section__head">
+        <div>
+          <p class="livetag"><span class="dot"></span>Presence · updated just now</p>
+          <h2 class="section__title" id="builders-title">Around right now</h2>
+          <p class="section__lede">Featured builders, sorted by who's online. Say hello while they're here.</p>
+        </div>
+        <a class="btn" href="../directory/default.html">See all 1,284 builders <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <ul class="bgrid">
+        <li class="bcard">
+          <span class="avatar avatar--lg"><img src="../../../assets/photos/daniel-reyes.jpg" alt="" width="480" height="480"><span class="dot"></span></span>
+          <div>
+            <h3 class="bcard__name"><a href="../directory/default.html">Daniel Reyes</a></h3>
+            <p class="bcard__role">Full-stack engineer</p>
+            <span class="status status--online"><span class="dot"></span>Online now</span>
+          </div>
+          <p class="bcard__meta"><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Mississauga</span><span>Open to <strong>co-founding</strong> · Building <strong>Psalter</strong></span></p>
+          <ul class="tags" aria-label="Skills" style="grid-column: 1 / -1"><li class="tag">Laravel</li><li class="tag">Angular</li><li class="tag">PostgreSQL</li></ul>
+        </li><li class="bcard">
+          <span class="avatar avatar--lg"><img src="../../../assets/photos/grace-liu.jpg" alt="" width="480" height="480"><span class="dot"></span></span>
+          <div>
+            <h3 class="bcard__name"><a href="../directory/default.html">Grace Liu</a></h3>
+            <p class="bcard__role">Product designer</p>
+            <span class="status status--online"><span class="dot"></span>Online now</span>
+          </div>
+          <p class="bcard__meta"><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Markham</span><span>Open to <strong>contributing</strong> · Building <strong>Gather</strong></span></p>
+          <ul class="tags" aria-label="Skills" style="grid-column: 1 / -1"><li class="tag">Figma</li><li class="tag">Design systems</li><li class="tag">Prototyping</li></ul>
+        </li><li class="bcard">
+          <span class="avatar avatar--lg"><img src="../../../assets/photos/noah-fischer.jpg" alt="" width="480" height="480"><span class="dot dot--away"></span></span>
+          <div>
+            <h3 class="bcard__name"><a href="../directory/default.html">Noah Fischer</a></h3>
+            <p class="bcard__role">Backend & data engineer</p>
+            <span class="status"><span class="dot dot--away"></span>Seen 1 h ago</span>
+          </div>
+          <p class="bcard__meta"><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> The Annex</span><span>Open to <strong>co-founding</strong> · Building <strong>Ledgerline</strong></span></p>
+          <ul class="tags" aria-label="Skills" style="grid-column: 1 / -1"><li class="tag">Python</li><li class="tag">PostgreSQL</li><li class="tag">Data pipelines</li></ul>
+        </li><li class="bcard">
+          <span class="avatar avatar--lg"><img src="../../../assets/photos/caleb-morgan.jpg" alt="" width="480" height="480"><span class="dot"></span></span>
+          <div>
+            <h3 class="bcard__name"><a href="../directory/default.html">Caleb Morgan</a></h3>
+            <p class="bcard__role">Frontend engineer</p>
+            <span class="status status--online"><span class="dot"></span>Online now</span>
+          </div>
+          <p class="bcard__meta"><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Etobicoke</span><span>Open to <strong>contributing</strong></span></p>
+          <ul class="tags" aria-label="Skills" style="grid-column: 1 / -1"><li class="tag">Angular</li><li class="tag">TypeScript</li><li class="tag">Accessibility</li></ul>
+        </li><li class="bcard">
+          <span class="avatar avatar--lg"><img src="../../../assets/photos/sofia-marquez.jpg" alt="" width="480" height="480"><span class="dot dot--away"></span></span>
+          <div>
+            <h3 class="bcard__name"><a href="../directory/default.html">Sofia Marquez</a></h3>
+            <p class="bcard__role">Growth & marketing</p>
+            <span class="status"><span class="dot dot--away"></span>Seen 3 h ago</span>
+          </div>
+          <p class="bcard__meta"><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Liberty Village</span><span>Open to <strong>contributing</strong> · Building <strong>Kindred</strong></span></p>
+          <ul class="tags" aria-label="Skills" style="grid-column: 1 / -1"><li class="tag">Lifecycle marketing</li><li class="tag">SEO</li><li class="tag">Community</li></ul>
+        </li><li class="bcard">
+          <span class="avatar avatar--lg"><img src="../../../assets/photos/ruth-alvarez.jpg" alt="" width="480" height="480"><span class="dot"></span></span>
+          <div>
+            <h3 class="bcard__name"><a href="../directory/default.html">Ruth Alvarez</a></h3>
+            <p class="bcard__role">Product manager, health tech</p>
+            <span class="status status--online"><span class="dot"></span>Online now</span>
+          </div>
+          <p class="bcard__meta"><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Scarborough</span><span>Open to <strong>co-founding</strong> · Building <strong>Sabbath</strong></span></p>
+          <ul class="tags" aria-label="Skills" style="grid-column: 1 / -1"><li class="tag">Roadmapping</li><li class="tag">Healthcare</li><li class="tag">Analytics</li></ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="projects" aria-labelledby="projects-title">
+    <div class="container">
+      <div class="section__head">
+        <div>
+          <p class="overline">Project showcase</p>
+          <h2 class="section__title" id="projects-title">Shipping this week</h2>
+          <p class="section__lede">Products in progress across the GTA, with the latest activity first.</p>
+        </div>
+      </div>
+      <ol class="plist">
+        <li class="plist__row">
+          <div>
+            <h3 class="plist__name">Psalter <span class="tag tag--data">1,900 beta users</span></h3>
+            <p class="plist__line">Scripture memory with spaced repetition · by Daniel Reyes</p>
+            <p class="plist__activity"><span class="dot"></span><span>Update posted · <time>5 min ago</time></span></p>
+          </div>
+          <p class="plist__meta"><span class="tag tag--accent">Looking for: Contributors (open source)</span></p>
+          <span class="plist__feedback"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="num">41</span> comments</span>
+          <a class="btn btn--sm" href="#join">Give feedback</a>
+        </li><li class="plist__row">
+          <div>
+            <h3 class="plist__name">Harvest <span class="tag tag--data">Beta · 6 food banks</span></h3>
+            <p class="plist__line">Volunteer scheduling for GTA food banks · by Amara Osei</p>
+            <p class="plist__activity"><span class="dot"></span><span>Matched with Noah · <time>12 min ago</time></span></p>
+          </div>
+          <p class="plist__meta"><span class="tag tag--accent">Looking for: Technical co-founder</span></p>
+          <span class="plist__feedback"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="num">23</span> comments</span>
+          <a class="btn btn--sm" href="#join">Give feedback</a>
+        </li><li class="plist__row">
+          <div>
+            <h3 class="plist__name">Sabbath <span class="tag tag--data">Design</span></h3>
+            <p class="plist__line">A gentle rest and screen-time coach · by Ruth Alvarez</p>
+            <p class="plist__activity"><span class="dot"></span><span>Asked for feedback · <time>18 min ago</time></span></p>
+          </div>
+          <p class="plist__meta"><span class="tag tag--accent">Looking for: iOS engineer</span></p>
+          <span class="plist__feedback"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="num">14</span> comments</span>
+          <a class="btn btn--sm" href="#join">Give feedback</a>
+        </li><li class="plist__row">
+          <div>
+            <h3 class="plist__name">Gather <span class="tag tag--data">Prototype</span></h3>
+            <p class="plist__line">Check-in and RSVP for small church events · by Grace Liu</p>
+            
+          </div>
+          <p class="plist__meta"><span class="tag tag--accent">Looking for: Frontend engineer</span></p>
+          <span class="plist__feedback"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="num">12</span> comments</span>
+          <a class="btn btn--sm" href="#join">Give feedback</a>
+        </li><li class="plist__row">
+          <div>
+            <h3 class="plist__name">Ledgerline <span class="tag tag--data">Pilot · 4 charities</span></h3>
+            <p class="plist__line">Plain-language giving reports for charities · by Noah Fischer</p>
+            
+          </div>
+          <p class="plist__meta"><span class="tag tag--accent">Looking for: Advisor (CRA compliance)</span></p>
+          <span class="plist__feedback"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="num">9</span> comments</span>
+          <a class="btn btn--sm" href="#join">Give feedback</a>
+        </li><li class="plist__row">
+          <div>
+            <h3 class="plist__name">Kindred <span class="tag tag--data">Pilot · 3 churches</span></h3>
+            <p class="plist__line">Mentor matching for newcomers to Canada · by Sofia Marquez</p>
+            
+          </div>
+          <p class="plist__meta"><span class="tag tag--accent">Looking for: Contributors</span></p>
+          <span class="plist__feedback"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="num">17</span> comments</span>
+          <a class="btn btn--sm" href="#join">Give feedback</a>
+        </li><li class="plist__row">
+          <div>
+            <h3 class="plist__name">Wellspring <span class="tag tag--data">Hardware prototype</span></h3>
+            <p class="plist__line">Low-cost water-quality sensors for rural partners · by Elijah Brooks</p>
+            
+          </div>
+          <p class="plist__meta"><span class="tag tag--accent">Looking for: Co-founder</span></p>
+          <span class="plist__feedback"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="num">6</span> comments</span>
+          <a class="btn btn--sm" href="#join">Give feedback</a>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--tint" id="events" aria-labelledby="events-title">
+    <div class="container">
+      <div class="section__head">
+        <div>
+          <p class="overline">Meetups and events</p>
+          <h2 class="section__title" id="events-title">Coming up in the GTA</h2>
+        </div>
+      </div>
+      <div class="events">
+        <article class="panel console event-feature" aria-labelledby="ev-demo">
+          <div class="panel__body event-feature__body">
+            <p class="livetag"><span class="dot dot--live"></span><strong>Filling up</strong> RSVPs live</p>
+            <h3 class="event-feature__title" id="ev-demo">Fall Demo Night</h3>
+            <p class="event__meta">Thu 15 Oct 2026, 7:00–9:30 pm · Centre for Social Innovation, 192 Spadina Ave</p>
+            <div class="countdown" role="timer" aria-label="Time until Fall Demo Night">
+          <div class="countdown__unit"><span class="countdown__value" data-cd="d">5</span><span class="countdown__label">days</span></div>
+          <div class="countdown__unit"><span class="countdown__value" data-cd="h">23</span><span class="countdown__label">hrs</span></div>
+          <div class="countdown__unit"><span class="countdown__value" data-cd="m">12</span><span class="countdown__label">min</span></div>
+          <div class="countdown__unit"><span class="countdown__value" data-cd="s">00</span><span class="countdown__label">sec</span></div>
+        </div>
+            <div class="meter">
+          <div class="meter__track" role="meter" aria-label="Fall Demo Night seats taken" aria-valuemin="0" aria-valuemax="80" aria-valuenow="64" data-meter><span class="meter__fill" style="--bn-meter: 80%"></span></div>
+          <p class="meter__legend"><span><strong data-going>64</strong> going</span><span><strong data-spots>16</strong> spots left</span><span><strong>6</strong> demos</span></p>
+        </div>
+            <div class="event-feature__actions"><a class="btn btn--sm" href="#join"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6z"/></svg>Join to RSVP</a></div>
+          </div>
+        </article>
+        <ul class="events__list">
+          <li class="event">
+          <div class="event__date" aria-hidden="true"><span class="event__dow">Sat</span><span class="event__day">17</span><span class="event__mon">Oct</span></div>
+          <div>
+            <h3 class="event__title">Builders' Prayer Breakfast</h3>
+            <p class="event__meta">Sat 17 Oct, 8:00–9:30 am</p>
+            <p class="event__meta">St. Matthew's Hall, Leslieville</p>
+            <p class="event__going"><span class="dot dot--count"></span>22 going</p>
+          </div>
+        </li><li class="event">
+          <div class="event__date" aria-hidden="true"><span class="event__dow">Tue</span><span class="event__day">20</span><span class="event__mon">Oct</span></div>
+          <div>
+            <h3 class="event__title">Design Critique Circle</h3>
+            <p class="event__meta">Tue 20 Oct, 6:30–8:30 pm</p>
+            <p class="event__meta">Markham Village Library, community room</p>
+            <p class="event__going"><span class="dot dot--count"></span>15 going</p>
+          </div>
+        </li><li class="event">
+          <div class="event__date" aria-hidden="true"><span class="event__dow">Thu</span><span class="event__day">29</span><span class="event__mon">Oct</span></div>
+          <div>
+            <h3 class="event__title">Co-founder Mixer</h3>
+            <p class="event__meta">Thu 29 Oct, 7:00–9:00 pm</p>
+            <p class="event__meta">The Assembly Hall, Liberty Village</p>
+            <p class="event__going"><span class="dot dot--count"></span>41 going</p>
+          </div>
+        </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="matching" aria-labelledby="matching-title">
+    <div class="container match">
+      <div class="match__copy">
+        <p class="overline">Co-founder matching</p>
+        <h2 class="section__title" id="matching-title">Looking for a co-founder?</h2>
+        <p class="section__lede">Tell us what you're building and who you need. We'll suggest three builders nearby every Monday.</p>
+        <p class="match__stat"><strong class="num">96</strong> co-founder matches so far · the latest <time>12 min ago</time></p>
+        <a class="btn btn--lg" href="#join">Start matching <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <div class="panel console match__chat" role="img" aria-label="Example: Monday's matches arrive as a message, and Grace is typing a reply.">
+        <div class="panel__head"><p class="panel__title"><span class="dot"></span>Monday matches · Leslieville</p><span class="livetag"><time>8:00 am</time></span></div>
+        <div class="panel__body chat">
+          <p class="chat__from"><span class="brand__mark" style="width: var(--space-6); height: var(--space-6)"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></span>Banaro</p>
+          <p class="bubble">Three builders near you this week: <strong>Daniel Reyes</strong> (94%), <strong>Grace Liu</strong> (91%) and <strong>Noah Fischer</strong> (88%).</p>
+          <p class="bubble bubble--me">Grace — Gather looks lovely. Coffee before Demo Night?</p>
+          <div class="chat__from"><span class="avatar"><img src="../../../assets/photos/grace-liu.jpg" alt="" width="480" height="480"><span class="dot"></span></span><span class="typing"><span class="typing__dots" aria-hidden="true"><span></span><span></span><span></span></span>Grace is typing…</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section join" id="join" aria-labelledby="join-title">
+    <div class="container join__inner">
+      <figure class="join__quote">
+        <blockquote>“Within a week I was advising two founders, both a streetcar ride from my house.”</blockquote>
+        <figcaption><span class="avatar avatar--md"><img src="../../../assets/photos/hannah-kowalski.jpg" alt="" width="480" height="480"></span><span><strong>Hannah Kowalski</strong><br>UX researcher, Roncesvalles</span></figcaption>
+      </figure>
+      <div class="join__cta">
+        <h2 class="section__title" id="join-title">Join 1,284 builders already here</h2>
+        <p class="section__lede">“Two are better than one, because they have a good return for their labour.” — Ecclesiastes 4:9</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary btn--lg" href="#join">Join Banaro <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="btn btn--lg btn--ghost" href="#join">Sign in</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="footer" id="footer">
+  <div class="container footer__grid">
+    <div>
+      <a class="brand" href="../home/default.html"><span class="brand__mark"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></span>Banaro</a>
+      <p class="footer__status" style="margin-top: var(--space-4)"><span class="dot"></span>All systems live · <span class="ticker" data-online>38</span>&nbsp;builders online</p>
+      <p class="footer__ack" style="margin-top: var(--space-4)">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+    </div>
+    <div>
+      <nav aria-label="Footer"><ul class="footer__links"><li><a href="#areas">About</a></li><li><a href="#footer">Code of conduct</a></li><li><a href="#footer">Privacy</a></li><li><a href="#footer">Contact</a></li></ul></nav>
+      <p style="margin-top: var(--space-4)">Made in Toronto. © 2026 Banaro.</p>
+    </div>
+  </div>
+</footer>
+<nav class="tabbar" aria-label="Primary"><ul style="display: contents"><li><a class="tabbar__link" href="../directory/default.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1"/><circle cx="9.5" cy="8" r="3.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.87"/><path d="M16 4.13a3.5 3.5 0 0 1 0 6.75"/></svg>Builders</a></li><li><a class="tabbar__link" href="#projects"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Projects</a></li><li><a class="tabbar__link" href="#events"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>Events</a></li><li><a class="tabbar__link" href="#matching"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg>Matching</a></li></ul></nav>
+<p class="mock-note" style="top: 5rem; right: 1rem">Feed, online count, countdown and seats are simulated by a small inline script. “Pause updates” stops them; reduced motion starts paused.</p>
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../../index.html" aria-label="All concepts">⌂</a>
+  <a class="mock-bar__home" href="../../../08-quiet/pages/home/default.html" aria-label="Previous concept: Quiet">‹</a>
+  <span class="mock-bar__screen">09 · Live Pulse</span>
+  <ul class="mock-bar__states">
+    <li><a href="default.html" aria-current="page">Home</a></li>
+    <li><a href="../directory/default.html">Directory</a></li>
+  </ul>
+  <a class="mock-bar__home" href="../../../10-aurora-gpu/pages/home/default.html" aria-label="Next concept: Aurora">›</a>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+<script>
+/* Live Pulse simulation: cycles the README's live activity, ticks the online
+   count, the Demo Night countdown and its seats. Pause stops it; reduced motion
+   starts paused. The page is complete without this script. */
+(function () {
+  var root = document.body;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var paused = reduce;
+  var pool = [
+    ['rsvp', 'Grace Liu', " RSVP'd to Fall Demo Night"],
+    ['post', 'Daniel Reyes', ' posted an update to Psalter'],
+    ['match', 'Noah Fischer', ' and Amara Osei matched'],
+    ['ask', 'Ruth Alvarez', ' asked for feedback on Sabbath']
+  ];
+  var icons = {};
+  document.querySelectorAll('[data-feed] .feed__item').forEach(function (li) {
+    var k = li.querySelector('.feed__icon').className.split('--')[1];
+    if (!icons[k]) icons[k] = li.querySelector('.feed__icon').innerHTML;
+  });
+  var i = 0, online = 38, spots = 16, going = 64, left = 515520;
+  function setAll(sel, v) { document.querySelectorAll(sel).forEach(function (el) {
+    if (el.textContent === String(v)) return;
+    el.textContent = v; el.classList.remove('is-ticking'); void el.offsetWidth; el.classList.add('ticker', 'is-ticking'); }); }
+  function setPaused(p) {
+    paused = p; root.dataset.live = p ? 'paused' : 'live';
+    document.querySelectorAll('[data-live-toggle]').forEach(function (b) {
+      b.setAttribute('aria-pressed', p ? 'true' : 'false');
+      b.querySelector('[data-live-toggle-label]').textContent = p ? 'Resume updates' : 'Pause updates';
+    });
+    document.querySelectorAll('[data-connection]').forEach(function (pill) {
+      pill.dataset.connection = p ? 'paused' : 'live';
+      pill.querySelector('[data-connection-label]').textContent = p ? 'Paused' : 'Live';
+    });
+  }
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-live-toggle]')) setPaused(!paused);
+    var show = e.target.closest('[data-show-new]');
+    if (show) {
+      var banner = show.closest('.banner'); if (banner) banner.hidden = true;
+      var list = document.getElementById('results'); if (list) { list.setAttribute('tabindex', '-1'); list.focus(); }
+    }
+  });
+  setPaused(paused);
+  function pushFeed() {
+    var item = pool[i++ % pool.length];
+    document.querySelectorAll('[data-feed]').forEach(function (ul) {
+      var li = document.createElement('li');
+      li.className = 'feed__item is-new';
+      li.innerHTML = '<span class="feed__icon feed__icon--' + item[0] + '">' + (icons[item[0]] || '') + '</span>' +
+        '<p class="feed__text"><strong></strong><span></span><span class="feed__time">just now</span></p>';
+      li.querySelector('strong').textContent = item[1];
+      li.querySelector('.feed__text > span').textContent = item[2];
+      ul.insertBefore(li, ul.firstElementChild);
+      while (ul.children.length > 5) ul.removeChild(ul.lastElementChild);
+    });
+  }
+  function pad(n) { return n < 10 ? '0' + n : String(n); }
+  setInterval(function () {
+    left = Math.max(0, left - 1);
+    var d = Math.floor(left / 86400), h = Math.floor(left % 86400 / 3600), m = Math.floor(left % 3600 / 60), s = left % 60;
+    document.querySelectorAll('[data-cd="d"]').forEach(function (el) { el.textContent = d; });
+    document.querySelectorAll('[data-cd="h"]').forEach(function (el) { el.textContent = pad(h); });
+    document.querySelectorAll('[data-cd="m"]').forEach(function (el) { el.textContent = pad(m); });
+    document.querySelectorAll('[data-cd="s"]').forEach(function (el) { el.textContent = pad(s); });
+  }, 1000);
+  setInterval(function () { if (!paused) pushFeed(); }, 4500);
+  setInterval(function () {
+    if (paused) return;
+    online = Math.min(41, Math.max(36, online + (Math.random() < 0.5 ? -1 : 1)));
+    setAll('[data-online]', online);
+  }, 6000);
+  setInterval(function () {
+    if (paused) return;
+    if (spots <= 13) { spots = 16; going = 64; } else { spots -= 1; going += 1; }
+    setAll('[data-spots]', spots); setAll('[data-going]', going);
+    document.querySelectorAll('[data-meter]').forEach(function (m) {
+      m.setAttribute('aria-valuenow', going);
+      m.querySelector('.meter__fill').style.setProperty('--bn-meter', (going / 80 * 100) + '%');
+    });
+  }, 11000);
+})();
+</script>
+</body>
+</html>

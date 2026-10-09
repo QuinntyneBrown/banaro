@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Builder directory · default — Banaro · Bauhaus</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="directory">
+<meta name="mock:state" content="default">
+<meta name="description" content="Bauhaus builder directory: constructivist filter column, match numerals as fields of primary colour and a generated geometric portrait per builder.">
+<link rel="stylesheet" href="../../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/tokens.css">
+<link rel="stylesheet" href="../../assets/ui.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container site-header__bar">
+    <a class="brand" href="../home/default.html" aria-label="Banaro home">
+      <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true"><rect class="g-blue" x="20" y="0" width="20" height="20"/><circle class="g-red" cx="14" cy="14" r="14"/><path class="g-yellow" d="M20 40 L30 20 L40 40Z"/><path class="g-ink" d="M0 40 V22 A18 18 0 0 1 18 40Z"/></svg>
+      <span class="brand__word">Banaro</span>
+    </a>
+    <button class="menu-button" type="button" popovertarget="site-nav" aria-label="Menu"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h12"/></svg></button>
+    <nav class="site-nav" id="site-nav" popover aria-label="Primary">
+      <ul class="site-nav__list">
+        <li><a class="site-nav__link" href="../directory/default.html" aria-current="page">Builders</a></li>
+        <li><a class="site-nav__link" href="../home/default.html#projects">Projects</a></li>
+        <li><a class="site-nav__link" href="../home/default.html#events">Events</a></li>
+        <li><a class="site-nav__link" href="../home/default.html#matching">Matching</a></li>
+      </ul>
+    </nav>
+    <div class="site-header__actions">
+      <a class="match-pill" href="#results"><svg class="event__marker" viewBox="0 0 10 10" aria-hidden="true"><circle class="g-red" cx="5" cy="5" r="5"/></svg>2 new matches</a>
+      <button class="icon-button" type="button" aria-label="Notifications, 3 unread">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 10a6 6 0 0 1 12 0v5l2 3H4l2-3z"/><path d="M10 21h4"/></svg>
+        <span class="count-badge" aria-hidden="true">3</span>
+      </button>
+      <button class="me" type="button" aria-label="Amara Osei, account menu"><span class="me__avatar"><svg class="geo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect class="g-blue" width="100" height="100"/><circle class="geo__part geo__part--slide g-red" cx="46" cy="50" r="30"/><rect class="g-yellow" x="0" y="70" width="30" height="30"/><rect class="g-ink" x="74" y="0" width="8" height="100"/></svg></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="dir-head" aria-labelledby="dir-title">
+    <svg class="dir-head__art" viewBox="0 0 300 300" aria-hidden="true">
+      <circle class="g-yellow" cx="230" cy="70" r="110"/>
+      <rect class="g-blue" x="150" y="150" width="150" height="150"/>
+      <path class="g-red" d="M300 300 H180 A120 120 0 0 1 300 180Z"/>
+      <rect class="g-ink" x="60" y="0" width="12" height="300"/>
+    </svg>
+    <div class="container dir-head__grid">
+      <div>
+        <p class="overline">Signed in as Amara Osei · Leslieville</p>
+        <h1 class="dir-head__title" id="dir-title">Builders</h1>
+        <p class="dir-head__count"><strong>1,284</strong> builders in Toronto and the GTA</p>
+      </div>
+      <form class="search" role="search" action="#results">
+        <label class="search__label" for="q">Search builders</label>
+        <div class="search__row">
+          <input class="search__input" id="q" type="search" name="q" placeholder="Name, skill or project — try “Laravel”" autocomplete="off">
+          <button class="search__submit" type="submit" aria-label="Search">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M15 15l6 6"/></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <div class="container dir-layout">
+    <form class="filters" id="filters" popover aria-labelledby="filters-title">
+        <div class="filters__head">
+          <h2 class="filters__title" id="filters-title">Filters</h2>
+          <button class="btn btn--sm filters__close" type="button" popovertarget="filters" popovertargetaction="hide">Done</button>
+        </div>
+        <fieldset class="filter">
+          <legend class="filter__legend"><svg class="" viewBox="0 0 10 10" aria-hidden="true"><circle class="g-red" cx="5" cy="5" r="5"/></svg>Role</legend>
+          <ul class="filter__list">
+            <li><label class="check"><input type="checkbox" name="role" value="Founders"> Founders <span class="check__count">214</span></label></li>
+            <li><label class="check"><input type="checkbox" name="role" value="Engineers"> Engineers <span class="check__count">486</span></label></li>
+            <li><label class="check"><input type="checkbox" name="role" value="Designers"> Designers <span class="check__count">231</span></label></li>
+            <li><label class="check"><input type="checkbox" name="role" value="Product managers"> Product managers <span class="check__count">198</span></label></li>
+            <li><label class="check"><input type="checkbox" name="role" value="Other"> Other <span class="check__count">155</span></label></li>
+          </ul>
+        </fieldset>
+        <fieldset class="filter">
+          <legend class="filter__legend"><svg class="" viewBox="0 0 10 10" aria-hidden="true"><rect class="g-blue" width="10" height="10"/></svg>Open to</legend>
+          <ul class="filter__list">
+            <li><label class="check"><input type="checkbox" name="open" value="Co-founding"> Co-founding <span class="check__count">173</span></label></li>
+            <li><label class="check"><input type="checkbox" name="open" value="Advising"> Advising <span class="check__count">248</span></label></li>
+            <li><label class="check"><input type="checkbox" name="open" value="Contributing"> Contributing <span class="check__count">611</span></label></li>
+          </ul>
+        </fieldset>
+        <fieldset class="filter">
+          <legend class="filter__legend"><svg class="" viewBox="0 0 10 10" aria-hidden="true"><path class="g-yellow" d="M5 0 L10 10 H0Z"/></svg>Neighbourhood</legend>
+          <ul class="filter__list">
+            <li><label class="check"><input type="checkbox" name="hood" value="Downtown Toronto"> Downtown Toronto <span class="check__count">512</span></label></li>
+            <li><label class="check"><input type="checkbox" name="hood" value="North York"> North York <span class="check__count">141</span></label></li>
+            <li><label class="check"><input type="checkbox" name="hood" value="Scarborough"> Scarborough <span class="check__count">96</span></label></li>
+            <li><label class="check"><input type="checkbox" name="hood" value="Etobicoke"> Etobicoke <span class="check__count">88</span></label></li>
+            <li><label class="check"><input type="checkbox" name="hood" value="Mississauga"> Mississauga <span class="check__count">147</span></label></li>
+            <li><label class="check"><input type="checkbox" name="hood" value="Brampton"> Brampton <span class="check__count">74</span></label></li>
+            <li><label class="check"><input type="checkbox" name="hood" value="Markham"> Markham <span class="check__count">92</span></label></li>
+            <li><label class="check"><input type="checkbox" name="hood" value="Vaughan"> Vaughan <span class="check__count">51</span></label></li>
+            <li><label class="check"><input type="checkbox" name="hood" value="Richmond Hill"> Richmond Hill <span class="check__count">38</span></label></li>
+            <li><label class="check"><input type="checkbox" name="hood" value="Oakville"> Oakville <span class="check__count">45</span></label></li>
+          </ul>
+        </fieldset>
+        <fieldset class="filter">
+          <legend class="filter__legend"><svg class="" viewBox="0 0 10 10" aria-hidden="true"><path class="g-ink" d="M0 10 V0 A10 10 0 0 1 10 10Z"/></svg>Skills</legend>
+          <div class="skill-chips">
+            <button class="chip" type="button" aria-pressed="false">React <span class="chip__count">203</span></button>
+            <button class="chip" type="button" aria-pressed="false">Figma <span class="chip__count">187</span></button>
+            <button class="chip" type="button" aria-pressed="false">Python <span class="chip__count">174</span></button>
+            <button class="chip" type="button" aria-pressed="false">Product strategy <span class="chip__count">156</span></button>
+            <button class="chip" type="button" aria-pressed="false">User research <span class="chip__count">112</span></button>
+            <button class="chip" type="button" aria-pressed="false">Laravel <span class="chip__count">96</span></button>
+            <button class="chip" type="button" aria-pressed="false">Data/ML <span class="chip__count">89</span></button>
+            <button class="chip" type="button" aria-pressed="false">Marketing <span class="chip__count">77</span></button>
+            <button class="chip" type="button" aria-pressed="false">Angular <span class="chip__count">74</span></button>
+            <button class="chip" type="button" aria-pressed="false">Swift <span class="chip__count">61</span></button>
+            <button class="chip" type="button" aria-pressed="false">Kotlin <span class="chip__count">48</span></button>
+            <button class="chip" type="button" aria-pressed="false">Fundraising <span class="chip__count">41</span></button>
+          </div>
+        </fieldset>
+        <div class="filter range">
+          <label class="filter__legend" for="distance"><svg class="" viewBox="0 0 10 10" aria-hidden="true"><circle class="g-blue" cx="5" cy="5" r="5"/></svg>Distance</label>
+          <input id="distance" type="range" min="5" max="80" step="5" value="40" aria-describedby="distance-value">
+          <span class="range__value" id="distance-value">Within 40 km of Leslieville</span>
+        </div>
+      </form>
+    <section aria-labelledby="results-title" id="results">
+      <h2 class="visually-hidden" id="results-title">Results</h2>
+      <div class="quick-filters" aria-label="Quick filters" role="group">
+          <button class="chip filters-toggle" type="button" popovertarget="filters"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>All filters</button>
+          <button class="chip" type="button" aria-pressed="false">Founders <span class="chip__count">214</span></button>
+          <button class="chip" type="button" aria-pressed="false">Engineers <span class="chip__count">486</span></button>
+          <button class="chip" type="button" aria-pressed="false">Designers <span class="chip__count">231</span></button>
+          <button class="chip" type="button" aria-pressed="false">Product managers <span class="chip__count">198</span></button>
+          <button class="chip" type="button" aria-pressed="false">Other <span class="chip__count">155</span></button>
+          <button class="chip" type="button" aria-pressed="false">Co-founding <span class="chip__count">173</span></button>
+          <button class="chip" type="button" aria-pressed="false">Advising <span class="chip__count">248</span></button>
+          <button class="chip" type="button" aria-pressed="false">Contributing <span class="chip__count">611</span></button>
+      </div>
+      <div class="toolbar">
+        <p class="toolbar__count" aria-live="polite">Showing <strong>1–12</strong> of <strong>1,284</strong> builders</p>
+        <label class="select">Sort by
+          <select name="sort">
+            <option selected>Best match</option><option>Nearest</option><option>Recently active</option><option>Newest</option>
+          </select>
+        </label>
+      </div>
+      <div class="active-filters">
+        <span class="tag-active">Within 40 km of Leslieville <button type="button" aria-label="Remove filter: within 40 km of Leslieville"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></span>
+      </div>
+      <ol class="results">
+        <li class="card">
+          <div class="card__art"><svg class="geo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect class="g-blue" width="100" height="100"/><circle class="geo__part geo__part--slide g-red" cx="46" cy="50" r="30"/><rect class="g-yellow" x="0" y="70" width="30" height="30"/><rect class="g-ink" x="74" y="0" width="8" height="100"/></svg></div>
+          <div class="card__score"><span class="card__pct">94<small>%</small></span><span class="card__pct-label">Match for you</span></div>
+          <div class="card__body">
+            <h3 class="card__name"><a href="#results">Daniel Reyes</a></h3>
+            <p class="card__role">Full-stack engineer</p>
+            <p class="card__where"><span>Mississauga</span><span>26.9 km away</span></p>
+            <ul class="card__skills" aria-label="Skills"><li>Laravel</li><li>Angular</li><li>PostgreSQL</li></ul>
+            <dl class="card__facts">
+              <dt>Building</dt><dd>Psalter</dd>
+              <dt>Open to</dt><dd>Co-founding</dd>
+            </dl>
+          </div>
+          <div class="card__foot">
+            <span class="seen seen--online">Online now</span>
+            <button class="btn btn--sm btn--primary" type="button">Connect</button>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card__art"><svg class="geo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect class="g-yellow" width="100" height="100"/><path class="geo__part geo__part--spin g-ink" d="M0 100 L50 12 L100 100Z"/><circle class="g-red" cx="50" cy="72" r="13"/></svg></div>
+          <div class="card__score"><span class="card__pct">91<small>%</small></span><span class="card__pct-label">Match for you</span></div>
+          <div class="card__body">
+            <h3 class="card__name"><a href="#results">Grace Liu</a></h3>
+            <p class="card__role">Product designer</p>
+            <p class="card__where"><span>Markham</span><span>24.3 km away</span></p>
+            <ul class="card__skills" aria-label="Skills"><li>Figma</li><li>Design systems</li><li>Prototyping</li></ul>
+            <dl class="card__facts">
+              <dt>Building</dt><dd>Gather</dd>
+              <dt>Open to</dt><dd>Contributing</dd>
+            </dl>
+          </div>
+          <div class="card__foot">
+            <span class="seen seen--online">Online now</span>
+            <button class="btn btn--sm" type="button">Say hello</button>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card__art"><svg class="geo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect class="g-red" width="100" height="100"/><path class="geo__part geo__part--spin g-paper" d="M0 0 H80 A80 80 0 0 1 0 80Z"/><rect class="g-blue" x="56" y="56" width="34" height="34"/></svg></div>
+          <div class="card__score"><span class="card__pct">88<small>%</small></span><span class="card__pct-label">Match for you</span></div>
+          <div class="card__body">
+            <h3 class="card__name"><a href="#results">Noah Fischer</a></h3>
+            <p class="card__role">Backend &amp; data engineer</p>
+            <p class="card__where"><span>The Annex</span><span>5.8 km away</span></p>
+            <ul class="card__skills" aria-label="Skills"><li>Python</li><li>PostgreSQL</li><li>Data pipelines</li></ul>
+            <dl class="card__facts">
+              <dt>Building</dt><dd>Ledgerline</dd>
+              <dt>Open to</dt><dd>Co-founding</dd>
+            </dl>
+          </div>
+          <div class="card__foot">
+            <span class="seen">Seen 1 h ago</span>
+            <button class="btn btn--sm btn--primary" type="button">Connect</button>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card__art"><svg class="geo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect class="g-paper" width="100" height="100"/><path class="geo__part geo__part--spin g-blue" d="M10 55 A40 40 0 0 1 90 55Z"/><rect class="g-ink" x="0" y="62" width="100" height="9"/><circle class="g-yellow" cx="76" cy="84" r="12"/></svg></div>
+          <div class="card__score"><span class="card__pct">85<small>%</small></span><span class="card__pct-label">Match for you</span></div>
+          <div class="card__body">
+            <h3 class="card__name"><a href="#results">Caleb Morgan</a></h3>
+            <p class="card__role">Frontend engineer</p>
+            <p class="card__where"><span>Etobicoke</span><span>17.8 km away</span></p>
+            <ul class="card__skills" aria-label="Skills"><li>Angular</li><li>TypeScript</li><li>Accessibility</li></ul>
+            <dl class="card__facts">
+              <dt>Building</dt><dd>Between projects</dd>
+              <dt>Open to</dt><dd>Contributing</dd>
+            </dl>
+          </div>
+          <div class="card__foot">
+            <span class="seen seen--online">Online now</span>
+            <button class="btn btn--sm" type="button">Say hello</button>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card__art"><svg class="geo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect class="g-ink" width="100" height="100"/><circle class="geo__part geo__part--slide g-yellow" cx="38" cy="40" r="28"/><path class="g-red" d="M50 100 L100 40 L100 100Z"/></svg></div>
+          <div class="card__score"><span class="card__pct">82<small>%</small></span><span class="card__pct-label">Match for you</span></div>
+          <div class="card__body">
+            <h3 class="card__name"><a href="#results">Sofia Marquez</a></h3>
+            <p class="card__role">Growth &amp; marketing</p>
+            <p class="card__where"><span>Liberty Village</span><span>6.1 km away</span></p>
+            <ul class="card__skills" aria-label="Skills"><li>Lifecycle marketing</li><li>SEO</li><li>Community</li></ul>
+            <dl class="card__facts">
+              <dt>Building</dt><dd>Kindred</dd>
+              <dt>Open to</dt><dd>Contributing</dd>
+            </dl>
+          </div>
+          <div class="card__foot">
+            <span class="seen">Seen 3 h ago</span>
+            <button class="btn btn--sm" type="button">Say hello</button>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card__art"><svg class="geo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect class="g-blue" width="100" height="100"/><path class="geo__part geo__part--spin g-yellow" d="M0 0 H58 A58 58 0 0 1 0 58Z"/><path class="g-red" d="M100 100 H42 A58 58 0 0 1 100 42Z"/></svg></div>
+          <div class="card__score"><span class="card__pct">80<small>%</small></span><span class="card__pct-label">Match for you</span></div>
+          <div class="card__body">
+            <h3 class="card__name"><a href="#results">Hannah Kowalski</a></h3>
+            <p class="card__role">UX researcher</p>
+            <p class="card__where"><span>Roncesvalles</span><span>7.2 km away</span></p>
+            <ul class="card__skills" aria-label="Skills"><li>User interviews</li><li>Usability testing</li><li>Synthesis</li></ul>
+            <dl class="card__facts">
+              <dt>Building</dt><dd>Between projects</dd>
+              <dt>Open to</dt><dd>Advising</dd>
+            </dl>
+          </div>
+          <div class="card__foot">
+            <span class="seen">Seen yesterday</span>
+            <button class="btn btn--sm" type="button">View profile</button>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card__art"><svg class="geo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect class="g-yellow" width="100" height="100"/><rect class="geo__part geo__part--spin g-blue" x="25" y="25" width="50" height="50" transform="rotate(45 50 50)"/><circle class="g-ink" cx="50" cy="50" r="10"/></svg></div>
+          <div class="card__score"><span class="card__pct">78<small>%</small></span><span class="card__pct-label">Match for you</span></div>
+          <div class="card__body">
+            <h3 class="card__name"><a href="#results">Marcus Bennett</a></h3>
+            <p class="card__role">Engineering leader (ex-CTO)</p>
+            <p class="card__where"><span>North York</span><span>14.2 km away</span></p>
+            <ul class="card__skills" aria-label="Skills"><li>Architecture</li><li>Hiring</li><li>Laravel</li></ul>
+            <dl class="card__facts">
+              <dt>Building</dt><dd>Between projects</dd>
+              <dt>Open to</dt><dd>Advising</dd>
+            </dl>
+          </div>
+          <div class="card__foot">
+            <span class="seen">Seen 2 h ago</span>
+            <button class="btn btn--sm" type="button">View profile</button>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card__art"><svg class="geo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect class="g-red" width="100" height="100"/><circle class="g-stroke-paper" cx="50" cy="44" r="26" stroke-width="10"/><path class="geo__part geo__part--slide g-yellow" d="M20 100 L50 62 L80 100Z"/></svg></div>
+          <div class="card__score"><span class="card__pct">76<small>%</small></span><span class="card__pct-label">Match for you</span></div>
+          <div class="card__body">
+            <h3 class="card__name"><a href="#results">Ruth Alvarez</a></h3>
+            <p class="card__role">Product manager, health tech</p>
+            <p class="card__where"><span>Scarborough</span><span>13.5 km away</span></p>
+            <ul class="card__skills" aria-label="Skills"><li>Roadmapping</li><li>Healthcare</li><li>Analytics</li></ul>
+            <dl class="card__facts">
+              <dt>Building</dt><dd>Sabbath</dd>
+              <dt>Open to</dt><dd>Co-founding</dd>
+            </dl>
+          </div>
+          <div class="card__foot">
+            <span class="seen seen--online">Online now</span>
+            <button class="btn btn--sm btn--primary" type="button">Connect</button>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card__art"><svg class="geo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect class="g-paper" width="100" height="100"/><rect class="g-red" x="0" y="0" width="50" height="100"/><circle class="geo__part geo__part--spin g-ink" cx="50" cy="50" r="24"/><rect class="g-yellow" x="62" y="70" width="22" height="22"/></svg></div>
+          <div class="card__score"><span class="card__pct">73<small>%</small></span><span class="card__pct-label">Match for you</span></div>
+          <div class="card__body">
+            <h3 class="card__name"><a href="#results">Leah Thompson</a></h3>
+            <p class="card__role">Brand &amp; illustration designer</p>
+            <p class="card__where"><span>Kensington Market</span><span>4.6 km away</span></p>
+            <ul class="card__skills" aria-label="Skills"><li>Illustration</li><li>Branding</li><li>Motion</li></ul>
+            <dl class="card__facts">
+              <dt>Building</dt><dd>Between projects</dd>
+              <dt>Open to</dt><dd>Contributing</dd>
+            </dl>
+          </div>
+          <div class="card__foot">
+            <span class="seen">Seen 5 h ago</span>
+            <button class="btn btn--sm" type="button">Say hello</button>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card__art"><svg class="geo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect class="g-ink" width="100" height="100"/><path class="geo__part geo__part--spin g-blue" d="M100 0 V100 A100 100 0 0 1 0 0Z"/><circle class="g-paper" cx="30" cy="30" r="14"/><rect class="g-red" x="64" y="10" width="26" height="8"/></svg></div>
+          <div class="card__score"><span class="card__pct">70<small>%</small></span><span class="card__pct-label">Match for you</span></div>
+          <div class="card__body">
+            <h3 class="card__name"><a href="#results">Elijah Brooks</a></h3>
+            <p class="card__role">Hardware founder</p>
+            <p class="card__where"><span>Oakville</span><span>36.4 km away</span></p>
+            <ul class="card__skills" aria-label="Skills"><li>Embedded C</li><li>IoT</li><li>Manufacturing</li></ul>
+            <dl class="card__facts">
+              <dt>Building</dt><dd>Wellspring</dd>
+              <dt>Open to</dt><dd>Co-founding</dd>
+            </dl>
+          </div>
+          <div class="card__foot">
+            <span class="seen">Seen yesterday</span>
+            <button class="btn btn--sm btn--primary" type="button">Connect</button>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card__art"><svg class="geo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect class="g-blue" width="100" height="100"/><circle class="geo__part geo__part--slide g-red" cx="46" cy="50" r="30"/><rect class="g-yellow" x="0" y="70" width="30" height="30"/><rect class="g-ink" x="74" y="0" width="8" height="100"/></svg></div>
+          <div class="card__score"><span class="card__pct">68<small>%</small></span><span class="card__pct-label">Match for you</span></div>
+          <div class="card__body">
+            <h3 class="card__name"><a href="#results">Peter Walsh</a></h3>
+            <p class="card__role">Angel investor &amp; advisor</p>
+            <p class="card__where"><span>Richmond Hill</span><span>27.6 km away</span></p>
+            <ul class="card__skills" aria-label="Skills"><li>Fundraising</li><li>Go-to-market</li><li>SaaS</li></ul>
+            <dl class="card__facts">
+              <dt>Building</dt><dd>Between projects</dd>
+              <dt>Open to</dt><dd>Advising</dd>
+            </dl>
+          </div>
+          <div class="card__foot">
+            <span class="seen">Seen 2 days ago</span>
+            <button class="btn btn--sm" type="button">View profile</button>
+          </div>
+        </li>
+        <li class="card">
+          <div class="card__art"><svg class="geo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect class="g-yellow" width="100" height="100"/><path class="geo__part geo__part--spin g-ink" d="M0 100 L50 12 L100 100Z"/><circle class="g-red" cx="50" cy="72" r="13"/></svg></div>
+          <div class="card__score"><span class="card__pct">66<small>%</small></span><span class="card__pct-label">Match for you</span></div>
+          <div class="card__body">
+            <h3 class="card__name"><a href="#results">Esther Nguyen</a></h3>
+            <p class="card__role">Product designer</p>
+            <p class="card__where"><span>Riverdale</span><span>1.4 km away</span></p>
+            <ul class="card__skills" aria-label="Skills"><li>Figma</li><li>Service design</li><li>Workshops</li></ul>
+            <dl class="card__facts">
+              <dt>Building</dt><dd>Between projects</dd>
+              <dt>Open to</dt><dd>Co-founding</dd>
+            </dl>
+          </div>
+          <div class="card__foot">
+            <span class="seen">Seen 4 h ago</span>
+            <button class="btn btn--sm btn--primary" type="button">Connect</button>
+          </div>
+        </li>
+      </ol>
+      <nav class="pager" aria-label="Pagination">
+        <p class="pager__status">Page 1 of 107</p>
+        <ul class="pager__list">
+          <li><a class="pager__item" href="#results" aria-current="page" aria-label="Page 1">1</a></li>
+          <li><a class="pager__item" href="#results" aria-label="Page 2">2</a></li>
+          <li><a class="pager__item" href="#results" aria-label="Page 3">3</a></li>
+          <li class="pager__gap" aria-hidden="true">…</li>
+          <li><a class="pager__item" href="#results" aria-label="Page 107">107</a></li>
+        </ul>
+        <a class="btn btn--sm btn--ink" href="#results">Next page →</a>
+      </nav>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <div>
+      <div class="footer-geo"><svg class="" viewBox="0 0 10 10" aria-hidden="true"><circle class="g-red" cx="5" cy="5" r="5"/></svg><svg class="" viewBox="0 0 10 10" aria-hidden="true"><rect class="g-blue" width="10" height="10"/></svg><svg class="" viewBox="0 0 10 10" aria-hidden="true"><path class="g-yellow" d="M5 0 L10 10 H0Z"/></svg><svg class="" viewBox="0 0 10 10" aria-hidden="true"><path class="g-paper" d="M0 10 V0 A10 10 0 0 1 10 10Z"/></svg></div>
+      <p class="site-footer__word">Banaro</p>
+    </div>
+    <nav aria-label="Footer">
+      <ul class="site-footer__links">
+        <li><a href="../home/default.html#areas">About</a></li>
+        <li><button class="link-button" type="button">Code of conduct</button></li>
+        <li><button class="link-button" type="button">Privacy</button></li>
+        <li><button class="link-button" type="button">Contact</button></li>
+      </ul>
+    </nav>
+    <div>
+      <p class="site-footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+      <p class="site-footer__made">Made in Toronto. © 2026 Banaro.</p>
+    </div>
+  </div>
+</footer>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../../index.html" aria-label="All concepts">⌂</a>
+  <a class="mock-bar__home" href="../../../36-synthwave/pages/directory/default.html" aria-label="Previous concept: Synthwave">‹</a>
+  <span class="mock-bar__screen">37 · Bauhaus</span>
+  <ul class="mock-bar__states">
+    <li><a href="../home/default.html">Home</a></li>
+    <li><a href="default.html" aria-current="page">Directory</a></li>
+  </ul>
+  <a class="mock-bar__home" href="../../../38-spatial/pages/directory/default.html" aria-label="Next concept: Spatial">›</a>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>
