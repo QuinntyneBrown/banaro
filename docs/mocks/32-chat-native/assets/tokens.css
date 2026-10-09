@@ -144,7 +144,7 @@
 
   /* Concept roles */
   --color-wallpaper: var(--palette-sand-100);
-  --color-wallpaper-mark: var(--palette-sand-200);
+  --color-wallpaper-mark: #e9e2d2;
   --color-bubble-guide: var(--palette-white);
   --color-bubble-guide-fg: var(--palette-ink-900);
   --color-bubble-me: var(--palette-teal-700);

@@ -97,7 +97,8 @@ button, input, select { font: inherit; color: inherit; letter-spacing: inherit; 
 /* ---------- Bento grid ---------------------------------------------------- */
 .bento { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-flow: row dense; gap: var(--bento-gap); }
 .bento > * { grid-column: 1 / -1; }
-.bento > .t-half { grid-column: span 1; }
+.bento > .t-half { grid-column: 1 / -1; }
+@media (min-width: 30rem) and (max-width: 47.99rem) { .bento > .t-half { grid-column: span 1; } }
 @media (min-width: 48rem) {
   .bento { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: minmax(var(--bento-row), auto); }
   .bento > * { grid-column: span 3; }

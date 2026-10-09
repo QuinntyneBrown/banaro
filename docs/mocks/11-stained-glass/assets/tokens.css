@@ -166,6 +166,7 @@
   --glow-amber: rgb(240 183 64 / 0.35);
   --glow-amethyst: rgb(142 79 196 / 0.22);
   --shaft-opacity: 0.32;               /* light shafts falling from the window */
+  --shaft-blend: multiply;
   --texture-opacity: 0.28;
   --text-on-glass: var(--palette-ink-900);
   --color-gilt: var(--palette-amber-700);   /* gilded small caps, 4.5:1 on parchment */
@@ -340,7 +341,8 @@
   --glow-emerald: rgb(47 184 120 / 0.32);
   --glow-amber: rgb(255 207 106 / 0.4);
   --glow-amethyst: rgb(169 112 220 / 0.35);
-  --shaft-opacity: 0.22;
+  --shaft-opacity: 0.3;
+  --shaft-blend: screen;
   --texture-opacity: 0.35;
   --color-gilt: var(--palette-amber-300);
   --shadow-color: 0 0 0;
@@ -415,7 +417,8 @@
     --glow-emerald: rgb(47 184 120 / 0.32);
     --glow-amber: rgb(255 207 106 / 0.4);
     --glow-amethyst: rgb(169 112 220 / 0.35);
-    --shaft-opacity: 0.22;
+    --shaft-opacity: 0.3;
+    --shaft-blend: screen;
     --texture-opacity: 0.35;
     --color-gilt: var(--palette-amber-300);
     --shadow-color: 0 0 0;
