@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home · partial — Banaro</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="home">
+<meta name="mock:state" content="partial">
+<meta name="description" content="Home where builders and events loaded but the projects section failed, with an inline retry and the rest of the page intact.">
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/tokens.css">
+<link rel="stylesheet" href="../../assets/ui.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="brand" href="../../pages/home/default.html" aria-label="Banaro home"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a>
+    <nav class="nav" id="primary-nav" popover aria-label="Primary">
+      <ul class="nav__list"><li><a class="nav__link" href="../../pages/directory/default.html">Builders</a></li><li><a class="nav__link" href="../../pages/projects/default.html">Projects</a></li><li><a class="nav__link" href="../../pages/events/default.html">Events</a></li><li><a class="nav__link" href="../../pages/matching/default.html">Matching</a></li></ul>
+      <button type="button" class="btn btn--quiet nav__close" popovertarget="primary-nav" popovertargetaction="hide">Close menu</button>
+    </nav>
+    <div class="header__actions"><a class="btn btn--text header__signin" href="../../pages/sign-in/default.html">Sign in</a><a class="btn btn--primary btn--sm" href="../../pages/join/default.html">Join Banaro</a><button type="button" class="menu-btn" popovertarget="primary-nav" aria-label="Menu"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="menu-btn__label">Menu</span></button></div>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+    <section class="hero" aria-labelledby="hero-title">
+      <div>
+        <p class="eyebrow">For Christian builders in Toronto and the GTA</p>
+        <h1 class="hero__title" id="hero-title" style="margin-top: var(--space-6)">Build what matters, with <em>believers down the street.</em></h1>
+        <p class="lead hero__lead">Banaro connects Christian founders, engineers, designers and product managers across Toronto and the GTA — so you can find collaborators, share what you're making, and meet in person.</p>
+        <div class="hero__actions">
+          <button type="button" class="btn btn--primary btn--lg">Join Banaro</button>
+          <a class="btn btn--quiet btn--lg" href="../directory/default.html">Browse builders <svg class="btn__arrow icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12h15"/><path d="m13.5 6 6 6-6 6"/></svg></a>
+        </div>
+      </div>
+      <div class="hero__aside">
+        <figure class="photo photo--small">
+          <div class="photo__frame"><img src="../../assets/photos/coffee-together.jpg" width="480" height="480" alt="Two builders talking over coffee at a wooden table"></div>
+          <figcaption class="photo__caption"><span>Coffee in Leslieville</span><span>Sat, 8:30 am</span></figcaption>
+        </figure>
+        <blockquote class="quote">
+          <img class="quote__photo" src="../../assets/photos/hannah-kowalski.jpg" width="56" height="56" alt="">
+          <div>
+            <p class="quote__text">“Within a week I was advising two founders, both a streetcar ride from my house.”</p>
+            <p class="quote__by">Hannah Kowalski · UX researcher, Roncesvalles</p>
+          </div>
+        </blockquote>
+      </div>
+    </section>
+
+    <div class="stats" role="list" aria-label="Banaro in numbers">
+      <p class="stats__item" role="listitem"><span class="stats__value">1,284</span><span class="stats__label">builders</span></p>
+      <p class="stats__item" role="listitem"><span class="stats__value">312</span><span class="stats__label">projects</span></p>
+      <p class="stats__item" role="listitem"><span class="stats__value">96</span><span class="stats__label">co-founder matches</span></p>
+      <p class="stats__item" role="listitem"><span class="stats__value">48</span><span class="stats__label">events in 2026</span></p>
+    </div>
+
+    <section class="section reveal" id="areas" aria-labelledby="areas-title">
+      <div class="section__head">
+        <p class="eyebrow">What Banaro is for</p>
+        <h2 class="section__title" id="areas-title">Four quiet ways to build together</h2>
+      </div>
+      <ul class="areas">
+        <li><a class="area" href="../directory/default.html">
+          <span class="area__index">01</span>
+          <span class="area__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19.5c.6-3.3 2.8-5 5.5-5s4.9 1.7 5.5 5"/><circle cx="16.8" cy="9.5" r="2.5"/><path d="M15.6 14.6c2.6-.3 4.4 1.3 4.9 4.4"/></svg></span>
+          <h3 class="area__title">Builder directory</h3>
+          <p class="area__text">Find local builders by skill, role and neighbourhood.</p>
+          <span class="area__go">Explore <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12h15"/><path d="m13.5 6 6 6-6 6"/></svg></span>
+        </a></li>
+        <li><a class="area" href="../projects/default.html">
+          <span class="area__index">02</span>
+          <span class="area__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.5 8.5 4.5-8.5 4.5L3.5 8z"/><path d="m3.5 12 8.5 4.5 8.5-4.5"/><path d="m3.5 16 8.5 4.5 8.5-4.5"/></svg></span>
+          <h3 class="area__title">Project showcase</h3>
+          <p class="area__text">Share what you're building, ask for feedback, find collaborators.</p>
+          <span class="area__go">Explore <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12h15"/><path d="m13.5 6 6 6-6 6"/></svg></span>
+        </a></li>
+        <li><a class="area" href="../events/default.html">
+          <span class="area__index">03</span>
+          <span class="area__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>
+          <h3 class="area__title">Meetups and events</h3>
+          <p class="area__text">Demo nights, prayer breakfasts and workshops across the GTA.</p>
+          <span class="area__go">Explore <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12h15"/><path d="m13.5 6 6 6-6 6"/></svg></span>
+        </a></li>
+        <li><a class="area" href="../matching/default.html">
+          <span class="area__index">04</span>
+          <span class="area__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 12.5 6 15a3.5 3.5 0 0 0 5 5l2.5-2.5"/><path d="M15.5 11.5 18 9a3.5 3.5 0 0 0-5-5l-2.5 2.5"/><path d="m9.5 14.5 5-5"/></svg></span>
+          <h3 class="area__title">Co-founder matching</h3>
+          <p class="area__text">Meet a co-founder, an advisor or a contributor who shares your faith.</p>
+          <span class="area__go">Explore <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12h15"/><path d="m13.5 6 6 6-6 6"/></svg></span>
+        </a></li>
+      </ul>
+    </section>
+
+    <section class="section reveal" id="builders" aria-labelledby="builders-title">
+      <div class="section__head">
+        <p class="eyebrow">Neighbours worth knowing</p>
+        <h2 class="section__title" id="builders-title">Featured builders</h2>
+        <a class="section__more" href="../directory/default.html">Browse all 1,284 builders <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12h15"/><path d="m13.5 6 6 6-6 6"/></svg></a>
+      </div>
+      <ul class="people">
+        <li class="person">
+          <img class="person__photo" src="../../assets/photos/daniel-reyes.jpg" width="64" height="64" alt="" loading="lazy">
+          <div>
+            <h3 class="person__name"><a href="../directory/default.html#b-daniel-reyes">Daniel Reyes</a></h3>
+            <p class="person__meta">Full-stack engineer · Mississauga</p>
+            <p class="person__open"><span class="pill pill--sage">Open to co-founding</span></p>
+          </div>
+        </li>
+        <li class="person">
+          <img class="person__photo" src="../../assets/photos/grace-liu.jpg" width="64" height="64" alt="" loading="lazy">
+          <div>
+            <h3 class="person__name"><a href="../directory/default.html#b-grace-liu">Grace Liu</a></h3>
+            <p class="person__meta">Product designer · Markham</p>
+            <p class="person__open"><span class="pill pill--sage">Open to contributing</span></p>
+          </div>
+        </li>
+        <li class="person">
+          <img class="person__photo" src="../../assets/photos/noah-fischer.jpg" width="64" height="64" alt="" loading="lazy">
+          <div>
+            <h3 class="person__name"><a href="../directory/default.html#b-noah-fischer">Noah Fischer</a></h3>
+            <p class="person__meta">Backend &amp; data engineer · The Annex</p>
+            <p class="person__open"><span class="pill pill--sage">Open to co-founding</span></p>
+          </div>
+        </li>
+        <li class="person">
+          <img class="person__photo" src="../../assets/photos/sofia-marquez.jpg" width="64" height="64" alt="" loading="lazy">
+          <div>
+            <h3 class="person__name"><a href="../directory/default.html#b-sofia-marquez">Sofia Marquez</a></h3>
+            <p class="person__meta">Growth &amp; marketing · Liberty Village</p>
+            <p class="person__open"><span class="pill pill--sage">Open to contributing</span></p>
+          </div>
+        </li>
+        <li class="person">
+          <img class="person__photo" src="../../assets/photos/hannah-kowalski.jpg" width="64" height="64" alt="" loading="lazy">
+          <div>
+            <h3 class="person__name"><a href="../directory/default.html#b-hannah-kowalski">Hannah Kowalski</a></h3>
+            <p class="person__meta">UX researcher · Roncesvalles</p>
+            <p class="person__open"><span class="pill pill--sage">Open to advising</span></p>
+          </div>
+        </li>
+        <li class="person">
+          <img class="person__photo" src="../../assets/photos/ruth-alvarez.jpg" width="64" height="64" alt="" loading="lazy">
+          <div>
+            <h3 class="person__name"><a href="../directory/default.html#b-ruth-alvarez">Ruth Alvarez</a></h3>
+            <p class="person__meta">Product manager, health tech · Scarborough</p>
+            <p class="person__open"><span class="pill pill--sage">Open to co-founding</span></p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section reveal" id="projects" aria-labelledby="projects-title">
+      <div class="section__head">
+        <p class="eyebrow">Project showcase</p>
+        <h2 class="section__title" id="projects-title">Made nearby, shared early</h2>
+        <a class="section__more" href="../projects/default.html">See all 312 projects <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12h15"/><path d="m13.5 6 6 6-6 6"/></svg></a>
+      </div>
+      <div class="alert alert--danger" role="alert"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg><p class="alert__title">We couldn't load projects</p><p class="alert__body">Builders and events loaded, but this section didn't. Try again, or open the full showcase.</p><div class="alert__actions"><button type="button" class="btn btn--quiet btn--sm">Try again</button><a class="btn btn--text btn--sm" href="../../pages/projects/default.html">See all 312 projects</a></div></div>
+    </section>
+
+    <section class="section reveal" id="events" aria-labelledby="events-title">
+      <div class="section__head">
+        <p class="eyebrow">Meetups and events</p>
+        <h2 class="section__title" id="events-title">Upcoming gatherings</h2>
+        <a class="section__more" href="../events/default.html">All 48 events in 2026 <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12h15"/><path d="m13.5 6 6 6-6 6"/></svg></a>
+      </div>
+      <ol class="events">
+        <li class="event">
+          <p class="event__date"><time datetime="2026-10-15T19:00"><span class="event__day">15</span> <span class="event__mon">Thu · Oct</span></time></p>
+          <div>
+            <h3 class="event__title">Fall Demo Night</h3>
+            <p class="event__meta"><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>7:00–9:30 pm</span><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Centre for Social Innovation, 192 Spadina Ave</span></p>
+          </div>
+          <div class="event__side">
+            <span class="event__going">64 going · 16 spots left · 6 demos</span>
+            <button type="button" class="btn btn--quiet btn--sm">Save a seat</button>
+          </div>
+        </li>
+        <li class="event">
+          <p class="event__date"><time datetime="2026-10-17T08:00"><span class="event__day">17</span> <span class="event__mon">Sat · Oct</span></time></p>
+          <div>
+            <h3 class="event__title">Builders' Prayer Breakfast</h3>
+            <p class="event__meta"><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>8:00–9:30 am</span><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>St. Matthew's Hall, Leslieville</span></p>
+          </div>
+          <div class="event__side">
+            <span class="event__going">22 going</span>
+            <button type="button" class="btn btn--quiet btn--sm">Save a seat</button>
+          </div>
+        </li>
+        <li class="event">
+          <p class="event__date"><time datetime="2026-10-20T18:30"><span class="event__day">20</span> <span class="event__mon">Tue · Oct</span></time></p>
+          <div>
+            <h3 class="event__title">Design Critique Circle</h3>
+            <p class="event__meta"><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>6:30–8:30 pm</span><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Markham Village Library, community room</span></p>
+          </div>
+          <div class="event__side">
+            <span class="event__going">15 going</span>
+            <button type="button" class="btn btn--quiet btn--sm">Save a seat</button>
+          </div>
+        </li>
+        <li class="event">
+          <p class="event__date"><time datetime="2026-10-29T19:00"><span class="event__day">29</span> <span class="event__mon">Thu · Oct</span></time></p>
+          <div>
+            <h3 class="event__title">Co-founder Mixer</h3>
+            <p class="event__meta"><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>7:00–9:00 pm</span><span><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>The Assembly Hall, Liberty Village</span></p>
+          </div>
+          <div class="event__side">
+            <span class="event__going">41 going</span>
+            <button type="button" class="btn btn--quiet btn--sm">Save a seat</button>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="verse reveal" aria-label="Verse">
+      <span class="verse__rule" aria-hidden="true"></span>
+      <p class="verse__text">“Two are better than one, because they have a good return for their labour.”</p>
+      <p class="verse__ref">Ecclesiastes 4:9</p>
+    </section>
+
+    <section class="section reveal" id="matching" aria-labelledby="matching-title">
+      <div class="panel grain match">
+        <div>
+          <p class="eyebrow">Co-founder matching</p>
+          <h2 class="match__title" id="matching-title" style="margin-top: var(--space-5)">Looking for a co-founder?</h2>
+          <p class="match__text">Tell us what you're building and who you need. We'll suggest three builders nearby every Monday.</p>
+          <div class="match__actions">
+            <button type="button" class="btn btn--primary btn--lg">Start matching</button>
+            <span class="muted" style="font: var(--text-body-sm)">96 co-founder matches so far</span>
+          </div>
+        </div>
+        <div class="match__week">
+          <p class="eyebrow">A Monday, for example</p>
+          <ul class="match__week" style="gap: var(--space-3)">
+          <li class="match__slot">
+            <img src="../../assets/photos/daniel-reyes.jpg" width="40" height="40" alt="" loading="lazy">
+            <p><strong>Daniel Reyes</strong>Full-stack engineer · 26.9 km</p>
+            <span class="match__day">Mon</span>
+          </li>
+          <li class="match__slot">
+            <img src="../../assets/photos/noah-fischer.jpg" width="40" height="40" alt="" loading="lazy">
+            <p><strong>Noah Fischer</strong>Backend & data engineer · 5.8 km</p>
+            <span class="match__day">Mon</span>
+          </li>
+          <li class="match__slot">
+            <img src="../../assets/photos/caleb-morgan.jpg" width="40" height="40" alt="" loading="lazy">
+            <p><strong>Caleb Morgan</strong>Frontend engineer · 17.8 km</p>
+            <span class="match__day">Mon</span>
+          </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="footer" id="footer">
+  <div class="wrap footer__grid">
+    <p class="footer__made">Made in Toronto. © 2026 Banaro.</p>
+    <nav aria-label="Footer">
+      <ul class="footer__links"><li><a href="../../pages/about/default.html">About</a></li><li><a href="../../pages/code-of-conduct/default.html">Code of conduct</a></li><li><a href="../../pages/privacy/default.html">Privacy</a></li><li><a href="../../pages/contact/default.html">Contact</a></li></ul>
+    </nav>
+    <p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+  </div>
+</footer>
+<p class="mock-note" style="top: 7rem; right: 1rem">Retry reloads only the projects section; focus moves to the new list, or back to the alert if it fails again.</p>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="Mock gallery">⌂</a>
+  <span class="mock-bar__screen">Home</span>
+  <ul class="mock-bar__states"><li><a href="default.html">default</a></li><li><a href="loading.html">loading</a></li><li><a href="error.html">error</a></li><li><a href="partial.html" aria-current="page">partial</a></li></ul>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

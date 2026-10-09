@@ -1,6 +1,6 @@
 # Banaro mocks
 
-Open [index.html](index.html) from disk to browse the Home and Builder directory mocks.
+Open [index.html](index.html) from disk to browse every page, dialog and notification of the member app.
 The selected design uses oat and birch neutrals, a sage accent, small square photos,
 generous spacing and quiet motion.
 
@@ -11,17 +11,20 @@ The mock bar links to the gallery and between pages, toggles light/dark (or pres
 
 ```text
 docs/mocks/
-  index.html
-  README.md
-  manifest.json
-  assets/                         tokens, component styles, mock chrome, fonts and photos
-  pages/home/default.html         /
-  pages/directory/default.html    /builders
+  index.html                      gallery of every screen and state (generated)
+  README.md                       cast, design notes, coverage matrix (generated section)
+  manifest.json                   the list of screens, states and not-applicable reasons
+  assets/                         tokens, component kit, mock chrome, fonts and photos
+  pages/<id>/<state>.html         31 pages
+  dialogs/<id>/<state>.html       13 dialogs, shown over the page they open from
+  notifications/<id>/<state>.html 5 notification types, shown over the page that raises them
 ```
 
-This retained set contains two screens, each in its default state. Loading, empty
-and error variants have not been authored; the manifest records that limitation.
-Dialogs and notifications have not been authored.
+49 screens and 196 state files cover the member app: sign in and join, onboarding, the dashboard,
+the builder directory and profiles, the project showcase, events, co-founder matching, messages,
+notifications, settings, legal and contact pages, and the error pages. Every required state is
+either a file or has a reason in the manifest. Dialogs sit over a copy of their page's markup, made
+`inert`; banners are inserted above the header.
 
 To check links and regenerate the gallery and coverage matrix:
 
@@ -226,7 +229,23 @@ The restraint: one accent, one family, small photos and hairlines instead of box
 calendar list for events and the two-fact card footer ("Building · Open to") are strong patterns to
 keep as the mock set grows.
 
+## Cast additions
+
+- **Messages:** Daniel Reyes has replied to Amara's note (one unread); Grace Liu and Hannah Kowalski are
+  the other two conversations.
+- **Hearth:** an invented design-stage project by Esther Nguyen with no feedback yet, used for the empty
+  project page and the project-new states.
+- **Directory edge state:** five placeholder builders with very long names, 4-digit figures and an RTL name.
+- **Events:** four past events from September 2026 on the "Last season" tab.
+
 ## Open questions
+
+- No `/admin` area is mocked. Hosts and administrators who create events, moderate reports and manage
+  members need their own slice and an ADR for the separate admin application.
+- There is no cookie-consent banner: Banaro sets only essential cookies. Revisit if analytics are added.
+- Global search and the e-mail templates (weekly matches, event reminders) are not mocked.
+- The header counts (2 matches, 1 message, 3 notifications) are static in every mock, so the
+  notifications `read` state still shows "3 unread" on the bell.
 
 - Is the light display weight legible enough on low-quality screens for older members?
 - Should the wood grain appear anywhere else, or stay a one-off for matching?
@@ -237,9 +256,66 @@ Legend: ✅ mock exists · ➖ not applicable (reason in manifest) · ❌ missin
 
 ### Pages
 
-| Screen | default | loading | empty | error | Requirements |
-|---|---|---|---|---|---|
-| Home (`home`) | [✅](pages/home/default.html) | ➖ | ➖ | ➖ |  |
-| Builder directory (`directory`) | [✅](pages/directory/default.html) | ➖ | ➖ | ➖ |  |
+| Screen | default | loading | empty | error | partial | invalid | submitting | signed-out | success | skills | goals | no-results | filtered | edge | own | sparse | not-found | past | going | waitlist | ended | cancelled | reviewed | paused | send-failed | read | privacy | email | Requirements |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Home (`home`) | [✅](pages/home/default.html) | [✅](pages/home/loading.html) | ➖ | [✅](pages/home/error.html) | [✅](pages/home/partial.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Sign in (`sign-in`) | [✅](pages/sign-in/default.html) | ➖ | ➖ | [✅](pages/sign-in/error.html) |  | [✅](pages/sign-in/invalid.html) | [✅](pages/sign-in/submitting.html) | [✅](pages/sign-in/signed-out.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Join Banaro (`join`) | [✅](pages/join/default.html) | ➖ | ➖ | ➖ |  | [✅](pages/join/invalid.html) | [✅](pages/join/submitting.html) |  | [✅](pages/join/success.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Forgot password (`forgot-password`) | [✅](pages/forgot-password/default.html) | ➖ | ➖ | ➖ |  | [✅](pages/forgot-password/invalid.html) | [✅](pages/forgot-password/submitting.html) |  | [✅](pages/forgot-password/success.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Reset password (`reset-password`) | [✅](pages/reset-password/default.html) | ➖ | ➖ | [✅](pages/reset-password/error.html) |  | [✅](pages/reset-password/invalid.html) | [✅](pages/reset-password/submitting.html) |  | [✅](pages/reset-password/success.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Verify e-mail (`verify-email`) | [✅](pages/verify-email/default.html) | ➖ | ➖ | [✅](pages/verify-email/error.html) |  |  |  |  | [✅](pages/verify-email/success.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Welcome (`onboarding`) | [✅](pages/onboarding/default.html) | ➖ | ➖ | ➖ |  | [✅](pages/onboarding/invalid.html) | [✅](pages/onboarding/submitting.html) |  | [✅](pages/onboarding/success.html) | [✅](pages/onboarding/skills.html) | [✅](pages/onboarding/goals.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Dashboard (`dashboard`) | [✅](pages/dashboard/default.html) | [✅](pages/dashboard/loading.html) | [✅](pages/dashboard/empty.html) | [✅](pages/dashboard/error.html) | [✅](pages/dashboard/partial.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Builder directory (`directory`) | [✅](pages/directory/default.html) | [✅](pages/directory/loading.html) | ➖ | [✅](pages/directory/error.html) |  |  |  |  |  |  |  | [✅](pages/directory/no-results.html) | [✅](pages/directory/filtered.html) | [✅](pages/directory/edge.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Builder profile (`builder-profile`) | [✅](pages/builder-profile/default.html) | [✅](pages/builder-profile/loading.html) | ➖ | [✅](pages/builder-profile/error.html) |  |  |  |  |  |  |  |  |  |  | [✅](pages/builder-profile/own.html) | [✅](pages/builder-profile/sparse.html) | [✅](pages/builder-profile/not-found.html) |  |  |  |  |  |  |  |  |  |  |  |  |
+| Edit profile (`profile-edit`) | [✅](pages/profile-edit/default.html) | [✅](pages/profile-edit/loading.html) | ➖ | [✅](pages/profile-edit/error.html) |  | [✅](pages/profile-edit/invalid.html) | [✅](pages/profile-edit/submitting.html) |  | [✅](pages/profile-edit/success.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Projects (`projects`) | [✅](pages/projects/default.html) | [✅](pages/projects/loading.html) | ➖ | [✅](pages/projects/error.html) |  |  |  |  |  |  |  | [✅](pages/projects/no-results.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Project (`project-detail`) | [✅](pages/project-detail/default.html) | [✅](pages/project-detail/loading.html) | [✅](pages/project-detail/empty.html) | [✅](pages/project-detail/error.html) |  |  |  |  |  |  |  |  |  |  | [✅](pages/project-detail/own.html) |  | [✅](pages/project-detail/not-found.html) |  |  |  |  |  |  |  |  |  |  |  |  |
+| Share a project (`project-new`) | [✅](pages/project-new/default.html) | ➖ | ➖ | ➖ |  | [✅](pages/project-new/invalid.html) | [✅](pages/project-new/submitting.html) |  | [✅](pages/project-new/success.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Edit project (`project-edit`) | [✅](pages/project-edit/default.html) | [✅](pages/project-edit/loading.html) | ➖ | [✅](pages/project-edit/error.html) |  | [✅](pages/project-edit/invalid.html) | [✅](pages/project-edit/submitting.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Events (`events`) | [✅](pages/events/default.html) | [✅](pages/events/loading.html) | [✅](pages/events/empty.html) | [✅](pages/events/error.html) |  |  |  |  |  |  |  |  |  |  |  |  |  | [✅](pages/events/past.html) |  |  |  |  |  |  |  |  |  |  |  |
+| Event (`event-detail`) | [✅](pages/event-detail/default.html) | [✅](pages/event-detail/loading.html) | ➖ | [✅](pages/event-detail/error.html) |  |  |  |  |  |  |  |  |  |  |  |  | [✅](pages/event-detail/not-found.html) |  | [✅](pages/event-detail/going.html) | [✅](pages/event-detail/waitlist.html) | [✅](pages/event-detail/ended.html) | [✅](pages/event-detail/cancelled.html) |  |  |  |  |  |  |  |
+| Matching (`matching`) | [✅](pages/matching/default.html) | [✅](pages/matching/loading.html) | [✅](pages/matching/empty.html) | [✅](pages/matching/error.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | [✅](pages/matching/reviewed.html) | [✅](pages/matching/paused.html) |  |  |  |  |  |
+| Matching setup (`matching-setup`) | [✅](pages/matching-setup/default.html) | ➖ | ➖ | ➖ |  | [✅](pages/matching-setup/invalid.html) | [✅](pages/matching-setup/submitting.html) |  | [✅](pages/matching-setup/success.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Messages (`messages`) | [✅](pages/messages/default.html) | [✅](pages/messages/loading.html) | [✅](pages/messages/empty.html) | [✅](pages/messages/error.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | [✅](pages/messages/send-failed.html) |  |  |  |  |
+| Notifications (`notifications`) | [✅](pages/notifications/default.html) | [✅](pages/notifications/loading.html) | [✅](pages/notifications/empty.html) | [✅](pages/notifications/error.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | [✅](pages/notifications/read.html) |  |  |  |
+| Settings (`settings`) | [✅](pages/settings/default.html) | [✅](pages/settings/loading.html) | ➖ | [✅](pages/settings/error.html) |  | [✅](pages/settings/invalid.html) | [✅](pages/settings/submitting.html) |  | [✅](pages/settings/success.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | [✅](pages/settings/privacy.html) | [✅](pages/settings/email.html) |  |
+| Contact (`contact`) | [✅](pages/contact/default.html) | ➖ | ➖ | ➖ |  | [✅](pages/contact/invalid.html) | [✅](pages/contact/submitting.html) |  | [✅](pages/contact/success.html) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| About Banaro (`about`) | [✅](pages/about/default.html) | ➖ | ➖ | ➖ |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Code of conduct (`code-of-conduct`) | [✅](pages/code-of-conduct/default.html) | ➖ | ➖ | ➖ |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Privacy (`privacy`) | [✅](pages/privacy/default.html) | ➖ | ➖ | ➖ |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Page not found (`not-found`) | [✅](pages/not-found/default.html) | ➖ | ➖ | ➖ |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| No access (`forbidden`) | [✅](pages/forbidden/default.html) | ➖ | ➖ | ➖ |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Something went wrong (`server-error`) | [✅](pages/server-error/default.html) | ➖ | ➖ | ➖ |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| You're offline (`offline`) | [✅](pages/offline/default.html) | ➖ | ➖ | ➖ |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Down for maintenance (`maintenance`) | [✅](pages/maintenance/default.html) | ➖ | ➖ | ➖ |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+
+### Dialogs
+
+| Screen | default | busy | invalid | failed | success | Requirements |
+|---|---|---|---|---|---|---|
+| Say hello (`say-hello`) | [✅](dialogs/say-hello/default.html) | [✅](dialogs/say-hello/busy.html) | [✅](dialogs/say-hello/invalid.html) | [✅](dialogs/say-hello/failed.html) |  |  |
+| Pass on this suggestion (`pass-suggestion`) | [✅](dialogs/pass-suggestion/default.html) | [✅](dialogs/pass-suggestion/busy.html) | ➖ | [✅](dialogs/pass-suggestion/failed.html) |  |  |
+| Give feedback (`give-feedback`) | [✅](dialogs/give-feedback/default.html) | [✅](dialogs/give-feedback/busy.html) | [✅](dialogs/give-feedback/invalid.html) | [✅](dialogs/give-feedback/failed.html) |  |  |
+| Offer to help (`offer-to-help`) | [✅](dialogs/offer-to-help/default.html) | [✅](dialogs/offer-to-help/busy.html) | [✅](dialogs/offer-to-help/invalid.html) | [✅](dialogs/offer-to-help/failed.html) |  |  |
+| Delete project (`delete-project`) | [✅](dialogs/delete-project/default.html) | [✅](dialogs/delete-project/busy.html) | [✅](dialogs/delete-project/invalid.html) | [✅](dialogs/delete-project/failed.html) |  |  |
+| Cancel RSVP (`cancel-rsvp`) | [✅](dialogs/cancel-rsvp/default.html) | [✅](dialogs/cancel-rsvp/busy.html) | ➖ | [✅](dialogs/cancel-rsvp/failed.html) |  |  |
+| Pause matching (`pause-matching`) | [✅](dialogs/pause-matching/default.html) | [✅](dialogs/pause-matching/busy.html) | ➖ | [✅](dialogs/pause-matching/failed.html) |  |  |
+| Report a builder (`report`) | [✅](dialogs/report/default.html) | [✅](dialogs/report/busy.html) | [✅](dialogs/report/invalid.html) | [✅](dialogs/report/failed.html) | [✅](dialogs/report/success.html) |  |
+| Block builder (`block-builder`) | [✅](dialogs/block-builder/default.html) | [✅](dialogs/block-builder/busy.html) | ➖ | [✅](dialogs/block-builder/failed.html) |  |  |
+| Change photo (`change-photo`) | [✅](dialogs/change-photo/default.html) | [✅](dialogs/change-photo/busy.html) | [✅](dialogs/change-photo/invalid.html) | [✅](dialogs/change-photo/failed.html) |  |  |
+| Delete account (`delete-account`) | [✅](dialogs/delete-account/default.html) | [✅](dialogs/delete-account/busy.html) | [✅](dialogs/delete-account/invalid.html) | [✅](dialogs/delete-account/failed.html) |  |  |
+| Session expired (`session-expired`) | [✅](dialogs/session-expired/default.html) | [✅](dialogs/session-expired/busy.html) | [✅](dialogs/session-expired/invalid.html) | [✅](dialogs/session-expired/failed.html) |  |  |
+| Account menu (`account-menu`) | [✅](dialogs/account-menu/default.html) | ➖ | ➖ |  |  |  |
+
+### Notifications
+
+| Screen | info | success | warning | danger | with-action | stacked | persistent | Requirements |
+|---|---|---|---|---|---|---|---|---|
+| Toast (`toast`) | [✅](notifications/toast/info.html) | [✅](notifications/toast/success.html) | [✅](notifications/toast/warning.html) | [✅](notifications/toast/danger.html) | [✅](notifications/toast/with-action.html) | [✅](notifications/toast/stacked.html) |  |  |
+| RSVP toast (`rsvp-toast`) | [✅](notifications/rsvp-toast/info.html) | [✅](notifications/rsvp-toast/success.html) | [✅](notifications/rsvp-toast/warning.html) | [✅](notifications/rsvp-toast/danger.html) |  |  |  |  |
+| Account banner (`account-banner`) | [✅](notifications/account-banner/info.html) | [✅](notifications/account-banner/success.html) | [✅](notifications/account-banner/warning.html) | [✅](notifications/account-banner/danger.html) |  |  | [✅](notifications/account-banner/persistent.html) |  |
+| Site banner (`site-banner`) | [✅](notifications/site-banner/info.html) | [✅](notifications/site-banner/success.html) | [✅](notifications/site-banner/warning.html) | [✅](notifications/site-banner/danger.html) |  |  | [✅](notifications/site-banner/persistent.html) |  |
+| Connection banner (`connection-banner`) | [✅](notifications/connection-banner/info.html) | [✅](notifications/connection-banner/success.html) | [✅](notifications/connection-banner/warning.html) | [✅](notifications/connection-banner/danger.html) |  |  |  |  |
 
 <!-- coverage:end -->

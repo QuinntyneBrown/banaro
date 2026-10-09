@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard · partial — Banaro</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="dashboard">
+<meta name="mock:state" content="partial">
+<meta name="description" content="Dashboard where matches loaded but the events section failed, with an inline retry.">
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/tokens.css">
+<link rel="stylesheet" href="../../assets/ui.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="brand" href="../../pages/dashboard/default.html" aria-label="Banaro home"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a>
+    <nav class="nav" id="primary-nav" popover aria-label="Primary">
+      <ul class="nav__list"><li><a class="nav__link" href="../../pages/directory/default.html">Builders</a></li><li><a class="nav__link" href="../../pages/projects/default.html">Projects</a></li><li><a class="nav__link" href="../../pages/events/default.html">Events</a></li><li><a class="nav__link" href="../../pages/matching/default.html">Matching</a></li></ul>
+      <button type="button" class="btn btn--quiet nav__close" popovertarget="primary-nav" popovertargetaction="hide">Close menu</button>
+    </nav>
+    <div class="header__actions"><a class="matches-link" href="../../pages/matching/default.html"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10z"/></svg>2 new matches</a><a class="icon-btn" href="../../pages/messages/default.html" aria-label="Messages, 1 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5A2.5 2.5 0 0 1 7 4h10a2.5 2.5 0 0 1 2.5 2.5v7A2.5 2.5 0 0 1 17 16h-5.5L7 19.5V16a2.5 2.5 0 0 1-2.5-2.5z"/></svg><span class="icon-btn__count" aria-hidden="true">1</span></a><a class="icon-btn" href="../../pages/notifications/default.html" aria-label="Notifications, 3 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg><span class="icon-btn__count" aria-hidden="true">3</span></a><a class="avatar-btn" href="../../dialogs/account-menu/default.html" aria-label="Your account, Amara Osei" aria-haspopup="menu"><img class="avatar" src="../../assets/photos/amara-osei.jpg" width="40" height="40" alt=""><span>Amara</span></a><button type="button" class="menu-btn" popovertarget="primary-nav" aria-label="Menu"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="menu-btn__label">Menu</span></button></div>
+  </div>
+</header>
+
+<main id="main">
+<div class="wrap">
+
+  <div class="page-head">
+    <p class="eyebrow">Friday 9 October</p>
+    <h1 class="page-head__title">Good morning, Amara</h1>
+    <p class="page-head__sub">You have 2 new matches, 1 unread message and 1 event this week.</p>
+  </div>
+  <div class="two-col">
+    <div class="stack stack--lg">
+      <section aria-labelledby="matches-title">
+        <div class="cluster cluster--between"><h2 class="section__title" id="matches-title" style="font-size: var(--font-size-2xl)">Your three this week</h2>
+        <a class="section__more" href="../../pages/matching/default.html">All matches <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12h15"/><path d="m13.5 6 6 6-6 6"/></svg></a></div>
+        <p class="muted" style="margin-block: var(--space-3) var(--space-6)">Suggested on Monday for a technical co-founder, nearest first.</p>
+        <ul class="stack">
+          <li class="rows__item"><article class="suggest" aria-labelledby="s-daniel-reyes"><div class="dialog__who"><img class="avatar" src="../../assets/photos/daniel-reyes.jpg" width="40" height="40" alt=""><div><h3 class="rows__title" id="s-daniel-reyes"><a href="../../pages/builder-profile/default.html">Daniel Reyes</a></h3><p class="rows__meta">Full-stack engineer · Mississauga</p></div><p class="card__match" style="margin-left:auto"><strong>94%</strong>match</p></div><p class="suggest__why">Laravel and Angular, building Psalter after hours, open to co-founding. 26.9 km from Leslieville.</p><div class="cluster"><a class="btn btn--primary btn--sm" href="../../dialogs/say-hello/default.html">Say hello</a><a class="btn btn--quiet btn--sm" href="../../dialogs/pass-suggestion/default.html">Not now</a></div></article></li>
+          <li class="rows__item"><article class="suggest" aria-labelledby="s-noah-fischer"><div class="dialog__who"><img class="avatar" src="../../assets/photos/noah-fischer.jpg" width="40" height="40" alt=""><div><h3 class="rows__title" id="s-noah-fischer"><a href="../../pages/builder-profile/default.html">Noah Fischer</a></h3><p class="rows__meta">Backend & data engineer · The Annex</p></div><p class="card__match" style="margin-left:auto"><strong>88%</strong>match</p></div><p class="suggest__why">Data and backend engineer from The Annex, 5.8 km away, shares your interest in charities.</p><div class="cluster"><a class="btn btn--primary btn--sm" href="../../dialogs/say-hello/default.html">Say hello</a><a class="btn btn--quiet btn--sm" href="../../dialogs/pass-suggestion/default.html">Not now</a></div></article></li>
+          <li class="rows__item"><article class="suggest" aria-labelledby="s-ruth-alvarez"><div class="dialog__who"><img class="avatar" src="../../assets/photos/ruth-alvarez.jpg" width="40" height="40" alt=""><div><h3 class="rows__title" id="s-ruth-alvarez"><a href="../../pages/builder-profile/default.html">Ruth Alvarez</a></h3><p class="rows__meta">Product manager, health tech · Scarborough</p></div><p class="card__match" style="margin-left:auto"><strong>76%</strong>match</p></div><p class="suggest__why">Product manager in health tech who is open to co-founding; strong on roadmaps.</p><div class="cluster"><a class="btn btn--primary btn--sm" href="../../dialogs/say-hello/default.html">Say hello</a><a class="btn btn--quiet btn--sm" href="../../dialogs/pass-suggestion/default.html">Not now</a></div></article></li>
+        </ul>
+      </section>
+      <section aria-labelledby="events-title">
+        <div class="cluster cluster--between"><h2 class="section__title" id="events-title" style="font-size: var(--font-size-2xl)">This week and next</h2>
+        <a class="section__more" href="../../pages/events/default.html">All events <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12h15"/><path d="m13.5 6 6 6-6 6"/></svg></a></div>
+        <div style="margin-top: var(--space-6)"><div class="alert alert--danger" role="alert"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg><p class="alert__title">We couldn't load your events</p><p class="alert__body">Your matches are up to date. Events didn't load this time.</p><div class="alert__actions"><button type="button" class="btn btn--quiet btn--sm">Try again</button><a class="btn btn--text btn--sm" href="../../pages/events/default.html">Open events</a></div></div></div>
+      </section>
+    </div>
+    <aside class="stack" aria-label="Your project">
+      <div class="aside-card">
+        <p class="eyebrow">Your project</p>
+        <div class="project__head"><span class="project__mark project__mark--sage" aria-hidden="true">H</span>
+          <div><h2 class="project__name"><a href="../../pages/project-detail/own.html">Harvest</a></h2><p class="project__owner">Volunteer scheduling for GTA food banks</p></div></div>
+        <dl class="facts"><div><dt>Stage</dt><dd>Beta · 6 food banks</dd></div><div><dt>Looking for</dt><dd>Technical co-founder</dd></div>
+          <div><dt>Feedback</dt><dd>23 comments, 4 new</dd></div></dl>
+        <a class="btn btn--quiet btn--sm" href="../../pages/project-detail/own.html">Read the feedback</a>
+      </div>
+      <div class="aside-card">
+        <h2 class="aside-card__title">Profile</h2>
+        <p class="muted">Your profile is 80% complete. Add what you are looking for in a co-founder.</p>
+        <div class="progress" role="progressbar" aria-label="Profile completeness" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"><div class="progress__bar" style="width: 80%"></div></div>
+        <a class="btn btn--quiet btn--sm" href="../../pages/profile-edit/default.html">Finish profile</a>
+      </div>
+    </aside>
+  </div>
+</div>
+</main>
+
+<footer class="footer" id="footer">
+  <div class="wrap footer__grid">
+    <p class="footer__made">Made in Toronto. © 2026 Banaro.</p>
+    <nav aria-label="Footer">
+      <ul class="footer__links"><li><a href="../../pages/about/default.html">About</a></li><li><a href="../../pages/code-of-conduct/default.html">Code of conduct</a></li><li><a href="../../pages/privacy/default.html">Privacy</a></li><li><a href="../../pages/contact/default.html">Contact</a></li></ul>
+    </nav>
+    <p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+  </div>
+</footer>
+<p class="mock-note" style="top: 7rem; right: 1rem">Only the events block retries. Matches and the project card stay visible and interactive.</p>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="Mock gallery">⌂</a>
+  <span class="mock-bar__screen">Dashboard</span>
+  <ul class="mock-bar__states"><li><a href="default.html">default</a></li><li><a href="loading.html">loading</a></li><li><a href="empty.html">empty</a></li><li><a href="error.html">error</a></li><li><a href="partial.html" aria-current="page">partial</a></li></ul>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

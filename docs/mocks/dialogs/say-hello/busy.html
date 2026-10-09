@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Say hello · busy — Banaro</title>
+<meta name="mock:kind" content="dialog">
+<meta name="mock:screen" content="say-hello">
+<meta name="mock:state" content="busy">
+<meta name="description" content="Say hello while the message is sending: Send is busy, the note is read-only.">
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/tokens.css">
+<link rel="stylesheet" href="../../assets/ui.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<div class="page-behind" inert aria-hidden="true">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="brand" href="../../pages/dashboard/default.html" aria-label="Banaro home"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a>
+    <nav class="nav" id="primary-nav" popover aria-label="Primary">
+      <ul class="nav__list"><li><a class="nav__link" href="../../pages/directory/default.html" aria-current="page">Builders</a></li><li><a class="nav__link" href="../../pages/projects/default.html">Projects</a></li><li><a class="nav__link" href="../../pages/events/default.html">Events</a></li><li><a class="nav__link" href="../../pages/matching/default.html">Matching</a></li></ul>
+      <button type="button" class="btn btn--quiet nav__close" popovertarget="primary-nav" popovertargetaction="hide">Close menu</button>
+    </nav>
+    <div class="header__actions"><a class="matches-link" href="../../pages/matching/default.html"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10z"/></svg>2 new matches</a><a class="icon-btn" href="../../pages/messages/default.html" aria-label="Messages, 1 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5A2.5 2.5 0 0 1 7 4h10a2.5 2.5 0 0 1 2.5 2.5v7A2.5 2.5 0 0 1 17 16h-5.5L7 19.5V16a2.5 2.5 0 0 1-2.5-2.5z"/></svg><span class="icon-btn__count" aria-hidden="true">1</span></a><a class="icon-btn" href="../../pages/notifications/default.html" aria-label="Notifications, 3 unread"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg><span class="icon-btn__count" aria-hidden="true">3</span></a><a class="avatar-btn" href="../../dialogs/account-menu/default.html" aria-label="Your account, Amara Osei" aria-haspopup="menu"><img class="avatar" src="../../assets/photos/amara-osei.jpg" width="40" height="40" alt=""><span>Amara</span></a><button type="button" class="menu-btn" popovertarget="primary-nav" aria-label="Menu"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span class="menu-btn__label">Menu</span></button></div>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+    <div class="page-head">
+      <p class="eyebrow">Builder directory</p>
+      <h1 class="page-head__title">Builders near you</h1>
+      <p class="page-head__sub">1,284 builders in Toronto and the GTA, within 40 km of Leslieville.</p>
+      <form class="search" role="search" action="#results">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        <label class="vh" for="q">Search builders</label>
+        <input class="search__input" id="q" name="q" type="search" placeholder="Name, skill or project" autocomplete="off">
+        <button type="submit" class="btn btn--primary">Search</button>
+      </form>
+    </div>
+
+    <div class="dir">
+      <aside class="filters" id="filters" popover aria-labelledby="filters-title">
+        <div class="filters__head">
+          <h2 class="filters__title" id="filters-title">Filters</h2>
+          <button type="button" class="btn btn--text btn--sm">Clear all</button>
+        </div>
+        <form action="#results">
+          <fieldset class="filter">
+            <legend class="filter__legend">Role</legend>
+            <ul class="filter__list">
+              <li><label class="check"><input class="check__box" type="checkbox" name="role" value="Founders"> <span>Founders</span> <span class="check__count">214</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="role" value="Engineers"> <span>Engineers</span> <span class="check__count">486</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="role" value="Designers"> <span>Designers</span> <span class="check__count">231</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="role" value="Product managers"> <span>Product managers</span> <span class="check__count">198</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="role" value="Other"> <span>Other</span> <span class="check__count">155</span></label></li>
+            </ul>
+          </fieldset>
+          <fieldset class="filter">
+            <legend class="filter__legend">Open to</legend>
+            <ul class="filter__list">
+              <li><label class="check"><input class="check__box" type="checkbox" name="open" value="Co-founding"> <span>Co-founding</span> <span class="check__count">173</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="open" value="Advising"> <span>Advising</span> <span class="check__count">248</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="open" value="Contributing"> <span>Contributing</span> <span class="check__count">611</span></label></li>
+            </ul>
+          </fieldset>
+          <fieldset class="filter">
+            <legend class="filter__legend">Neighbourhood or city</legend>
+            <ul class="filter__list">
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Downtown Toronto"> <span>Downtown Toronto</span> <span class="check__count">512</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="North York"> <span>North York</span> <span class="check__count">141</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Scarborough"> <span>Scarborough</span> <span class="check__count">96</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Etobicoke"> <span>Etobicoke</span> <span class="check__count">88</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Mississauga"> <span>Mississauga</span> <span class="check__count">147</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Brampton"> <span>Brampton</span> <span class="check__count">74</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Markham"> <span>Markham</span> <span class="check__count">92</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Vaughan"> <span>Vaughan</span> <span class="check__count">51</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Richmond Hill"> <span>Richmond Hill</span> <span class="check__count">38</span></label></li>
+              <li><label class="check"><input class="check__box" type="checkbox" name="hood" value="Oakville"> <span>Oakville</span> <span class="check__count">45</span></label></li>
+            </ul>
+          </fieldset>
+          <fieldset class="filter">
+            <legend class="filter__legend">Popular skills</legend>
+            <ul class="chips">
+              <li><button type="button" class="chip" aria-pressed="false">React <span class="chip__count">203</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Figma <span class="chip__count">187</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Python <span class="chip__count">174</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Product strategy <span class="chip__count">156</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">User research <span class="chip__count">112</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Laravel <span class="chip__count">96</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Data/ML <span class="chip__count">89</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Marketing <span class="chip__count">77</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Angular <span class="chip__count">74</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Swift <span class="chip__count">61</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Kotlin <span class="chip__count">48</span></button></li>
+              <li><button type="button" class="chip" aria-pressed="false">Fundraising <span class="chip__count">41</span></button></li>
+            </ul>
+          </fieldset>
+          <fieldset class="filter">
+            <legend class="filter__legend">Distance</legend>
+            <div class="range">
+              <label class="range__label" for="distance"><span>Within 40 km of Leslieville</span></label>
+              <input class="range__input" id="distance" name="distance" type="range" min="1" max="60" value="40" aria-valuetext="40 kilometres">
+              <div class="range__ends" aria-hidden="true"><span>1 km</span><span>60 km</span></div>
+            </div>
+          </fieldset>
+        </form>
+        <button type="button" class="btn btn--primary filters__done" popovertarget="filters" popovertargetaction="hide">Show 1,284 builders</button>
+      </aside>
+
+      <section id="results" aria-labelledby="results-title">
+        <h2 class="vh" id="results-title">Results</h2>
+        <div class="toolbar">
+          <p class="toolbar__count">Showing <strong>1–12</strong> of <strong>1,284</strong> builders</p>
+          <div class="toolbar__tools">
+            <button type="button" class="btn btn--quiet btn--sm filters-btn" popovertarget="filters"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>Filters</button>
+            <label class="select"><span>Sort by</span>
+              <span class="select__wrap"><select class="select__control" name="sort"><option selected>Best match</option><option>Nearest</option><option>Recently active</option><option>Newest</option></select><svg class="icon icon--sm select__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></span>
+            </label>
+          </div>
+        </div>
+        <p class="pill pill--sage" style="margin-bottom: var(--space-6)"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10z"/></svg>Best match for you: you're looking for a technical co-founder</p>
+        <ul class="results">
+        <li><article class="card" id="b-daniel-reyes" aria-labelledby="n-daniel-reyes">
+          <div class="card__top">
+            <img class="card__photo" src="../../assets/photos/daniel-reyes.jpg" width="64" height="64" alt="">
+            <div>
+              <h3 class="card__name" id="n-daniel-reyes"><a href="#b-daniel-reyes">Daniel Reyes</a></h3>
+              <p class="card__role">Full-stack engineer</p>
+            </div>
+            <p class="card__match"><strong>94%</strong>match</p>
+          </div>
+          <p class="card__place"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Mississauga · 26.9 km away</p>
+          <ul class="tags" aria-label="Skills"><li class="pill">Laravel</li><li class="pill">Angular</li><li class="pill">PostgreSQL</li></ul>
+          <dl class="card__facts">
+            <div><dt>Building</dt><dd>Psalter</dd></div>
+            <div><dt>Open to</dt><dd>Co-founding</dd></div>
+          </dl>
+          <div class="card__foot">
+            <span class="status status--online"><span class="status__dot" aria-hidden="true"></span>Online now</span>
+            <button type="button" class="btn btn--quiet btn--sm">Say hello</button>
+          </div>
+        </article></li>
+        <li><article class="card" id="b-grace-liu" aria-labelledby="n-grace-liu">
+          <div class="card__top">
+            <img class="card__photo" src="../../assets/photos/grace-liu.jpg" width="64" height="64" alt="">
+            <div>
+              <h3 class="card__name" id="n-grace-liu"><a href="#b-grace-liu">Grace Liu</a></h3>
+              <p class="card__role">Product designer</p>
+            </div>
+            <p class="card__match"><strong>91%</strong>match</p>
+          </div>
+          <p class="card__place"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Markham · 24.3 km away</p>
+          <ul class="tags" aria-label="Skills"><li class="pill">Figma</li><li class="pill">Design systems</li><li class="pill">Prototyping</li></ul>
+          <dl class="card__facts">
+            <div><dt>Building</dt><dd>Gather</dd></div>
+            <div><dt>Open to</dt><dd>Contributing</dd></div>
+          </dl>
+          <div class="card__foot">
+            <span class="status status--online"><span class="status__dot" aria-hidden="true"></span>Online now</span>
+            <button type="button" class="btn btn--quiet btn--sm">Say hello</button>
+          </div>
+        </article></li>
+        <li><article class="card" id="b-noah-fischer" aria-labelledby="n-noah-fischer">
+          <div class="card__top">
+            <img class="card__photo" src="../../assets/photos/noah-fischer.jpg" width="64" height="64" alt="">
+            <div>
+              <h3 class="card__name" id="n-noah-fischer"><a href="#b-noah-fischer">Noah Fischer</a></h3>
+              <p class="card__role">Backend &amp; data engineer</p>
+            </div>
+            <p class="card__match"><strong>88%</strong>match</p>
+          </div>
+          <p class="card__place"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>The Annex · 5.8 km away</p>
+          <ul class="tags" aria-label="Skills"><li class="pill">Python</li><li class="pill">PostgreSQL</li><li class="pill">Data pipelines</li></ul>
+          <dl class="card__facts">
+            <div><dt>Building</dt><dd>Ledgerline</dd></div>
+            <div><dt>Open to</dt><dd>Co-founding</dd></div>
+          </dl>
+          <div class="card__foot">
+            <span class="status"><span class="status__dot" aria-hidden="true"></span>Seen 1 h ago</span>
+            <button type="button" class="btn btn--quiet btn--sm">Say hello</button>
+          </div>
+        </article></li>
+        <li><article class="card" id="b-caleb-morgan" aria-labelledby="n-caleb-morgan">
+          <div class="card__top">
+            <img class="card__photo" src="../../assets/photos/caleb-morgan.jpg" width="64" height="64" alt="">
+            <div>
+              <h3 class="card__name" id="n-caleb-morgan"><a href="#b-caleb-morgan">Caleb Morgan</a></h3>
+              <p class="card__role">Frontend engineer</p>
+            </div>
+            <p class="card__match"><strong>85%</strong>match</p>
+          </div>
+          <p class="card__place"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Etobicoke · 17.8 km away</p>
+          <ul class="tags" aria-label="Skills"><li class="pill">Angular</li><li class="pill">TypeScript</li><li class="pill">Accessibility</li></ul>
+          <dl class="card__facts">
+            <div><dt>Building</dt><dd class="is-empty">No project listed</dd></div>
+            <div><dt>Open to</dt><dd>Contributing</dd></div>
+          </dl>
+          <div class="card__foot">
+            <span class="status status--online"><span class="status__dot" aria-hidden="true"></span>Online now</span>
+            <button type="button" class="btn btn--quiet btn--sm">Say hello</button>
+          </div>
+        </article></li>
+        <li><article class="card" id="b-sofia-marquez" aria-labelledby="n-sofia-marquez">
+          <div class="card__top">
+            <img class="card__photo" src="../../assets/photos/sofia-marquez.jpg" width="64" height="64" alt="" loading="lazy">
+            <div>
+              <h3 class="card__name" id="n-sofia-marquez"><a href="#b-sofia-marquez">Sofia Marquez</a></h3>
+              <p class="card__role">Growth &amp; marketing</p>
+            </div>
+            <p class="card__match"><strong>82%</strong>match</p>
+          </div>
+          <p class="card__place"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Liberty Village · 6.1 km away</p>
+          <ul class="tags" aria-label="Skills"><li class="pill">Lifecycle marketing</li><li class="pill">SEO</li><li class="pill">Community</li></ul>
+          <dl class="card__facts">
+            <div><dt>Building</dt><dd>Kindred</dd></div>
+            <div><dt>Open to</dt><dd>Contributing</dd></div>
+          </dl>
+          <div class="card__foot">
+            <span class="status"><span class="status__dot" aria-hidden="true"></span>Seen 3 h ago</span>
+            <button type="button" class="btn btn--quiet btn--sm">Say hello</button>
+          </div>
+        </article></li>
+        <li><article class="card" id="b-hannah-kowalski" aria-labelledby="n-hannah-kowalski">
+          <div class="card__top">
+            <img class="card__photo" src="../../assets/photos/hannah-kowalski.jpg" width="64" height="64" alt="" loading="lazy">
+            <div>
+              <h3 class="card__name" id="n-hannah-kowalski"><a href="#b-hannah-kowalski">Hannah Kowalski</a></h3>
+              <p class="card__role">UX researcher</p>
+            </div>
+            <p class="card__match"><strong>80%</strong>match</p>
+          </div>
+          <p class="card__place"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Roncesvalles · 7.2 km away</p>
+          <ul class="tags" aria-label="Skills"><li class="pill">User interviews</li><li class="pill">Usability testing</li><li class="pill">Synthesis</li></ul>
+          <dl class="card__facts">
+            <div><dt>Building</dt><dd class="is-empty">No project listed</dd></div>
+            <div><dt>Open to</dt><dd>Advising</dd></div>
+          </dl>
+          <div class="card__foot">
+            <span class="status"><span class="status__dot" aria-hidden="true"></span>Seen yesterday</span>
+            <button type="button" class="btn btn--quiet btn--sm">Ask for advice</button>
+          </div>
+        </article></li>
+        <li><article class="card" id="b-marcus-bennett" aria-labelledby="n-marcus-bennett">
+          <div class="card__top">
+            <img class="card__photo" src="../../assets/photos/marcus-bennett.jpg" width="64" height="64" alt="" loading="lazy">
+            <div>
+              <h3 class="card__name" id="n-marcus-bennett"><a href="#b-marcus-bennett">Marcus Bennett</a></h3>
+              <p class="card__role">Engineering leader (ex-CTO)</p>
+            </div>
+            <p class="card__match"><strong>78%</strong>match</p>
+          </div>
+          <p class="card__place"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>North York · 14.2 km away</p>
+          <ul class="tags" aria-label="Skills"><li class="pill">Architecture</li><li class="pill">Hiring</li><li class="pill">Laravel</li></ul>
+          <dl class="card__facts">
+            <div><dt>Building</dt><dd class="is-empty">No project listed</dd></div>
+            <div><dt>Open to</dt><dd>Advising</dd></div>
+          </dl>
+          <div class="card__foot">
+            <span class="status"><span class="status__dot" aria-hidden="true"></span>Seen 2 h ago</span>
+            <button type="button" class="btn btn--quiet btn--sm">Ask for advice</button>
+          </div>
+        </article></li>
+        <li><article class="card" id="b-ruth-alvarez" aria-labelledby="n-ruth-alvarez">
+          <div class="card__top">
+            <img class="card__photo" src="../../assets/photos/ruth-alvarez.jpg" width="64" height="64" alt="" loading="lazy">
+            <div>
+              <h3 class="card__name" id="n-ruth-alvarez"><a href="#b-ruth-alvarez">Ruth Alvarez</a></h3>
+              <p class="card__role">Product manager, health tech</p>
+            </div>
+            <p class="card__match"><strong>76%</strong>match</p>
+          </div>
+          <p class="card__place"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Scarborough · 13.5 km away</p>
+          <ul class="tags" aria-label="Skills"><li class="pill">Roadmapping</li><li class="pill">Healthcare</li><li class="pill">Analytics</li></ul>
+          <dl class="card__facts">
+            <div><dt>Building</dt><dd>Sabbath</dd></div>
+            <div><dt>Open to</dt><dd>Co-founding</dd></div>
+          </dl>
+          <div class="card__foot">
+            <span class="status status--online"><span class="status__dot" aria-hidden="true"></span>Online now</span>
+            <button type="button" class="btn btn--quiet btn--sm">Say hello</button>
+          </div>
+        </article></li>
+        <li><article class="card" id="b-leah-thompson" aria-labelledby="n-leah-thompson">
+          <div class="card__top">
+            <img class="card__photo" src="../../assets/photos/leah-thompson.jpg" width="64" height="64" alt="" loading="lazy">
+            <div>
+              <h3 class="card__name" id="n-leah-thompson"><a href="#b-leah-thompson">Leah Thompson</a></h3>
+              <p class="card__role">Brand &amp; illustration designer</p>
+            </div>
+            <p class="card__match"><strong>73%</strong>match</p>
+          </div>
+          <p class="card__place"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Kensington Market · 4.6 km away</p>
+          <ul class="tags" aria-label="Skills"><li class="pill">Illustration</li><li class="pill">Branding</li><li class="pill">Motion</li></ul>
+          <dl class="card__facts">
+            <div><dt>Building</dt><dd class="is-empty">No project listed</dd></div>
+            <div><dt>Open to</dt><dd>Contributing</dd></div>
+          </dl>
+          <div class="card__foot">
+            <span class="status"><span class="status__dot" aria-hidden="true"></span>Seen 5 h ago</span>
+            <button type="button" class="btn btn--quiet btn--sm">Say hello</button>
+          </div>
+        </article></li>
+        <li><article class="card" id="b-elijah-brooks" aria-labelledby="n-elijah-brooks">
+          <div class="card__top">
+            <img class="card__photo" src="../../assets/photos/elijah-brooks.jpg" width="64" height="64" alt="" loading="lazy">
+            <div>
+              <h3 class="card__name" id="n-elijah-brooks"><a href="#b-elijah-brooks">Elijah Brooks</a></h3>
+              <p class="card__role">Hardware founder</p>
+            </div>
+            <p class="card__match"><strong>70%</strong>match</p>
+          </div>
+          <p class="card__place"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Oakville · 36.4 km away</p>
+          <ul class="tags" aria-label="Skills"><li class="pill">Embedded C</li><li class="pill">IoT</li><li class="pill">Manufacturing</li></ul>
+          <dl class="card__facts">
+            <div><dt>Building</dt><dd>Wellspring</dd></div>
+            <div><dt>Open to</dt><dd>Co-founding</dd></div>
+          </dl>
+          <div class="card__foot">
+            <span class="status"><span class="status__dot" aria-hidden="true"></span>Seen yesterday</span>
+            <button type="button" class="btn btn--quiet btn--sm">Say hello</button>
+          </div>
+        </article></li>
+        <li><article class="card" id="b-peter-walsh" aria-labelledby="n-peter-walsh">
+          <div class="card__top">
+            <img class="card__photo" src="../../assets/photos/peter-walsh.jpg" width="64" height="64" alt="" loading="lazy">
+            <div>
+              <h3 class="card__name" id="n-peter-walsh"><a href="#b-peter-walsh">Peter Walsh</a></h3>
+              <p class="card__role">Angel investor &amp; advisor</p>
+            </div>
+            <p class="card__match"><strong>68%</strong>match</p>
+          </div>
+          <p class="card__place"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Richmond Hill · 27.6 km away</p>
+          <ul class="tags" aria-label="Skills"><li class="pill">Fundraising</li><li class="pill">Go-to-market</li><li class="pill">SaaS</li></ul>
+          <dl class="card__facts">
+            <div><dt>Building</dt><dd class="is-empty">No project listed</dd></div>
+            <div><dt>Open to</dt><dd>Advising</dd></div>
+          </dl>
+          <div class="card__foot">
+            <span class="status"><span class="status__dot" aria-hidden="true"></span>Seen 2 days ago</span>
+            <button type="button" class="btn btn--quiet btn--sm">Ask for advice</button>
+          </div>
+        </article></li>
+        <li><article class="card" id="b-esther-nguyen" aria-labelledby="n-esther-nguyen">
+          <div class="card__top">
+            <span class="card__initials tile--sage" aria-hidden="true">EN</span>
+            <div>
+              <h3 class="card__name" id="n-esther-nguyen"><a href="#b-esther-nguyen">Esther Nguyen</a></h3>
+              <p class="card__role">Product designer</p>
+            </div>
+            <p class="card__match"><strong>66%</strong>match</p>
+          </div>
+          <p class="card__place"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Riverdale · 1.4 km away</p>
+          <ul class="tags" aria-label="Skills"><li class="pill">Figma</li><li class="pill">Service design</li><li class="pill">Workshops</li></ul>
+          <dl class="card__facts">
+            <div><dt>Building</dt><dd class="is-empty">No project listed</dd></div>
+            <div><dt>Open to</dt><dd>Co-founding</dd></div>
+          </dl>
+          <div class="card__foot">
+            <span class="status"><span class="status__dot" aria-hidden="true"></span>Seen 4 h ago</span>
+            <button type="button" class="btn btn--quiet btn--sm">Say hello</button>
+          </div>
+        </article></li>
+        </ul>
+        <div class="pager">
+          <button type="button" class="btn btn--quiet btn--lg">Show 12 more builders</button>
+          <div class="pager__meter" role="presentation"><span></span></div>
+          <p class="pager__text">12 of 1,284 · page 1 of 107</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="footer" id="footer">
+  <div class="wrap footer__grid">
+    <p class="footer__made">Made in Toronto. © 2026 Banaro.</p>
+    <nav aria-label="Footer">
+      <ul class="footer__links"><li><a href="../../pages/about/default.html">About</a></li><li><a href="../../pages/code-of-conduct/default.html">Code of conduct</a></li><li><a href="../../pages/privacy/default.html">Privacy</a></li><li><a href="../../pages/contact/default.html">Contact</a></li></ul>
+    </nav>
+    <p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+  </div>
+</footer>
+
+</div>
+<div class="backdrop">
+  <div class="dialog " role="dialog" aria-modal="true" aria-labelledby="dlg-title" aria-describedby="dlg-desc">
+    <div class="dialog__header"><span class="dialog__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5A2.5 2.5 0 0 1 7 4h10a2.5 2.5 0 0 1 2.5 2.5v7A2.5 2.5 0 0 1 17 16h-5.5L7 19.5V16a2.5 2.5 0 0 1-2.5-2.5z"/></svg></span><h2 class="dialog__title" id="dlg-title">Say hello to Daniel</h2><button type="button" class="icon-btn" aria-label="Close dialog"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="dialog__body"><p id="dlg-desc">He'll get your note in his Banaro messages and an e-mail.</p><div class="dialog__who"><img class="avatar" src="../../assets/photos/daniel-reyes.jpg" width="48" height="48" alt=""><div><p class="rows__title">Daniel Reyes</p><p class="rows__meta">Full-stack engineer · Mississauga · Online now</p></div></div><div class="field"><label class="field__label" for="hello-msg">Your message</label><textarea class="textarea" id="hello-msg" name="hello-msg" rows="5" aria-describedby="hello-msg-help" required readonly>Hi Daniel, I&#x27;m Amara. I&#x27;m building Harvest, volunteer scheduling for GTA food banks, and I&#x27;m looking for a technical co-founder. I&#x27;d love to hear about Psalter over coffee.</textarea><p class="field__help" id="hello-msg-help">A short, friendly note works best. Daniel will see your profile with it.</p></div></div>
+    <div class="dialog__footer"><button type="button" class="btn btn--quiet">Cancel</button><button type="submit" class="btn btn--primary" aria-busy="true" disabled><span class="spinner" aria-hidden="true"></span>Sending…</button></div>
+  </div>
+</div>
+<p class="mock-note" style="top: 5rem; left: 1rem">Cancel stays enabled and aborts the request. The dialog closes on success and a toast confirms.</p>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="Mock gallery">⌂</a>
+  <span class="mock-bar__screen">Say hello</span>
+  <ul class="mock-bar__states"><li><a href="default.html">default</a></li><li><a href="busy.html" aria-current="page">busy</a></li><li><a href="invalid.html">invalid</a></li><li><a href="failed.html">failed</a></li></ul>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>
