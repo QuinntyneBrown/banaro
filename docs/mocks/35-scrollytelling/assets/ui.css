@@ -44,7 +44,7 @@ mark { background: none; color: inherit; font-weight: var(--font-weight-semibold
 .btn--sm { min-height: var(--control-height-sm); padding: 0 var(--space-4); font-size: var(--font-size-sm); }
 .btn--on-chapter { border-color: var(--color-fg-on-chapter); color: var(--color-fg-on-chapter); }
 .btn--on-chapter:hover { background: var(--color-fg-on-chapter); color: var(--color-bg-chapter); }
-.btn--highlight { background: var(--color-highlight); border-color: var(--color-highlight); color: var(--color-fg-on-highlight); }
+.btn--highlight { background: var(--color-chapter-action); border-color: var(--color-chapter-action); color: var(--color-fg-on-chapter-action); }
 .btn--highlight:hover { background: var(--color-fg-on-chapter); border-color: var(--color-fg-on-chapter); color: var(--color-bg-chapter); }
 .link-more { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--target-comfortable); font: var(--font-weight-bold) var(--font-size-md) / 1 var(--font-family-sans); color: var(--color-fg-link); }
 
@@ -289,7 +289,7 @@ mark { background: none; color: inherit; font-weight: var(--font-weight-semibold
 /* ---------- Epilogue (matching call to action) ---------------------------- */
 .epilogue { position: relative; overflow: hidden; isolation: isolate; padding: var(--space-24) 0 0; background: var(--color-bg-chapter); color: var(--color-fg-on-chapter); }
 .epilogue__copy { display: grid; gap: var(--space-5); justify-items: start; max-width: 40rem; padding-bottom: var(--space-12); }
-.epilogue .kicker { color: var(--color-highlight); }
+.epilogue .kicker { color: var(--color-chapter-accent); }
 .epilogue__title { font: var(--text-h1); }
 .epilogue__text { font: var(--text-story); color: var(--color-fg-on-chapter); }
 .epilogue__fine { font: var(--text-body-sm); color: var(--color-fg-on-chapter-muted); }

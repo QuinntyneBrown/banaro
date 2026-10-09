@@ -105,6 +105,9 @@ Scrollytelling — tokens. A picture book you scroll: dawn cream paper,
   --color-fg-link-hover: var(--palette-indigo-800);
   --color-fg-on-chapter: var(--palette-paper-100);
   --color-fg-on-chapter-muted: var(--palette-indigo-200);
+  --color-chapter-accent: var(--palette-marigold-300);
+  --color-chapter-action: var(--palette-marigold-300);
+  --color-fg-on-chapter-action: var(--palette-indigo-800);
 
   --color-border-default: var(--palette-paper-300);
   --color-border-strong: var(--palette-indigo-500);
@@ -323,6 +326,9 @@ Scrollytelling — tokens. A picture book you scroll: dawn cream paper,
   --color-fg-link-hover: var(--palette-paper-50);
   --color-fg-on-chapter: var(--palette-indigo-900);
   --color-fg-on-chapter-muted: var(--palette-indigo-600);
+  --color-chapter-accent: var(--palette-coral-700);
+  --color-chapter-action: var(--palette-teal-600);
+  --color-fg-on-chapter-action: var(--palette-paper-50);
   --color-border-default: var(--palette-indigo-700);
   --color-border-strong: var(--palette-indigo-400);
   --color-border-inverse: var(--palette-indigo-300);
@@ -414,6 +420,9 @@ Scrollytelling — tokens. A picture book you scroll: dawn cream paper,
     --color-fg-link-hover: var(--palette-paper-50);
     --color-fg-on-chapter: var(--palette-indigo-900);
     --color-fg-on-chapter-muted: var(--palette-indigo-600);
+    --color-chapter-accent: var(--palette-coral-700);
+    --color-chapter-action: var(--palette-teal-600);
+    --color-fg-on-chapter-action: var(--palette-paper-50);
     --color-border-default: var(--palette-indigo-700);
     --color-border-strong: var(--palette-indigo-400);
     --color-border-inverse: var(--palette-indigo-300);
