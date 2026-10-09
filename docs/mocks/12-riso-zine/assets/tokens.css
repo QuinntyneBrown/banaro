@@ -65,7 +65,7 @@
   --font-size-2xl: 1.5rem;
   --font-size-3xl: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
   --font-size-4xl: clamp(2.75rem, 1.8rem + 4vw, 5rem);
-  --font-size-5xl: clamp(3.25rem, 1.6rem + 7vw, 7.5rem);
+  --font-size-5xl: clamp(3.25rem, 1.8rem + 5.6vw, 6.25rem);
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
@@ -139,6 +139,7 @@
   --paper: var(--palette-paper-100);
   --riso-blend: multiply;                      /* inks overprint on white paper */
   --riso-photo-blend: lighten;                 /* photo darks take the ink colour */
+  --riso-photo-filter: grayscale(1) brightness(1.02) contrast(2.3);
   --misregister-x: 3px;
   --misregister-y: 2px;
   --grain-opacity: 0.22;
@@ -308,6 +309,7 @@
   --paper: var(--palette-coal-900);
   --riso-blend: screen;                        /* bright inks on black paper add up */
   --riso-photo-blend: darken;                  /* photo lights take the ink colour */
+  --riso-photo-filter: grayscale(1) contrast(1.45) brightness(1.08);
   --grain-opacity: 0.3;
   --color-staple: #6b6f6d;
   --color-staple-shine: #a9adab;
@@ -378,6 +380,7 @@
     --paper: var(--palette-coal-900);
     --riso-blend: screen;                        /* bright inks on black paper add up */
     --riso-photo-blend: darken;                  /* photo lights take the ink colour */
+    --riso-photo-filter: grayscale(1) contrast(1.45) brightness(1.08);
     --grain-opacity: 0.3;
     --color-staple: #6b6f6d;
     --color-staple-shine: #a9adab;
