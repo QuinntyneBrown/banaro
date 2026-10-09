@@ -1,0 +1,449 @@
+/* ==========================================================================
+   Banaro — design tokens
+   Scandinavian calm: oat and birch neutrals, a sage accent, soft corners,
+   generous space and slow, quiet motion. Light is a birch-paper morning;
+   dark is a long winter evening by lamplight (warm charcoal, not blue-black).
+   Primitives (--palette-*) are raw values; components read semantic tokens.
+   ========================================================================== */
+
+:root {
+  /* ---------- Primitives: colour --------------------------------------- */
+  --palette-white: #ffffff;
+  --palette-black: #000000;
+
+  --palette-birch-50: #fcfaf6;   /* birch paper: surfaces */
+  --palette-oat-100: #f5f0e7;    /* oat: page canvas */
+  --palette-oat-200: #ece5d8;    /* linen: wells, sunken */
+  --palette-oat-300: #ded4c3;    /* hairlines */
+  --palette-oat-400: #c9bda9;
+  --palette-stone-500: #8a8273;  /* control edges */
+  --palette-stone-600: #686358;  /* metadata */
+  --palette-stone-700: #524f47;  /* secondary text */
+  --palette-ink-900: #2a2b26;    /* body text */
+
+  --palette-sage-50: #eef2ea;
+  --palette-sage-100: #dfe7da;
+  --palette-sage-200: #c8d6c3;
+  --palette-sage-300: #a9bfa5;
+  --palette-sage-400: #8ba887;
+  --palette-sage-500: #6f8c72;
+  --palette-sage-600: #55715a;
+  --palette-sage-700: #45604a;
+  --palette-sage-800: #374d3b;
+  --palette-sage-900: #26352a;
+  --palette-sage-950: #18221b;
+
+  --palette-clay-100: #f1e3d6;
+  --palette-clay-300: #d9b79c;
+  --palette-clay-500: #a8714f;
+  --palette-clay-700: #7a4c31;
+  --palette-clay-900: #3b2518;
+
+  --palette-fjord-100: #dfe6ea;
+  --palette-fjord-300: #a7b8c2;
+  --palette-fjord-700: #3e5866;
+  --palette-fjord-900: #1f2d35;
+
+  --palette-lingon-100: #f3dcd8;
+  --palette-lingon-300: #e0a39a;
+  --palette-lingon-600: #a2443a;
+  --palette-lingon-700: #86352d;
+  --palette-lingon-950: #301512;
+
+  --palette-night-950: #171815;  /* winter evening canvas */
+  --palette-night-900: #1f211d;
+  --palette-night-850: #262823;
+  --palette-night-800: #2e312b;
+  --palette-night-700: #3d4039;
+  --palette-night-500: #8c8678;
+  --palette-night-300: #a8a193;
+  --palette-night-200: #c3bcae;
+  --palette-night-50: #eee8dc;
+
+  /* ---------- Primitives: typography ----------------------------------- */
+  --font-family-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-family-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --font-size-xs: 0.75rem;     /* 12px  labels, metadata */
+  --font-size-sm: 0.875rem;    /* 14px  secondary */
+  --font-size-md: 1rem;        /* 16px  body */
+  --font-size-lg: 1.1875rem;   /* 19px  lead */
+  --font-size-xl: 1.375rem;    /* 22px  h4 */
+  --font-size-2xl: 1.75rem;    /* 28px  h3 */
+  --font-size-3xl: 2.25rem;    /* 36px  h2 */
+  --font-size-4xl: clamp(2.5rem, 1.6rem + 3.6vw, 4.25rem);  /* h1 */
+  --font-size-5xl: clamp(2.75rem, 1.5rem + 5vw, 5.25rem);   /* display */
+
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.08;
+  --line-height-snug: 1.3;
+  --line-height-normal: 1.65;
+  --line-height-relaxed: 1.85;
+
+  --letter-spacing-tight: -0.03em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.14em;
+
+  /* ---------- Semantic: colour (light) --------------------------------- */
+  --color-bg-canvas: var(--palette-oat-100);
+  --color-bg-surface: var(--palette-birch-50);
+  --color-bg-surface-raised: var(--palette-white);
+  --color-bg-surface-sunken: var(--palette-oat-200);
+  --color-bg-subtle: var(--palette-oat-200);
+  --color-bg-subtle-hover: var(--palette-oat-300);
+  --color-bg-inverse: var(--palette-ink-900);
+  --color-bg-backdrop: rgba(42, 43, 38, 0.45);
+
+  --color-fg-default: var(--palette-ink-900);
+  --color-fg-muted: var(--palette-stone-700);
+  --color-fg-subtle: var(--palette-stone-600);
+  --color-fg-disabled: var(--palette-oat-400);
+  --color-fg-inverse: var(--palette-birch-50);
+  --color-fg-link: var(--palette-sage-700);
+  --color-fg-link-hover: var(--palette-sage-800);
+
+  --color-border-default: var(--palette-oat-300);
+  --color-border-strong: var(--palette-stone-500);
+  --color-border-inverse: var(--palette-stone-700);
+
+  --color-accent: var(--palette-sage-600);
+  --color-accent-hover: var(--palette-sage-700);
+  --color-accent-active: var(--palette-sage-800);
+  --color-accent-subtle: var(--palette-sage-50);
+  --color-accent-subtle-hover: var(--palette-sage-100);
+  --color-fg-on-accent: var(--palette-birch-50);
+  --color-fg-accent: var(--palette-sage-700);
+
+  --color-focus-ring: var(--palette-sage-700);
+  --color-focus-ring-offset: var(--color-bg-surface);
+
+  --color-info-bg: var(--palette-fjord-100);
+  --color-info-fg: var(--palette-fjord-700);
+  --color-info-border: var(--palette-fjord-300);
+  --color-info-icon: var(--palette-fjord-700);
+  --color-info-solid: var(--palette-fjord-700);
+
+  --color-success-bg: var(--palette-sage-50);
+  --color-success-fg: var(--palette-sage-700);
+  --color-success-border: var(--palette-sage-300);
+  --color-success-icon: var(--palette-sage-500);
+  --color-success-solid: var(--palette-sage-700);
+
+  --color-warning-bg: var(--palette-clay-100);
+  --color-warning-fg: var(--palette-clay-700);
+  --color-warning-border: var(--palette-clay-300);
+  --color-warning-icon: var(--palette-clay-500);
+  --color-warning-solid: var(--palette-clay-700);
+
+  --color-danger-bg: var(--palette-lingon-100);
+  --color-danger-fg: var(--palette-lingon-700);
+  --color-danger-border: var(--palette-lingon-300);
+  --color-danger-icon: var(--palette-lingon-600);
+  --color-danger-solid: var(--palette-lingon-600);
+  --color-danger-solid-hover: var(--palette-lingon-700);
+  --color-fg-on-danger: var(--palette-white);
+
+  /* Tile colours: tiles behind initials, grain, the online dot. */
+  --color-tile-sage: var(--palette-sage-100);
+  --color-tile-clay: var(--palette-clay-100);
+  --color-tile-fjord: var(--palette-fjord-100);
+  --color-tile-oat: var(--palette-oat-200);
+  --color-tile-fg: var(--palette-ink-900);
+  --color-grain: var(--palette-clay-500);
+  --grain-opacity: 0.09;
+  --color-online: var(--palette-sage-500);
+  --color-panel-birch: var(--palette-clay-100);
+
+  /* ---------- Semantic: typography roles ------------------------------- */
+  --text-display: var(--font-weight-light) var(--font-size-5xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h1: var(--font-weight-light) var(--font-size-4xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h2: var(--font-weight-light) var(--font-size-3xl) / 1.15 var(--font-family-display);
+  --text-h3: var(--font-weight-medium) var(--font-size-xl) / var(--line-height-snug) var(--font-family-sans);
+  --text-h4: var(--font-weight-semibold) var(--font-size-md) / var(--line-height-snug) var(--font-family-sans);
+  --text-body-lg: var(--font-weight-regular) var(--font-size-lg) / var(--line-height-relaxed) var(--font-family-sans);
+  --text-body: var(--font-weight-regular) var(--font-size-md) / var(--line-height-normal) var(--font-family-sans);
+  --text-body-sm: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-sans);
+  --text-caption: var(--font-weight-medium) var(--font-size-xs) / var(--line-height-normal) var(--font-family-sans);
+  --text-label: var(--font-weight-semibold) var(--font-size-sm) / var(--line-height-normal) var(--font-family-sans);
+  --text-overline: var(--font-weight-semibold) var(--font-size-xs) / var(--line-height-normal) var(--font-family-sans);
+  --text-code: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-mono);
+
+  /* ---------- Semantic: spacing (4px base, generous top end) ----------- */
+  --space-0: 0;
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+  --space-40: 10rem;
+
+  /* ---------- Semantic: layout ----------------------------------------- */
+  --layout-breakpoint-sm: 40rem;
+  --layout-breakpoint-md: 48rem;
+  --layout-breakpoint-lg: 64rem;
+  --layout-breakpoint-xl: 80rem;
+  --layout-breakpoint-2xl: 96rem;
+
+  --layout-columns: 4;
+  --layout-gutter: var(--space-5);
+  --layout-margin: var(--space-5);
+  --layout-container-max: 74rem;
+  --layout-measure: 58ch;
+  --layout-sidebar-width: 17rem;
+  --layout-topbar-height: 4.5rem;
+  --layout-section-gap: var(--space-24);
+
+  /* ---------- Semantic: shape ------------------------------------------ */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-full: 9999px;
+
+  --border-width-hairline: 1px;
+  --border-width-thick: 2px;
+
+  /* ---------- Semantic: elevation (warm, very soft) -------------------- */
+  --shadow-color: 70 58 38;
+  --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.05);
+  --shadow-2: 0 1px 2px rgb(var(--shadow-color) / 0.04), 0 14px 32px -18px rgb(var(--shadow-color) / 0.28);
+  --shadow-3: 0 2px 6px rgb(var(--shadow-color) / 0.05), 0 24px 48px -24px rgb(var(--shadow-color) / 0.32);
+  --shadow-4: 0 30px 70px -30px rgb(var(--shadow-color) / 0.4), 0 4px 12px rgb(var(--shadow-color) / 0.06);
+  --shadow-focus: 0 0 0 2px var(--color-focus-ring-offset), 0 0 0 4px var(--color-focus-ring);
+
+  /* ---------- Semantic: motion (slow and quiet) ------------------------ */
+  --duration-instant: 0ms;
+  --duration-fast: 240ms;
+  --duration-base: 420ms;
+  --duration-slow: 640ms;
+  --duration-deliberate: 900ms;
+  --duration-breath: 3600ms;
+  --ease-standard: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit: cubic-bezier(0.5, 0, 0.75, 0);
+  --ease-spring: cubic-bezier(0.3, 1.3, 0.6, 1);
+  --ease-breath: cubic-bezier(0.45, 0, 0.55, 1);
+  --lift: -3px;
+
+  /* ---------- Semantic: z-order ---------------------------------------- */
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 100;
+  --z-dropdown: 1000;
+  --z-overlay: 1200;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+  --z-tooltip: 1600;
+
+  /* ---------- Semantic: interaction ------------------------------------ */
+  --target-min: 1.5rem;
+  --target-comfortable: 2.75rem;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 3px;
+  --control-height-sm: 2.25rem;
+  --control-height-md: 2.75rem;
+  --control-height-lg: 3.25rem;
+
+  color-scheme: light;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --layout-columns: 8;
+    --layout-gutter: var(--space-8);
+    --layout-margin: var(--space-10);
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --layout-columns: 12;
+    --layout-gutter: var(--space-10);
+    --layout-margin: var(--space-16);
+    --layout-section-gap: var(--space-32);
+  }
+}
+
+/* ---------- Dark theme: a winter evening by lamplight ---------------------- */
+/* dark:start */
+[data-theme="dark"] {
+  --color-bg-canvas: var(--palette-night-950);
+  --color-bg-surface: var(--palette-night-900);
+  --color-bg-surface-raised: var(--palette-night-850);
+  --color-bg-surface-sunken: var(--palette-night-850);
+  --color-bg-subtle: var(--palette-night-800);
+  --color-bg-subtle-hover: var(--palette-night-700);
+  --color-bg-inverse: var(--palette-night-50);
+  --color-bg-backdrop: rgba(0, 0, 0, 0.6);
+  --color-fg-default: var(--palette-night-50);
+  --color-fg-muted: var(--palette-night-200);
+  --color-fg-subtle: var(--palette-night-300);
+  --color-fg-disabled: var(--palette-night-500);
+  --color-fg-inverse: var(--palette-night-950);
+  --color-fg-link: var(--palette-sage-300);
+  --color-fg-link-hover: var(--palette-sage-200);
+  --color-border-default: var(--palette-night-700);
+  --color-border-strong: var(--palette-night-500);
+  --color-border-inverse: var(--palette-oat-300);
+  --color-accent: var(--palette-sage-300);
+  --color-accent-hover: var(--palette-sage-200);
+  --color-accent-active: var(--palette-sage-100);
+  --color-accent-subtle: var(--palette-sage-950);
+  --color-accent-subtle-hover: var(--palette-sage-900);
+  --color-fg-on-accent: var(--palette-sage-950);
+  --color-fg-accent: var(--palette-sage-300);
+  --color-focus-ring: var(--palette-sage-300);
+  --color-info-bg: var(--palette-fjord-900);
+  --color-info-fg: var(--palette-fjord-100);
+  --color-info-border: var(--palette-fjord-700);
+  --color-info-icon: var(--palette-fjord-300);
+  --color-info-solid: var(--palette-fjord-300);
+  --color-success-bg: var(--palette-sage-950);
+  --color-success-fg: var(--palette-sage-200);
+  --color-success-border: var(--palette-sage-800);
+  --color-success-icon: var(--palette-sage-300);
+  --color-success-solid: var(--palette-sage-300);
+  --color-warning-bg: var(--palette-clay-900);
+  --color-warning-fg: var(--palette-clay-300);
+  --color-warning-border: var(--palette-clay-700);
+  --color-warning-icon: var(--palette-clay-300);
+  --color-warning-solid: var(--palette-clay-300);
+  --color-danger-bg: var(--palette-lingon-950);
+  --color-danger-fg: var(--palette-lingon-300);
+  --color-danger-border: var(--palette-lingon-700);
+  --color-danger-icon: var(--palette-lingon-300);
+  --color-danger-solid: var(--palette-lingon-300);
+  --color-danger-solid-hover: var(--palette-lingon-100);
+  --color-fg-on-danger: var(--palette-lingon-950);
+  --color-tile-sage: var(--palette-sage-900);
+  --color-tile-clay: var(--palette-clay-900);
+  --color-tile-fjord: var(--palette-fjord-900);
+  --color-tile-oat: var(--palette-night-800);
+  --color-tile-fg: var(--palette-night-50);
+  --color-grain: var(--palette-clay-300);
+  --grain-opacity: 0.06;
+  --color-online: var(--palette-sage-300);
+  --color-panel-birch: var(--palette-night-850);
+  --shadow-color: 0 0 0;
+  --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.3);
+  --shadow-2: 0 1px 2px rgb(var(--shadow-color) / 0.3), 0 18px 36px -18px rgb(var(--shadow-color) / 0.6);
+  --shadow-3: 0 2px 6px rgb(var(--shadow-color) / 0.35), 0 28px 56px -24px rgb(var(--shadow-color) / 0.7);
+  --shadow-4: 0 30px 70px -30px rgb(var(--shadow-color) / 0.8), 0 4px 12px rgb(var(--shadow-color) / 0.4);
+  color-scheme: dark;
+}
+/* dark:end */
+
+/* auto-dark:start (generated from the dark block) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-canvas: var(--palette-night-950);
+    --color-bg-surface: var(--palette-night-900);
+    --color-bg-surface-raised: var(--palette-night-850);
+    --color-bg-surface-sunken: var(--palette-night-850);
+    --color-bg-subtle: var(--palette-night-800);
+    --color-bg-subtle-hover: var(--palette-night-700);
+    --color-bg-inverse: var(--palette-night-50);
+    --color-bg-backdrop: rgba(0, 0, 0, 0.6);
+    --color-fg-default: var(--palette-night-50);
+    --color-fg-muted: var(--palette-night-200);
+    --color-fg-subtle: var(--palette-night-300);
+    --color-fg-disabled: var(--palette-night-500);
+    --color-fg-inverse: var(--palette-night-950);
+    --color-fg-link: var(--palette-sage-300);
+    --color-fg-link-hover: var(--palette-sage-200);
+    --color-border-default: var(--palette-night-700);
+    --color-border-strong: var(--palette-night-500);
+    --color-border-inverse: var(--palette-oat-300);
+    --color-accent: var(--palette-sage-300);
+    --color-accent-hover: var(--palette-sage-200);
+    --color-accent-active: var(--palette-sage-100);
+    --color-accent-subtle: var(--palette-sage-950);
+    --color-accent-subtle-hover: var(--palette-sage-900);
+    --color-fg-on-accent: var(--palette-sage-950);
+    --color-fg-accent: var(--palette-sage-300);
+    --color-focus-ring: var(--palette-sage-300);
+    --color-info-bg: var(--palette-fjord-900);
+    --color-info-fg: var(--palette-fjord-100);
+    --color-info-border: var(--palette-fjord-700);
+    --color-info-icon: var(--palette-fjord-300);
+    --color-info-solid: var(--palette-fjord-300);
+    --color-success-bg: var(--palette-sage-950);
+    --color-success-fg: var(--palette-sage-200);
+    --color-success-border: var(--palette-sage-800);
+    --color-success-icon: var(--palette-sage-300);
+    --color-success-solid: var(--palette-sage-300);
+    --color-warning-bg: var(--palette-clay-900);
+    --color-warning-fg: var(--palette-clay-300);
+    --color-warning-border: var(--palette-clay-700);
+    --color-warning-icon: var(--palette-clay-300);
+    --color-warning-solid: var(--palette-clay-300);
+    --color-danger-bg: var(--palette-lingon-950);
+    --color-danger-fg: var(--palette-lingon-300);
+    --color-danger-border: var(--palette-lingon-700);
+    --color-danger-icon: var(--palette-lingon-300);
+    --color-danger-solid: var(--palette-lingon-300);
+    --color-danger-solid-hover: var(--palette-lingon-100);
+    --color-fg-on-danger: var(--palette-lingon-950);
+    --color-tile-sage: var(--palette-sage-900);
+    --color-tile-clay: var(--palette-clay-900);
+    --color-tile-fjord: var(--palette-fjord-900);
+    --color-tile-oat: var(--palette-night-800);
+    --color-tile-fg: var(--palette-night-50);
+    --color-grain: var(--palette-clay-300);
+    --grain-opacity: 0.06;
+    --color-online: var(--palette-sage-300);
+    --color-panel-birch: var(--palette-night-850);
+    --shadow-color: 0 0 0;
+    --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.3);
+    --shadow-2: 0 1px 2px rgb(var(--shadow-color) / 0.3), 0 18px 36px -18px rgb(var(--shadow-color) / 0.6);
+    --shadow-3: 0 2px 6px rgb(var(--shadow-color) / 0.35), 0 28px 56px -24px rgb(var(--shadow-color) / 0.7);
+    --shadow-4: 0 30px 70px -30px rgb(var(--shadow-color) / 0.8), 0 4px 12px rgb(var(--shadow-color) / 0.4);
+    color-scheme: dark;
+  }
+}
+/* auto-dark:end */
+
+/* ---------- Preference overrides ------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0.01ms;
+    --duration-base: 0.01ms;
+    --duration-slow: 0.01ms;
+    --duration-deliberate: 0.01ms;
+    --duration-breath: 0.01ms;
+    --lift: 0px;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-border-default: var(--color-border-strong);
+    --color-fg-muted: var(--color-fg-default);
+    --color-fg-subtle: var(--color-fg-muted);
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --color-focus-ring: Highlight;
+    --color-border-default: CanvasText;
+    --color-border-strong: CanvasText;
+  }
+}

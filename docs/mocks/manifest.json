@@ -1,0 +1,33 @@
+{
+  "project": "Banaro",
+  "screens": [
+    {
+      "id": "home",
+      "kind": "page",
+      "title": "Home",
+      "route": "/",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "This retained mock set contains default states only; this variant has not been authored.",
+        "empty": "This retained mock set contains default states only; this variant has not been authored.",
+        "error": "This retained mock set contains default states only; this variant has not been authored."
+      }
+    },
+    {
+      "id": "directory",
+      "kind": "page",
+      "title": "Builder directory",
+      "route": "/builders",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "This retained mock set contains default states only; this variant has not been authored.",
+        "empty": "This retained mock set contains default states only; this variant has not been authored.",
+        "error": "This retained mock set contains default states only; this variant has not been authored."
+      }
+    }
+  ]
+}
