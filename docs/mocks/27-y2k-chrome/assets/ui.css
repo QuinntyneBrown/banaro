@@ -45,7 +45,7 @@ button, input, select { font: inherit; color: inherit; }
   background: var(--chrome-gradient); -webkit-background-clip: text; background-clip: text; color: transparent;
   filter: drop-shadow(0 1px 0 var(--chrome-bevel-hi)) drop-shadow(0 -1px 0 var(--chrome-bevel-lo)) drop-shadow(0 6px 10px rgb(var(--shadow-color) / 0.25));
 }
-.overline { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); color: var(--color-fg-muted); display: inline-flex; align-items: center; gap: var(--space-2); }
+.overline { line-height: 1.7; font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); color: var(--color-fg-muted); display: inline-flex; align-items: center; gap: var(--space-2); }
 
 /* ---------- Sparkles ------------------------------------------------------ */
 .sparkle { position: absolute; width: var(--sz, 1.5rem); height: var(--sz, 1.5rem); fill: currentColor; color: var(--sparkle); pointer-events: none; }
@@ -126,7 +126,7 @@ button, input, select { font: inherit; color: inherit; }
 .hero { position: relative; padding-block: var(--space-12) var(--space-16); }
 .hero__grid { display: grid; gap: var(--space-12); align-items: center; }
 .hero__copy { position: relative; display: grid; gap: var(--space-6); justify-items: start; }
-.hero__title { font: var(--text-display); letter-spacing: var(--letter-spacing-tight); }
+.hero__title { font: var(--text-display); line-height: 1.04; letter-spacing: var(--letter-spacing-tight); }
 .hero__title .chrome { display: inline; padding-bottom: 0.08em; }
 .hero__title small { display: block; margin-top: var(--space-3); font: 600 var(--font-size-3xl) / 1.1 var(--font-family-display); letter-spacing: -0.02em; color: var(--color-fg-default); }
 .hero__lead { font: var(--text-body-lg); color: var(--color-fg-muted); max-width: 36rem; }

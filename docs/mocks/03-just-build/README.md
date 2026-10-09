@@ -105,4 +105,14 @@ the static band. Other durations drop to 0.01 ms through the tokens.
 ## Coverage
 
 <!-- coverage:start -->
+
+Legend: ✅ mock exists · ➖ not applicable (reason in manifest) · ❌ missing
+
+### Pages
+
+| Screen | default | loading | empty | error | Requirements |
+|---|---|---|---|---|---|
+| Home (`home`) | [✅](pages/home/default.html) | ➖ | ➖ | ➖ |  |
+| Builder directory (`directory`) | [✅](pages/directory/default.html) | ➖ | ➖ | ➖ |  |
+
 <!-- coverage:end -->

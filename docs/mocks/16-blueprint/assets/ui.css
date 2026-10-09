@@ -243,6 +243,7 @@ button, input, select { font: inherit; color: inherit; }
   .schedule--stack [data-label]::before { content: attr(data-label); font: var(--text-overline); text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-fg-subtle); padding-top: 0.15rem; }
   .schedule--stack .schedule__lead { display: block; padding-bottom: var(--space-2); }
   .schedule--stack .schedule__lead::before { content: none; }
+  .schedule--stack [data-label] > .schedule__sub, .schedule--stack [data-label] > .schedule__bar { grid-column: 2; margin-top: 0; }
 }
 
 /* ---------- Notes, verse, testimonial ------------------------------------- */

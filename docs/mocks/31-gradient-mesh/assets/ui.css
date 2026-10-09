@@ -90,12 +90,13 @@ a:hover .hover-arrow__tip, button:hover .hover-arrow__tip { transform: translate
 
 /* ---------- Mesh ----------------------------------------------------------- */
 .mesh { position: absolute; inset: 0; overflow: hidden; background: var(--mesh-base); isolation: isolate; }
-.mesh__blob { position: absolute; width: 60%; aspect-ratio: 1; border-radius: 50%; filter: blur(48px); opacity: 0.9; mix-blend-mode: normal; }
+.mesh__blob { position: absolute; width: 130%; aspect-ratio: 1; border-radius: 50%; filter: blur(48px); opacity: 0.9; mix-blend-mode: normal; }
 .mesh__blob--1 { left: -10%; top: -30%; background: radial-gradient(circle at center, var(--mesh-1), transparent 65%); }
 .mesh__blob--2 { left: 25%; top: -45%; background: radial-gradient(circle at center, var(--mesh-2), transparent 65%); }
 .mesh__blob--3 { right: -15%; top: -20%; background: radial-gradient(circle at center, var(--mesh-3), transparent 65%); }
 .mesh__blob--4 { left: 5%; bottom: -50%; background: radial-gradient(circle at center, var(--mesh-4), transparent 62%); }
 .mesh__blob--5 { right: 10%; bottom: -40%; background: radial-gradient(circle at center, var(--mesh-5), transparent 62%); }
+@media (min-width: 64rem) { .mesh__blob { width: 60%; } }
 .mesh__grain { position: absolute; inset: 0; opacity: 0.18; mix-blend-mode: overlay; }
 @media (prefers-reduced-motion: no-preference) {
   .mesh__blob--1 { animation: drift-a var(--duration-mesh) var(--ease-mesh) infinite alternate; }
@@ -123,7 +124,7 @@ a:hover .hover-arrow__tip, button:hover .hover-arrow__tip { transform: translate
   border-radius: var(--radius-full); background: color-mix(in srgb, var(--color-bg-surface) 30%, transparent); color: var(--mesh-ink);
   font: var(--text-label); font-weight: var(--font-weight-semibold); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mesh-ink) 18%, transparent); backdrop-filter: blur(6px);
 }
-.pill-note__tag { padding: var(--space-0-5) var(--space-2); border-radius: var(--radius-full); background: var(--color-btn-dark); color: var(--color-btn-dark-fg); font-size: var(--font-size-xs); }
+.pill-note__tag { white-space: nowrap; padding: var(--space-0-5) var(--space-2); border-radius: var(--radius-full); background: var(--color-btn-dark); color: var(--color-btn-dark-fg); font-size: var(--font-size-xs); }
 .pill-note:hover { color: var(--mesh-ink); background: color-mix(in srgb, var(--color-bg-surface) 45%, transparent); }
 @media (min-width: 64rem) {
   .hero { padding-top: calc(var(--layout-topbar-height) + var(--space-16)); padding-bottom: var(--space-24); }
@@ -131,15 +132,15 @@ a:hover .hover-arrow__tip, button:hover .hover-arrow__tip { transform: translate
 }
 
 /* Vignettes */
-.vignettes { position: relative; display: grid; gap: var(--space-4); }
+.vignettes { position: relative; display: grid; gap: var(--space-6); }
 .vcard { background: var(--color-bg-surface); color: var(--color-fg-default); border-radius: var(--radius-lg); box-shadow: var(--shadow-4), 0 0 0 1px color-mix(in srgb, var(--color-border-default) 60%, transparent); padding: var(--space-5); }
 .vcard__eyebrow { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); font: var(--text-caption); color: var(--color-fg-subtle); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); font-weight: var(--font-weight-semibold); margin-bottom: var(--space-3); }
 @media (min-width: 64rem) {
-  .vignettes { min-height: 34rem; perspective: 2000px; display: block; }
+  .vignettes { min-height: 38rem; perspective: 2000px; display: block; }
   .vignettes__stage { position: absolute; inset: 0; transform: rotateY(-14deg) rotateX(8deg) rotateZ(1deg); transform-style: preserve-3d; }
   .vcard--profile { position: absolute; left: 2%; top: 0; width: 22rem; }
   .vcard--match { position: absolute; right: -6%; top: 18.5rem; width: 20rem; transform: translateZ(60px); }
-  .vcard--ticket { position: absolute; left: -8%; top: 25.5rem; width: 21rem; transform: translateZ(30px); }
+  .vcard--ticket { position: absolute; left: -6%; top: 30rem; width: 21rem; transform: translateZ(30px); }
 }
 @media (prefers-reduced-motion: no-preference) and (min-width: 64rem) {
   .vcard--match { animation: float var(--duration-mesh) var(--ease-mesh) infinite alternate; }
@@ -353,7 +354,7 @@ a:hover .hover-arrow__tip, button:hover .hover-arrow__tip { transform: translate
 .filters { display: grid; gap: var(--space-6); }
 .filter-group { border: 0; padding: 0; margin: 0; display: grid; gap: var(--space-1); min-width: 0; }
 .filter-group + .filter-group { padding-top: var(--space-6); border-top: 1px solid var(--color-border-default); }
-.filter-group__legend { padding: 0; margin-bottom: var(--space-2); font: var(--font-weight-semibold) var(--font-size-sm) / 1.3 var(--font-family-sans); display: flex; justify-content: space-between; width: 100%; }
+.filter-group__legend { float: left; padding: 0; margin-bottom: var(--space-2); font: var(--font-weight-semibold) var(--font-size-sm) / 1.3 var(--font-family-sans); display: flex; justify-content: space-between; width: 100%; }
 .check { display: flex; align-items: center; gap: var(--space-2); min-height: 2rem; padding: 0 var(--space-2); margin-inline: calc(-1 * var(--space-2)); border-radius: var(--radius-sm); font: var(--text-body-sm); cursor: pointer; }
 .check:hover { background: var(--color-bg-subtle); }
 .check__count { margin-left: auto; font: var(--text-caption); color: var(--color-fg-subtle); font-variant-numeric: tabular-nums; }
@@ -398,7 +399,6 @@ a:hover .hover-arrow__tip, button:hover .hover-arrow__tip { transform: translate
 /* Builder card */
 .bgrid { display: grid; gap: var(--space-4); list-style: none; padding: 0; margin: 0; }
 @media (min-width: 40rem) { .bgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 80rem) { .bgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .bcard { display: grid; gap: var(--space-4); align-content: start; height: 100%; padding: var(--space-5); background: var(--color-bg-surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-1), 0 0 0 1px var(--color-border-default); transition: box-shadow var(--duration-base) var(--ease-standard), transform var(--duration-base) var(--ease-standard); }
 .bcard:hover, .bcard:focus-within { box-shadow: var(--shadow-3), 0 0 0 1px var(--color-border-default); transform: translateY(-2px); }
 .bcard__head { display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-3); align-items: center; }

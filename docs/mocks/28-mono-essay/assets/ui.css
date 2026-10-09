@@ -9,6 +9,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 html:has(.essay) { scroll-snap-type: y proximity; }
+html:has(.essay) .mast { scroll-snap-align: start; }  /* the top of the page is a snap point too, so the header shows on load */
 body { margin: 0; overflow-x: clip; font: var(--text-body); color: var(--color-fg-default); background: var(--color-bg-canvas); font-variant-numeric: oldstyle-nums proportional-nums; }
 img { max-width: 100%; display: block; }
 h1, h2, h3, h4 { margin: 0; font-weight: var(--font-weight-regular); text-wrap: balance; }

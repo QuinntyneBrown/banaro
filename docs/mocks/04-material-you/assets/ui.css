@@ -397,3 +397,5 @@ a { color: var(--color-fg-link); }
 .md-search { min-width: 0; }
 .md-topbar > .md-iconbtn { flex: none; }
 @media (max-width: 74.99rem) { .md-dir > aside { order: -1; } }
+.md-iconbtn.md-state::after { width: 100%; } /* icon buttons keep overflow visible for badges, so the ripple stays inside the circle */
+.md-list__trail .md-chip { white-space: normal; padding-block: var(--space-1); }

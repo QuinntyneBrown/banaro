@@ -29,9 +29,10 @@ button, input, select { font: inherit; color: inherit; }
 .skip-link { position: fixed; top: var(--space-3); left: var(--space-3); z-index: var(--z-tooltip); padding: var(--space-3) var(--space-5); border-radius: var(--radius-full); background: var(--color-accent); color: var(--color-fg-on-accent); font: var(--text-label); text-decoration: none; translate: 0 -200%; }
 .skip-link:focus { translate: 0 0; }
 .wrap { width: min(100% - 2 * var(--layout-margin), var(--layout-container-max)); margin-inline: auto; }
+@media (min-width: 80rem) { .wrap { width: min(100% - 2 * var(--layout-rail-width), var(--layout-container-max)); } }
 .kicker { font: var(--text-overline); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-coral); }
 .lede { font: var(--text-story); color: var(--color-fg-muted); max-width: var(--layout-measure); }
-mark { background: linear-gradient(transparent 55%, var(--color-highlight) 55%); color: inherit; padding-inline: 0.1em; }
+mark { background: none; color: inherit; font-weight: var(--font-weight-semibold); text-decoration: underline wavy var(--color-progress); text-decoration-thickness: 2px; text-underline-offset: 0.28em; text-decoration-skip-ink: none; }
 
 /* ---------- Buttons -------------------------------------------------------- */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: var(--control-height-md); padding: 0 var(--space-6); border: var(--border-width-thick) solid var(--color-fg-default); border-radius: var(--radius-full); background: transparent; color: var(--color-fg-default); font: var(--font-weight-bold) var(--font-size-md) / 1 var(--font-family-sans); text-decoration: none; cursor: pointer; white-space: nowrap; transition: background-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), translate var(--duration-fast) var(--ease-standard); }
@@ -164,9 +165,9 @@ mark { background: linear-gradient(transparent 55%, var(--color-highlight) 55%);
 .step__area-text { font: var(--text-body-sm); color: var(--color-fg-muted); }
 .step:first-child { min-height: 60vh; }
 @media (min-width: 64rem) {
-  .story { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: var(--space-12); align-items: start; }
+  .story { grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr); gap: var(--space-12); align-items: start; }
   .story__steps { grid-column: 1; grid-row: 1; }
-  .story__stage { grid-column: 2; grid-row: 1; top: var(--space-12); height: calc(100vh - var(--space-24)); margin-inline: 0; border-radius: var(--radius-xl); box-shadow: var(--shadow-3); }
+  .story__stage { grid-column: 2; grid-row: 1; top: max(var(--space-8), calc(50vh - 20rem)); height: auto; aspect-ratio: 10 / 7.4; max-height: calc(100vh - var(--space-16)); margin-inline: 0; border-radius: var(--radius-xl); box-shadow: var(--shadow-3); }
   .step { padding-block: var(--space-16); }
   .step__card { padding: var(--space-8); }
 }
@@ -223,7 +224,8 @@ mark { background: linear-gradient(transparent 55%, var(--color-highlight) 55%);
 /* ---------- Reveal on scroll (people, projects, results) ------------------ */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .reveal { animation: reveal linear both; animation-timeline: view(); animation-range: entry 5% entry 75%; }
+    /* forwards (not both): before the range the element keeps its resting, visible state. */
+    .reveal { animation: reveal linear forwards; animation-timeline: view(); animation-range: entry 2% entry 70%; }
     .reveal--left { animation-name: reveal-left; }
     @keyframes reveal { from { opacity: 0; translate: 0 3rem; scale: 0.96; } }
     @keyframes reveal-left { from { opacity: 0; translate: -3rem 0; } }

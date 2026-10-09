@@ -110,4 +110,14 @@ page. Reduced motion sets every duration token to 0.01 ms.
 ## Coverage
 
 <!-- coverage:start -->
+
+Legend: ✅ mock exists · ➖ not applicable (reason in manifest) · ❌ missing
+
+### Pages
+
+| Screen | default | loading | empty | error | Requirements |
+|---|---|---|---|---|---|
+| Home (`home`) | [✅](pages/home/default.html) | ➖ | ➖ | ➖ |  |
+| Builder directory (`directory`) | [✅](pages/directory/default.html) | ➖ | ➖ | ➖ |  |
+
 <!-- coverage:end -->

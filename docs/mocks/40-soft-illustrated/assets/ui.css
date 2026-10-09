@@ -244,7 +244,8 @@ p { text-wrap: pretty; }
 .greet { display: grid; gap: var(--space-6); align-items: center; padding: var(--space-6); margin-top: var(--space-4); border-radius: var(--radius-xl); background: var(--section-sky); }
 @media (min-width: 48rem) { .greet { grid-template-columns: auto 1fr; padding: var(--space-8) var(--space-10); } }
 @media (min-width: 64rem) { .greet { grid-template-columns: auto 1fr minmax(0, 26rem); } }
-.greet__art { inline-size: 7rem; }
+.greet__art { inline-size: 5rem; }
+@media (min-width: 48rem) { .greet__art { inline-size: 7rem; } }
 .greet__hello { font: var(--text-label); color: var(--color-fg-muted); }
 .greet__title { font: var(--text-h1); }
 .greet__count { margin-top: var(--space-1); color: var(--color-fg-muted); }
@@ -262,7 +263,7 @@ p { text-wrap: pretty; }
 .panel[popover] { margin: auto var(--space-3) var(--space-3); inset: auto 0 0 0; inline-size: auto; max-block-size: 85vh; overflow: auto; padding: var(--space-6); border: 0; border-radius: var(--radius-xl); background: var(--color-bg-surface); color: var(--color-fg-default); box-shadow: var(--shadow-4); }
 .panel[popover]::backdrop { background: var(--color-bg-backdrop); }
 @media (min-width: 64rem) {
-  .panel[popover] { display: block; position: sticky; top: calc(var(--layout-topbar-height) + var(--space-4)); inset: auto; margin: 0; max-block-size: calc(100vh - var(--layout-topbar-height) - var(--space-8)); box-shadow: var(--shadow-1); }
+  .panel[popover] { display: block; position: static; inset: auto; margin: 0; max-block-size: none; overflow: visible; box-shadow: var(--shadow-1); }
   .panel__done { display: none; }
 }
 .panel__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2); }
@@ -326,3 +327,6 @@ p { text-wrap: pretty; }
 .pager a:hover { background: var(--color-bg-subtle); }
 .pager a[aria-current="page"] { background: var(--color-accent); color: var(--color-fg-on-accent); }
 .pager__gap { display: inline-grid; place-items: center; min-inline-size: var(--space-6); color: var(--color-fg-muted); }
+.s-arm-lilac, .s-arm-sky { fill: none; stroke-width: 16; stroke-linecap: round; }
+.s-arm-lilac { stroke: var(--ill-lilac-deep); } .s-arm-sky { stroke: var(--ill-sky-light); }
+.friend .pill { white-space: normal; justify-content: center; text-align: center; } .friend__name { overflow-wrap: anywhere; }
