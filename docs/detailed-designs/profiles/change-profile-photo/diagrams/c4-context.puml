@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Change profile photo
+
+Person(member, "Member", "Signed-in, verified builder")
+Person(viewer, "Visitor or other member", "Sees the photo once it is scanned")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+System_Ext(scanner, "Media scanner", "Malware-scanning service; vendor to be supplied")
+
+Rel(member, banaro, "Uploads, replaces and removes a photo using", "HTTPS")
+Rel(viewer, banaro, "Sees ready photos through", "HTTPS")
+Rel(banaro, scanner, "Scans each uploaded photo via", "MediaScanner contract")
+@enduml

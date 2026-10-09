@@ -1,0 +1,38 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Give feedback on a project
+
+Container(web, "Banaro Web", "Angular", "GiveFeedbackDialog, ReplyToFeedbackDialog, ProjectDetailPage, HttpProjectsApi")
+ContainerDb(db, "Banaro database", "Relational database", "projects, feedback, blocks")
+ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters, Horizon queues")
+
+Container_Boundary(api, "Banaro API") {
+  Component(throttle, "throttle:project-feedback", "Rate limiter middleware", "10 per hour per member")
+  Component(ctrl, "FeedbackController / FeedbackReplyController / FeedbackVisibilityController", "Laravel controllers", "POST /feedback, PUT /reply, PUT /hidden")
+  Component(req, "GiveFeedbackRequest / ReplyToFeedbackRequest / HideFeedbackRequest", "Form requests", "authorize() then length rules")
+  Component(ppolicy, "ProjectPolicy / FeedbackPolicy", "Policies", "Not owner and not blocked; owner only")
+  Component(block, "BlockService", "Domain service (TrustAndSafety)", "isBlockedEitherWay()")
+  Component(give, "GiveFeedback", "Action", "Stores item, counts, queues notification")
+  Component(respond, "ReplyToFeedback / HideFeedback", "Actions", "One reply per item; hide from public view")
+  Component(models, "Project / Feedback", "Eloquent models", "Feedback, reply and hidden state")
+  Component(resource, "FeedbackResource", "API resource", "FeedbackView JSON shape")
+  Component(notify, "FeedbackReceivedNotification", "Queued notification", "mail and database channels")
+}
+
+Rel(web, throttle, "Calls", "JSON/HTTPS")
+Rel(throttle, redis, "Counts requests", "Redis protocol")
+Rel(throttle, ctrl, "Passes within limit")
+Rel(ctrl, req, "Validates with")
+Rel(req, ppolicy, "Authorizes with")
+Rel(ppolicy, block, "Calls isBlockedEitherWay()")
+Rel(ctrl, give, "Calls handle()")
+Rel(ctrl, respond, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(give, models, "Creates")
+Rel(respond, models, "Updates")
+Rel(give, notify, "Queues after commit")
+Rel(models, db, "Reads and writes", "SQL")
+Rel(block, db, "Reads blocks", "SQL")
+Rel(notify, redis, "Pushed to", "Redis protocol")
+@enduml

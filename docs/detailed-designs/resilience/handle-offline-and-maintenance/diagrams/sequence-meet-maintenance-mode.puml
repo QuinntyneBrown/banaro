@@ -1,0 +1,60 @@
+@startuml
+title UML sequence behaviour — Meet maintenance mode
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Maintainer" as maintainer
+actor "Member" as actor
+participant "Container orchestrator" as orch
+box "Frontend — banaro application" #E0F2FE
+  participant "Requested page" as page
+  participant "MaintenanceInterceptor" as interceptor
+  participant "RouterErrorPageNavigator" as nav
+  participant "MaintenancePage" as mpage
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "RespondDuringMaintenance" as mw
+  participant "LivenessController" as live
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Redis" as redis
+end box
+
+maintainer -> mw : php artisan down ~-~-retry={seconds}
+mw -> redis : Store flag {time, retry} (cache maintenance driver)
+actor -> page : Open any page
+page -> interceptor : GET /api/v1/...
+interceptor -> mw : Request
+mw -> redis : Read flag
+redis --> mw : Flag set
+alt path matches health/*
+  mw -> live : Pass through
+  live --> mw : 200
+else any other path
+  mw --> interceptor : 503, Retry-After, {code: "maintenance", expectedBackAt} (L2-043 criterion 2)
+  interceptor -> nav : maintenance(expectedBackAt, failedUrl)
+  nav -> mpage : Show in place, skipLocationChange
+  mpage --> actor : "Down for a short maintenance", back by "10:30 am" Eastern (L2-052 criterion 2)
+end
+orch -> live : GET /health/live
+live --> orch : 200, no restart (L2-043 criterion 3)
+opt SSR of a page during maintenance
+  mpage -> mpage : RESPONSE_INIT status 503, Retry-After header, noindex
+end
+maintainer -> mw : php artisan up
+mw -> redis : Clear flag
+actor -> mpage : Select "Check again"
+mpage -> page : Re-navigate to failedUrl
+page --> actor : Page loads normally
+@enduml

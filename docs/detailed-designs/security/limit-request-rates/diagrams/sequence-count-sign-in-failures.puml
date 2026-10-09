@@ -1,0 +1,72 @@
+@startuml
+title UML sequence behaviour — Count failed sign-in attempts
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "SignInPage" as page
+  participant "HttpIdentityApi" as client
+  participant "rateLimitInterceptor" as interceptor
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "SignInController" as controller
+  participant "Exception rendering" as render
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "SignIn" as action
+  participant "AttemptLimiter" as attempts
+  participant "ClientFingerprint" as fingerprint
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Redis" as redis
+  database "Banaro database" as db
+end box
+
+actor -> page : Submit e-mail and password
+page -> client : signIn(email, password)
+client -> interceptor : POST /api/v1/auth/sign-in
+interceptor -> controller : Request (anonymous-limiter and CSRF checks passed)
+controller -> action : handle(credentials, request)
+action -> fingerprint : forEmail(email), forRequest(request)
+fingerprint --> action : Account key, IP key
+action -> attempts : tooManyFailures([account: 5, ip: 20])
+attempts -> redis : GET failure counts
+redis --> attempts : Counts in the 15-minute window
+alt 5 account failures or 20 IP failures already recorded
+  attempts --> action : true, availableIn seconds
+  action -> render : ThrottleRequestsException with Retry-After
+  render --> interceptor : 429 rate_limited, limiter sign-in, Retry-After (L2-003 criterion 3)
+  interceptor --> page : RateLimitedError
+  page --> actor : "Try again in N minutes" from Retry-After (L2-046 criterion 2)
+else under the limits
+  attempts --> action : false
+  action -> db : Find account and verify password hash
+  alt wrong e-mail or password
+    db --> action : No match
+    action -> attempts : recordFailure([account, ip], 900 s)
+    attempts -> redis : INCR both keys
+    action --> controller : Generic failure
+    controller --> client : 422 "Those details don't match"
+    client --> page : error state
+  else correct
+    db --> action : Member
+    action -> attempts : clear(account key)
+    action --> controller : Session created
+    controller --> client : 200 member summary
+    client --> page : Signed in
+    page --> actor : Dashboard
+  end
+end
+@enduml

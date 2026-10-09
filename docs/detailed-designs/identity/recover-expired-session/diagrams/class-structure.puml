@@ -1,0 +1,85 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Recover an expired session
+
+package "Frontend — banaro application and api library" {
+  class sessionExpiryInterceptor <<HttpInterceptorFn>> {
+    -inFlight: Observable<RecoveryResult> | null
+    +intercept(req, next): Observable<HttpEvent>
+  }
+  interface SessionRecovery {
+    +recover(): Observable<RecoveryResult>
+  }
+  enum RecoveryResult {
+    recovered
+    signed-out
+  }
+  class DialogSessionRecovery {
+    -dialog: Dialog
+    +recover(): Observable<RecoveryResult>
+  }
+  class SessionExpiredDialog {
+    -session: SessionStore
+    +state: 'default' | 'busy' | 'invalid' | 'failed'
+    +email: string
+    +password: FormControl<string>
+    +signBackIn(): void
+    +signOut(): void
+  }
+  class SessionStore {
+    -api: IdentityApi
+    +member: Signal<MemberSession | null>
+    +signIn(request: SignInRequest): Observable<MemberSession>
+    +clear(): void
+  }
+  interface IdentityApi {
+    +csrfCookie(): Observable<void>
+    +getSession(): Observable<MemberSession | null>
+    +signIn(request: SignInRequest): Observable<MemberSession>
+  }
+  class HttpIdentityApi
+  class SessionEnded <<Error>>
+}
+
+package "Backend — Banaro API" {
+  class EnforceAbsoluteSessionLifetime {
+    -int absoluteLifetimeDays = 90
+    +handle(request: Request, next: Closure): Response
+  }
+  class SessionController {
+    +store(request: SignInRequest): SessionResource
+  }
+  class SignIn {
+    +handle(data: SignInData, request: Request): User
+  }
+  class "config/session.php" as SessionConfig {
+    +driver = redis
+    +lifetime = 43200
+  }
+}
+
+sessionExpiryInterceptor ..> SessionRecovery : recover()
+sessionExpiryInterceptor ..> SessionStore : reads member
+sessionExpiryInterceptor ..> IdentityApi : getSession() on 419
+sessionExpiryInterceptor ..> SessionEnded : throws on signed-out
+SessionRecovery ..> RecoveryResult : returns
+DialogSessionRecovery ..|> SessionRecovery
+DialogSessionRecovery ..> SessionExpiredDialog : opens
+SessionExpiredDialog ..> SessionStore : signIn() / clear()
+SessionStore ..> IdentityApi : uses
+HttpIdentityApi ..|> IdentityApi
+HttpIdentityApi ..> SessionController : HTTPS
+SessionController ..> SignIn : calls
+EnforceAbsoluteSessionLifetime ..> SessionConfig : session store
+@enduml

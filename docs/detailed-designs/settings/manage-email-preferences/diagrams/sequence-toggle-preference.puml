@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — Toggle an e-mail category
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "EmailPreferencesSection" as section
+  participant "HttpSettingsApi" as client
+  participant "ToastService" as toast
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "EmailPreferenceController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "SetEmailPreference" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> section : Open E-mail tab (/settings/email)
+section --> actor : email state, one switch per category
+actor -> section : Turn "Weekly digest" off
+section -> section : Mark that switch busy; others stay usable
+section -> client : setEmailPreference(weeklyDigest, false)
+client -> controller : PUT /api/v1/settings/email-preferences/weekly-digest
+controller -> controller : Authenticate member, validate SetEmailPreferenceRequest
+controller -> action : handle(member, WeeklyDigest, false)
+action -> db : UPSERT email_preferences (user, WeeklyDigest, false) (L2-037 criterion 1)
+db --> action : Five rows for member
+action --> controller : All five values
+controller --> client : 200 EmailPreferencesResource
+alt success
+  client --> section : EmailPreferences
+  section --> actor : Switch shows saved value; other categories unchanged (L2-037 criterion 1)
+else failure
+  client --> section : Error
+  section -> section : Restore previous value
+  section -> toast : Danger toast with "Try again"
+end
+@enduml

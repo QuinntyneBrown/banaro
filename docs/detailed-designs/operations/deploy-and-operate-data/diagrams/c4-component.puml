@@ -1,0 +1,35 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Deploy and operate data
+
+System_Ext(pipeline, "CI pipeline", ".ci/ build, migrate, seed, rollout")
+System_Ext(orchestrator, "Container orchestrator", "Product <TO SUPPLY>")
+ContainerDb(db, "Banaro database", "Relational database", "Schema and data")
+ContainerDb(redis, "Redis", "Redis", "Locks and queues")
+
+Container_Boundary(image, "banaro-api image") {
+  Component(apiCmd, "API start command", "Dockerfile", "Starts the PHP HTTP server only; no migrate")
+  Component(workerCmd, "Worker start command", "Dockerfile", "php artisan horizon + schedule:work")
+  Component(migrations, "database/migrations", "Laravel migrations", "Expand-contract compatible")
+  Component(seeder, "DatabaseSeeder", "Seeder", "ReferenceDataSeeder always; DemoDataSeeder local and testing")
+  Component(ready, "ReadinessController", "Health controller", "/health/ready gate")
+  Component(schedule, "routes/console.php", "Schedule", "Entries with onOneServer() and withoutOverlapping()")
+  Component(horizon, "Horizon", "Queue supervisor", "One worker per job reservation")
+  Component(jobs, "Scheduled jobs", "ShouldBeUnique jobs", "Monday matching, event reminders, weekly digest")
+}
+
+Rel(pipeline, migrations, "php artisan migrate ~-~-force ~-~-isolated")
+Rel(pipeline, seeder, "php artisan db:seed ~-~-force")
+Rel(migrations, db, "Alters schema", "SQL")
+Rel(seeder, db, "Upserts by natural key", "SQL")
+Rel(orchestrator, apiCmd, "Starts and drains")
+Rel(orchestrator, ready, "Probes before routing traffic", "HTTP")
+Rel(orchestrator, workerCmd, "Starts and drains")
+Rel(workerCmd, schedule, "Runs")
+Rel(workerCmd, horizon, "Runs")
+Rel(schedule, redis, "Takes per-entry lock", "Redis protocol")
+Rel(schedule, jobs, "Dispatches")
+Rel(jobs, redis, "Queued on", "Redis protocol")
+Rel(horizon, jobs, "Runs each once")
+@enduml

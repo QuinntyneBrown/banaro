@@ -1,0 +1,27 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Validate input and harden transport
+
+Person(member, "Member", "Signed-in, verified builder")
+System_Ext(ingress, "Ingress", "TLS termination and path routing; product <TO SUPPLY>")
+System_Ext(ci, "CI pipeline", "dependency-scan stage")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular SSR on Express", "server.ts: HTTPS redirect, security headers, CSP nonce")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Origin and CSRF checks, form requests, security headers")
+  ContainerDb(db, "Banaro database", "Relational database", "Plain-text user content")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions and CSRF tokens")
+  ContainerDb(media, "Media storage", "Private file storage; provider <TO SUPPLY>", "Photos under random names, outside the web root")
+}
+
+Rel(member, ingress, "Requests pages and API", "HTTPS")
+Rel(ingress, web, "Routes page requests", "HTTP, X-Forwarded-Proto")
+Rel(ingress, api, "Routes /api/*", "HTTP, X-Forwarded-Proto")
+Rel(web, api, "Calls during SSR", "JSON/HTTPS")
+Rel(api, redis, "Reads session and CSRF token", "Redis protocol")
+Rel(api, db, "Queries with bound parameters", "SQL")
+Rel(api, media, "Writes uploads", "Storage API")
+Rel(ci, api, "Audits composer.lock", "composer audit")
+Rel(ci, web, "Audits package-lock.json", "npm audit")
+@enduml

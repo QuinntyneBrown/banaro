@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Pass on a suggestion
+
+Person(member, "Member", "Active matching member")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Matching page, pass-suggestion dialog")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Records the pass and its reason")
+  ContainerDb(db, "Banaro database", "Relational database", "Match suggestions with status and pass reason")
+  Container(worker, "Banaro Worker", "Laravel scheduler and Horizon", "Monday run reads passes and reasons")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "POST /api/v1/matching/suggestions/{id}/pass", "JSON/HTTPS")
+Rel(api, db, "Locks and updates the suggestion", "SQL")
+Rel(worker, db, "Reads the 90-day history and pass reasons", "SQL")
+@enduml

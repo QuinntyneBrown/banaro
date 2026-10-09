@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Report a builder or content
+
+Person(member, "Member", "Signed-in, verified builder who reports a subject")
+Person(admin, "Administrator", "Member with the administrator role")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Reports builders, projects, feedback and messages using", "HTTPS")
+Rel(admin, banaro, "Reviews stored reports using", "HTTPS, /admin")
+@enduml

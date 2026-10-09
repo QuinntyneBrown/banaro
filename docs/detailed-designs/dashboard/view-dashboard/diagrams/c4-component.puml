@@ -1,0 +1,40 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — View the dashboard
+
+Container(web, "Banaro Web", "Angular", "DashboardPage, authGuard, HttpDashboardApi")
+ContainerDb(db, "Banaro database", "Relational database", "match_suggestions, rsvps, events, conversations, projects, builders")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "DashboardController", "Laravel controller", "show() and section() in api.php")
+  Component(req, "ViewDashboardRequest / ViewDashboardSectionRequest", "Form requests", "Authorize member, validate section name")
+  Component(build, "BuildDashboard", "Action", "All sections, activity flag and next steps")
+  Component(buildOne, "BuildDashboardSection", "Action", "One section for a retry")
+  Component(assembler, "DashboardAssembler", "Domain service", "Runs each provider in isolation; failure becomes status failed")
+  Component(matches, "MatchesSection", "Section provider", "This week's suggestions, unreviewed count")
+  Component(events, "EventsSection", "Section provider", "Upcoming events the member attends")
+  Component(messages, "MessagesSection", "Section provider", "Unread conversations")
+  Component(projects, "ProjectsSection", "Section provider", "Owned projects and feedback counts")
+  Component(profile, "ProfileSection", "Section provider", "Profile completeness and next missing item")
+  Component(resource, "DashboardResource / DashboardSectionResource", "API resources", "Dashboard and DashboardSection shapes")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, build, "show() calls handle()")
+Rel(ctrl, buildOne, "section() calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(build, assembler, "Requests all sections")
+Rel(buildOne, assembler, "Requests one section")
+Rel(assembler, matches, "load(member)")
+Rel(assembler, events, "load(member)")
+Rel(assembler, messages, "load(member)")
+Rel(assembler, projects, "load(member)")
+Rel(assembler, profile, "load(member)")
+Rel(matches, db, "Reads", "SQL")
+Rel(events, db, "Reads", "SQL")
+Rel(messages, db, "Reads", "SQL")
+Rel(projects, db, "Reads", "SQL")
+Rel(profile, db, "Reads", "SQL")
+@enduml

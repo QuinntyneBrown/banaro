@@ -1,0 +1,73 @@
+@startuml
+title UML sequence behaviour — Edit a project
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ProjectEditPage" as page
+  participant "HttpProjectsApi" as client
+  participant "ToastService" as toast
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ProjectController" as controller
+  participant "UpdateProjectRequest" as request
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ProjectPolicy" as policy
+  participant "UpdateProject" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /projects/{id}/edit
+page -> client : getForEdit(id)
+client -> controller : GET /api/v1/projects/{id}/edit
+controller -> policy : update(member, project)
+alt not the owner
+  policy --> controller : false
+  controller --> client : 403 (L2-014 criterion 2)
+  client --> page : Forbidden
+  page --> actor : forbidden page (L2-042 criterion 2)
+else owner
+  policy --> controller : true
+  controller --> client : 200 ProjectResource
+  client --> page : ProjectDetail
+  page --> actor : default state with the form filled in
+  actor -> page : Change fields, select "Save changes"
+  page -> page : submitting state, button disabled, "Saving…" (L2-014 criterion 1)
+  page -> client : update(id, draft)
+  client -> controller : PATCH /api/v1/projects/{id}
+  controller -> request : authorize() then rules()
+  request -> policy : update(member, project)
+  policy --> request : true
+  alt invalid values
+    request --> controller : Field errors
+    controller --> client : 422 with per-field errors
+    client --> page : Field errors
+    page --> actor : invalid state with field errors (L2-014 criterion 1)
+  else valid
+    request --> controller : validated() without owner_id (L2-044 criterion 4)
+    controller -> action : handle(project, data)
+    action -> db : BEGIN; UPDATE project; sync project_looking_for; last_activity_at = now; COMMIT
+    action --> controller : Project
+    controller --> client : 200 ProjectResource
+    client --> page : ProjectDetail
+    page -> page : navigate /projects/{id}
+    page -> toast : Show success toast (L2-014 criterion 1)
+    page --> actor : Project page with the changes
+  end
+end
+@enduml

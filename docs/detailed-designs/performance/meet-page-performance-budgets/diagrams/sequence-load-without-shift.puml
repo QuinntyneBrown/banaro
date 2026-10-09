@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Load the directory without layout shift
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+participant "Browser" as browser
+box "Frontend — Banaro Web server" #E0F2FE
+  participant "server.ts (SSR)" as server
+end box
+box "Frontend — banaro application" #E0F2FE
+  participant "DirectoryPage" as page
+  participant "bn-skeleton" as skeleton
+  participant "bn-builder-card / bn-avatar" as card
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "BuilderController" as api
+  participant "Photo variant route" as photos
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Media storage" as media
+end box
+
+actor -> browser : Open /builders on a phone
+browser -> server : GET /builders
+server -> page : Render shell and loading state
+page -> skeleton : 12 builder-card skeletons in the result grid
+server --> browser : HTML with sized skeleton boxes; small initial JS (L2-048 criterion 2)
+browser -> browser : Paint first viewport from HTML
+browser -> page : Hydrate; lazy route chunk for DirectoryPage
+page -> api : GET /api/v1/builders?page=1
+api --> page : 12 builder cards
+page -> card : Replace each skeleton in the same grid cell
+card -> card : Same outer size: fixed image box, clamped text (L2-048 criterion 4)
+loop each portrait
+  alt card in first viewport
+    card -> photos : GET 64 px or 128 px WebP variant (srcset), priority
+  else below first viewport
+    card -> card : loading="lazy", width and height set (L2-048 criterion 3)
+  end
+end
+photos -> media : Read variant
+media --> photos : WebP bytes
+photos --> card : image/webp at displayed size
+card --> actor : Cards appear in place; no surrounding content moves (CLS 0)
+@enduml

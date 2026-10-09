@@ -1,0 +1,78 @@
+@startuml
+title UML sequence behaviour — Resume and finish onboarding
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "onboardingGuard" as guard
+  participant "SessionService" as session
+  participant "OnboardingPage" as page
+  participant "HttpProfilesApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "OnboardingController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "GetOnboardingProgress" as get
+  participant "CompleteOnboarding" as complete
+  participant "OnboardingService" as service
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> guard : Sign in, or open any member route
+guard -> session : member().onboardingComplete
+session --> guard : false
+guard --> actor : Redirect to /welcome (L2-006 criterion 1)
+actor -> page : Open /welcome
+page -> client : getOnboarding()
+client -> controller : GET /api/v1/me/onboarding
+controller -> get : handle(builder)
+get -> db : Load builder, skills, saved steps
+get -> service : nextStep(builder)
+service --> get : First unfinished step
+get --> controller : Builder
+controller --> client : 200 OnboardingResource
+client --> page : OnboardingProgress
+page --> actor : Step named by nextStep, earlier answers prefilled (L2-006 criterion 6)
+
+== The member saves the remaining steps (see Save an onboarding step) ==
+
+actor -> page : Select "Finish" after the goals step is saved
+page -> client : completeOnboarding()
+client -> controller : POST /api/v1/me/onboarding/complete
+controller -> complete : handle(builder)
+complete -> service : isReady(builder)
+alt a step is unsaved or role or neighbourhood is missing
+  service --> complete : false
+  complete --> controller : 422 onboarding_incomplete with first unfinished step
+  controller --> client : 422 problem
+  client --> page : Error
+  page --> actor : Return to the unfinished step with its errors
+else every step saved
+  service --> complete : true
+  complete -> db : UPDATE onboarding_completed_at = now (L2-006 criterion 5)
+  complete --> controller : Completed builder
+  controller --> client : 200 OnboardingResource (completed)
+  client --> page : OnboardingProgress
+  page -> session : markOnboardingComplete()
+  page --> actor : success state "Welcome to Banaro, {first name}"
+  actor -> guard : Select "Go to your dashboard"
+  guard -> session : member().onboardingComplete
+  session --> guard : true
+  guard --> actor : Dashboard opens (L2-006 criterion 5)
+end
+@enduml

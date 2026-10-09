@@ -1,0 +1,129 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — View a builder profile
+
+package "Frontend — banaro application, components and api libraries" {
+  class BuilderProfilePage {
+    -api: DirectoryApi
+    -dialog: Dialog
+    +profile: Signal<BuilderProfile>
+    +state: 'loading' | 'default' | 'sparse' | 'own' | 'not-found' | 'error'
+    +retry(): void
+    +sayHello(): void
+    +report(): void
+    +block(): void
+  }
+  class MatchPanel <<bn-match-panel>> {
+    +score: number
+    +reasons: string[]
+  }
+  interface DirectoryApi {
+    +getBuilder(id: string): Observable<BuilderProfile>
+  }
+  class HttpDirectoryApi
+  class BuilderProfile {
+    +id: string
+    +name: string
+    +role: string
+    +photoUrl: string | null
+    +isOwn: boolean
+    +actions: ProfileActions
+    +neighbourhood?: string
+    +distanceKm?: number
+    +match?: MatchSummary
+    +skills?: string[]
+    +bio?: string
+    +experience?: ExperienceItem[]
+    +building?: BuildingSummary
+    +openTo?: OpenTo[]
+    +onlineStatus?: OnlineStatusValue
+    +memberSince?: string
+  }
+  class ProfileActions {
+    +sayHello: boolean
+    +report: boolean
+    +block: boolean
+    +edit: boolean
+  }
+  class SayHelloDialog <<messaging>>
+  class ReportDialog <<trust-and-safety>>
+  class BlockBuilderDialog <<trust-and-safety>>
+}
+
+package "Backend — Banaro API" {
+  class BuilderProfileController {
+    +show(request: ShowBuilderProfileRequest, builder: Builder): JsonResource
+  }
+  class ViewBuilderProfile {
+    +handle(viewer: ?User, builder: Builder): BuilderProfileView
+  }
+  class BuilderProfileView {
+    +Builder builder
+    +array visibleFields
+    +?MatchScore match
+    +?float distanceKm
+    +?OnlineStatus onlineStatus
+    +bool isOwn
+    +array actions
+  }
+  class ProfileVisibility <<settings>> {
+    +canView(builder: Builder, viewer: ?User): bool
+    +visibleFields(builder: Builder, viewer: ?User): array
+  }
+  class MatchScoreService <<matching>> {
+    +scoreFor(viewer: User, builder: Builder): MatchScore
+  }
+  class MatchScore <<matching>> {
+    +int score
+    +array reasons
+  }
+  class DistanceService {
+    +between(from: Neighbourhood, to: Neighbourhood): float
+    +approximate(km: float): int
+  }
+  class PresenceService {
+    +statusFor(builder: Builder): ?OnlineStatus
+  }
+  class Builder {
+    +int id
+    +string public_id
+    +string name
+    +?Carbon deleted_at
+  }
+  class BuilderProfileResource
+  class PublicBuilderProfileResource
+}
+
+BuilderProfilePage ..> DirectoryApi : uses
+BuilderProfilePage *-- MatchPanel
+BuilderProfilePage ..> SayHelloDialog : opens
+BuilderProfilePage ..> ReportDialog : opens
+BuilderProfilePage ..> BlockBuilderDialog : opens
+HttpDirectoryApi ..|> DirectoryApi
+DirectoryApi ..> BuilderProfile : returns
+BuilderProfile *-- ProfileActions
+HttpDirectoryApi ..> BuilderProfileController : HTTPS
+
+BuilderProfileController ..> ViewBuilderProfile : calls
+BuilderProfileController ..> BuilderProfileResource : members
+BuilderProfileController ..> PublicBuilderProfileResource : visitors
+ViewBuilderProfile ..> ProfileVisibility : asks
+ViewBuilderProfile ..> MatchScoreService : scores
+ViewBuilderProfile ..> DistanceService : distance
+ViewBuilderProfile ..> PresenceService : status
+ViewBuilderProfile ..> BuilderProfileView : builds
+BuilderProfileView --> Builder
+BuilderProfileView --> MatchScore
+MatchScoreService ..> MatchScore : returns
+@enduml

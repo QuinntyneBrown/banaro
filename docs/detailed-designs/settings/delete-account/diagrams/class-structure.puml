@@ -1,0 +1,123 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Delete an account
+
+package "Frontend — banaro application and api library" {
+  class DeleteAccountDialog {
+    -api: SettingsApi
+    +confirmation: string
+    +password: string
+    +state: 'default' | 'invalid' | 'busy' | 'failed'
+    +canConfirm(): boolean
+    +confirm(): void
+  }
+  class DataExportPanel {
+    -api: SettingsApi
+    +export: Signal<DataExport | null>
+    +request(): void
+  }
+  interface SettingsApi {
+    +deleteAccount(request: DeleteAccountRequest): Observable<void>
+    +requestDataExport(): Observable<DataExport>
+    +getDataExport(id: string): Observable<DataExport>
+  }
+  class HttpSettingsApi
+  class "DataExport (model)" as DataExportModel {
+    +id: string
+    +status: 'pending' | 'ready' | 'failed'
+    +downloadUrl: string | null
+    +expiresAt: string | null
+  }
+}
+
+package "Backend — Banaro API and Banaro Worker" {
+  class AccountController {
+    +destroy(request: DeleteAccountRequest): Response
+  }
+  class DataExportController {
+    +store(request: Request): JsonResponse
+    +show(export: DataExport): DataExportResource
+    +download(export: DataExport): StreamedResponse
+  }
+  class DeleteAccount {
+    +handle(member: User): void
+  }
+  class ErasePersonalData <<job>> {
+    +int userId
+    +handle(waitlist: WaitlistService, storage: Filesystem): void
+  }
+  class BuildDataExport <<job>> {
+    +int exportId
+    +handle(storage: Filesystem): void
+  }
+  class EraseDeletedAccounts <<command>> {
+    +handle(): int
+  }
+  class PruneDataExports <<command>> {
+    +handle(): int
+  }
+  class SessionRegistry {
+    +revokeAll(user: User): void
+  }
+  class WaitlistService {
+    +promoteNext(event: Event): ?Rsvp
+  }
+  class User {
+    +int id
+    +?string name
+    +?string email
+    +?string password
+    +?Carbon deleted_at
+    +?Carbon erase_by
+    +?Carbon erased_at
+  }
+  class DataExport {
+    +int id
+    +int user_id
+    +DataExportStatus status
+    +?string path
+    +?Carbon ready_at
+    +?Carbon expires_at
+  }
+  enum DataExportStatus {
+    Pending
+    Ready
+    Failed
+  }
+  class DataExportPolicy {
+    +view(member: User, export: DataExport): bool
+  }
+}
+
+DeleteAccountDialog ..> SettingsApi : uses
+DataExportPanel ..> SettingsApi : uses
+HttpSettingsApi ..|> SettingsApi
+SettingsApi ..> DataExportModel : returns
+HttpSettingsApi ..> AccountController : HTTPS
+HttpSettingsApi ..> DataExportController : HTTPS
+
+AccountController ..> DeleteAccount : calls
+DeleteAccount --> User : anonymises
+DeleteAccount ..> SessionRegistry : revokes all
+DeleteAccount ..> ErasePersonalData : dispatches
+EraseDeletedAccounts ..> ErasePersonalData : re-dispatches
+ErasePersonalData ..> WaitlistService : frees places
+ErasePersonalData --> User : sets erased_at
+DataExportController ..> BuildDataExport : dispatches
+DataExportController ..> DataExportPolicy : authorizes
+BuildDataExport --> DataExport : marks ready
+PruneDataExports --> DataExport : deletes expired
+User "1" *-- "*" DataExport
+DataExport --> DataExportStatus : has
+@enduml

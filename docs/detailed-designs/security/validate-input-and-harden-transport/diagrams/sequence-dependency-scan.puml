@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — Scan dependencies in the pipeline
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Developer" as actor
+box "Pipeline — .ci" #FFF4E5
+  participant "dependency-scan stage" as stage
+  participant "Severity gate script" as gate
+end box
+box "Backend — banaro-api sources" #D1FADF
+  participant "composer audit" as composer
+end box
+box "Frontend — banaro-web and e2e sources" #E0F2FE
+  participant "npm audit" as npm
+end box
+participant "Advisory databases" as advisories
+
+actor -> stage : Open or update a pull request
+stage -> composer : composer audit --format=json (backend/)
+composer -> advisories : Look up composer.lock packages
+advisories --> composer : Advisories with severity
+composer --> stage : JSON report
+stage -> gate : Filter report by severity
+gate --> stage : Count of high and critical advisories
+stage -> npm : npm audit --audit-level=high (frontend/, e2e/)
+npm -> advisories : Look up package-lock.json packages
+advisories --> npm : Advisories with severity
+npm --> stage : Exit code
+alt any high or critical advisory
+  stage --> actor : Stage fails; merge and image build blocked (L2-045 criterion 7)
+else none
+  stage --> actor : Stage passes
+end
+@enduml

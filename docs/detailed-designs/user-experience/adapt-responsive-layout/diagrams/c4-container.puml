@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Adapt the responsive layout
+
+Person(member, "Member", "Any viewport width")
+System_Ext(ci, "CI pipeline", "visual and e2e stages")
+Container_Ext(e2e, "e2e test harness", "Playwright, Chromium only", "routes.manifest.ts, page objects, visual/parity.spec.ts")
+System_Ext(mocks, "Design reference", "docs/mocks HTML files")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular SSR", "Breakpoints, layout tokens, page grids, BnDialog")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Same data at every width; seeded mock cast in test runs")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "Calls", "JSON/HTTPS")
+Rel(ci, e2e, "Runs")
+Rel(e2e, web, "Captures each route and state per width and theme", "Chromium")
+Rel(e2e, mocks, "Captures baselines with ?chrome=0&theme=", "file")
+@enduml

@@ -1,0 +1,76 @@
+@startuml
+title UML sequence behaviour — Open an event
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "EventDetailPage" as page
+  participant "HttpEventsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "EventController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ViewEvent" as action
+  participant "WaitlistService" as waitlist
+  participant "AttendeeListService" as attendees
+  participant "BlockService" as block
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /events/{id}
+page --> actor : loading state with skeletons (L2-019 criterion 5)
+page -> client : getEvent(id)
+client -> controller : GET /api/v1/events/{id}
+controller -> controller : Authenticate verified member, validate ViewEventRequest
+alt unknown id
+  controller --> client : 404 from route-model binding (L2-019 criterion 4)
+  client --> page : Not found
+  page --> actor : not-found state with links to events and dashboard
+else event exists
+  controller -> action : handle(member, event)
+  action -> db : Load event with host
+  action -> db : Find viewer's RSVP
+  opt viewer is waitlisted
+    action -> waitlist : positionOf(rsvp)
+    waitlist --> action : Position
+  end
+  action -> attendees : previewFor(event, viewer, 8)
+  attendees -> db : Going RSVPs whose members allow attendee-list listing (L2-036)
+  attendees -> block : Apply isBlockedEitherWay(viewer, attendee) in the query (L2-032)
+  db --> attendees : Listed, unblocked attendees and total
+  attendees --> action : Preview and more count
+  action --> controller : EventView
+  controller --> client : 200 EventDetailResource with mapUrl and viewerRsvp
+  client --> page : EventDetail
+  alt status cancelled
+    page --> actor : cancelled state with the host's notice (L2-019 criterion 3)
+  else phase ended
+    page --> actor : ended state with recap, no RSVP actions (L2-019 criterion 3)
+  else viewer going
+    page --> actor : going state with "Cancel RSVP" (L2-019 criterion 2)
+  else viewer waitlisted
+    page --> actor : waitlist state with position (L2-019 criterion 2)
+  else no RSVP
+    page --> actor : default state: detail, map link, host, counts, attendee preview (L2-019 criterion 1)
+  end
+end
+opt server or network failure
+  client --> page : Error
+  page --> actor : error state with "Try again" (L2-019 criterion 5)
+end
+@enduml

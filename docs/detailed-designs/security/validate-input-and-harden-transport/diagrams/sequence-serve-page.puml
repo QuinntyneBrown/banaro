@@ -1,0 +1,51 @@
+@startuml
+title UML sequence behaviour — Serve a page with security headers
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+participant "Browser" as browser
+box "Infrastructure — ingress" #FFF4E5
+  participant "Ingress" as ingress
+end box
+box "Frontend — Banaro Web server (server.ts)" #E0F2FE
+  participant "securityHeaders" as headers
+  participant "AngularNodeAppEngine" as engine
+  participant "banaro application (SSR)" as app
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "SecurityHeaders" as apiHeaders
+end box
+
+actor -> browser : Open http://<domain>/builders
+browser -> ingress : GET /builders over HTTP
+ingress -> headers : GET /builders, X-Forwarded-Proto: http
+alt production and plain HTTP
+  headers --> browser : 308 to https://<domain>/builders (L2-045 criterion 4)
+  browser -> ingress : GET /builders over HTTPS
+  ingress -> headers : GET /builders, X-Forwarded-Proto: https
+end
+headers -> headers : Create per-request nonce
+headers -> engine : handle(request) with nonce in request context
+engine -> app : Render with CSP_NONCE provider
+app -> apiHeaders : GET /api/v1/builders (SSR data)
+apiHeaders --> app : 200 JSON with API CSP default-src 'none'
+app --> engine : HTML; style elements carry the nonce
+engine --> headers : Response
+headers -> headers : Set HSTS, nosniff, Referrer-Policy, Permissions-Policy
+headers -> headers : Set CSP script-src 'self', no 'unsafe-inline', no third-party origin (L2-045 criterion 3)
+headers --> browser : 200 HTML with security headers
+browser -> browser : Enforce CSP; refuse inline or foreign script
+browser --> actor : Directory page
+@enduml

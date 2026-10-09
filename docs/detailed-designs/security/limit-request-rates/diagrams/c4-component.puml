@@ -1,0 +1,34 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Limit request rates
+
+Container(web, "Banaro Web", "Angular", "rateLimitInterceptor, RATE_LIMIT_NOTICE, form messages")
+ContainerQueue(redis, "Redis", "Redis", "Limiter store")
+System_Ext(logs, "Log pipeline", "Collects structured JSON logs; product <TO SUPPLY>")
+
+Container_Boundary(api, "Banaro API") {
+  Component(provider, "RateLimitServiceProvider", "Service provider", "Registers api, join, sign-in, password-reset, feedback, first-message, contact limiters")
+  Component(config, "config/security.php rate_limits", "Configuration", "Limits and windows from the L2 requirements")
+  Component(throttle, "ThrottleRequestsWithLogging", "Middleware (throttle alias)", "Counts requests; logs rate_limit.exceeded")
+  Component(fingerprint, "ClientFingerprint", "Domain service", "HMAC-SHA-256 of member id, IP or e-mail")
+  Component(attempts, "AttemptLimiter", "Domain service", "Failure-counted limits")
+  Component(signin, "SignIn", "Action", "Checks and records failed sign-ins")
+  Component(render, "Exception rendering", "bootstrap/app.php", "429 rate_limited body with Retry-After")
+  Component(ctrl, "Controllers/Api/V1/{Subsystem}", "Controllers", "Run only when under the limit")
+}
+
+Rel(web, throttle, "Calls", "JSON/HTTPS")
+Rel(provider, config, "Reads")
+Rel(throttle, provider, "Resolves named limiter from")
+Rel(throttle, fingerprint, "Builds keys and log identifiers with")
+Rel(throttle, redis, "Increments counters", "Redis protocol")
+Rel(throttle, ctrl, "Passes request when under limit")
+Rel(throttle, render, "Raises ThrottleRequestsException")
+Rel(throttle, logs, "Writes rate_limit.exceeded", "JSON log line")
+Rel(ctrl, signin, "Calls handle()")
+Rel(signin, attempts, "Checks and records failures")
+Rel(attempts, fingerprint, "Hashes e-mail and IP with")
+Rel(attempts, redis, "Counts failures", "Redis protocol")
+Rel(render, web, "429 JSON", "JSON/HTTPS")
+@enduml

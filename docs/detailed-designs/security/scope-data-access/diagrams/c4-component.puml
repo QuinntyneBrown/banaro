@@ -1,0 +1,40 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Scope data access
+
+Container(web, "Banaro Web", "Angular", "credentialsInterceptor, unauthorizedInterceptor, authGuard, adminGuard")
+ContainerDb(db, "Banaro database", "Relational database", "Owned and participant records, blocks")
+ContainerQueue(redis, "Redis", "Redis", "Sessions, block-list cache")
+System_Ext(ci, "CI pipeline", "Runs PHPUnit")
+
+Container_Boundary(api, "Banaro API") {
+  Component(routes, "routes/api.php and routes/api_public.php", "Route files", "Authenticated by default; deliberate anonymous exceptions")
+  Component(auth, "auth:sanctum, verified, can:administer", "Middleware", "401 without session, 403 for role routes")
+  Component(binding, "Scoped route bindings", "Route::bind callbacks", "Resolve ids through ownership or participant scope")
+  Component(policy, "{Model}Policy", "Policies", "denyAsNotFound() for other members' records")
+  Component(request, "{Verb}{Noun}Request", "Form requests", "validated() drops guarded fields")
+  Component(ctrl, "Controllers/Api/V1/{Subsystem}", "Controllers", "Call one action, return a resource")
+  Component(models, "OwnedByMember models", "Eloquent models", "ownedBy, withParticipant and visibleTo scopes; explicit $fillable")
+  Component(block, "BlockService", "Domain service", "blockedIdsFor(), isBlockedPair()")
+  Component(resource, "{Noun}Resource", "API resources", "Explicit field lists; hidden fields omitted")
+  Component(handler, "Exception rendering", "bootstrap/app.php", "404 not_found and 401 unauthenticated bodies without detail")
+  Component(suite, "CrossUserAccessTest and fixtures", "tests/Feature/Security", "RouteOwnershipRegistry, GuardedFieldsTest, ListingVisibilityTest")
+}
+
+Rel(web, routes, "Calls", "JSON/HTTPS")
+Rel(routes, auth, "Applies")
+Rel(auth, binding, "Then resolves")
+Rel(binding, models, "Queries through scopes")
+Rel(binding, policy, "Authorizes with")
+Rel(binding, ctrl, "Passes the resolved model to")
+Rel(ctrl, request, "Validates with")
+Rel(ctrl, models, "Writes validated() data through the member")
+Rel(ctrl, resource, "Returns")
+Rel(models, block, "visibleTo() reads block list from")
+Rel(block, redis, "Caches block list", "Redis protocol")
+Rel(models, db, "Reads and writes", "SQL")
+Rel(binding, handler, "Not found raises")
+Rel(ci, suite, "Runs")
+Rel(suite, routes, "Enumerates and calls every route")
+@enduml

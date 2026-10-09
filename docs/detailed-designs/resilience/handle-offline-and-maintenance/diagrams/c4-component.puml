@@ -1,0 +1,34 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Handle offline and maintenance
+
+ContainerDb(redis, "Redis", "Redis", "Maintenance flag")
+
+Container_Boundary(web, "Banaro Web — banaro application and libraries") {
+  Component(conn, "ConnectivityService", "api library service", "online, reconnecting, offline, failed")
+  Component(connInt, "ConnectivityInterceptor", "HTTP interceptor", "Reports status 0 and recovery")
+  Component(maintInt, "MaintenanceInterceptor", "HTTP interceptor", "Recognizes maintenance 503")
+  Component(nav, "RouterErrorPageNavigator", "ErrorPageNavigator implementation", "Shows offline and maintenance pages in place")
+  Component(banner, "ConnectionBanner", "bn-connection-banner", "info, warning, danger, success")
+  Component(offline, "OfflinePage", "Page", "You're offline, Try again")
+  Component(maint, "MaintenancePage", "Page", "Expected time back, Check again")
+  Component(drafts, "DraftStore", "App helper", "Keeps unsent text in sessionStorage")
+}
+
+Container_Boundary(api, "Banaro API") {
+  Component(mw, "RespondDuringMaintenance", "Middleware", "503 + Retry-After; except health/*")
+  Component(health, "LivenessController", "Health controller", "200 while the process runs")
+}
+
+Rel(connInt, conn, "Reports reachability")
+Rel(conn, health, "Probes while offline", "HTTPS")
+Rel(banner, conn, "Reads status")
+Rel(offline, conn, "Waits for online")
+Rel(nav, offline, "Shows")
+Rel(maintInt, nav, "Calls maintenance()")
+Rel(nav, maint, "Shows")
+Rel(drafts, conn, "Re-enables send when online")
+Rel(maintInt, mw, "Observes 503 from", "JSON/HTTPS")
+Rel(mw, redis, "Reads flag", "Redis protocol")
+@enduml

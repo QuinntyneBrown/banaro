@@ -1,0 +1,23 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Observe health
+
+Person(maintainer, "Maintainer", "Operates releases and infrastructure")
+System_Ext(orchestrator, "Container orchestrator", "Product <TO SUPPLY>")
+System_Ext(logs, "Log collector", "Product <TO SUPPLY>")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Reads X-Request-Id for the server-error page")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Health routes, request ID, JSON request log")
+  ContainerDb(db, "Banaro database", "Relational database", "Checked with SELECT 1")
+  ContainerDb(redis, "Redis", "Redis", "Cache and queue connections checked with PING")
+}
+
+Rel(orchestrator, api, "GET /health/live, GET /health/ready", "HTTP")
+Rel(web, api, "Calls /api/v1, receives X-Request-Id", "JSON/HTTPS")
+Rel(api, db, "Readiness check", "SQL")
+Rel(api, redis, "Readiness checks", "Redis protocol")
+Rel(api, logs, "One JSON line per request; exceptions with stack trace", "stderr")
+Rel(maintainer, logs, "Searches by request ID")
+@enduml

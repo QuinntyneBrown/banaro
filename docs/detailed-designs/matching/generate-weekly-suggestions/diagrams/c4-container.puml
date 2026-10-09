@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Generate weekly suggestions
+
+System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
+
+System_Boundary(banaro, "Banaro") {
+  Container(worker, "Banaro Worker", "Laravel Horizon and scheduler", "Monday 06:00 run, per-member suggestion jobs, notifications")
+  ContainerDb(db, "Banaro database", "Relational database", "Preferences, profiles, blocks, suggestions, matching runs, notifications")
+  ContainerQueue(redis, "Redis", "Redis", "Scheduler lock, Horizon queues")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Serves suggestions to /matching (review-matches)")
+}
+
+Rel(worker, redis, "Takes the onOneServer lock; queues and takes jobs", "Redis protocol")
+Rel(worker, db, "Reads preferences and candidates; writes suggestions", "SQL")
+Rel(worker, mail, "Sends the suggestions-ready e-mail via", "Mailer contract")
+Rel(api, db, "Reads suggestions", "SQL")
+@enduml

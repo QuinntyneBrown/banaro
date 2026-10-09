@@ -1,0 +1,72 @@
+@startuml
+title UML sequence behaviour — Request a reset link
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ForgotPasswordPage" as page
+  participant "HttpIdentityApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "PasswordResetLinkController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "RequestPasswordReset" as action
+end box
+box "Backend — Banaro Worker" #ECFDF3
+  participant "SendPasswordResetLink" as job
+  participant "Password broker" as broker
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis" as redis
+  participant "Mail provider" as mail
+end box
+
+actor -> page : Enter e-mail; select "Send reset link"
+alt malformed e-mail
+  page --> actor : invalid state, no request
+else well-formed
+  page -> page : submitting state, "Sending…"
+  page -> client : requestPasswordReset(email)
+  client -> controller : POST /api/v1/forgot-password
+  controller -> redis : password-reset limiter: 5 per hour per e-mail and per IP
+  alt limit exceeded
+    controller --> client : 429 with Retry-After (L2-004 criterion 5)
+    client --> page : ApiProblem
+    page --> actor : "slow down" message
+  else within limit
+    controller -> controller : Validate SendPasswordResetLinkRequest
+    controller -> action : handle(email)
+    action -> redis : Queue SendPasswordResetLink(email); no account lookup
+    action --> controller : Done
+    controller --> client : 202 Accepted, same for every address (L2-004 criterion 1)
+    client --> page : Success
+    page --> actor : "If an account exists for {email}, a reset link is on its way"
+  end
+end
+
+== Later, in the Banaro Worker ==
+redis -> job : Run SendPasswordResetLink
+job -> db : Find user by canonical e-mail
+alt account exists
+  job -> broker : createToken(user)
+  broker -> db : Replace token row with hash and created_at
+  broker --> job : Plain token
+  job -> mail : ResetPasswordNotification with /reset-password link (L2-029 criterion 2)
+else no account
+  job -> job : Stop; nothing is sent (L2-004 criterion 1)
+end
+@enduml

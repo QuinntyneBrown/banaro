@@ -1,0 +1,48 @@
+@startuml
+title UML sequence behaviour — Open the privacy policy
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor or member" as actor
+box "Frontend — Banaro Web SSR server" #E0F2FE
+  participant "server.ts" as ssr
+end box
+box "Frontend — banaro application" #E0F2FE
+  participant "Footer, JoinPage or SettingsPage" as entry
+  participant "PrivacyPage" as page
+  participant "TranslationService" as i18n
+  participant "SeoService" as seo
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "I18nController" as controller
+end box
+
+alt link inside the app
+  actor -> entry : Select "Privacy"
+  entry -> page : Navigate to /privacy (L2-041 criterion 2)
+else link in an e-mail or a fresh visit
+  actor -> ssr : GET /privacy
+  ssr -> i18n : Load en-CA catalogue
+  i18n -> controller : GET /api/v1/i18n/en-CA
+  controller --> i18n : Catalogue with privacy.* keys
+  ssr -> page : Render route /privacy
+end
+page -> seo : Set title and canonical link
+page -> page : Read PRIVACY_POLICY_VERSION.lastUpdated
+page -> i18n : formatDate(lastUpdated) in en-CA, America/Toronto (L2-052 criterion 2)
+i18n --> page : "1 September 2026"
+page -> i18n : Data collected, purposes, retention, processors, rights, contact, PIPEDA (L2-041 criterion 1)
+i18n --> page : Copy
+page --> actor : Current policy with "Last updated" date
+@enduml

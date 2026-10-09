@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — Suspended member signs in
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Suspended member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "SignInPage" as page
+  participant "HttpIdentityApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "SessionController" as controller
+  participant "EnsureAccountActive" as active
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "SignIn" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Submit e-mail and password on /sign-in
+page -> client : signIn(credentials)
+client -> controller : POST /api/v1/sign-in
+controller -> action : handle(credentials)
+action -> db : Load user by e-mail, verify password hash
+alt credentials wrong
+  action --> controller : 422 generic error (L2-003 criterion 2)
+else credentials correct and suspended_at set
+  action --> controller : 403 account_suspended, no session created (L2-033 criterion 3)
+  controller --> client : 403 problem
+  client --> page : AccountSuspended error
+  page --> actor : Account suspended message with link to contact support
+else credentials correct and active
+  action --> controller : Session created
+end
+
+== Session that predates the suspension ==
+actor -> active : Any request under /api/v1 with an old session
+active -> db : Read users.suspended_at
+active --> actor : 403 account_suspended (L2-033 criterion 3)
+@enduml

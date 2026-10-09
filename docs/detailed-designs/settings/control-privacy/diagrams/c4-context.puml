@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Control privacy
+
+Person(member, "Member", "Signed-in builder who sets privacy choices")
+Person(other, "Other member", "Signed-in builder who views the profile")
+Person(visitor, "Visitor", "Person using Banaro without signing in")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Sets profile visibility, location precision and switches using", "HTTPS")
+Rel(other, banaro, "Views profiles, filtered by privacy settings", "HTTPS")
+Rel(visitor, banaro, "Views public profiles only", "HTTPS")
+@enduml

@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — E-mail notifications
+
+Person(member, "Member", "Signed-in, verified builder")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+System_Ext(mail, "Mail provider", "Delivers transactional e-mail; vendor <TO SUPPLY>")
+
+Rel(banaro, mail, "Sends matches, messages, events, project activity, digest and security e-mail via", "Mailer contract")
+Rel(mail, member, "Delivers e-mail to")
+Rel(member, banaro, "Follows links and one-click unsubscribe links to", "HTTPS")
+@enduml

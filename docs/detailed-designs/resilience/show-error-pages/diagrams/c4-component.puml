@@ -1,0 +1,31 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Show error pages
+
+Container(api, "Banaro API", "Laravel 11", "AssignRequestId, exception rendering in bootstrap/app.php")
+
+Container_Boundary(web, "Banaro Web — banaro application and api library") {
+  Component(ssr, "server.ts", "SSR server", "Renders routes; static 500 when rendering fails")
+  Component(routes, "app.routes.ts", "Route table", "/404, /403, /500 and wildcard **")
+  Component(interceptor, "HttpErrorStatusInterceptor", "HTTP interceptor (api library)", "Maps 404, 403, 5xx on ESSENTIAL_DATA requests")
+  Component(handler, "AppErrorHandler", "Angular ErrorHandler", "Catches unhandled browser errors")
+  Component(nav, "RouterErrorPageNavigator", "ErrorPageNavigator implementation", "Navigates with skipLocationChange, passes reference ID")
+  Component(notfound, "NotFoundPage", "Page", "404, search, directory, home")
+  Component(forbidden, "ForbiddenPage", "Page", "403, go back, dashboard")
+  Component(servererror, "ServerErrorPage", "Page", "500, reference ID, Try again")
+  Component(seo, "SeoService", "App helper", "Title and noindex")
+}
+
+Rel(ssr, routes, "Renders")
+Rel(routes, notfound, "Wildcard and /404 to")
+Rel(interceptor, api, "Observes responses from", "JSON/HTTPS")
+Rel(interceptor, nav, "Calls via ERROR_PAGE_NAVIGATOR")
+Rel(handler, nav, "Calls serverError()")
+Rel(nav, notfound, "Shows")
+Rel(nav, forbidden, "Shows")
+Rel(nav, servererror, "Shows with reference ID")
+Rel(notfound, seo, "Sets title and noindex")
+Rel(forbidden, seo, "Sets title and noindex")
+Rel(servererror, seo, "Sets title and noindex")
+@enduml

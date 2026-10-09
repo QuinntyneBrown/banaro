@@ -1,0 +1,23 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Meet page-performance budgets
+
+Person(member, "Member", "Mid-range phone, fast 4G")
+System_Ext(ci, "CI pipeline", "bundle-budget, Lighthouse, e2e/perf and perf-test stages")
+Container_Ext(chromium, "Chromium", "Playwright and Lighthouse", "Runs measurements")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular SSR, banaro-web image", "Server-rendered shell, lazy routes, skeletons, sized images")
+  Container(perf, "perf-test application", "Angular, build-time only", "Renders component scenarios under the profiler")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Page data and photo variants")
+  ContainerDb(media, "Media storage", "Private file storage", "WebP variants at displayed sizes")
+}
+
+Rel(member, web, "Loads pages", "HTTPS")
+Rel(web, api, "Requests page data and images", "JSON/HTTPS")
+Rel(api, media, "Reads image variants", "Storage API")
+Rel(ci, chromium, "Starts")
+Rel(chromium, web, "Lighthouse and e2e/perf runs", "HTTPS")
+Rel(chromium, perf, "Profiles scenarios of branch and base builds", "HTTP, CDP")
+@enduml

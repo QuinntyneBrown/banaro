@@ -1,0 +1,50 @@
+@startuml
+title UML sequence behaviour — Render the not-found page
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor, member or search engine" as actor
+box "Frontend — Banaro Web SSR server" #E0F2FE
+  participant "server.ts" as ssr
+end box
+box "Frontend — banaro application" #E0F2FE
+  participant "Router" as router
+  participant "NotFoundPage" as page
+  participant "SeoService" as seo
+end box
+
+alt first request rendered on the server
+  actor -> ssr : GET /builders/old-slug/extra
+  ssr -> router : Match URL
+  router -> page : Wildcard route ** (L2-042 criterion 1)
+  page -> seo : setTitle("Page not found"), noindex() (L2-042 criterion 5)
+  page -> ssr : RESPONSE_INIT.status = 404, X-Robots-Tag: noindex
+  ssr --> actor : 404 HTML with one h1 "We can't find that page"
+else navigation inside the running application
+  actor -> router : Follow an in-app link to an unknown path
+  router -> page : Wildcard route **
+  page -> seo : setTitle("Page not found"), noindex()
+  page -> page : No RESPONSE_INIT in the browser, skip status
+  page --> actor : not-found page, address bar unchanged
+end
+opt next step
+  alt search
+    actor -> page : Enter text and submit search
+    page -> router : Navigate to /builders?q={text}
+  else directory or home
+    actor -> page : Select "Browse builders" or the home link (dashboard for a member)
+    page -> router : Navigate to /builders, / or /dashboard
+  end
+end
+@enduml

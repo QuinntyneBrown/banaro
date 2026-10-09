@@ -1,0 +1,106 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — RSVP to an event
+
+package "Frontend — banaro application and api library" {
+  class EventDetailPage {
+    -api: EventsApi
+    +event: Signal<EventDetail>
+    +rsvp: Signal<RsvpSummary>
+    +reserve(): void
+    +openCancelDialog(): void
+  }
+  class CancelRsvpDialog {
+    -api: EventsApi
+    +state: 'default' | 'busy' | 'failed'
+    +confirm(): void
+  }
+  interface EventsApi {
+    +rsvp(eventId: string): Observable<RsvpSummary>
+    +cancelRsvp(eventId: string): Observable<RsvpSummary>
+  }
+  class HttpEventsApi
+  class RsvpSummary {
+    +eventId: string
+    +status: 'going' | 'waitlisted' | 'none'
+    +waitlistPosition: number | null
+    +goingCount: number
+    +spotsLeft: number | null
+  }
+}
+
+package "Backend — Banaro API" {
+  class RsvpController {
+    +store(request: RsvpToEventRequest, event: Event): RsvpResource
+    +destroy(request: CancelRsvpRequest, event: Event): RsvpResource
+  }
+  class RsvpToEvent {
+    +handle(member: User, event: Event): Rsvp
+  }
+  class CancelRsvp {
+    +handle(member: User, event: Event): Event
+  }
+  class WaitlistService {
+    +promoteNext(event: Event): ?Rsvp
+    +positionOf(rsvp: Rsvp): int
+  }
+  class Event {
+    +int id
+    +string title
+    +?int capacity
+    +int going_count
+    +Carbon starts_at
+    +Carbon ends_at
+    +EventStatus status
+    +spotsLeft(): ?int
+    +isClosed(): bool
+  }
+  class Rsvp {
+    +int id
+    +int event_id
+    +int user_id
+    +RsvpStatus status
+    +?Carbon waitlisted_at
+  }
+  enum RsvpStatus {
+    Going
+    Waitlisted
+  }
+  enum EventStatus {
+    Scheduled
+    Cancelled
+  }
+  class RsvpResource
+  class RsvpConfirmedNotification
+  class WaitlistPromotedNotification
+}
+
+EventDetailPage ..> EventsApi : uses
+CancelRsvpDialog ..> EventsApi : uses
+HttpEventsApi ..|> EventsApi
+EventsApi ..> RsvpSummary : returns
+HttpEventsApi ..> RsvpController : HTTPS
+
+RsvpController ..> RsvpToEvent : calls
+RsvpController ..> CancelRsvp : calls
+RsvpController ..> RsvpResource : returns
+CancelRsvp ..> WaitlistService : promotes via
+RsvpToEvent ..> RsvpConfirmedNotification : queues
+WaitlistService ..> WaitlistPromotedNotification : queues
+RsvpToEvent --> Event : locks
+CancelRsvp --> Event : locks
+Event "1" *-- "*" Rsvp : rsvps
+Rsvp --> RsvpStatus : has
+Event --> EventStatus : has
+@enduml

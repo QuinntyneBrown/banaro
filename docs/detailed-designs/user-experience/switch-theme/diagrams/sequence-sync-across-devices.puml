@@ -1,0 +1,52 @@
+@startuml
+title UML sequence behaviour — Carry the choice to another device
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application (new device)" #E0F2FE
+  participant "SignInPage" as page
+  participant "SessionStore" as session
+  participant "ThemeService" as theme
+  participant "HttpIdentityApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "MeController" as me
+  participant "MeResource" as resource
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Sign in on a laptop with a light system theme
+page -> client : signIn(...)
+client --> page : Signed in
+page -> session : Load current member
+session -> client : me()
+client -> me : GET /api/v1/me
+me -> db : Load member with theme_preference
+db --> me : theme_preference = dark
+me -> resource : Serialize
+resource --> client : { ..., "theme": "dark" }
+client --> session : CurrentMember
+session -> theme : Compare with cookie preference
+alt member theme differs from this browser
+  session -> theme : set('dark', { sync: false })
+  theme -> theme : data-theme = dark; write bn-theme cookie
+  theme --> actor : Dark theme, as chosen on the other device (L2-051 criterion 2)
+else same
+  theme --> actor : No change
+end
+note over theme : Later full page loads render dark on the server from the cookie
+@enduml

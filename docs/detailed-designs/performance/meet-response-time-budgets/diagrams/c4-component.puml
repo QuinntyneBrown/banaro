@@ -1,0 +1,33 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Meet response-time budgets
+
+Container(web, "Banaro Web", "Angular", "HttpDirectoryApi with PageRequest")
+ContainerDb(db, "Banaro database", "Relational database", "builders, builder_skill, match_scores, neighbourhood_distances")
+ContainerQueue(redis, "Redis", "Redis", "Cached aggregates, Horizon queues")
+Container_Ext(runner, "Load runner", "Tool <TO SUPPLY>", "read-endpoints and write-endpoints scenarios")
+
+Container_Boundary(api, "Banaro API") {
+  Component(request, "ListBuildersRequest with PaginatesResults", "Form request", "page; per_page default 12, capped at 50")
+  Component(ctrl, "BuilderController", "Controller", "GET /builders")
+  Component(query, "DirectoryQuery", "Domain service", "Visibility scope, facets, sort, page; selected columns only")
+  Component(distance, "DistanceService", "Domain service", "Precomputed neighbourhood distances")
+  Component(resource, "PaginatedResource and BuilderCardResource", "API resources", "Items plus page meta")
+  Component(actions, "Write actions", "Actions", "Short transactions; jobs queued after commit")
+  Component(seeder, "LoadTestSeeder", "Seeder", "10,000 builders, 100 members with sessions")
+  Component(plan, "DirectoryQueryPlanTest", "Feature test", "EXPLAIN shows no full scan at 10,000 builders")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(runner, ctrl, "Calls under reference load", "JSON/HTTPS")
+Rel(ctrl, request, "Validates with")
+Rel(ctrl, query, "Calls")
+Rel(query, distance, "Reads distances from")
+Rel(query, db, "Indexed SELECT", "SQL")
+Rel(ctrl, resource, "Returns")
+Rel(actions, redis, "Queues after commit", "Redis protocol")
+Rel(seeder, db, "Seeds load data", "SQL")
+Rel(seeder, redis, "Writes load-member sessions", "Redis protocol")
+Rel(plan, query, "Explains the query built by")
+@enduml

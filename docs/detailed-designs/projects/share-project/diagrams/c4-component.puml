@@ -1,0 +1,25 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Share a project
+
+Container(web, "Banaro Web", "Angular", "ProjectNewPage, ProjectFormModel, HttpProjectsApi")
+ContainerDb(db, "Banaro database", "Relational database", "users, projects, project_looking_for")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "ProjectController", "Laravel controller", "store(): POST /projects")
+  Component(req, "ShareProjectRequest", "Form request", "Field rules, http/https link, ignores owner_id")
+  Component(action, "ShareProject", "Action", "Locks owner, enforces project limit, creates project")
+  Component(models, "Project / ProjectLookingFor", "Eloquent models", "Project fields and looking-for roles")
+  Component(enums, "ProjectStage / LookingForRole", "Enums", "Closed vocabularies")
+  Component(resource, "ProjectResource", "API resource", "ProjectDetail JSON shape")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(req, enums, "Checks enum membership")
+Rel(ctrl, action, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(action, models, "Counts and creates")
+Rel(models, db, "Reads and writes", "SQL")
+@enduml

@@ -1,0 +1,65 @@
+@startuml
+title UML sequence behaviour — Say hello to a suggested builder
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "MatchingPage" as page
+  participant "SayHelloDialog" as dialog
+  participant "HttpMessagingApi" as msgclient
+  participant "HttpMatchingApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ConversationController" as msgcontroller
+  participant "MatchingOverviewController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "StartConversation (messaging)" as sayhello
+  participant "MarkSuggestionContactedOnConversationStarted" as listener
+  participant "MarkSuggestionContacted" as mark
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Select "Say hello" on a match card
+page -> dialog : Open say-hello dialog with the builder (L2-023 criterion 5)
+actor -> dialog : Write a note and select "Send message"
+dialog -> msgclient : startConversation(input) (L2-026)
+msgclient -> msgcontroller : POST /api/v1/conversations
+msgcontroller -> sayhello : handle(sender, recipient, body, clientMessageId)
+sayhello -> db : BEGIN; create conversation, participants and message
+sayhello -> db : COMMIT
+opt new conversation
+  sayhello -> listener : Dispatch ConversationStarted after commit
+  listener -> mark : handle(sender, recipient)
+  mark -> db : UPDATE this week's suggestion SET status = contacted, acted_at = now\nWHERE status = suggested (L2-023 criterion 5)
+  mark --> listener : Suggestion or none
+end
+sayhello --> msgcontroller : StartConversationResult
+msgcontroller --> msgclient : 201 ConversationResource
+msgclient --> dialog : ConversationRef
+alt sent
+  dialog --> page : Close with sent result
+  page -> client : getOverview()
+  client -> controller : GET /api/v1/matching
+  controller --> client : 200 with the suggestion contacted
+  client --> page : MatchingOverview
+  page --> actor : Card shows contacted; reviewed state once all three are acted on
+else send fails
+  dialog --> actor : failed state, text kept, retry (L2-026 criterion 3)
+  note right of page : Nothing committed;\nsuggestion stays suggested
+end
+@enduml

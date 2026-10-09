@@ -1,0 +1,60 @@
+@startuml
+title UML sequence behaviour — Toggle the theme
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ThemeShortcut or bn-theme-switch" as trigger
+  participant "ThemeService" as theme
+  participant "THEME_SYNC binding" as sync
+  participant "HttpSettingsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ThemePreferenceController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "UpdateThemePreference" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+alt key press
+  actor -> trigger : Press t
+  trigger -> trigger : Ignore if modifier or target is input, textarea, select, contenteditable
+else switch
+  actor -> trigger : Activate "Switch to dark theme"
+end
+trigger -> theme : toggle()
+theme -> theme : preference = opposite of effective theme
+theme -> theme : document.documentElement.dataset.theme = 'dark'
+theme --> actor : Every component repaints from tokens at once (L2-051 criteria 2 and 3)
+theme -> theme : Write cookie bn-theme=dark (persists across reloads)
+theme -> sync : preference changed
+alt signed-in member
+  sync -> client : updateTheme('dark')
+  client -> controller : PUT /api/v1/settings/theme { theme: "dark" }
+  controller -> controller : Validate UpdateThemePreferenceRequest (enum)
+  controller -> action : handle(member, Dark)
+  action -> db : UPDATE users SET theme_preference = ? WHERE id = ?
+  db --> action : Saved
+  controller --> client : 204
+  opt save fails
+    client --> sync : Error; local choice and cookie stay
+  end
+else visitor
+  sync --> theme : Nothing to save; cookie only
+end
+@enduml

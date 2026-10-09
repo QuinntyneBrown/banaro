@@ -1,0 +1,61 @@
+@startuml
+title UML sequence behaviour — Open the moderation queue
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Administrator or member" as actor
+box "Frontend — admin application" #E0F2FE
+  participant "Banaro Web server (adminGate)" as gate
+  participant "ReportsPage" as page
+  participant "HttpModerationApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "EnsureAdministrator" as mw
+  participant "AdminReportController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "Report" as report
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> gate : GET /admin/reports
+gate -> mw : GET /api/v1/admin/access (session cookie forwarded)
+mw -> mw : Authenticate session, check role
+alt role is not Administrator
+  mw --> gate : 403 (L2-033 criterion 4)
+  gate --> actor : 403 forbidden page; admin bundle not served
+else administrator
+  mw --> gate : 204
+  gate --> actor : admin application
+  actor -> page : Open reports list
+  page -> client : listReports(status = open)
+  client -> mw : GET /api/v1/admin/reports?status=open
+  mw -> controller : index()
+  controller -> report : Query by status, ORDER BY created_at, id
+  report -> db : SELECT reports with subject and latest reason
+  db --> report : Rows
+  report --> controller : Reports, oldest first (L2-033 criterion 1)
+  controller --> client : 200 AdminReportResource[] with status, reason, subject
+  client --> page : Page of AdminReportSummary
+  alt reports exist
+    page --> actor : Queue oldest first
+  else none
+    page --> actor : Empty state
+  else request failed
+    page --> actor : Error state with retry
+  end
+end
+@enduml

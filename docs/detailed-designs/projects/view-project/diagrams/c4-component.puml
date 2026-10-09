@@ -1,0 +1,35 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — View a project
+
+Container(web, "Banaro Web", "Angular", "ProjectDetailPage, FeedbackItem, HttpProjectsApi")
+ContainerDb(db, "Banaro database", "Relational database", "projects, project_looking_for, feedback, builders, blocks")
+
+Container_Boundary(api, "Banaro API") {
+  Component(pctrl, "ProjectController", "Laravel controller", "show(): GET /projects/{project}, api_public.php")
+  Component(fctrl, "FeedbackController", "Laravel controller", "index(): GET /projects/{project}/feedback, api_public.php")
+  Component(req, "ShowProjectRequest / ListFeedbackRequest", "Form requests", "Route key, page, per_page cap")
+  Component(view, "ViewProject", "Action", "Loads project, owner profile, roles")
+  Component(list, "ListProjectFeedback", "Action", "Newest first, visibleTo(viewer)")
+  Component(policy, "ProjectPolicy", "Policy", "edit, delete, giveFeedback, offerHelp, viewHelpOffers")
+  Component(block, "BlockService", "Domain service (TrustAndSafety)", "Block relationships of the viewer")
+  Component(models, "Project / Feedback", "Eloquent models", "Project fields, feedback items")
+  Component(res, "ProjectResource / FeedbackResource", "API resources", "ProjectDetail and FeedbackView shapes")
+}
+
+Rel(web, pctrl, "Calls", "JSON/HTTPS")
+Rel(web, fctrl, "Calls", "JSON/HTTPS")
+Rel(pctrl, req, "Validates with")
+Rel(fctrl, req, "Validates with")
+Rel(pctrl, view, "Calls handle()")
+Rel(fctrl, list, "Calls handle()")
+Rel(view, models, "Reads")
+Rel(list, models, "Reads")
+Rel(list, block, "Scopes out blocked authors via applyScope()")
+Rel(res, policy, "Evaluates permissions with")
+Rel(pctrl, res, "Returns")
+Rel(fctrl, res, "Returns")
+Rel(models, db, "Reads", "SQL")
+Rel(block, db, "Reads blocks", "SQL")
+@enduml

@@ -1,0 +1,102 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Meet response-time budgets
+
+package "Frontend — api library" {
+  class PageRequest {
+    +page: number
+    +perPage?: number
+  }
+  class "Page<T>" as Page {
+    +items: T[]
+    +page: number
+    +perPage: number
+    +total: number
+    +lastPage: number
+  }
+  interface DirectoryApi {
+    +list(filters: DirectoryFilters, page: PageRequest): Observable<Page<BuilderCard>>
+  }
+}
+
+package "Backend — Banaro API" {
+  class PaginatesResults <<trait>> {
+    +paginationRules(): array
+    +page(): int
+    +perPage(): int
+  }
+  class ListBuildersRequest {
+    +rules(): array
+    +filters(): DirectoryFilters
+  }
+  class DirectoryQuery {
+    +for(viewer: ?User, filters: DirectoryFilters): self
+    +sortBy(sort: DirectorySort): self
+    +paginate(perPage: int, page: int): LengthAwarePaginator
+  }
+  enum DirectorySort {
+    BestMatch
+    Nearest
+    RecentlyActive
+    Newest
+  }
+  class DistanceService {
+    +neighbourhoodsWithin(fromId: int, km: int): array
+    +distanceKm(fromId: int, toId: int): float
+  }
+  class PaginatedResource {
+    +toArray(request: Request): array
+  }
+  class BuilderCardResource
+  class PaginationConfig <<config/banaro.php>> {
+    +int default = 12
+    +int max = 50
+  }
+}
+
+package "Backend — tests/load and tests/Feature" {
+  class Budget {
+    +string endpointClass
+    +int p95Ms
+    +?int p99Ms
+  }
+  class ReadEndpointsScenario {
+    +int virtualMembers = 100
+    +Budget budget = read: 300 / 800
+  }
+  class WriteEndpointsScenario {
+    +int virtualMembers = 100
+    +Budget budget = write: 500
+  }
+  class LoadTestSeeder {
+    +run(): void
+  }
+  class DirectoryQueryPlanTest {
+    +test_directory_query_uses_indexes_at_10000_builders(): void
+  }
+}
+
+ListBuildersRequest ..|> PaginatesResults : uses
+PaginatesResults ..> PaginationConfig : reads
+DirectoryQuery --> DirectorySort
+DirectoryQuery ..> DistanceService : reads distances
+PaginatedResource o-- BuilderCardResource : items
+ReadEndpointsScenario --> Budget
+WriteEndpointsScenario --> Budget
+ReadEndpointsScenario ..> LoadTestSeeder : needs data from
+WriteEndpointsScenario ..> LoadTestSeeder : needs data from
+DirectoryQueryPlanTest ..> DirectoryQuery : explains
+DirectoryApi ..> PageRequest
+DirectoryApi ..> Page
+@enduml

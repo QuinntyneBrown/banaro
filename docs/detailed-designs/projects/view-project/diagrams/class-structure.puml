@@ -1,0 +1,123 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — View a project
+
+package "Frontend — banaro application, components and api libraries" {
+  class ProjectDetailPage {
+    -api: ProjectsApi
+    +project: Signal<ProjectDetail | null>
+    +feedback: Signal<FeedbackView[]>
+    +state: 'loading' | 'default' | 'own' | 'empty' | 'error' | 'not-found'
+    +retry(): void
+    +loadEarlier(): void
+    +askToSignIn(): void
+  }
+  class FeedbackItem {
+    selector bn-feedback-item
+    +item: InputSignal<FeedbackView>
+  }
+  interface ProjectsApi {
+    +get(id: string): Observable<ProjectDetail>
+    +feedback(id: string, page: number): Observable<Page<FeedbackView>>
+  }
+  class HttpProjectsApi
+  class ProjectDetail {
+    +id: string
+    +name: string
+    +summary: string
+    +description: string
+    +stage: ProjectStage
+    +lookingFor: LookingForRole[]
+    +link: string | null
+    +owner: OwnerSummary
+    +feedbackCount: number
+    +permissions: ProjectPermissions
+  }
+  class ProjectPermissions {
+    +edit: boolean
+    +delete: boolean
+    +giveFeedback: boolean
+    +offerHelp: boolean
+    +viewHelpOffers: boolean
+  }
+  class FeedbackView {
+    +id: string
+    +author: AuthorSummary
+    +body: string
+    +createdAt: string
+    +hidden: boolean
+    +reply: FeedbackReplyView | null
+  }
+}
+
+package "Backend — Banaro API" {
+  class ProjectController {
+    +show(request: ShowProjectRequest, project: Project): ProjectResource
+  }
+  class FeedbackController {
+    +index(request: ListFeedbackRequest, project: Project): ResourceCollection
+  }
+  class ViewProject {
+    +handle(project: Project): Project
+  }
+  class ListProjectFeedback {
+    +handle(project: Project, viewer: ?User, page: int, perPage: int): LengthAwarePaginator
+  }
+  class ProjectPolicy {
+    +update(user: User, project: Project): bool
+    +delete(user: User, project: Project): bool
+    +giveFeedback(user: ?User, project: Project): bool
+    +offerHelp(user: ?User, project: Project): bool
+    +viewHelpOffers(user: User, project: Project): bool
+  }
+  class BlockService {
+    +applyScope(query, viewer: User, column: string): Builder
+  }
+  class Project {
+    +int id
+    +int owner_id
+    +int feedback_count
+  }
+  class Feedback {
+    +int id
+    +int project_id
+    +int author_id
+    +string body
+    +?string reply_body
+    +?Carbon replied_at
+    +?Carbon hidden_at
+    +scopeVisibleTo(query, viewer: ?User): Builder
+  }
+  class ProjectResource
+  class FeedbackResource
+}
+
+ProjectDetailPage ..> ProjectsApi : uses
+ProjectDetailPage ..> FeedbackItem : renders
+HttpProjectsApi ..|> ProjectsApi
+ProjectsApi ..> ProjectDetail : returns
+ProjectsApi ..> FeedbackView : returns
+ProjectDetail *-- ProjectPermissions
+HttpProjectsApi ..> ProjectController : HTTPS
+HttpProjectsApi ..> FeedbackController : HTTPS
+
+ProjectController ..> ViewProject : calls
+ProjectController ..> ProjectResource : returns
+FeedbackController ..> ListProjectFeedback : calls
+FeedbackController ..> FeedbackResource : returns
+ProjectResource ..> ProjectPolicy : evaluates
+ListProjectFeedback ..> BlockService : excludes blocked authors
+ListProjectFeedback --> Feedback : queries
+Project "1" *-- "*" Feedback : feedback
+@enduml

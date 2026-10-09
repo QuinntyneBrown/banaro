@@ -1,0 +1,58 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — View the privacy policy
+
+package "Frontend — banaro application and api library" {
+  class PrivacyPage {
+    -i18n: TranslationService
+    -seo: SeoService
+    +version: PolicyVersion
+    +lastUpdatedLabel: Signal<string>
+  }
+  class PolicyVersion <<constant PRIVACY_POLICY_VERSION>> {
+    +lastUpdated: string
+  }
+  class TranslationService {
+    +t(key: string): string
+    +formatDate(iso: string): string
+  }
+  class SeoService {
+    +setTitle(title: string): void
+    +setCanonical(url: string): void
+  }
+  class Footer {
+    +links: FooterLink[]
+  }
+  class JoinPage
+  class SettingsPage
+}
+
+package "Backend — Banaro API and Worker" {
+  class I18nController {
+    +show(locale: string): JsonResponse
+  }
+  class "emails/layout" as EmailLayout <<Blade view>> {
+    +privacyUrl: string
+  }
+}
+
+PrivacyPage --> PolicyVersion : shows
+PrivacyPage ..> TranslationService : reads privacy.* keys
+PrivacyPage ..> SeoService : uses
+Footer ..> PrivacyPage : links /privacy
+JoinPage ..> PrivacyPage : links /privacy
+SettingsPage ..> PrivacyPage : links /privacy
+EmailLayout ..> PrivacyPage : links {APP_URL}/privacy
+TranslationService ..> I18nController : HTTPS
+@enduml

@@ -1,0 +1,27 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Change profile photo
+
+Person(member, "Member", "Signed-in, verified builder")
+System_Ext(scanner, "Media scanner", "Malware-scanning service")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Profile edit page, change-photo dialog")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Validates, crops, resizes and strips metadata; serves ready photos")
+  Container(worker, "Banaro Worker", "Laravel Horizon", "Runs the media scan job")
+  ContainerDb(db, "Banaro database", "Relational database", "Builders, profile photos and their status")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions and Horizon queues")
+  ContainerDb(media, "Media storage", "Private file storage outside the web root", "Photo files under random names")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "POST, GET and DELETE /api/v1/me/photo", "multipart and JSON/HTTPS")
+Rel(api, media, "Writes to quarantine, streams ready photos, deletes files")
+Rel(api, db, "Records photo rows", "SQL")
+Rel(api, redis, "Queues ScanProfilePhoto", "Redis protocol")
+Rel(worker, redis, "Takes jobs from", "Redis protocol")
+Rel(worker, media, "Reads, moves and deletes files")
+Rel(worker, scanner, "Scans files via", "MediaScanner contract")
+Rel(worker, db, "Marks photos ready or rejected", "SQL")
+@enduml

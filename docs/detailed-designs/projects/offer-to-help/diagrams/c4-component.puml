@@ -1,0 +1,42 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Offer to help with a project
+
+Container(web, "Banaro Web", "Angular", "OfferToHelpDialog, ProjectDetailPage, HelpOfferItem, HttpProjectsApi")
+ContainerDb(db, "Banaro database", "Relational database", "projects, help_offers, conversations, blocks")
+ContainerQueue(redis, "Redis", "Redis", "Horizon queues")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "HelpOfferController / HelpOfferDecisionController", "Laravel controllers", "POST and GET /help-offers, PUT /decision")
+  Component(req, "OfferToHelpRequest / AnswerHelpOfferRequest", "Form requests", "Role in looking-for list, message 10-1,000, decision")
+  Component(policy, "ProjectPolicy / HelpOfferPolicy", "Policies", "Not owner and not blocked; owner only")
+  Component(block, "BlockService", "Domain service (TrustAndSafety)", "isBlockedEitherWay()")
+  Component(offer, "OfferToHelp", "Action", "Locks project, one open offer per member")
+  Component(answer, "AnswerHelpOffer", "Action", "Accepts or declines an open offer")
+  Component(list, "ListHelpOffers", "Action", "Owner's offer list")
+  Component(start, "StartConversation", "Action (Messaging)", "Opens a conversation between two members")
+  Component(models, "Project / HelpOffer", "Eloquent models", "Offer status, role, conversation link")
+  Component(resource, "HelpOfferResource", "API resource", "HelpOfferView JSON shape")
+  Component(notify, "HelpOfferedNotification / HelpOfferAnsweredNotification", "Queued notifications", "To owner; to offerer")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(req, policy, "Authorizes with")
+Rel(policy, block, "Calls isBlockedEitherWay()")
+Rel(ctrl, offer, "Calls handle()")
+Rel(ctrl, answer, "Calls handle()")
+Rel(ctrl, list, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(offer, models, "Locks and creates")
+Rel(answer, models, "Locks and updates")
+Rel(list, models, "Reads")
+Rel(answer, start, "Calls on accept")
+Rel(offer, notify, "Queues after commit")
+Rel(answer, notify, "Queues after commit")
+Rel(models, db, "Reads and writes", "SQL")
+Rel(start, db, "Writes conversation", "SQL")
+Rel(block, db, "Reads blocks", "SQL")
+Rel(notify, redis, "Pushed to", "Redis protocol")
+@enduml

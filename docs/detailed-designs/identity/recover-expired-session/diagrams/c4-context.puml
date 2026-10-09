@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Recover an expired session
+
+Person(member, "Member", "Signed-in, verified builder whose session has expired")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Signs back in without leaving the page using", "HTTPS")
+@enduml

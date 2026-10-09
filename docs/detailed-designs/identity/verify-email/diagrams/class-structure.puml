@@ -1,0 +1,110 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Verify e-mail address
+
+package "Frontend — banaro application and api library" {
+  class VerifyEmailPage {
+    -api: IdentityApi
+    -session: SessionStore
+    +state: 'default' | 'success' | 'error'
+    +email: Signal<string | null>
+    +resend(): void
+  }
+  class verifyEmailResolver <<ResolveFn>> {
+    +resolve(route): Observable<'success' | 'error' | 'default'>
+  }
+  class emailVerificationInterceptor <<HttpInterceptorFn>> {
+    +intercept(req, next): Observable<HttpEvent>
+  }
+  class memberGuard <<CanMatchFn>>
+  class SessionStore {
+    +member: Signal<MemberSession | null>
+  }
+  interface IdentityApi {
+    +verifyEmail(link: VerificationLink): Observable<void>
+    +resendVerification(request: ResendVerificationRequest): Observable<void>
+  }
+  class HttpIdentityApi
+  class VerificationLink {
+    +token: string
+    +expires: number
+    +signature: string
+  }
+  class ResendVerificationRequest {
+    +token?: string
+    +email?: string
+  }
+}
+
+package "Backend — Banaro API" {
+  class EmailVerificationController {
+    +store(request: VerifyEmailRequest): Response
+  }
+  class VerificationNotificationController {
+    +store(request: ResendVerificationEmailRequest): Response
+  }
+  class VerifyEmail {
+    +handle(link: VerificationLinkData): User
+  }
+  class ResendVerificationEmail {
+    +handle(data: ResendData, sessionUser: ?User): void
+  }
+  class EmailVerificationService {
+    +issue(user: User): string
+    +consume(token: string, expires: int, signature: string): User
+    -sign(token: string, expires: int): string
+  }
+  class RequireVerifiedEmail {
+    +handle(request: Request, next: Closure): Response
+  }
+  class User {
+    +int id
+    +string email
+    +?Carbon email_verified_at
+    +hasVerifiedEmail(): bool
+    +markEmailAsVerified(): void
+  }
+  class EmailVerificationToken {
+    +int id
+    +int user_id
+    +string token_hash
+    +Carbon expires_at
+    +?Carbon used_at
+    +isUsable(): bool
+  }
+  class VerifyEmailNotification {
+    +string link
+    +via(): array
+  }
+}
+
+VerifyEmailPage ..> IdentityApi : uses
+verifyEmailResolver ..> IdentityApi : uses
+VerifyEmailPage ..> SessionStore : reads
+memberGuard ..> SessionStore : reads
+HttpIdentityApi ..|> IdentityApi
+IdentityApi ..> VerificationLink : sends
+IdentityApi ..> ResendVerificationRequest : sends
+HttpIdentityApi ..> EmailVerificationController : HTTPS
+HttpIdentityApi ..> VerificationNotificationController : HTTPS
+
+EmailVerificationController ..> VerifyEmail : calls
+VerificationNotificationController ..> ResendVerificationEmail : calls
+VerifyEmail ..> EmailVerificationService : consume()
+ResendVerificationEmail ..> EmailVerificationService : issue()
+ResendVerificationEmail ..> VerifyEmailNotification : queues
+EmailVerificationService --> EmailVerificationToken : creates / locks
+RequireVerifiedEmail ..> User : checks
+User "1" *-- "*" EmailVerificationToken : verificationTokens
+@enduml

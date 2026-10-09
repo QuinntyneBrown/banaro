@@ -1,0 +1,59 @@
+@startuml
+title UML sequence behaviour — Keep unsent input
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "Form (e.g. message composer)" as form
+  participant "DraftStore" as drafts
+  participant "ConnectivityService" as conn
+  participant "Feature API client" as client
+end box
+box "Frontend — browser storage" #E0F2FE
+  database "sessionStorage" as storage
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "Feature controller" as controller
+end box
+
+form -> drafts : bind(form, "{memberId}:messages:{conversationId}")
+drafts -> storage : Restore saved text, if any
+actor -> form : Type a message
+form -> drafts : Value changes (debounced)
+drafts -> storage : Save text
+actor -> form : Select "Send"
+form -> client : send(text)
+client -> controller : POST request
+controller --> client : no response, status 0
+client --> form : Unreachable
+form -> form : Keep text, mark "not sent" (L2-043 criterion 4)
+opt member navigates and the page reloads
+  form -> drafts : bind(...) again
+  drafts -> storage : Restore text
+  storage --> form : Unsent text back in the field
+end
+conn -> form : status = online
+form -> form : Enable send again
+alt send by the member's action
+  actor -> form : Select "Send"
+else automatic send
+  form -> form : <TO SUPPLY> (see Open points)
+end
+form -> client : send(text)
+client -> controller : POST request
+controller --> client : 201
+form -> drafts : clear(key)
+drafts -> storage : Remove draft
+@enduml

@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Show error pages
+
+Person(member, "Visitor or member", "Anyone who reaches a failure")
+System_Ext(crawler, "Search engine", "Crawls public pages")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Error pages, interceptor, global error handler; sets SSR status")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Returns 403, 404, 5xx with X-Request-Id; generic 500 body")
+}
+
+Rel(member, web, "Requests pages", "HTTPS")
+Rel(crawler, web, "Requests unknown URL, receives 404 + noindex", "HTTPS")
+Rel(web, api, "Requests essential data, reads status and X-Request-Id", "JSON/HTTPS")
+@enduml

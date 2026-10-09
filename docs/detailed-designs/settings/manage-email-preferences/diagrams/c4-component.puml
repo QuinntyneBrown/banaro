@@ -1,0 +1,34 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Manage e-mail preferences
+
+Container(web, "Banaro Web", "Angular", "EmailPreferencesSection, UnsubscribePage, HttpSettingsApi")
+Container(worker, "Banaro Worker", "Laravel Horizon", "Queued notifications of email-notifications")
+ContainerDb(db, "Banaro database", "Relational database", "email_preferences")
+
+Container_Boundary(api, "Banaro API") {
+  Component(prefCtrl, "EmailPreferenceController", "Laravel controller", "PUT /settings/email-preferences/{category} (api.php)")
+  Component(unsubCtrl, "UnsubscribeController", "Laravel controller", "POST /email-preferences/unsubscribe (api_public.php)")
+  Component(req, "SetEmailPreferenceRequest / UnsubscribeRequest", "Form requests", "Category and enabled; token")
+  Component(set, "SetEmailPreference", "Action", "Upserts one category")
+  Component(unsub, "Unsubscribe", "Action", "Verifies the token, turns the category off")
+  Component(tokens, "UnsubscribeTokenService", "Domain service", "issue() and verify() with HMAC-SHA256")
+  Component(prefs, "EmailPreferenceService", "Domain service", "allows(user, category)")
+  Component(model, "EmailPreference", "Eloquent model", "user_id, category, enabled")
+}
+
+Rel(web, prefCtrl, "Calls", "JSON/HTTPS")
+Rel(web, unsubCtrl, "Calls", "JSON/HTTPS")
+Rel(prefCtrl, req, "Validates with")
+Rel(unsubCtrl, req, "Validates with")
+Rel(prefCtrl, set, "Calls handle()")
+Rel(unsubCtrl, unsub, "Calls handle()")
+Rel(unsub, tokens, "Verifies with")
+Rel(unsub, set, "Turns category off with")
+Rel(set, model, "Upserts")
+Rel(worker, prefs, "Asks allows() in via()")
+Rel(worker, tokens, "Issues link tokens with")
+Rel(prefs, model, "Reads")
+Rel(model, db, "Reads and writes", "SQL")
+@enduml

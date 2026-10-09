@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Deploy and operate data
+
+Person(maintainer, "Maintainer", "Operates releases and infrastructure")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+System_Ext(pipeline, "CI pipeline", "Runs .ci/ stages; product <TO SUPPLY>")
+System_Ext(registry, "Container registry", "Stores banaro-api and banaro-web images; product <TO SUPPLY>")
+System_Ext(orchestrator, "Container orchestrator", "Runs replicas, gates traffic on readiness; product <TO SUPPLY>")
+
+Rel(maintainer, pipeline, "Merges changes that trigger")
+Rel(pipeline, registry, "Pushes images to")
+Rel(pipeline, banaro, "Runs migrate and seed against")
+Rel(pipeline, orchestrator, "Requests rollout from")
+Rel(orchestrator, registry, "Pulls images from")
+Rel(orchestrator, banaro, "Starts, probes, drains and stops replicas of", "HTTP, signals")
+@enduml

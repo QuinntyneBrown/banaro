@@ -1,0 +1,44 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — E-mail notifications
+
+System_Ext(mail, "Mail provider", "Vendor <TO SUPPLY>")
+ContainerDb(db, "Banaro database", "Relational database", "email_deliveries, notification_dedupe_keys, email preferences, rsvps")
+ContainerQueue(redis, "Redis", "Redis", "mail queue, scheduler locks")
+Container(api, "Banaro API", "Laravel", "Feature actions queue BanaroMailNotification subclasses")
+
+Container_Boundary(worker, "Banaro Worker") {
+  Component(schedule, "routes/console.php", "Laravel scheduler", "events:send-reminders every 5 minutes; weekly digest")
+  Component(reminders, "SendEventRemindersCommand", "Artisan command", "Going RSVPs of events starting within 24 hours")
+  Component(digestcmd, "SendWeeklyDigestCommand", "Artisan command", "One job per opted-in member")
+  Component(digestjob, "SendWeeklyDigest", "Queued job", "Unread items summary")
+  Component(dedupe, "NotificationDedupeService", "Domain service", "claim(key) on a unique index")
+  Component(base, "BanaroMailNotification subclasses", "Queued notifications", "category, shouldSend, backoff, failed")
+  Component(channel, "MailerChannel", "Notification channel", "Delivery record, template, unsubscribe link, send")
+  Component(prefs, "EmailPreferenceService", "Domain service (settings)", "allows(user, category)")
+  Component(links, "UnsubscribeTokenService", "Domain service (settings)", "issue(user, category): signed token")
+  Component(port, "Mailer", "Contract", "send(OutgoingEmail)")
+  Component(adapter, "{Vendor}Mailer", "Integration adapter", "Implements Mailer")
+  Component(models, "EmailDelivery / NotificationDedupeKey", "Eloquent models", "Delivery state, claimed keys")
+}
+
+Rel(api, redis, "Queues notifications after commit", "Redis protocol")
+Rel(schedule, reminders, "Starts")
+Rel(schedule, digestcmd, "Starts")
+Rel(reminders, dedupe, "Claims event-reminder keys")
+Rel(reminders, base, "Sends EventReminderNotification")
+Rel(digestcmd, digestjob, "Dispatches")
+Rel(digestjob, dedupe, "Claims digest key")
+Rel(digestjob, base, "Sends WeeklyDigestNotification")
+Rel(base, redis, "Taken from mail queue", "Redis protocol")
+Rel(base, prefs, "shouldSend()")
+Rel(base, channel, "Delivered by")
+Rel(channel, links, "Issues unsubscribe token")
+Rel(channel, models, "Reads and writes delivery record")
+Rel(channel, port, "Calls send()")
+Rel(adapter, port, "Implements")
+Rel(adapter, mail, "Sends", "HTTPS or SMTP")
+Rel(dedupe, models, "Inserts keys")
+Rel(models, db, "Reads and writes", "SQL")
+@enduml

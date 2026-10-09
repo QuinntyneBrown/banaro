@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Edit own profile
+
+Person(member, "Member", "Signed-in, verified builder")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Views own profile and edits it using", "HTTPS")
+@enduml

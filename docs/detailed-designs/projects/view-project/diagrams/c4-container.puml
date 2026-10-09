@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — View a project
+
+Person(member, "Member", "Signed-in, verified builder")
+Person(visitor, "Visitor", "Not signed in")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "project-detail page, server-rendered on first load")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Anonymous project and feedback reads, viewer permissions")
+  ContainerDb(db, "Banaro database", "Relational database", "Projects, feedback, builders, blocks")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(visitor, web, "Uses", "HTTPS")
+Rel(web, api, "GET /api/v1/projects/{id} and /feedback", "JSON/HTTPS")
+Rel(api, redis, "Resolves optional session", "Redis protocol")
+Rel(api, db, "Reads", "SQL")
+@enduml

@@ -1,0 +1,127 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — In-app notifications
+
+package "Frontend — banaro application and api library" {
+  class NotificationsPage {
+    -api: NotificationsApi
+    -unread: UnreadCountStore
+    +state: 'loading' | 'error' | 'empty' | 'default' | 'read'
+    +items: Signal<AppNotification[]>
+    +open(item: AppNotification): void
+    +markAllRead(): void
+  }
+  class HeaderBell <<shell/header>> {
+    +count: Signal<number>
+    +display: Signal<string>
+    +ariaLabel: Signal<string>
+  }
+  class UnreadCountStore {
+    -api: NotificationsApi
+    +count: WritableSignal<number>
+    +refresh(): void
+    +decrement(): void
+    +clear(): void
+  }
+  class notificationRoute <<function>> {
+    +notificationRoute(subject: NotificationSubject): string
+  }
+  interface NotificationsApi {
+    +list(page: number): Observable<NotificationPage>
+    +unreadCount(): Observable<number>
+    +markRead(id: string): Observable<void>
+    +markAllRead(): Observable<void>
+  }
+  class HttpNotificationsApi
+  class AppNotification {
+    +id: string
+    +kind: NotificationKind
+    +params: Record<string, string | number>
+    +subject: NotificationSubject
+    +createdAt: string
+    +readAt: string | null
+  }
+}
+
+package "Backend — Banaro API" {
+  class NotificationController {
+    +index(request: ListNotificationsRequest): AnonymousResourceCollection
+    +unreadCount(request: Request): UnreadCountResource
+    +markRead(request: MarkNotificationReadRequest, notification: DatabaseNotification): Response
+    +markAllRead(request: MarkAllNotificationsReadRequest): Response
+  }
+  class ListNotifications {
+    +handle(member: User, page: int, perPage: int): LengthAwarePaginator
+  }
+  class CountUnreadNotifications {
+    +handle(member: User): int
+  }
+  class MarkNotificationRead {
+    +handle(notification: DatabaseNotification): void
+  }
+  class MarkAllNotificationsRead {
+    +handle(member: User): int
+  }
+  class BlockService <<trust-and-safety>> {
+    +isBlockedEitherWay(a: User, b: User): bool
+  }
+  class User {
+    +notifications(): MorphMany
+  }
+  class DatabaseNotification {
+    +string id
+    +string type
+    +int notifiable_id
+    +array data
+    +?Carbon read_at
+    +Carbon created_at
+  }
+  enum NotificationKind {
+    MatchesReady
+    NewMessage
+    RsvpConfirmed
+    WaitlistPromoted
+    EventReminder
+    FeedbackReceived
+    HelpOffered
+    HelpOfferAnswered
+  }
+  class InAppPayload <<trait>> {
+    +toDatabase(notifiable: User): array
+  }
+  class NotificationResource
+  class UnreadCountResource
+}
+
+NotificationsPage ..> NotificationsApi : uses
+NotificationsPage ..> UnreadCountStore : updates
+NotificationsPage ..> notificationRoute : navigates with
+HeaderBell ..> UnreadCountStore : reads
+UnreadCountStore ..> NotificationsApi : uses
+HttpNotificationsApi ..|> NotificationsApi
+NotificationsApi ..> AppNotification : returns
+HttpNotificationsApi ..> NotificationController : HTTPS
+
+NotificationController ..> ListNotifications : calls
+NotificationController ..> CountUnreadNotifications : calls
+NotificationController ..> MarkNotificationRead : calls
+NotificationController ..> MarkAllNotificationsRead : calls
+NotificationController ..> NotificationResource : returns
+NotificationController ..> UnreadCountResource : returns
+ListNotifications ..> BlockService : filters
+ListNotifications --> User : notifications()
+User "1" *-- "*" DatabaseNotification : notifications
+DatabaseNotification ..> NotificationKind : data.kind
+InAppPayload ..> DatabaseNotification : writes data
+@enduml

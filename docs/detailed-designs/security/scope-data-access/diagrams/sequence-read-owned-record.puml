@@ -1,0 +1,69 @@
+@startuml
+title UML sequence behaviour — Request another member's record
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member A" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "MessagesPage" as page
+  participant "HttpMessagingApi" as client
+  participant "unauthorizedInterceptor" as interceptor
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "auth:sanctum, verified" as auth
+  participant "Scoped route binding" as binding
+  participant "ConversationController" as controller
+  participant "Exception rendering" as handler
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ConversationPolicy" as policy
+  participant "Conversation" as model
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  database "Redis" as redis
+end box
+
+actor -> page : Open /messages/{id} for member B's conversation
+page -> client : conversation(id)
+client -> interceptor : GET /api/v1/conversations/{id}
+interceptor -> auth : Request with session cookie
+auth -> redis : Load session
+alt no valid session
+  redis --> auth : No session
+  auth -> handler : AuthenticationException
+  handler --> interceptor : 401 unauthenticated (L2-044 criterion 3)
+  interceptor --> page : Open session-expired dialog (L2-005)
+else session for member A
+  redis --> auth : Member A
+  auth -> binding : Resolve {conversation}
+  binding -> model : withParticipant(A)->find(id)
+  model -> db : SELECT ... WHERE id = ? AND participant = ?
+  alt A is a participant
+    db --> model : Conversation row
+    binding -> policy : view(A, conversation)
+    policy --> binding : allow()
+    binding -> controller : show(conversation)
+    controller --> client : 200 ConversationResource (explicit fields only)
+    client --> page : Conversation
+    page --> actor : Thread oldest to newest
+  else conversation belongs to B and another member
+    db --> model : No row
+    binding -> handler : ModelNotFoundException
+    handler --> client : 404 not_found, no data about B (L2-044 criterion 1)
+    client --> page : Not found
+    page --> actor : not-found state without reason
+  end
+end
+@enduml

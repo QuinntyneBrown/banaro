@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — View the dashboard
+
+Person(member, "Member", "Signed-in, verified builder")
+Person(visitor, "Visitor", "Person using Banaro without signing in")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Dashboard page, route guard, section retry")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Assembles dashboard sections in isolation")
+  ContainerDb(db, "Banaro database", "Relational database", "Match suggestions, RSVPs, conversations, projects, profiles")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(visitor, web, "Redirected to /sign-in?returnTo=/dashboard by", "HTTPS")
+Rel(web, api, "GET /api/v1/dashboard and /dashboard/sections/{name}", "JSON/HTTPS")
+Rel(api, redis, "Reads session", "Redis protocol")
+Rel(api, db, "Reads each section's data", "SQL")
+@enduml

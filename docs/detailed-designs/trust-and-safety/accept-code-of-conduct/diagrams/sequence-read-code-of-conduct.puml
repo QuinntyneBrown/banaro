@@ -1,0 +1,39 @@
+@startuml
+title UML sequence behaviour — Read the code of conduct
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "JoinPage" as join
+  participant "Banaro Web server (SSR)" as ssr
+  participant "CodeOfConductPage" as page
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "I18nController" as i18n
+end box
+
+opt from the join form
+  actor -> join : Open /join
+  join --> actor : Consent link "code of conduct", accessible name says it opens in a new tab (L2-034 criterion 2)
+  actor -> join : Select the link
+  join -> ssr : Open /code-of-conduct in a new tab (target="_blank", rel="noopener")
+end
+actor -> ssr : GET /code-of-conduct (no session needed, L2-034 criterion 1)
+ssr -> i18n : GET /api/v1/i18n/en-CA (route in api_public.php)
+i18n --> ssr : Catalogue with codeOfConduct.* text and version date
+ssr -> page : Render sections, table of contents, "Last updated" date
+page --> ssr : HTML
+ssr --> actor : Full text with table of contents and link to /contact (L2-034 criterion 1)
+@enduml

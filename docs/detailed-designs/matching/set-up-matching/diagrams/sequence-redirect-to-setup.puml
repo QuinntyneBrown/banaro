@@ -1,0 +1,47 @@
+@startuml
+title UML sequence behaviour — Redirect a member who is not set up
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "Router" as router
+  participant "matchingSetUpGuard" as guard
+  participant "HttpMatchingApi" as client
+  participant "MatchingSetupPage" as page
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "MatchingOverviewController" as controller
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> router : Open /matching
+router -> guard : canActivate()
+guard -> client : getOverview()
+client -> controller : GET /api/v1/matching
+controller -> db : Find matching preference of session member
+db --> controller : None
+controller --> client : 200 status not_set_up
+client --> guard : MatchingOverview
+alt status not_set_up
+  guard --> router : UrlTree /matching/setup?reason=not-set-up (L2-021 criterion 4)
+  router -> page : Activate
+  page --> actor : default state with the redirect explanation
+else set up
+  guard --> router : true
+  router --> actor : MatchingPage (review-matches)
+end
+@enduml

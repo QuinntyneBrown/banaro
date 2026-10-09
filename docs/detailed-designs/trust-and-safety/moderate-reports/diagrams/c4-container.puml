@@ -1,0 +1,24 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Moderate reports
+
+Person(admin, "Administrator", "Member with the administrator role")
+System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "adminGate and the admin application under /admin")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Administrator middleware, moderation actions, audit log")
+  Container(worker, "Banaro Worker", "Laravel Horizon", "Sends queued moderation e-mail")
+  ContainerDb(db, "Banaro database", "Relational database", "Reports, moderation actions, audit entries, users")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions and Horizon queues")
+}
+
+Rel(admin, web, "Uses", "HTTPS")
+Rel(web, api, "GET /api/v1/admin/access before serving the admin bundle", "JSON/HTTPS")
+Rel(web, api, "GET and POST /api/v1/admin/reports", "JSON/HTTPS")
+Rel(api, db, "Locks reports, writes actions and audit entries", "SQL")
+Rel(api, redis, "Revokes sessions, queues e-mail", "Redis protocol")
+Rel(worker, redis, "Takes jobs from", "Redis protocol")
+Rel(worker, mail, "Sends e-mail via", "Mailer contract")
+@enduml

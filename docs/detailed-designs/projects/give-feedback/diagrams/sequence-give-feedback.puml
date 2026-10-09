@@ -1,0 +1,88 @@
+@startuml
+title UML sequence behaviour — Give feedback on a project
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ProjectDetailPage" as page
+  participant "GiveFeedbackDialog" as dialog
+  participant "HttpProjectsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "throttle:project-feedback" as throttle
+  participant "FeedbackController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ProjectPolicy" as policy
+  participant "BlockService" as block
+  participant "GiveFeedback" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis queue" as queue
+end box
+box "Backend — Banaro Worker" #ECFDF3
+  participant "FeedbackReceivedNotification" as notification
+end box
+
+actor -> page : Select "Give feedback"
+page -> dialog : Open give-feedback dialog
+actor -> dialog : Write feedback, select "Post feedback"
+dialog -> dialog : busy state, fields read-only, "Posting…" (L2-016 criterion 3)
+dialog -> client : giveFeedback(projectId, body)
+client -> throttle : POST /api/v1/projects/{id}/feedback
+alt more than 10 posts in the last hour
+  throttle --> client : 429 with Retry-After (L2-016 criterion 5)
+  client --> dialog : Rate limited
+  dialog --> actor : "Slow down" message, text kept (L2-046 criterion 2)
+else within limit
+  throttle -> controller : Pass request
+  controller -> policy : giveFeedback(member, project)
+  policy -> block : isBlockedEitherWay(member, owner)
+  block --> policy : true or false
+  alt owner, or blocked pair
+    policy --> controller : Deny
+    controller --> client : 403 (L2-016 criterion 6)
+    client --> dialog : Forbidden
+    dialog --> actor : Message that feedback cannot be posted
+  else allowed
+    controller -> controller : Validate body 10 to 1,000 characters
+    alt body outside limits
+      controller --> client : 422 with field error
+      client --> dialog : Field error
+      dialog --> actor : invalid state with the specific limit, nothing posted (L2-016 criterion 2)
+    else valid
+      controller -> action : handle(member, project, body)
+      action -> db : BEGIN; INSERT feedback; feedback_count + 1; last_activity_at = now; COMMIT
+      action -> queue : Queue FeedbackReceivedNotification to owner after commit (L2-029)
+      action --> controller : Feedback
+      controller --> client : 201 FeedbackResource
+      client --> dialog : FeedbackView
+      dialog --> page : Close with the new item
+      page --> actor : Item at the top of the list with name and time (L2-016 criterion 1)
+    end
+  end
+end
+opt server error or network failure
+  client --> dialog : Error
+  dialog --> actor : failed state with "Try again", text preserved (L2-016 criterion 3)
+end
+opt feedback stored
+  queue -> notification : Worker takes the job
+  notification -> db : Record database notification for the owner
+  notification -> notification : Check owner's "Project activity" e-mail preference (L2-029 criterion 2)
+  notification -> notification : Send e-mail once through the Mailer contract (L2-029 criterion 1)
+end
+@enduml

@@ -1,0 +1,116 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Report a builder or content
+
+package "Frontend — banaro application and api library" {
+  class ReportDialog {
+    -api: TrustAndSafetyApi
+    +data: ReportDialogData
+    +state: 'default' | 'busy' | 'invalid' | 'failed' | 'success'
+    +send(): void
+    +openBlockDialog(): void
+  }
+  class ReportDialogData {
+    +subjectType: ReportSubjectType
+    +subjectId: string
+    +subjectName: string
+  }
+  interface TrustAndSafetyApi {
+    +report(request: CreateReportRequest): Observable<ReportReceipt>
+  }
+  class HttpTrustAndSafetyApi
+  class CreateReportRequest {
+    +subjectType: 'builder' | 'project' | 'feedback' | 'message'
+    +subjectId: string
+    +reason: string
+    +details?: string
+  }
+  class ReportReceipt {
+    +reportId: string
+    +receivedAt: string
+  }
+}
+
+package "Backend — Banaro API" {
+  class ReportController {
+    +store(request: SubmitReportRequest): ReportReceiptResource
+  }
+  class SubmitReportRequest {
+    +rules(): array
+  }
+  class SubmitReport {
+    +handle(reporter: User, type: ReportSubjectType, id: int, reason: ReportReason, details: ?string): Report
+  }
+  class ReportSubjectResolver {
+    +resolve(viewer: User, type: ReportSubjectType, id: int): ReportSubject
+  }
+  class BlockService {
+    +isBlockedEitherWay(a: User, b: User): bool
+  }
+  class Report {
+    +int id
+    +int reporter_id
+    +ReportSubjectType subject_type
+    +int subject_id
+    +int reported_user_id
+    +ReportStatus status
+    +Carbon last_submitted_at
+  }
+  class ReportSubmission {
+    +int id
+    +int report_id
+    +ReportReason reason
+    +?string details
+    +Carbon created_at
+  }
+  enum ReportReason {
+    Harassment
+    Spam
+    Impersonation
+    UnsafeContent
+    CodeOfConductBreach
+    Other
+  }
+  enum ReportSubjectType {
+    Builder
+    Project
+    Feedback
+    Message
+  }
+  enum ReportStatus {
+    Open
+    Actioned
+    Dismissed
+  }
+  class ReportReceiptResource
+}
+
+ReportDialog ..> TrustAndSafetyApi : uses
+ReportDialog --> ReportDialogData : receives
+HttpTrustAndSafetyApi ..|> TrustAndSafetyApi
+TrustAndSafetyApi ..> CreateReportRequest : sends
+TrustAndSafetyApi ..> ReportReceipt : returns
+HttpTrustAndSafetyApi ..> ReportController : HTTPS
+
+ReportController ..> SubmitReportRequest : validates with
+ReportController ..> SubmitReport : calls
+ReportController ..> ReportReceiptResource : returns
+SubmitReport ..> ReportSubjectResolver : resolves via
+ReportSubjectResolver ..> BlockService : checks
+SubmitReport --> Report : creates or merges
+Report "1" *-- "1..*" ReportSubmission : submissions
+ReportSubmission --> ReportReason : has
+Report --> ReportSubjectType : has
+Report --> ReportStatus : has
+@enduml

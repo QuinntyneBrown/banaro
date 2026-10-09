@@ -1,0 +1,62 @@
+@startuml
+title UML sequence behaviour — Send a new verification link
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "VerifyEmailPage" as page
+  participant "HttpIdentityApi" as client
+  participant "ToastService" as toast
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "VerificationNotificationController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ResendVerificationEmail" as action
+  participant "EmailVerificationService" as service
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis" as redis
+end box
+
+actor -> page : Select "Send the link again" or "Send a new link"
+page -> client : resendVerification({ token } or { email } or session only)
+client -> controller : POST /api/v1/email/verification-notification
+controller -> controller : Validate ResendVerificationEmailRequest
+controller -> action : handle(data, sessionUser)
+action -> db : Resolve account: session, then token row, then canonical e-mail
+db --> action : Account or none
+action -> redis : Hit limiter key (account id, or hash of the supplied identifier)
+alt more than 3 requests in one hour
+  action --> controller : Too many attempts
+  controller --> client : 429 with Retry-After (L2-002 criterion 3)
+  client --> page : ApiProblem
+  page -> toast : Show "slow down" message (L2-046 criterion 2)
+else within limit
+  opt account resolved and unverified
+    action -> service : issue(user)
+    service -> db : BEGIN; DELETE earlier tokens for the account (earlier links stop working)
+    service -> db : INSERT token hash, expires_at = now + 24 hours; COMMIT
+    service --> action : Signed /verify-email URL
+    action -> redis : Queue VerifyEmailNotification (L2-002 criterion 3, L2-029 criterion 2)
+  end
+  action --> controller : Done
+  controller --> client : 202 Accepted, same body whether or not a link was sent
+  client --> page : Success
+  page -> toast : Show resend confirmation
+end
+page --> actor : Same page state, with the toast
+@enduml

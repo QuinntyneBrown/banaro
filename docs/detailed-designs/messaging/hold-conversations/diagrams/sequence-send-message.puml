@@ -1,0 +1,81 @@
+@startuml
+title UML sequence behaviour — Send a reply
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "MessagesPage" as page
+  participant "HttpMessagingApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "MessageController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ConversationPolicy" as policy
+  participant "BlockService" as block
+  participant "SendMessage" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis queue" as queue
+end box
+
+actor -> page : Write reply, select "Send"
+page -> page : Append pending message with new clientMessageId
+page -> client : sendMessage(conversationId, { body, clientMessageId })
+client -> controller : POST /api/v1/conversations/{id}/messages
+controller -> policy : view(member, conversation)
+alt not a participant
+  policy --> controller : denyAsNotFound
+  controller --> client : 404 (L2-026 criterion 9)
+else participant
+  controller -> policy : reply(member, conversation)
+  policy -> block : isBlockedEitherWay(member, other participant)
+  alt blocked pair
+    block --> policy : true
+    policy --> controller : deny
+    controller --> client : 403 blocked (L2-026 criterion 7)
+  else allowed
+    block --> policy : false
+    controller -> controller : Validate SendMessageRequest (L2-045)
+    controller -> action : handle(member, conversation, body, clientMessageId)
+    action -> db : BEGIN; find message by sender_id, client_message_id
+    alt already stored
+      db --> action : Stored message
+    else new message
+      action -> db : INSERT message; UPDATE last_message_id, last_message_at, sender read mark
+    end
+    action -> db : COMMIT
+    action -> queue : Queue NewMessageNotification for the other participant (L2-029)
+    action --> controller : Message
+    controller --> client : 201 MessageResource
+  end
+end
+client --> page : ChatMessage or error
+alt confirmed
+  page --> actor : Pending message becomes a sent message; cursor moves forward
+else 403 blocked
+  page --> actor : Thread becomes read-only; reply form hidden (L2-026 criterion 7)
+else server or network failure
+  page --> actor : send-failed state with "Retry" and "Discard"; text kept (L2-026 criterion 5, L2-043 criterion 4)
+  alt member selects "Retry"
+    actor -> page : Retry
+    page -> client : sendMessage(conversationId, { body, same clientMessageId })
+  else member selects "Discard"
+    actor -> page : Discard
+    page --> actor : Local pending message removed
+  end
+end
+@enduml

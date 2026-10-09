@@ -1,0 +1,111 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Meet page-performance budgets
+
+package "Frontend — components library" {
+  class Skeleton <<bn-skeleton>> {
+    +variant: 'builder-card' | 'project-card' | 'event-row' | 'profile' | 'text'
+    +count: number
+  }
+  class BuilderCard <<bn-builder-card>> {
+    +builder: BuilderCard
+    +priority: boolean
+  }
+  class Avatar <<bn-avatar>> {
+    +src: string | null
+    +initials: string
+    +size: 64 | 128
+    +priority: boolean
+  }
+  class banaroImageLoader <<ImageLoader>> {
+    +load(config: ImageLoaderConfig): string
+  }
+}
+
+package "Frontend — banaro application" {
+  class DirectoryPage {
+    -api: DirectoryApi
+    +state: 'loading' | 'default' | 'error' | 'no-results'
+    +results: Signal<Page<BuilderCard>>
+  }
+}
+
+package "Frontend — perf-test application" {
+  class Renderer <<renderer.ts>> {
+    +scenario: string
+    +iterations: number
+    +renderType: string
+    +run(): void
+  }
+  class "Scenario registry" as ScenarioIndex <<index.ts>> {
+    +scenarios: Record<string, Type<unknown>>
+  }
+  class BuilderCardScenario <<BuilderCard.ts>>
+  class DirectoryResultsScenario <<DirectoryResults.ts>>
+  class DarkThemeScenario <<DarkTheme.ts>>
+}
+
+package "End-to-end — e2e/perf-test" {
+  class PerfTestRunner <<perf-test.mjs>> {
+    +baseline: string
+    +failOnRegression: boolean
+    +scenarios?: string[]
+    +run(): Report
+  }
+  class PerfTestConfig <<config/>> {
+    +scenarioIterations: Record<string, number>
+    +runs: number
+    +renderTypes: string[]
+    +thresholdPercent = 10
+    +thresholdMs = 1
+    +excluded: string[]
+  }
+  class ScenarioResult {
+    +scenario: string
+    +branchMedianMs: number
+    +baseMedianMs: number
+    +runsOverlap: boolean
+    +possibleRegression(): boolean
+  }
+}
+
+package "Pipeline — .ci" {
+  class BundleBudgetCheck {
+    +limitGzip = 200 KB
+    +run(indexHtml: string, stats: string): Result
+  }
+  class LighthouseAssertions {
+    +lcpMs = 2500
+    +cls = 0.1
+    +inpMs = 200
+    +urls = ["/", "/builders"]
+  }
+}
+
+DirectoryPage ..> Skeleton : loading state
+DirectoryPage ..> BuilderCard : default state
+BuilderCard *-- Avatar
+Avatar ..> banaroImageLoader : srcset via
+Skeleton ..> BuilderCard : matches outer size of
+
+Renderer ..> ScenarioIndex : looks up
+ScenarioIndex o-- BuilderCardScenario
+ScenarioIndex o-- DirectoryResultsScenario
+ScenarioIndex o-- DarkThemeScenario
+BuilderCardScenario ..> BuilderCard : renders
+DirectoryResultsScenario ..> BuilderCard : renders 12
+PerfTestRunner ..> Renderer : drives
+PerfTestRunner ..> PerfTestConfig : reads
+PerfTestRunner "1" *-- "*" ScenarioResult
+@enduml

@@ -1,0 +1,81 @@
+@startuml
+title UML sequence behaviour — Open the inbox and a thread
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "MessagesPage" as page
+  participant "HttpMessagingApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ConversationController" as convCtrl
+  participant "MessageController" as msgCtrl
+  participant "ConversationReadController" as readCtrl
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ConversationPolicy" as policy
+  participant "ListConversations" as list
+  participant "ListMessages" as thread
+  participant "MarkConversationRead" as read
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /messages
+page --> actor : loading state with skeletons (L2-026 criterion 6)
+page -> client : listConversations(1)
+client -> convCtrl : GET /api/v1/conversations?page=1
+convCtrl -> list : handle(member, 12)
+list -> db : Member's conversations ORDER BY last_message_at DESC; unread counts from read marks
+db --> list : Page of conversations
+list --> convCtrl : Paginator
+convCtrl --> client : 200 ConversationSummaryResource collection
+client --> page : Page<ConversationSummary> or error
+alt no conversations
+  page --> actor : empty state with link to the builder directory (L2-026 criterion 6)
+else request failed
+  page --> actor : error state with "Try again" (L2-026 criterion 6)
+else conversations listed
+  page --> actor : Inbox by latest message with unread markers (L2-026 criterion 4)
+  actor -> page : Select a conversation (/messages/{conversationId})
+  page -> client : getMessages(conversationId, none)
+  client -> msgCtrl : GET /api/v1/conversations/{id}/messages
+  msgCtrl -> policy : view(member, conversation)
+  alt member is not a participant
+    policy --> msgCtrl : denyAsNotFound
+    msgCtrl --> client : 404 (L2-026 criterion 9, L2-044 criterion 1)
+    client --> page : Not found
+    page --> actor : Thread not available
+  else participant
+    policy --> msgCtrl : allow
+    msgCtrl -> thread : handle(member, conversation, latest)
+    thread -> db : Latest messages, returned oldest to newest
+    db --> thread : Messages
+    thread --> msgCtrl : Messages and hasEarlier
+    msgCtrl --> client : 200 Thread with canReply
+    client --> page : Thread
+    page --> actor : Thread oldest to newest; reply form or read-only notice (L2-026 criteria 4 and 7)
+    page -> client : markRead(conversationId, lastMessageId)
+    client -> readCtrl : PUT /api/v1/conversations/{id}/read
+    readCtrl -> policy : view(member, conversation)
+    readCtrl -> read : handle(member, conversation, lastMessageId)
+    read -> db : UPDATE last_read_message_id where lower than lastMessageId
+    readCtrl --> client : 204
+    page --> actor : Unread marker cleared
+    page -> page : Start ConversationPoller with cursor = lastMessageId
+  end
+end
+@enduml

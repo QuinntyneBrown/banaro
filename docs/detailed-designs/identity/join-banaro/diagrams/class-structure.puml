@@ -1,0 +1,102 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Join Banaro
+
+package "Frontend — banaro application and api library" {
+  class JoinPage {
+    -api: IdentityApi
+    +form: FormGroup<JoinForm>
+    +state: 'default' | 'invalid' | 'submitting' | 'success'
+    +submittedEmail: Signal<string>
+    +submit(): void
+    +resendLink(): void
+  }
+  interface IdentityApi {
+    +join(request: JoinRequest): Observable<void>
+  }
+  class HttpIdentityApi
+  class JoinRequest {
+    +name: string
+    +email: string
+    +password: string
+    +agreedToCodeOfConduct: boolean
+  }
+  class ApiProblem {
+    +code: string
+    +message: string
+    +errors: Record<string, string[]>
+  }
+}
+
+package "Backend — Banaro API" {
+  class JoinController {
+    +store(request: JoinBanaroRequest): Response
+  }
+  class JoinBanaroRequest {
+    +rules(): array
+    +toData(): JoinData
+  }
+  class JoinData {
+    +string name
+    +string email
+    +string password
+  }
+  class PasswordPolicy {
+    +rules(): array
+  }
+  class NotCommonPassword {
+    +validate(attribute: string, value: mixed, fail: Closure): void
+  }
+  class JoinBanaro {
+    +handle(data: JoinData): void
+  }
+  class EmailVerificationService {
+    +issue(user: User): string
+  }
+  class User {
+    +int id
+    +string name
+    +string email
+    +string password
+    +?Carbon email_verified_at
+    +string code_of_conduct_version
+    +Carbon code_of_conduct_accepted_at
+    +hasVerifiedEmail(): bool
+  }
+  class VerifyEmailNotification {
+    +string link
+    +via(): array
+  }
+  class AccountAlreadyExistsNotification {
+    +via(): array
+  }
+}
+
+JoinPage ..> IdentityApi : uses
+HttpIdentityApi ..|> IdentityApi
+IdentityApi ..> JoinRequest : sends
+IdentityApi ..> ApiProblem : fails with
+HttpIdentityApi ..> JoinController : HTTPS
+
+JoinController ..> JoinBanaroRequest : validates with
+JoinController ..> JoinBanaro : calls
+JoinBanaroRequest ..> PasswordPolicy : password rules
+PasswordPolicy *-- NotCommonPassword
+JoinBanaroRequest ..> JoinData : builds
+JoinBanaro ..> JoinData : handles
+JoinBanaro --> User : finds / creates
+JoinBanaro ..> EmailVerificationService : issues link
+JoinBanaro ..> VerifyEmailNotification : queues
+JoinBanaro ..> AccountAlreadyExistsNotification : queues
+@enduml

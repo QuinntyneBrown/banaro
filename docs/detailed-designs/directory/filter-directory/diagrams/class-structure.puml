@@ -1,0 +1,111 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Filter the directory
+
+package "Frontend — banaro application, components and api libraries" {
+  class DirectoryPage {
+    -api: DirectoryApi
+    -codec: DirectoryQueryCodec
+    +query: Signal<DirectoryQuery>
+    +isSheet: Signal<boolean>
+    +toggle(group: string, value: string): void
+    +setDistance(limit: DistanceLimit): void
+    +clearAll(): void
+    +openFilterSheet(): void
+  }
+  class DirectoryQueryCodec {
+    +decode(params: ParamMap): DirectoryQuery
+    +encode(query: DirectoryQuery): Params
+  }
+  class FilterSheet {
+    +staged: DirectoryFilterSelection
+    +apply(): void
+  }
+  class FilterGroup <<bn-filter-group>> {
+    +legend: string
+    +options: FacetOption[]
+  }
+  class SkillToggle <<bn-skill-toggle>> {
+    +pressed: boolean
+  }
+  class DistanceFilter <<bn-distance-filter>> {
+    +value: DistanceLimit
+  }
+  class ActiveFilters <<bn-active-filters>>
+  class DirectoryFilterSelection {
+    +role: string[]
+    +openTo: string[]
+    +area: string[]
+    +skills: string[]
+    +distance: 5 | 10 | 25 | 40 | 'any' | null
+  }
+  class FacetOption {
+    +value: string
+    +label: string
+    +count: number
+    +selected: boolean
+  }
+}
+
+package "Backend — Banaro API" {
+  class SearchDirectoryRequest {
+    +rules(): array
+  }
+  class SearchDirectory {
+    +handle(viewer: ?User, query: DirectoryQueryData): DirectoryResult
+  }
+  class DirectoryFilters {
+    +array roles
+    +array openTo
+    +array areas
+    +array skillSlugs
+    +?int distanceKm
+    +static fromRequest(request: SearchDirectoryRequest, viewer: ?User): DirectoryFilters
+  }
+  class DirectoryFilterApplier {
+    +apply(query: EloquentQuery, filters: DirectoryFilters, viewer: ?User): EloquentQuery
+  }
+  class FacetCounter {
+    +countsFor(filters: DirectoryFilters, viewer: ?User): array
+  }
+  class DistanceService {
+    +withinKm(query: EloquentQuery, fromNeighbourhood: int, km: int): EloquentQuery
+  }
+  class Neighbourhood {
+    +int id
+    +string name
+    +string area
+  }
+  class DirectoryPageResource
+}
+
+DirectoryPage ..> DirectoryQueryCodec : URL state
+DirectoryPage *-- FilterGroup : renders
+DirectoryPage *-- SkillToggle : popular skills
+DirectoryPage *-- DistanceFilter
+DirectoryPage *-- ActiveFilters
+DirectoryPage ..> FilterSheet : opens below 992 px
+FilterSheet --> DirectoryFilterSelection : stages
+FilterGroup "1" *-- "*" FacetOption
+DirectoryQueryCodec ..> DirectoryFilterSelection : maps
+
+SearchDirectory ..> DirectoryFilters : builds
+SearchDirectoryRequest ..> DirectoryFilters : source
+SearchDirectory ..> DirectoryFilterApplier : applies
+SearchDirectory ..> FacetCounter : counts
+DirectoryFilterApplier ..> DistanceService : distance limit
+DirectoryFilterApplier ..> Neighbourhood : area options
+FacetCounter ..> DirectoryFilters : reads
+SearchDirectory ..> DirectoryPageResource : shaped by
+@enduml

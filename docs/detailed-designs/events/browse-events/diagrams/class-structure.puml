@@ -1,0 +1,111 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Browse events
+
+package "Frontend — banaro application and api library" {
+  class EventsPage {
+    -api: EventsApi
+    +when: Signal<'upcoming' | 'past'>
+    +state: Signal<'loading' | 'default' | 'empty' | 'error' | 'past'>
+    +groups: Signal<MonthGroup[]>
+    +load(): void
+    +retry(): void
+  }
+  class EventMonthGroups <<function>> {
+    +group(items: EventSummary[], zone: 'America/Toronto'): MonthGroup[]
+  }
+  class MonthGroup {
+    +monthKey: string
+    +items: EventSummary[]
+  }
+  class DateFormatter {
+    +timeRange(start: string, end: string): string
+  }
+  interface EventsApi {
+    +listEvents(query: EventListQuery): Observable<Page<EventSummary>>
+  }
+  class HttpEventsApi
+  class InMemoryEventsApi
+  class EventListQuery {
+    +when: 'upcoming' | 'past'
+    +page: number
+  }
+  class EventSummary {
+    +id: string
+    +title: string
+    +startsAt: string
+    +endsAt: string
+    +venueName: string
+    +venueAddress: string
+    +goingCount: number
+    +capacity: number | null
+    +spotsLeft: number | null
+    +status: 'scheduled' | 'cancelled'
+  }
+  class "Page<T>" as Page {
+    +items: T[]
+    +page: number
+    +perPage: number
+    +total: number
+    +lastPage: number
+  }
+}
+
+package "Backend — Banaro API" {
+  class EventController {
+    +index(request: ListEventsRequest): AnonymousResourceCollection
+  }
+  class ListEventsRequest {
+    +rules(): array
+  }
+  class ListEvents {
+    +handle(when: string, perPage: int): LengthAwarePaginator
+  }
+  class Event {
+    +int id
+    +string title
+    +Carbon starts_at
+    +Carbon ends_at
+    +string venue_name
+    +string venue_address
+    +?int capacity
+    +int going_count
+    +EventStatus status
+    +spotsLeft(): ?int
+  }
+  enum EventStatus {
+    Scheduled
+    Cancelled
+  }
+  class EventSummaryResource
+}
+
+EventsPage ..> EventsApi : uses
+EventsPage ..> EventMonthGroups : groups with
+EventsPage ..> DateFormatter : formats with
+EventMonthGroups ..> MonthGroup : creates
+HttpEventsApi ..|> EventsApi
+InMemoryEventsApi ..|> EventsApi
+EventsApi ..> EventListQuery : takes
+EventsApi ..> Page : returns
+Page o-- EventSummary : items
+HttpEventsApi ..> EventController : HTTPS
+
+EventController ..> ListEventsRequest : validates with
+EventController ..> ListEvents : calls
+EventController ..> EventSummaryResource : returns
+ListEvents --> Event : queries
+EventSummaryResource ..> Event : serializes
+Event --> EventStatus : has
+@enduml

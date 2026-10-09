@@ -1,0 +1,119 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Change profile photo
+
+package "Frontend — banaro application and api library" {
+  class ChangePhotoDialog {
+    -api: ProfilesApi
+    -check: PhotoFileCheck
+    +state: 'default' | 'busy' | 'invalid' | 'failed'
+    +file: File | null
+    +crop: CropRect | null
+    +progress: number
+    +choose(file: File): void
+    +save(): void
+    +cancel(): void
+    +remove(): void
+  }
+  class PhotoFileCheck {
+    +check(file: File): Promise<PhotoCheckResult>
+  }
+  interface ProfilesApi {
+    +uploadPhoto(file: File, crop: CropRect): Observable<HttpEvent<ProfilePhoto>>
+    +getPhoto(id: string): Observable<ProfilePhoto>
+    +removePhoto(): Observable<void>
+  }
+  class HttpProfilesApi
+  class ProfilePhoto {
+    +id: string
+    +status: 'pending' | 'ready' | 'rejected'
+    +url: string | null
+  }
+  class CropRect {
+    +x: number
+    +y: number
+    +size: number
+  }
+}
+
+package "Backend — Banaro API and Worker" {
+  class ProfilePhotoController {
+    +store(request: UploadProfilePhotoRequest): ProfilePhotoResource
+    +show(photo: ProfilePhoto): ProfilePhotoResource
+    +destroy(): Response
+    +serve(photo: ProfilePhoto): StreamedResponse
+  }
+  class UploadProfilePhotoRequest {
+    +rules(): array
+  }
+  class UploadProfilePhoto {
+    +handle(builder: Builder, file: UploadedFile, crop: array): ProfilePhoto
+  }
+  class RemoveProfilePhoto {
+    +handle(builder: Builder): void
+  }
+  class PhotoProcessor {
+    +process(file: UploadedFile, crop: array): ProcessedImage
+  }
+  class ScanProfilePhoto {
+    +int photoId
+    +handle(scanner: MediaScanner): void
+  }
+  interface MediaScanner {
+    +scan(path: string): ScanResult
+  }
+  class Builder {
+    +int id
+    +?string photo_id
+  }
+  class ProfilePhoto {
+    +string id
+    +int builder_id
+    +string path
+    +PhotoStatus status
+    +?Carbon scanned_at
+  }
+  enum PhotoStatus {
+    Pending
+    Ready
+    Rejected
+  }
+  class ProfilePhotoPolicy {
+    +view(user: User, photo: ProfilePhoto): bool
+    +delete(user: User, photo: ProfilePhoto): bool
+  }
+  class ProfilePhotoResource
+}
+
+ChangePhotoDialog ..> ProfilesApi : uses
+ChangePhotoDialog ..> PhotoFileCheck : checks file
+HttpProfilesApi ..|> ProfilesApi
+ProfilesApi ..> ProfilePhoto : returns
+ChangePhotoDialog --> CropRect : holds
+HttpProfilesApi ..> ProfilePhotoController : HTTPS
+
+ProfilePhotoController ..> UploadProfilePhotoRequest : validates with
+ProfilePhotoController ..> ProfilePhotoPolicy : authorizes with
+ProfilePhotoController ..> UploadProfilePhoto : calls
+ProfilePhotoController ..> RemoveProfilePhoto : calls
+ProfilePhotoController ..> ProfilePhotoResource : returns
+UploadProfilePhoto ..> PhotoProcessor : processes with
+UploadProfilePhoto ..> ScanProfilePhoto : dispatches
+ScanProfilePhoto ..> MediaScanner : scans with
+ScanProfilePhoto --> ProfilePhoto : updates status
+RemoveProfilePhoto --> Builder : clears photo
+Builder "1" *-- "*" ProfilePhoto : photos
+Builder "*" --> "0..1" ProfilePhoto : current photo
+ProfilePhoto --> PhotoStatus : has
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — View an event
+
+Container(web, "Banaro Web", "Angular", "EventDetailPage, AttendeeCluster, HttpEventsApi")
+ContainerDb(db, "Banaro database", "Relational database", "events, rsvps, builders, blocks")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "EventController", "Laravel controller", "show() for GET /events/{event} in api.php")
+  Component(req, "ViewEventRequest", "Form request", "Authorizes a verified member")
+  Component(action, "ViewEvent", "Action", "Assembles event, host, viewer RSVP and attendee preview")
+  Component(waitlist, "WaitlistService", "Domain service", "positionOf() for a waitlisted viewer")
+  Component(attendees, "AttendeeListService", "Domain service", "Listed, unblocked going members")
+  Component(block, "BlockService", "Domain service (TrustAndSafety)", "isBlockedEitherWay()")
+  Component(models, "Event / Rsvp / Builder", "Eloquent models", "Event fields, RSVP status, public profiles")
+  Component(resource, "EventDetailResource", "API resource", "EventDetail JSON shape with map URL")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, action, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(action, models, "Loads event, host and viewer RSVP")
+Rel(action, waitlist, "Calls positionOf()")
+Rel(action, attendees, "Calls previewFor()")
+Rel(attendees, block, "Applies block rule from")
+Rel(attendees, models, "Queries going RSVPs and listing setting")
+Rel(models, db, "Reads", "SQL")
+@enduml

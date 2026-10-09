@@ -1,0 +1,82 @@
+@startuml
+title UML sequence behaviour — Sign in
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "SignInPage" as page
+  participant "SessionStore" as store
+  participant "HttpIdentityApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "SessionController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "SignIn" as action
+  participant "SignInThrottleService" as throttle
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis" as redis
+end box
+
+actor -> page : Enter e-mail and password; select "Sign in"
+page -> page : Client-side validation
+alt empty or malformed fields
+  page --> actor : invalid state; no API call (L2-003 criterion 4)
+else form valid
+  page -> page : submitting state; fields read-only, "Signing in…"
+  page -> store : signIn(request)
+  store -> client : csrfCookie(), then signIn(request)
+  client -> controller : POST /api/v1/session
+  controller -> controller : Validate SignInRequest
+  controller -> action : handle(data, request)
+  action -> throttle : check(email, ip)
+  throttle -> redis : Read failure counts (account key, IP key)
+  alt 5 failures for the account or 20 for the IP in 15 minutes
+    throttle --> action : Limit reached
+    action --> controller : ThrottleRequestsException
+    controller --> client : 429 with Retry-After (L2-003 criterion 3)
+    client --> page : ApiProblem
+    page --> actor : "try again in N minutes"
+  else under the limits
+    action -> db : Find user by canonical e-mail
+    db --> action : User or none
+    action -> action : Hash::check against the user hash, or a dummy hash of equal cost (L2-003 criterion 2)
+    alt no user or password mismatch
+      action -> throttle : recordFailure(email, ip)
+      throttle -> redis : Increment both counters, 15-minute decay
+      action --> controller : 422 invalid_credentials, no field named
+      controller --> client : 422
+      client --> page : ApiProblem
+      page --> actor : error state, one generic message; e-mail kept, focus on password
+    else credentials match
+      action -> redis : Auth login; session()->regenerate() issues a new identifier (L2-003 criterion 1)
+      action -> redis : Store authenticated_at in the session (L2-005 criterion 5)
+      action -> throttle : clear(email)
+      action --> controller : User
+      controller --> client : 200 SessionResource; HttpOnly, Secure, SameSite=Lax cookie (L2-003 criterion 7)
+      client --> store : MemberSession
+      store --> page : Member stored
+      alt member unverified
+        page --> actor : Navigate to /verify-email (L2-002 criterion 4)
+      else member verified
+        page -> page : safeReturnPath(returnTo); other origins fall back to /dashboard (L2-003 criterion 6)
+        page --> actor : Navigate to the return path or /dashboard
+      end
+    end
+  end
+end
+@enduml

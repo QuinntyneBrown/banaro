@@ -1,0 +1,72 @@
+@startuml
+title UML sequence behaviour — Publish and show a site announcement
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Administrator" as admin
+actor "Member" as actor
+box "Frontend — admin application" #E0F2FE
+  participant "Announcements page (admin)" as adminpage
+end box
+box "Frontend — banaro application" #E0F2FE
+  participant "SiteBannerSource" as source
+  participant "HttpAnnouncementsApi" as client
+  participant "BannerService" as svc
+  participant "DismissalStore" as store
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "Admin\\SiteAnnouncementController" as adminctrl
+  participant "SiteAnnouncementController" as ctrl
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "PublishSiteAnnouncement" as publish
+  participant "GetCurrentAnnouncement" as current
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis cache" as cache
+end box
+
+admin -> adminpage : Write message, choose variant and window, publish
+adminpage -> adminctrl : POST /api/v1/admin/announcements
+adminctrl -> adminctrl : Require administrator role, else 403 (L2-033 criterion 4)
+adminctrl -> publish : handle(admin, data)
+publish -> db : INSERT site_announcement (version 1); INSERT audit entry (L2-033 criterion 5)
+publish -> cache : Forget current announcement
+adminctrl --> adminpage : 201 SiteAnnouncementResource
+
+actor -> source : Load a page
+source -> client : current()
+client -> ctrl : GET /api/v1/announcements/current (api_public.php)
+ctrl -> current : handle()
+current -> cache : Read cached current announcement
+alt cache miss
+  current -> db : Latest published, not closed, window contains now
+  current -> cache : Store
+end
+current --> ctrl : SiteAnnouncement or null
+ctrl --> client : 200 SiteAnnouncementResource or null
+client --> source : Announcement
+opt announcement present
+  source -> store : isDismissed(announcement id and version)
+  alt not dismissed
+    source -> svc : show({ key, variant, text, link, dismissible })
+    svc --> actor : Site banner in its variant (L2-028 criterion 5)
+  end
+end
+opt member dismisses a dismissible banner
+  actor -> svc : Select "Dismiss banner"
+  svc -> store : record(announcement id and version, no expiry): stays dismissed on this device (L2-028 criterion 5)
+end
+@enduml

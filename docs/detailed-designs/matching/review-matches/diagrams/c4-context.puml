@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Review matches
+
+Person(member, "Member", "Active matching member")
+Person(builder, "Suggested builder", "Member suggested this week")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Reviews suggestions and says hello using", "HTTPS")
+Rel(banaro, builder, "Delivers the first message to")
+@enduml

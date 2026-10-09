@@ -1,0 +1,136 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Browse the directory
+
+package "Frontend — banaro application, components and api libraries" {
+  class DirectoryPage {
+    -api: DirectoryApi
+    -router: Router
+    +query: Signal<DirectoryQuery>
+    +result: Signal<DirectoryResultPage>
+    +state: 'loading' | 'default' | 'error'
+    +search(term: string): void
+    +sort(sort: string): void
+    +goToPage(page: number): void
+    +retry(): void
+  }
+  class BuilderCard <<bn-builder-card>> {
+    +builder: BuilderCardSummary
+  }
+  class OnlineStatus <<bn-online-status>>
+  class DistanceFormatter {
+    +format(km: number): string
+  }
+  interface DirectoryApi {
+    +searchBuilders(query: DirectoryQuery): Observable<DirectoryResultPage>
+  }
+  class HttpDirectoryApi
+  class DirectoryQuery {
+    +q: string
+    +sort: 'best' | 'nearest' | 'active' | 'newest'
+    +page: number
+  }
+  class DirectoryResultPage {
+    +items: BuilderCardSummary[]
+    +total: number
+    +page: number
+    +perPage: number
+    +lastPage: number
+    +meta: DirectoryMeta
+  }
+  class BuilderCardSummary {
+    +id: string
+    +name: string
+    +role: string
+    +neighbourhood: string
+    +skills: string[]
+    +photoUrl: string | null
+    +matchScore?: number
+    +distanceKm?: number
+    +onlineStatus?: OnlineStatusValue
+    +building?: string
+    +openTo?: OpenTo[]
+  }
+}
+
+package "Backend — Banaro API" {
+  class BuilderDirectoryController {
+    +index(request: SearchDirectoryRequest): DirectoryPageResource
+  }
+  class SearchDirectory {
+    +handle(viewer: ?User, query: DirectoryQueryData): LengthAwarePaginator
+  }
+  class DirectorySorter {
+    +apply(query: EloquentQuery, sort: DirectorySort, viewer: ?User): EloquentQuery
+  }
+  class MatchScoreService <<matching>> {
+    +scoresFor(viewer: User, builderIds: array): array
+  }
+  class DistanceService {
+    +betweenNeighbourhoods(from: int, to: int): float
+    +approximate(km: float): int
+  }
+  class PresenceService {
+    +statusFor(builder: Builder): ?OnlineStatus
+  }
+  class SearchNormalizer {
+    +normalise(text: string): string
+  }
+  class ProfileVisibility <<settings>> {
+    +scopeListable(query: EloquentQuery, viewer: ?User): EloquentQuery
+  }
+  enum DirectorySort {
+    BestMatch
+    Nearest
+    RecentlyActive
+    Newest
+  }
+  class "Builder (model)" as BuilderModel {
+    +int id
+    +string public_id
+    +string name
+    +BuilderRole role
+    +int neighbourhood_id
+    +string search_text
+    +Carbon last_active_at
+    +Carbon created_at
+  }
+  class BuilderCardResource
+  class PublicBuilderCardResource
+  class DirectoryPageResource
+}
+
+DirectoryPage ..> DirectoryApi : uses
+DirectoryPage *-- BuilderCard : renders 12
+BuilderCard *-- OnlineStatus
+BuilderCard ..> DistanceFormatter : formats distance
+HttpDirectoryApi ..|> DirectoryApi
+DirectoryApi ..> DirectoryResultPage : returns
+DirectoryResultPage "1" *-- "0..12" BuilderCardSummary
+HttpDirectoryApi ..> BuilderDirectoryController : HTTPS
+
+BuilderDirectoryController ..> SearchDirectory : calls
+BuilderDirectoryController ..> DirectoryPageResource : returns
+DirectoryPageResource ..> BuilderCardResource : members
+DirectoryPageResource ..> PublicBuilderCardResource : visitors
+SearchDirectory ..> ProfileVisibility : applies
+SearchDirectory ..> SearchNormalizer : normalises q
+SearchDirectory ..> DirectorySorter : orders with
+SearchDirectory --> BuilderModel : queries
+DirectorySorter ..> MatchScoreService : best match
+DirectorySorter ..> DistanceService : nearest
+DirectorySorter --> DirectorySort : uses
+BuilderCardResource ..> PresenceService : status
+BuilderCardResource ..> DistanceService : distance
+@enduml

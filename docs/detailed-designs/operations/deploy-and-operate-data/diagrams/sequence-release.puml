@@ -1,0 +1,74 @@
+@startuml
+title UML sequence behaviour — Release a version
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Maintainer" as maintainer
+participant "CI pipeline (.ci/)" as ci
+participant "Container orchestrator" as orch
+box "Frontend — Banaro Web" #E0F2FE
+  participant "Old web replica" as oldweb
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "One-off task (new banaro-api)" as task
+  participant "New API replica" as newapi
+  participant "Old API replica" as oldapi
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  database "Redis" as redis
+end box
+
+maintainer -> ci : Merge to main
+ci -> ci : Lint, tests, scans, budgets, perf test, contract
+ci -> ci : build: banaro-api and banaro-web images, push to registry
+opt schema-compat step
+  ci -> ci : Migrate a disposable database with the new release, run previous release's feature tests (L2-054 criterion 2)
+end
+ci -> task : php artisan migrate ~-~-force ~-~-isolated (L2-054 criterion 1)
+task -> redis : Take migration lock
+task -> db : Apply pending expand migrations
+alt migration fails
+  db --> task : Error
+  task --> ci : Non-zero exit
+  ci --> maintainer : Release stopped, no rollout
+else migrations applied
+  task -> redis : Release lock
+  task --> ci : Exit 0
+  ci -> task : php artisan db:seed ~-~-force (L2-054 criterion 3)
+  task -> db : Upsert reference data by natural key
+  task --> ci : Exit 0
+  ci -> orch : Roll out API, Worker and Web images
+  loop each API replica, one at a time
+    orch -> newapi : Start; boot runs no migration (L2-054 criterion 1)
+    loop until ready or rollout timeout
+      orch -> newapi : GET /health/ready
+      newapi --> orch : 503 or 200
+    end
+    alt 200
+      orch -> orch : Route traffic to new replica (L2-054 criterion 4)
+      orch -> orch : Remove old replica from traffic
+      orch -> oldapi : SIGTERM
+      oldapi -> oldapi : Stop accepting, finish in-flight requests within grace period (L2-054 criterion 4)
+      oldapi --> orch : Exit
+    else never ready
+      orch --> ci : Rollout halted; old replicas keep serving
+    end
+  end
+  orch -> oldweb : Same gate and drain; server.close() finishes SSR responses
+  orch -> orch : Worker replicas: SIGTERM, Horizon finishes current jobs
+  orch --> ci : Rollout complete
+  ci --> maintainer : Release done
+end
+@enduml

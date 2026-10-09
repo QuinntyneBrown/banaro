@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Edit and delete a project
+
+Person(owner, "Owner", "Member who shared the project")
+Person(other, "Other member", "Signed-in member who does not own the project")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(owner, banaro, "Edits and deletes own projects using", "HTTPS")
+Rel(other, banaro, "Is refused edit and delete by", "HTTPS")
+@enduml

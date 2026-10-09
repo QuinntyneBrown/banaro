@@ -1,0 +1,49 @@
+@startuml
+title UML sequence behaviour — Render the first page in the right theme
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+participant "Browser" as browser
+box "Frontend — Banaro Web server" #E0F2FE
+  participant "server.ts" as server
+  participant "AngularNodeAppEngine (RenderMode.Server)" as engine
+end box
+box "Frontend — banaro application" #E0F2FE
+  participant "ThemeService" as theme
+  participant "tokens.css" as tokens
+end box
+
+actor -> browser : Open /
+browser -> server : GET / (Cookie: bn-theme if stored)
+server -> engine : handle(request)
+engine -> theme : Initialise on the server
+theme -> theme : Read bn-theme from REQUEST cookie header
+alt cookie bn-theme=dark or light
+  theme -> theme : Set data-theme on the server document
+  engine --> server : <html lang="en-CA" data-theme="dark">
+else no cookie (preference system)
+  theme -> theme : Leave data-theme off
+  engine --> server : <html lang="en-CA"> with meta color-scheme "light dark"
+end
+server --> browser : 200 HTML, Vary: Cookie, Cache-Control: private
+browser -> tokens : Apply stylesheet
+alt data-theme present
+  tokens --> browser : [data-theme] values win
+else no data-theme
+  tokens --> browser : prefers-color-scheme media query picks light or dark
+end
+browser --> actor : First paint already in the right theme; no inline script (L2-051 criterion 1)
+browser -> theme : Hydrate; read cookie and matchMedia; nothing to repaint
+@enduml

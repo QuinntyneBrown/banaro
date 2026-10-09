@@ -1,0 +1,70 @@
+@startuml
+title UML sequence behaviour — Browse upcoming and past events
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member or visitor" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "EventsPage" as page
+  participant "HttpEventsApi" as client
+  participant "DateFormatter" as fmt
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "EventController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ListEvents" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /events
+page --> actor : loading state with skeleton rows (L2-018 criterion 4)
+page -> client : listEvents({ when: upcoming, page: 1 })
+client -> controller : GET /api/v1/events?when=upcoming&page=1
+controller -> controller : Anonymous route in api_public.php; validate ListEventsRequest (L2-045)
+controller -> action : handle(upcoming, perPage = 12) (L2-047 criterion 4)
+action -> db : SELECT events WHERE ends_at > now ORDER BY starts_at, id
+db --> action : Page of events with going_count
+action --> controller : Paginator
+controller --> client : 200 EventSummaryResource collection
+client --> page : Page<EventSummary> or error
+alt items returned
+  page -> page : Group by month in America/Toronto
+  page -> fmt : timeRange(startsAt, endsAt) (L2-018 criterion 5)
+  fmt --> page : "Thu 15 Oct, 7:00–9:30 pm"
+  page --> actor : default state: title, time, venue, going count, spots left when capacity set (L2-018 criterion 1)
+else no upcoming events
+  page --> actor : empty state with links to /contact and to past events (L2-018 criterion 3)
+else request failed
+  page --> actor : error state with "Try again" (L2-018 criterion 4)
+  actor -> page : Select "Try again"
+  page -> client : listEvents({ when: upcoming, page: 1 })
+end
+
+opt member or visitor selects the past view
+  actor -> page : Select the past toggle
+  page -> page : Set when=past in the URL
+  page -> client : listEvents({ when: past, page: 1 })
+  client -> controller : GET /api/v1/events?when=past&page=1
+  controller -> action : handle(past, perPage = 12)
+  action -> db : SELECT events WHERE ends_at <= now ORDER BY starts_at DESC, id DESC
+  db --> action : Page of past events
+  action --> controller : Paginator
+  controller --> client : 200 EventSummaryResource collection
+  client --> page : Page<EventSummary>
+  page --> actor : past state, newest first, no reserve actions (L2-018 criterion 2)
+end
+@enduml

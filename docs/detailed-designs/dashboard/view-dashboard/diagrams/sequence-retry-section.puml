@@ -1,0 +1,60 @@
+@startuml
+title UML sequence behaviour — Retry one dashboard section
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "DashboardPage" as page
+  participant "HttpDashboardApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "DashboardController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "BuildDashboardSection" as action
+  participant "DashboardAssembler" as assembler
+  participant "EventsSection" as provider
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Select "Try again" in the failed events section
+page -> page : Show a busy indicator in that section only
+page -> client : getSection(events)
+client -> controller : GET /api/v1/dashboard/sections/events
+controller -> controller : Authenticate member, validate ViewDashboardSectionRequest
+controller -> action : handle(member, Events)
+action -> assembler : one(member, Events)
+assembler -> provider : load(member) inside try/catch
+provider -> db : Upcoming events the member attends
+alt read succeeds
+  db --> provider : Rows
+  provider --> assembler : status ok with data
+  assembler --> action : SectionResult ok
+  action --> controller : SectionResult
+  controller --> client : 200 DashboardSectionResource
+  client --> page : DashboardSection
+  page --> actor : Events section replaces the inline message (L2-030 criterion 3)
+else read fails again
+  provider --> assembler : Throws
+  assembler -> assembler : Log with request ID
+  assembler --> action : SectionResult failed
+  action --> controller : Failed result
+  controller --> client : 503 without internal detail
+  client --> page : Error
+  page --> actor : Inline message and "Try again" stay; other sections unchanged
+end
+@enduml

@@ -1,0 +1,91 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Switch theme
+
+package "Frontend — components library" {
+  class ThemeService <<Injectable root>> {
+    +preference: Signal<ThemePreference>
+    +effective: Signal<'light' | 'dark'>
+    +toggle(): void
+    +set(preference: ThemePreference, options?: { sync: boolean }): void
+    -readCookie(): ThemePreference
+    -writeCookie(preference: ThemePreference): void
+    -applyAttribute(preference: ThemePreference): void
+  }
+  class ThemeSwitch <<bn-theme-switch>> {
+    +pressed: Signal<boolean>
+    +label: Signal<string>
+    +onClick(): void
+  }
+  interface ThemeSync <<THEME_SYNC>> {
+    +(preference: ThemePreference): void
+  }
+  enum "ThemePreference (TS)" as ThemePreferenceTs {
+    light
+    dark
+    system
+  }
+}
+
+package "Frontend — banaro application and api library" {
+  class ThemeShortcut {
+    +onKeydown(event: KeyboardEvent): void
+    -isTextField(target: EventTarget): boolean
+  }
+  interface SettingsApi {
+    +updateTheme(theme: ThemePreference): Observable<void>
+  }
+  class HttpSettingsApi
+  class CurrentMember {
+    +theme: ThemePreference
+  }
+}
+
+package "Backend — Banaro API" {
+  class ThemePreferenceController {
+    +update(request: UpdateThemePreferenceRequest): Response
+  }
+  class UpdateThemePreferenceRequest {
+    +rules(): array
+  }
+  class UpdateThemePreference {
+    +handle(member: User, theme: ThemePreference): void
+  }
+  enum ThemePreference {
+    Light
+    Dark
+    System
+  }
+  class User {
+    +ThemePreference theme_preference
+  }
+  class MeResource {
+    +toArray(request: Request): array
+  }
+}
+
+ThemeService --> ThemePreferenceTs
+ThemeService ..> ThemeSync : calls on change
+ThemeSwitch ..> ThemeService : toggle()
+ThemeShortcut ..> ThemeService : toggle()
+HttpSettingsApi ..|> SettingsApi
+ThemeSync ..> SettingsApi : bound in app.config.ts
+CurrentMember ..> ThemeService : set(theme, sync false)
+HttpSettingsApi ..> ThemePreferenceController : HTTPS
+ThemePreferenceController ..> UpdateThemePreferenceRequest
+ThemePreferenceController ..> UpdateThemePreference
+UpdateThemePreference --> User : updates
+User --> ThemePreference
+MeResource ..> User : serializes theme
+@enduml

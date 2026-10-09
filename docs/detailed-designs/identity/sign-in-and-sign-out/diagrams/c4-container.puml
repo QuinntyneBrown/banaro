@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Sign in and sign out
+
+Person(member, "Member", "Builder with a Banaro account")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Sign-in page, account menu, SessionStore")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3, Sanctum", "Credential check, throttling, session lifecycle")
+  ContainerDb(db, "Banaro database", "Relational database", "users")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions and failed-attempt counters")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "GET /sanctum/csrf-cookie; GET, POST and DELETE /api/v1/session", "JSON/HTTPS")
+Rel(api, db, "Reads the account", "SQL")
+Rel(api, redis, "Creates, regenerates and destroys sessions; counts failures", "Redis protocol")
+@enduml

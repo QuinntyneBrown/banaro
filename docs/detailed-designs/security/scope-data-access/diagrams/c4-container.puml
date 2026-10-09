@@ -1,0 +1,23 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Scope data access
+
+Person(member, "Member", "Signed-in, verified builder")
+Person(visitor, "Visitor", "Not signed in")
+System_Ext(ci, "CI pipeline", "Runs backend integration tests")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "banaro and admin applications; guards and interceptors")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Authentication, policies, ownership and visibility scopes")
+  ContainerDb(db, "Banaro database", "Relational database", "Owned, participant and listing records; blocks")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions and cached block lists")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(visitor, web, "Uses public pages", "HTTPS")
+Rel(web, api, "Calls /api/v1 with the session cookie", "JSON/HTTPS")
+Rel(api, redis, "Reads session and block list", "Redis protocol")
+Rel(api, db, "Queries through ownership and visibility scopes", "SQL")
+Rel(ci, api, "Calls every route as a second member", "HTTP kernel")
+@enduml

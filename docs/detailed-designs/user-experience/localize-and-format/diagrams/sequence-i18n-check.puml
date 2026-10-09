@@ -1,0 +1,50 @@
+@startuml
+title UML sequence behaviour — Check for missing catalogue keys
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Developer" as actor
+box "Pipeline — .ci" #FFF4E5
+  participant "i18n stage" as stage
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "CheckI18nKeys (i18n:check)" as cmd
+end box
+box "Frontend — sources" #E0F2FE
+  participant "frontend/projects/**/src (*.ts, *.html)" as fe
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  participant "app/ and resources/views/" as be
+  database "resources/i18n/{locale}/*.json" as files
+end box
+
+actor -> stage : Push a change that adds t('events.reminderSent')
+stage -> cmd : php artisan i18n:check --frontend=../frontend
+cmd -> fe : Scan t pipe, t() calls and I18nKeyMap objects
+fe --> cmd : Used frontend keys with file and line
+cmd -> be : Scan __(), trans(), trans_choice(), @lang and validation rules
+be --> cmd : Used backend keys with file and line
+loop each locale folder
+  cmd -> files : Load keys
+  files --> cmd : Catalogue keys
+  cmd -> cmd : Missing = used minus catalogue; unused = catalogue minus used
+end
+alt any missing key
+  cmd --> stage : Print key, file and line; exit 1
+  stage --> actor : Build fails (L2-052 criterion 5)
+else none missing
+  cmd --> stage : Warnings for unused keys; exit 0
+  stage --> actor : Stage passes
+end
+@enduml

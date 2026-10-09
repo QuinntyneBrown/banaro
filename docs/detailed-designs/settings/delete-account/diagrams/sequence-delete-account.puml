@@ -1,0 +1,71 @@
+@startuml
+title UML sequence behaviour — Delete an account
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "SettingsPage" as page
+  participant "DeleteAccountDialog" as dialog
+  participant "HttpSettingsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "AccountController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "DeleteAccount" as action
+  participant "SessionRegistry" as registry
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis" as redis
+end box
+
+actor -> page : Select "Delete my account"
+page -> dialog : Open delete-account dialog (focus on confirmation field)
+actor -> dialog : Type confirmation and password
+alt confirmation is not DELETE or password empty
+  dialog --> actor : invalid state explains what is missing; confirm disabled (L2-038 criterion 1)
+else both present
+  actor -> dialog : Select "Delete my account"
+  dialog -> dialog : busy state; "Keep my account" disabled, no dismissal (L2-038 criterion 2)
+  dialog -> client : deleteAccount({confirmation, password})
+  client -> controller : DELETE /api/v1/settings/account
+  controller -> controller : Authenticate member, validate DeleteAccountRequest (current_password)
+  alt wrong password or confirmation
+    controller --> client : 422 field errors, nothing changed
+    client --> dialog : invalid state
+  else valid
+    controller -> action : handle(member)
+    action -> db : BEGIN; SELECT user FOR UPDATE
+    action -> db : SET deleted_at, erase_by = now + 30 days; anonymise name; NULL email and password (L2-038 criteria 2 and 4)
+    action -> db : DELETE owned projects with their feedback and offers (L2-038 criterion 2)
+    action -> db : COMMIT
+    action -> registry : revokeAll(member) after commit
+    registry -> redis : Destroy every session of the member
+    action -> redis : Dispatch ErasePersonalData(user) after commit
+    action --> controller : Done
+    controller -> controller : Invalidate current session, clear cookie
+    controller --> client : 204
+    client --> dialog : Success
+    dialog --> page : Clear signed-in state
+    page --> actor : Home page "/" with goodbye message (L2-038 criterion 2)
+  else server error
+    action -> db : ROLLBACK
+    controller --> client : 5xx, nothing changed (L2-038 criterion 3)
+    client --> dialog : Error
+    dialog --> actor : failed state with "Try again"; confirmation kept
+  end
+end
+@enduml

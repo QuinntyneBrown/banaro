@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Adapt the responsive layout
+
+Person(member, "Member", "Uses a phone, tablet or desktop from 320 px upward")
+Person(visitor, "Visitor", "Uses public pages at any width")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+System_Ext(mocks, "Design reference", "docs/mocks: every page and state, light and dark")
+System_Ext(ci, "CI pipeline", "Runs Playwright in Chromium; platform <TO SUPPLY>")
+
+Rel(member, banaro, "Uses at any viewport width", "HTTPS")
+Rel(visitor, banaro, "Uses at any viewport width", "HTTPS")
+Rel(ci, banaro, "Captures screens at 360, 768 and 1280 px of", "Playwright")
+Rel(ci, mocks, "Captures baselines from", "file")
+@enduml

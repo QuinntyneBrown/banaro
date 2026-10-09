@@ -1,0 +1,92 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Pass on a suggestion
+
+package "Frontend — banaro application and api library" {
+  class MatchingPage {
+    +pass(card: MatchSuggestionCard): void
+    +load(): void
+  }
+  class PassSuggestionDialog {
+    -api: MatchingApi
+    +data: MatchSuggestionCard
+    +state: 'default' | 'busy' | 'failed'
+    +reason: PassReason | null
+    +confirm(): void
+  }
+  interface MatchingApi {
+    +passSuggestion(id: string, reason?: PassReason): Observable<MatchSuggestionCard>
+  }
+  class HttpMatchingApi
+  enum "PassReason" as FePassReason {
+    not_right_skills
+    too_far
+    not_looking_now
+    other
+  }
+}
+
+package "Backend — Banaro API" {
+  class MatchSuggestionPassController {
+    +store(request: PassSuggestionRequest, suggestion: MatchSuggestion): MatchSuggestionResource
+  }
+  class PassSuggestionRequest {
+    +rules(): array
+  }
+  class MatchSuggestionPolicy {
+    +pass(member: User, suggestion: MatchSuggestion): bool
+  }
+  class PassOnSuggestion {
+    +handle(member: User, suggestion: MatchSuggestion, reason: ?PassReason): MatchSuggestion
+  }
+  class MatchSuggestion {
+    +int id
+    +int user_id
+    +int candidate_user_id
+    +MatchSuggestionStatus status
+    +?PassReason pass_reason
+    +?Carbon acted_at
+  }
+  enum PassReason {
+    NotRightSkills
+    TooFar
+    NotLookingNow
+    Other
+  }
+  enum MatchSuggestionStatus {
+    Suggested
+    Contacted
+    Passed
+  }
+  class MatchSuggestionResource
+  class MatchScoreService {
+    +scoreFor(viewer: User, builder: Builder): MatchScore
+  }
+}
+
+MatchingPage ..> PassSuggestionDialog : opens
+PassSuggestionDialog ..> MatchingApi : uses
+HttpMatchingApi ..|> MatchingApi
+MatchingApi ..> FePassReason
+HttpMatchingApi ..> MatchSuggestionPassController : HTTPS
+
+MatchSuggestionPassController ..> PassSuggestionRequest : validates with
+MatchSuggestionPassController ..> MatchSuggestionPolicy : authorizes
+MatchSuggestionPassController ..> PassOnSuggestion : calls
+MatchSuggestionPassController ..> MatchSuggestionResource : returns
+PassOnSuggestion --> MatchSuggestion : locks and updates
+MatchSuggestion --> MatchSuggestionStatus : has
+MatchSuggestion --> PassReason : pass_reason
+MatchScoreService ..> MatchSuggestion : reads pass reasons (L2-024)
+@enduml

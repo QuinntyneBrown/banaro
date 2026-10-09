@@ -1,0 +1,42 @@
+@startuml
+title UML sequence behaviour — Read the about page
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+box "Frontend — Banaro Web SSR server" #E0F2FE
+  participant "server.ts" as ssr
+end box
+box "Frontend — banaro application" #E0F2FE
+  participant "AboutPage" as page
+  participant "SeoService" as seo
+  participant "TranslationService" as i18n
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "I18nController" as controller
+end box
+
+actor -> ssr : GET /about (no sign-in)
+ssr -> i18n : Load en-CA catalogue
+i18n -> controller : GET /api/v1/i18n/en-CA (L2-052 criterion 1)
+controller --> i18n : Catalogue, cached by the application
+ssr -> page : Render route /about
+page -> seo : Set title and canonical link
+page -> i18n : Mission, four areas, faith position, land acknowledgement (L2-040 criterion 1)
+i18n --> page : Copy
+page --> ssr : HTML
+ssr --> actor : 200 HTML, readable without script
+actor -> page : Select "Join Banaro" or "Contact us"
+page --> actor : Navigate to /join or /contact
+@enduml

@@ -1,0 +1,63 @@
+@startuml
+title UML sequence behaviour — Route an API failure to an error page
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "Requested page or resolver" as page
+  participant "HttpErrorStatusInterceptor" as interceptor
+  participant "RouterErrorPageNavigator" as nav
+  participant "Error page" as errpage
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "AssignRequestId" as reqid
+  participant "Controller" as controller
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  participant "Log (stderr JSON)" as log
+end box
+
+actor -> page : Open /projects/{id}
+page -> interceptor : GET essential data, context ESSENTIAL_DATA = true
+interceptor -> reqid : GET /api/v1/projects/{id}
+reqid -> reqid : Assign request ID
+reqid -> controller : Handle request
+alt record missing or another member's (L2-044 criterion 1)
+  controller --> reqid : 404
+  reqid --> interceptor : 404, X-Request-Id
+  interceptor -> nav : notFound()
+  nav -> errpage : Show NotFoundPage, skipLocationChange
+else role does not allow the action
+  controller --> reqid : 403 from policy
+  reqid --> interceptor : 403, X-Request-Id
+  interceptor -> nav : forbidden() (L2-042 criterion 2)
+  nav -> errpage : Show ForbiddenPage with "Go back" and "Go to your dashboard"
+else unhandled exception
+  controller --> reqid : Exception rendered as 500 {message, requestId} (L2-053 criterion 4)
+  reqid -> log : Log line and stack trace with the request ID
+  reqid --> interceptor : 500, X-Request-Id
+  interceptor -> interceptor : referenceId = X-Request-Id header, else body requestId
+  interceptor -> nav : serverError(referenceId, failedUrl) (L2-042 criterion 3)
+  nav -> errpage : Show ServerErrorPage with reference ID, skipLocationChange
+else 401, 422, 429, maintenance 503 or status 0
+  interceptor --> page : Pass error on; other features handle it
+end
+errpage -> errpage : One h1, document title, noindex (L2-042 criterion 5)
+errpage --> actor : Error page, address bar keeps the requested URL
+opt "Try again" on the server-error page
+  actor -> errpage : Select "Try again"
+  errpage -> page : Navigate to failedUrl again
+end
+@enduml

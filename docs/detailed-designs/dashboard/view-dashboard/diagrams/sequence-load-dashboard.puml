@@ -1,0 +1,72 @@
+@startuml
+title UML sequence behaviour — Load the dashboard
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member or visitor" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "authGuard" as guard
+  participant "DashboardPage" as page
+  participant "HttpDashboardApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "DashboardController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "BuildDashboard" as action
+  participant "DashboardAssembler" as assembler
+  participant "Section providers" as providers
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> guard : Open /dashboard
+alt visitor without a session
+  guard --> actor : Redirect to /sign-in?returnTo=%2Fdashboard (L2-030 criterion 5)
+else signed-in member
+  guard -> page : Activate route
+  page --> actor : loading state with skeletons (L2-030 criterion 4)
+  page -> client : getDashboard()
+  client -> controller : GET /api/v1/dashboard
+  controller -> controller : Authenticate verified member, validate ViewDashboardRequest
+  controller -> action : handle(member)
+  action -> assembler : all(member)
+  loop each of matches, events, messages, projects, profile
+    assembler -> providers : load(member) inside try/catch
+    providers -> db : Member-scoped read (L2-044)
+    alt read succeeds
+      db --> providers : Rows
+      providers --> assembler : status ok with data
+    else exception
+      providers --> assembler : Throws
+      assembler -> assembler : Log with request ID; status failed for this section only
+    end
+  end
+  assembler --> action : Five SectionResult values
+  action -> action : Set hasActivity; build nextSteps when there is none
+  action --> controller : DashboardView
+  controller --> client : 200 DashboardResource
+  client --> page : Dashboard or error
+  alt every section ok and member has activity
+    page --> actor : default state: matches, events, messages, feedback, profile prompt (L2-030 criterion 1)
+  else every section ok and no activity
+    page --> actor : empty state with next steps (L2-030 criterion 2)
+  else some sections failed
+    page --> actor : partial state; inline "Try again" in each failed section (L2-030 criterion 3)
+  else every section failed, 5xx or network failure
+    page --> actor : error state with "Try again" (L2-030 criterion 4)
+  end
+end
+@enduml

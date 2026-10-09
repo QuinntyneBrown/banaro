@@ -1,0 +1,44 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Recover a forgotten password
+
+Container(web, "Banaro Web", "Angular", "ForgotPasswordPage, ResetPasswordPage, resetPasswordResolver, HttpIdentityApi")
+Container(worker, "Banaro Worker", "Laravel Horizon", "Runs SendPasswordResetLink, sends ResetPasswordNotification")
+ContainerDb(db, "Banaro database", "Relational database", "users, password_reset_tokens")
+ContainerQueue(redis, "Redis", "Redis", "Sessions, rate-limit counters, Horizon queues")
+
+Container_Boundary(api, "Banaro API") {
+  Component(limiter, "password-reset rate limiter", "Laravel RateLimiter", "5 per hour per e-mail and per IP")
+  Component(linkCtrl, "PasswordResetLinkController", "Laravel controller", "POST /forgot-password")
+  Component(resetCtrl, "PasswordResetController", "Laravel controller", "POST /reset-password/check and /reset-password")
+  Component(reqs, "SendPasswordResetLinkRequest / CheckPasswordResetRequest / ResetPasswordRequest", "Form requests", "E-mail, token, new password and confirmation")
+  Component(request, "RequestPasswordReset", "Action", "Queues the job for every well-formed address")
+  Component(check, "CheckPasswordResetLink", "Action", "Token exists and is under 60 minutes old")
+  Component(reset, "ResetPassword", "Action", "Changes the password, deletes the token")
+  Component(policy, "PasswordPolicy", "Domain service", "12-character minimum, common-password list")
+  Component(revoke, "SessionRevocationService", "Domain service", "Ends every session of the account")
+  Component(broker, "Password broker", "Laravel token repository", "Hashed tokens, 60-minute expiry")
+  Component(user, "User", "Eloquent model", "Password hash, remember token")
+}
+
+Rel(web, limiter, "Calls", "JSON/HTTPS")
+Rel(limiter, linkCtrl, "Passes allowed requests to")
+Rel(limiter, redis, "Counts in", "Redis protocol")
+Rel(web, resetCtrl, "Calls", "JSON/HTTPS")
+Rel(linkCtrl, reqs, "Validates with")
+Rel(resetCtrl, reqs, "Validates with")
+Rel(reqs, policy, "Applies password rules from")
+Rel(linkCtrl, request, "Calls handle()")
+Rel(resetCtrl, check, "Calls handle()")
+Rel(resetCtrl, reset, "Calls handle()")
+Rel(request, redis, "Queues SendPasswordResetLink", "Redis protocol")
+Rel(check, broker, "Checks token")
+Rel(reset, broker, "Checks and deletes token")
+Rel(reset, user, "Stores new hash, rotates remember token")
+Rel(reset, revoke, "Calls revokeAll()")
+Rel(broker, db, "Reads and writes", "SQL")
+Rel(user, db, "Reads and writes", "SQL")
+Rel(worker, redis, "Takes jobs from", "Redis protocol")
+Rel(worker, db, "Creates token through the broker", "SQL")
+@enduml

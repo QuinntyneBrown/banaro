@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Limit request rates
+
+Person(member, "Member", "Signed-in, verified builder")
+Person(visitor, "Visitor", "Uses Banaro without signing in")
+Person_Ext(abuser, "Abusive client", "Script or person sending requests too fast")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Calls the API within 120 requests per minute", "HTTPS")
+Rel(visitor, banaro, "Joins, signs in, resets passwords, contacts the team", "HTTPS")
+Rel(abuser, banaro, "Receives 429 with Retry-After from", "HTTPS")
+@enduml

@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Expire a session on the server
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "sessionExpiryInterceptor" as interceptor
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "StartSession" as start
+  participant "EnforceAbsoluteSessionLifetime" as absolute
+  participant "auth:sanctum" as auth
+  participant "Member endpoint controller" as controller
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  queue "Redis" as redis
+end box
+
+actor -> interceptor : Any member action
+interceptor -> start : Request with session cookie
+start -> redis : GET session by identifier
+alt no request for 30 days
+  redis --> start : Key gone; time-to-live of 43,200 minutes ran out (L2-005 criterion 5)
+  start -> start : Start an empty session
+else session found
+  redis --> start : Session data with authenticated_at
+end
+start -> absolute : Continue
+alt authenticated_at older than 90 days
+  absolute -> redis : Logout; invalidate the session (L2-005 criterion 5)
+else within 90 days
+  absolute -> absolute : No change
+end
+absolute -> auth : Continue
+alt no authenticated user
+  auth --> interceptor : 401 unauthenticated, no redirect
+  interceptor --> actor : session-expired dialog opens (see Recover from a 401)
+else authenticated
+  auth -> controller : Handle the request
+  controller --> start : Response
+  start -> redis : Save the session; time-to-live reset to 30 days
+  start --> interceptor : Response
+  interceptor --> actor : Result
+end
+@enduml

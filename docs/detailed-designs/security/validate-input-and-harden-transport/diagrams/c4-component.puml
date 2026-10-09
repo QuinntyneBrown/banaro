@@ -1,0 +1,34 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Validate input and harden transport
+
+Container(web, "Banaro Web", "Angular", "XSRF configuration, csrfRecoveryInterceptor, ValidationErrors")
+ContainerDb(db, "Banaro database", "Relational database", "Feedback, profiles, projects")
+ContainerQueue(redis, "Redis", "Redis", "Sessions")
+ContainerDb(media, "Media storage", "Private file storage", "media disk")
+
+Container_Boundary(api, "Banaro API") {
+  Component(headers, "SecurityHeaders", "Global middleware", "HSTS, nosniff, Referrer-Policy, Permissions-Policy, CSP")
+  Component(https, "TrustProxies and RedirectToHttps", "Global middleware", "308 to HTTPS in production")
+  Component(origin, "VerifyRequestOrigin", "Middleware, api group", "419 origin_not_allowed")
+  Component(csrf, "EnsureFrontendRequestsAreStateful and ValidateCsrfToken", "Sanctum middleware", "419 csrf_token_mismatch")
+  Component(request, "ApiRequest and {Verb}{Noun}Request", "Form requests", "Type, length, format and enum rules; 422 field errors")
+  Component(ctrl, "Controllers/Api/V1/{Subsystem}", "Controllers", "Type-hint the form request; call one action")
+  Component(action, "Actions/{Subsystem}", "Actions", "Receive typed data from validated() only")
+  Component(config, "config/security.php", "Configuration", "Allowed origins, header values")
+}
+
+Rel(web, headers, "Calls", "JSON/HTTPS")
+Rel(headers, https, "Wraps")
+Rel(https, origin, "Then")
+Rel(origin, csrf, "Then")
+Rel(csrf, redis, "Compares token with session", "Redis protocol")
+Rel(csrf, ctrl, "Then routes to")
+Rel(ctrl, request, "Resolves and validates")
+Rel(ctrl, action, "Calls handle()")
+Rel(action, db, "Writes with bound parameters", "SQL")
+Rel(action, media, "Stores uploads under random names")
+Rel(origin, config, "Reads")
+Rel(headers, config, "Reads")
+@enduml

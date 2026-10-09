@@ -1,0 +1,59 @@
+@startuml
+title UML sequence behaviour — Enforce a block in another subsystem
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Blocked party" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "BuilderProfilePage" as page
+  participant "SayHelloDialog" as dialog
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "BuilderController" as profiles
+  participant "ConversationController" as conversations
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ConversationPolicy" as policy
+  participant "BlockService" as service
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /builders/{blocker}
+page -> profiles : GET /api/v1/builders/{blocker}
+profiles -> service : Builder::withoutBlockedFor(viewer) via applyScope()
+service -> db : SELECT builder WHERE NOT EXISTS block either way
+db --> profiles : No row
+profiles --> page : 404 (L2-032 criterion 4, L2-011 criterion 3)
+page --> actor : not-found state, reason not revealed
+
+actor -> dialog : Send a message from an earlier link
+dialog -> conversations : POST /api/v1/conversations
+conversations -> policy : create(sender, recipient)
+policy -> service : isBlockedEitherWay(sender, recipient)
+service -> db : Query blocks both directions
+db --> service : Block found
+service --> policy : true
+policy --> conversations : Deny
+conversations --> dialog : 403 (L2-026 criterion 7, L2-032 criterion 1)
+dialog --> actor : failed state; nothing sent
+
+actor -> conversations : GET /api/v1/conversations/{id} with the blocker
+conversations -> policy : view(member, conversation)
+policy -> service : isBlockedEitherWay(member, other party)
+service --> policy : true
+policy --> conversations : Hide
+conversations --> actor : 404 (L2-032 criterion 4)
+@enduml

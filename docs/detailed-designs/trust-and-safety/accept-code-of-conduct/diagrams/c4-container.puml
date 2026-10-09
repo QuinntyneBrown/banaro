@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Accept the code of conduct
+
+Person(visitor, "Visitor or member", "Reads and accepts the code of conduct")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Code-of-conduct page, join consent link, acceptance dialog")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Translation catalogue, current version, acceptances")
+  ContainerDb(db, "Banaro database", "Relational database", "Conduct acceptances")
+  ContainerDb(redis, "Redis", "Redis", "Sessions")
+}
+
+Rel(visitor, web, "Uses", "HTTPS")
+Rel(web, api, "GET /api/v1/i18n/en-CA", "JSON/HTTPS")
+Rel(web, api, "POST /api/v1/code-of-conduct/acceptances", "JSON/HTTPS")
+Rel(api, redis, "Reads session", "Redis protocol")
+Rel(api, db, "Reads and writes acceptances", "SQL")
+@enduml

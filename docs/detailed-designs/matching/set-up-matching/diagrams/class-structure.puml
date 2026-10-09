@@ -1,0 +1,110 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Set up matching
+
+package "Frontend — banaro application and api library" {
+  class MatchingSetupPage {
+    -api: MatchingApi
+    +state: 'default' | 'invalid' | 'submitting' | 'success'
+    +form: FormGroup
+    +saved: Signal<MatchingPreferences | null>
+    +submit(): void
+  }
+  class matchingSetUpGuard <<CanActivateFn>> {
+    +canActivate(): boolean | UrlTree
+  }
+  interface MatchingApi {
+    +getPreferences(): Observable<MatchingPreferences>
+    +savePreferences(request: SaveMatchingPreferencesRequest): Observable<MatchingPreferences>
+    +getOverview(): Observable<MatchingOverview>
+  }
+  class HttpMatchingApi
+  class SaveMatchingPreferencesRequest {
+    +buildingSummary: string
+    +lookingFor: MatchRole[]
+    +skills: string[]
+    +ventureStage: string | null
+    +availability: string | null
+    +maxDistanceKm: number
+    +weeklyEmail: boolean
+  }
+  class MatchingPreferences {
+    +status: 'active' | 'paused'
+    +nextRunOn: string
+  }
+}
+
+package "Backend — Banaro API" {
+  class MatchingPreferenceController {
+    +show(request: Request): MatchingPreferenceResource
+    +update(request: SaveMatchingPreferencesRequest): MatchingPreferenceResource
+  }
+  class "SaveMatchingPreferencesRequest " as SaveReq {
+    +rules(): array
+  }
+  class SaveMatchingPreferences {
+    +handle(member: User, data: array): MatchingPreference
+  }
+  class MatchingScheduleService {
+    +nextRunDate(now: CarbonImmutable): CarbonImmutable
+    +isoWeekOf(instant: CarbonImmutable): string
+  }
+  class EmailPreferenceService {
+    +set(member: User, category: EmailCategory, enabled: bool): void
+  }
+  class User {
+    +int id
+  }
+  class MatchingPreference {
+    +int id
+    +int user_id
+    +string building_summary
+    +array looking_for
+    +array skills
+    +?VentureStage venture_stage
+    +?Availability availability
+    +int max_distance_km
+    +MatchingStatus status
+    +?Carbon paused_at
+  }
+  enum MatchRole {
+    CoFounder
+    Advisor
+    Contributor
+  }
+  enum MatchingStatus {
+    Active
+    Paused
+  }
+  class MatchingPreferenceResource
+}
+
+MatchingSetupPage ..> MatchingApi : uses
+matchingSetUpGuard ..> MatchingApi : uses
+HttpMatchingApi ..|> MatchingApi
+MatchingApi ..> SaveMatchingPreferencesRequest : sends
+MatchingApi ..> MatchingPreferences : returns
+MatchingPreferences --|> SaveMatchingPreferencesRequest
+HttpMatchingApi ..> MatchingPreferenceController : HTTPS
+
+MatchingPreferenceController ..> SaveReq : validates with
+MatchingPreferenceController ..> SaveMatchingPreferences : calls
+MatchingPreferenceController ..> MatchingPreferenceResource : returns
+SaveMatchingPreferences ..> MatchingScheduleService : next run
+SaveMatchingPreferences ..> EmailPreferenceService : Matches category
+SaveMatchingPreferences --> MatchingPreference : upserts
+User "1" *-- "0..1" MatchingPreference : matchingPreference
+MatchingPreference --> MatchRole : looking_for
+MatchingPreference --> MatchingStatus : has
+@enduml

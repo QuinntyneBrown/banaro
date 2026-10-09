@@ -1,0 +1,100 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Edit and delete a project
+
+package "Frontend — banaro application, components and api libraries" {
+  class ProjectEditPage {
+    -api: ProjectsApi
+    -dialog: Dialog
+    -toast: ToastService
+    +form: FormGroup<ProjectFormControls>
+    +state: 'loading' | 'default' | 'invalid' | 'submitting' | 'error'
+    +save(): void
+    +openDeleteDialog(): void
+  }
+  class DeleteProjectDialog {
+    -api: ProjectsApi
+    +projectName: string
+    +typedName: FormControl<string>
+    +state: 'default' | 'invalid' | 'busy' | 'failed'
+    +canDelete(): boolean
+    +confirm(): void
+  }
+  class ToastService {
+    +success(title: string, body?: string): void
+  }
+  interface ProjectsApi {
+    +getForEdit(id: string): Observable<ProjectDetail>
+    +update(id: string, draft: ProjectDraft): Observable<ProjectDetail>
+    +delete(id: string, confirmName: string): Observable<void>
+  }
+  class HttpProjectsApi
+}
+
+package "Backend — Banaro API" {
+  class ProjectController {
+    +edit(request: EditProjectRequest, project: Project): ProjectResource
+    +update(request: UpdateProjectRequest, project: Project): ProjectResource
+    +destroy(request: DeleteProjectRequest, project: Project): Response
+  }
+  class UpdateProjectRequest {
+    +authorize(): bool
+    +rules(): array
+  }
+  class DeleteProjectRequest {
+    +authorize(): bool
+    +rules(): array
+  }
+  class ProjectPolicy {
+    +update(user: User, project: Project): bool
+    +delete(user: User, project: Project): bool
+  }
+  class UpdateProject {
+    +handle(project: Project, data: array): Project
+  }
+  class DeleteProject {
+    +handle(project: Project): void
+  }
+  class Project {
+    +int id
+    +int owner_id
+    +string name
+    +Carbon last_activity_at
+  }
+  class ProjectLookingFor
+  class Feedback
+  class HelpOffer
+  class ProjectResource
+}
+
+ProjectEditPage ..> ProjectsApi : uses
+ProjectEditPage ..> DeleteProjectDialog : opens
+ProjectEditPage ..> ToastService : uses
+DeleteProjectDialog ..> ProjectsApi : uses
+HttpProjectsApi ..|> ProjectsApi
+HttpProjectsApi ..> ProjectController : HTTPS
+
+ProjectController ..> UpdateProjectRequest : validates with
+ProjectController ..> DeleteProjectRequest : validates with
+UpdateProjectRequest ..> ProjectPolicy : authorize
+DeleteProjectRequest ..> ProjectPolicy : authorize
+ProjectController ..> UpdateProject : calls
+ProjectController ..> DeleteProject : calls
+ProjectController ..> ProjectResource : returns
+UpdateProject --> Project : updates
+DeleteProject --> Project : deletes
+Project "1" *-- "*" ProjectLookingFor
+Project "1" *-- "*" Feedback
+Project "1" *-- "*" HelpOffer
+@enduml

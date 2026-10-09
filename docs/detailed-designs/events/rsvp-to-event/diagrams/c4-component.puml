@@ -1,0 +1,34 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — RSVP to an event
+
+Container(web, "Banaro Web", "Angular", "EventDetailPage, CancelRsvpDialog, HttpEventsApi")
+ContainerDb(db, "Banaro database", "Relational database", "events, rsvps")
+ContainerQueue(redis, "Redis", "Redis", "Horizon queues")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "RsvpController", "Laravel controller", "PUT and DELETE /events/{event}/rsvp")
+  Component(req, "RsvpToEventRequest / CancelRsvpRequest", "Form requests", "Authorize the member, reject body fields")
+  Component(rsvp, "RsvpToEvent", "Action", "Locks the event, creates a going or waitlisted RSVP")
+  Component(cancel, "CancelRsvp", "Action", "Deletes the RSVP and frees the place")
+  Component(waitlist, "WaitlistService", "Domain service", "Promotes the next waitlisted member, computes positions")
+  Component(models, "Event / Rsvp", "Eloquent models", "Capacity, going count, RSVP status")
+  Component(resource, "RsvpResource", "API resource", "RsvpSummary JSON shape")
+  Component(notify, "RsvpConfirmedNotification / WaitlistPromotedNotification", "Queued notifications", "mail and database channels")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, rsvp, "Calls handle()")
+Rel(ctrl, cancel, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(rsvp, models, "Locks and writes")
+Rel(cancel, models, "Locks and deletes")
+Rel(cancel, waitlist, "Calls promoteNext()")
+Rel(waitlist, models, "Updates oldest waitlisted RSVP")
+Rel(rsvp, notify, "Queues after commit")
+Rel(waitlist, notify, "Queues after commit")
+Rel(models, db, "Reads and writes", "SQL")
+Rel(notify, redis, "Pushed to", "Redis protocol")
+@enduml

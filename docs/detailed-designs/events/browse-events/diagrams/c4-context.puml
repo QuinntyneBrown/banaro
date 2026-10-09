@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Browse events
+
+Person(visitor, "Visitor", "Person using Banaro without signing in")
+Person(member, "Member", "Signed-in, verified builder")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(visitor, banaro, "Browses upcoming and past events using", "HTTPS")
+Rel(member, banaro, "Browses upcoming and past events using", "HTTPS")
+@enduml

@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Report a builder or content
+
+Container(web, "Banaro Web", "Angular", "ReportDialog, HttpTrustAndSafetyApi")
+ContainerDb(db, "Banaro database", "Relational database", "reports, report_submissions, blocks")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "ReportController", "Laravel controller", "POST /reports")
+  Component(req, "SubmitReportRequest", "Form request", "Requires a reason, limits details to 1,000 characters")
+  Component(action, "SubmitReport", "Action", "Locks the reporter, merges within 24 hours or creates a report")
+  Component(resolver, "ReportSubjectResolver", "Domain service", "Maps subject type and id to a visible model and its owner")
+  Component(block, "BlockService", "Domain service", "isBlockedEitherWay(a, b)")
+  Component(models, "Report / ReportSubmission", "Eloquent models", "Report status, reason and details")
+  Component(resource, "ReportReceiptResource", "API resource", "ReportReceipt JSON shape")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, action, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(action, resolver, "Resolves subject with")
+Rel(resolver, block, "Checks blocks with")
+Rel(action, models, "Creates or merges")
+Rel(models, db, "Reads and writes", "SQL")
+Rel(block, db, "Reads blocks", "SQL")
+@enduml

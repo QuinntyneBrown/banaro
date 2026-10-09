@@ -1,0 +1,122 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Generate weekly suggestions
+
+package "Backend — Banaro Worker" {
+  class GenerateWeeklySuggestionsCommand {
+    +signature: 'matching:generate-weekly'
+    +handle(schedule: MatchingScheduleService): int
+  }
+  class GenerateMatchSuggestions <<ShouldQueue, ShouldBeUnique>> {
+    +int userId
+    +string isoWeek
+    +uniqueId(): string
+    +handle(action: GenerateSuggestionsForMember): void
+  }
+}
+
+package "Backend — Banaro Application and Domain" {
+  class GenerateSuggestionsForMember {
+    +handle(member: User, isoWeek: string): MatchingRun
+  }
+  class MatchCandidateService {
+    +eligibleFor(member: User, preference: MatchingPreference): Collection<Builder>
+  }
+  class MatchScoreService {
+    +scoreFor(viewer: User, builder: Builder): MatchScore
+  }
+  class MatchScore {
+    +int value
+    +array reasons
+    +float distanceKm
+  }
+  class MatchingScheduleService {
+    +isoWeekOf(instant: CarbonImmutable): string
+    +nextRunDate(now: CarbonImmutable): CarbonImmutable
+  }
+  class DistanceService <<directory>> {
+    +between(from: Neighbourhood, to: Neighbourhood): float
+  }
+  class BlockService <<trust-and-safety>> {
+    +isBlockedEitherWay(a: User, b: User): bool
+  }
+  class MatchSuggestionsReadyNotification <<ShouldQueue>> {
+    +int count
+    +via(notifiable: User): array
+  }
+}
+
+package "Backend — Models" {
+  class User {
+    +int id
+  }
+  class Builder {
+    +int user_id
+    +array open_to
+    +array skills
+    +Neighbourhood neighbourhood
+    +Carbon last_active_at
+  }
+  class MatchingPreference {
+    +int user_id
+    +array looking_for
+    +array skills
+    +int max_distance_km
+    +MatchingStatus status
+  }
+  class MatchSuggestion {
+    +int id
+    +int user_id
+    +int candidate_user_id
+    +string iso_week
+    +int score
+    +array reasons
+    +float distance_km
+    +MatchSuggestionStatus status
+    +?PassReason pass_reason
+    +Carbon created_at
+    +?Carbon acted_at
+  }
+  class MatchingRun {
+    +int user_id
+    +string iso_week
+    +int suggestions_created
+    +Carbon ran_at
+  }
+  enum MatchSuggestionStatus {
+    Suggested
+    Contacted
+    Passed
+  }
+}
+
+GenerateWeeklySuggestionsCommand ..> MatchingScheduleService : isoWeekOf
+GenerateWeeklySuggestionsCommand ..> GenerateMatchSuggestions : dispatches
+GenerateMatchSuggestions ..> GenerateSuggestionsForMember : calls
+GenerateSuggestionsForMember ..> MatchCandidateService : candidates
+GenerateSuggestionsForMember ..> MatchScoreService : scores
+GenerateSuggestionsForMember ..> MatchSuggestionsReadyNotification : sends after commit
+MatchCandidateService ..> DistanceService : distance
+MatchCandidateService ..> BlockService : blocks
+MatchScoreService ..> MatchScore : returns
+GenerateSuggestionsForMember --> MatchingPreference : locks
+GenerateSuggestionsForMember --> MatchSuggestion : creates
+GenerateSuggestionsForMember --> MatchingRun : creates
+User "1" *-- "0..1" MatchingPreference
+User "1" *-- "1" Builder
+User "1" *-- "*" MatchSuggestion : suggestions
+User "1" *-- "*" MatchingRun : one per ISO week
+MatchSuggestion --> Builder : candidate
+MatchSuggestion --> MatchSuggestionStatus : has
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — View the home page
+
+Container(web, "Banaro Web", "Angular, SSR", "HomePage, SeoService, HttpPublicSiteApi")
+ContainerDb(db, "Banaro database", "Relational database", "builders, projects, match_suggestions, events")
+ContainerDb(redis, "Redis", "Redis", "Cache store")
+
+Container_Boundary(api, "Banaro API") {
+  Component(routes, "api_public.php", "Route file", "Anonymous GET /home/* routes")
+  Component(ctrl, "HomeController", "Laravel controller", "statistics(), builders(), projects(), events()")
+  Component(stats, "GetPlatformStatistics", "Action", "Returns the platform statistics")
+  Component(feeds, "ListFeaturedBuilders / ListFeaturedProjects / ListUpcomingEvents", "Actions", "Visitor-safe feed lists")
+  Component(svc, "PlatformStatisticsService", "Domain service", "Counts real rows, caches for 600 s")
+  Component(models, "Builder / Project / MatchSuggestion / Event", "Eloquent models", "Source of counts and feed items")
+  Component(res, "PlatformStatisticsResource / Featured*Resource / UpcomingEventResource", "API resources", "Visitor-safe JSON shapes")
+}
+
+Rel(web, routes, "Calls", "JSON/HTTPS")
+Rel(routes, ctrl, "Dispatches to")
+Rel(ctrl, stats, "Calls handle()")
+Rel(ctrl, feeds, "Calls handle()")
+Rel(ctrl, res, "Returns")
+Rel(stats, svc, "Calls current()")
+Rel(svc, redis, "Cache::remember", "Redis protocol")
+Rel(svc, models, "Counts")
+Rel(feeds, models, "Queries")
+Rel(models, db, "Reads", "SQL")
+@enduml

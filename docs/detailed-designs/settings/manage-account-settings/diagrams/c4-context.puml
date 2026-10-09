@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Manage account settings
+
+Person(member, "Member", "Signed-in, verified builder")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
+
+Rel(member, banaro, "Changes name, e-mail and password, signs out other devices using", "HTTPS")
+Rel(banaro, mail, "Sends confirmation link, change notice and password notice via", "Mailer contract")
+Rel(mail, member, "Delivers e-mail to the new and old addresses")
+@enduml

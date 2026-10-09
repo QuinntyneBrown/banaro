@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Switch theme
+
+Person(member, "Member", "Signed-in builder on one or more devices")
+Person(visitor, "Visitor", "Not signed in")
+System_Ext(device, "Device and browser", "Exposes prefers-color-scheme")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Switches theme with the switch or the t key", "HTTPS")
+Rel(visitor, banaro, "Switches theme for this browser", "HTTPS")
+Rel(banaro, device, "Follows colour scheme of when no choice is stored", "CSS media query")
+@enduml

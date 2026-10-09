@@ -1,0 +1,125 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Scope data access
+
+package "Frontend — api library (lib/auth)" {
+  class credentialsInterceptor <<HttpInterceptorFn>> {
+    +intercept(req, next): Observable<HttpEvent>
+  }
+  class unauthorizedInterceptor <<HttpInterceptorFn>> {
+    +intercept(req, next): Observable<HttpEvent>
+  }
+  class authGuard <<CanActivateFn>>
+  class adminGuard <<CanActivateFn>>
+}
+
+package "Backend — Banaro API" {
+  class OwnedByMember <<trait>> {
+    +owner(): BelongsTo
+    +scopeOwnedBy(query: Builder, member: User): Builder
+  }
+  class Conversation {
+    +int id
+    +scopeWithParticipant(query: Builder, member: User): Builder
+  }
+  class Notification {
+    +int id
+    +int user_id
+    #array fillable
+  }
+  class Project {
+    +int id
+    +int owner_id
+    +bool is_published
+    #array fillable
+    +scopeVisibleTo(query: Builder, viewer: ?User): Builder
+  }
+  class Builder {
+    +int id
+    +int user_id
+    +scopeVisibleTo(query: Builder, viewer: ?User): Builder
+  }
+  class BlockService {
+    +blockedIdsFor(viewer: User): Collection<int>
+    +isBlockedPair(a: User, b: User): bool
+    +forget(viewer: User): void
+  }
+  class ConversationPolicy {
+    +view(member: User, conversation: Conversation): Response
+  }
+  class ProjectPolicy {
+    +view(member: ?User, project: Project): Response
+    +update(member: User, project: Project): Response
+  }
+  class "Response" as AuthResponse {
+    +{static} allow(): Response
+    +{static} denyAsNotFound(): Response
+    +{static} deny(): Response
+  }
+  abstract class ApiRequest {
+    +rules(): array
+    +validated(): array
+  }
+  class UpdateProjectRequest {
+    +rules(): array
+  }
+}
+
+package "Backend — tests/Feature/Security" {
+  interface RouteOwnershipFixture {
+    +routeName(): string
+    +arrange(owner: User): array
+    +expectation(): Expectation
+    +sentinels(owner: User): array
+    +isListing(): bool
+    +writableInput(): ?array
+  }
+  enum Expectation {
+    NotFound
+    Forbidden
+    SelfOnly
+  }
+  class RouteOwnershipRegistry {
+    +fixtureFor(routeName: string): ?RouteOwnershipFixture
+    +all(): array
+  }
+  class MessagingFixtures
+  class CrossUserAccessTest {
+    +test_every_authenticated_route_has_a_fixture(): void
+    +test_second_member_cannot_reach_owner_records(): void
+  }
+  class UnauthenticatedAccessTest
+  class GuardedFieldsTest
+  class ListingVisibilityTest
+}
+
+Notification ..|> OwnedByMember
+Project ..|> OwnedByMember
+Builder ..> BlockService : visibleTo() reads
+Project ..> BlockService : visibleTo() reads
+ConversationPolicy ..> AuthResponse : denyAsNotFound()
+ProjectPolicy ..> AuthResponse : denyAsNotFound()
+ConversationPolicy ..> Conversation : guards
+ProjectPolicy ..> Project : guards
+UpdateProjectRequest --|> ApiRequest
+
+MessagingFixtures ..|> RouteOwnershipFixture
+RouteOwnershipRegistry "1" o-- "*" RouteOwnershipFixture
+RouteOwnershipFixture --> Expectation
+CrossUserAccessTest ..> RouteOwnershipRegistry : looks up
+UnauthenticatedAccessTest ..> RouteOwnershipRegistry
+GuardedFieldsTest ..> RouteOwnershipRegistry
+ListingVisibilityTest ..> RouteOwnershipRegistry
+ListingVisibilityTest ..> BlockService : arranges blocks via
+@enduml

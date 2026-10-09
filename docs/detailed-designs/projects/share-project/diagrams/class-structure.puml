@@ -1,0 +1,110 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Share a project
+
+package "Frontend — banaro application and api library" {
+  class ProjectNewPage {
+    -api: ProjectsApi
+    +form: FormGroup<ProjectFormControls>
+    +state: 'default' | 'invalid' | 'submitting' | 'success'
+    +created: Signal<ProjectDetail | null>
+    +submit(): void
+  }
+  class ProjectFormModel {
+    +build(initial?: ProjectDraft): FormGroup<ProjectFormControls>
+    +applyErrors(form, errors: FieldErrors): void
+  }
+  interface ProjectsApi {
+    +share(draft: ProjectDraft): Observable<ProjectDetail>
+  }
+  class HttpProjectsApi
+  class ProjectDraft {
+    +name: string
+    +summary: string
+    +description: string
+    +stage: ProjectStage
+    +lookingFor: LookingForRole[]
+    +link: string | null
+  }
+}
+
+package "Backend — Banaro API" {
+  class ProjectController {
+    +store(request: ShareProjectRequest): ProjectResource
+  }
+  class ShareProjectRequest {
+    +rules(): array
+    +validated(): array
+  }
+  class ShareProject {
+    +handle(owner: User, data: array): Project
+  }
+  class ProjectLimitReached {
+    +code: 'project_limit'
+    +status: 422
+  }
+  class User {
+    +int id
+  }
+  class Project {
+    +int id
+    +int owner_id
+    +string name
+    +string summary
+    +?string description
+    +ProjectStage stage
+    +?string link
+    +int feedback_count
+    +Carbon last_activity_at
+  }
+  class ProjectLookingFor {
+    +int project_id
+    +LookingForRole role
+  }
+  enum ProjectStage {
+    Idea
+    Design
+    Prototype
+    Beta
+    Pilot
+    Launched
+  }
+  enum LookingForRole {
+    CoFounder
+    TechnicalCoFounder
+    Contributor
+    Advisor
+    Designer
+    Engineer
+  }
+  class ProjectResource
+}
+
+ProjectNewPage ..> ProjectsApi : uses
+ProjectNewPage ..> ProjectFormModel : builds form with
+HttpProjectsApi ..|> ProjectsApi
+ProjectsApi ..> ProjectDraft : sends
+HttpProjectsApi ..> ProjectController : HTTPS
+
+ProjectController ..> ShareProjectRequest : validates with
+ProjectController ..> ShareProject : calls
+ProjectController ..> ProjectResource : returns
+ShareProject ..> ProjectLimitReached : throws
+ShareProject --> User : locks
+ShareProject --> Project : creates
+User "1" --> "0..10" Project : owns
+Project "1" *-- "*" ProjectLookingFor : lookingFor
+Project --> ProjectStage : has
+ProjectLookingFor --> LookingForRole : has
+@enduml

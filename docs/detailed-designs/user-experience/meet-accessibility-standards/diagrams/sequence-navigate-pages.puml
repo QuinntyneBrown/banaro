@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — Navigate between pages
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member (keyboard)" as actor
+participant "Browser" as browser
+box "Frontend — Banaro Web server" #E0F2FE
+  participant "server.ts (SSR)" as server
+end box
+box "Frontend — banaro application" #E0F2FE
+  participant "Shell" as shell
+  participant "Router" as router
+  participant "BanaroTitleStrategy" as title
+end box
+box "Frontend — components library" #E0F2FE
+  participant "Announcer" as announcer
+end box
+
+actor -> browser : Open /dashboard
+browser -> server : GET /dashboard
+server --> browser : HTML: skip link, header, nav, main#main, footer, one h1, title (L2-050 criterion 5)
+actor -> browser : Press Tab
+browser --> actor : Focus on "Skip to content" (first focusable element)
+actor -> shell : Press Enter
+shell --> actor : Focus moves to main#main
+actor -> router : Activate "Events" link
+router -> title : updateTitle(snapshot)
+title -> title : Resolve catalogue key events.title
+title --> browser : document.title = "Events — Banaro" (unique)
+router -> shell : NavigationEnd
+shell -> shell : Focus main#main (tabindex -1)
+shell -> announcer : polite(navigation.arrived, { title })
+announcer --> actor : "Events" read; next Tab continues in page order (L2-050 criterion 2)
+@enduml

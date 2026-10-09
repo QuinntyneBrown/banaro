@@ -1,0 +1,82 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Localize and format
+
+package "Frontend — api library (lib/i18n)" {
+  interface I18nApi <<I18N_API>> {
+    +catalogue(locale: string): Observable<Catalogue>
+  }
+  class HttpI18nApi
+  class InMemoryI18nApi
+  class Catalogue {
+    +locale: string
+    +entries: Record<string, string>
+  }
+  class TranslationService <<Injectable root>> {
+    +catalogue: Signal<Catalogue>
+    +t(key: string, params?: Record<string, unknown>): string
+    -plural(count: number): Intl.LDMLPluralRule
+  }
+  class TranslatePipe <<t>> {
+    +transform(key: string, params?: object): string
+  }
+  class Formatters <<module>> {
+    +LOCALE = 'en-CA'
+    +ZONE = 'America/Toronto'
+    +formatEventRange(start: string, end: string, options?: RangeOptions): string
+    +formatDistance(km: number): string
+    +formatNumber(n: number): string
+    +formatRelative(time: string, now: Date): string
+  }
+  class "I18nKeyMap<E>" as I18nKeyMap {
+    +[value in E]: string
+  }
+}
+
+package "Backend — Banaro API" {
+  class CatalogueController {
+    +show(request: ShowCatalogueRequest, locale: string): JsonResponse
+  }
+  class CatalogueService {
+    +catalogue(locale: string): Catalogue
+    +hash(locale: string): string
+  }
+  interface "Loader (Laravel)" as Loader {
+    +load(locale, group, namespace): array
+  }
+  class CatalogueTranslationLoader
+  class DateTimeFormatter {
+    +eventRange(start: CarbonImmutable, end: CarbonImmutable): string
+  }
+  class CheckI18nKeys <<i18n:check>> {
+    +handle(): int
+    -usedKeys(): array
+    -catalogueKeys(locale: string): array
+  }
+}
+
+HttpI18nApi ..|> I18nApi
+InMemoryI18nApi ..|> I18nApi
+I18nApi ..> Catalogue
+TranslationService ..> I18nApi : loads via
+TranslatePipe ..> TranslationService
+Formatters ..> TranslationService : relative texts
+HttpI18nApi ..> CatalogueController : HTTPS
+CatalogueController ..> CatalogueService
+CatalogueTranslationLoader ..|> Loader
+CatalogueTranslationLoader ..> CatalogueService : same files
+CheckI18nKeys ..> CatalogueService : reads keys
+CheckI18nKeys ..> I18nKeyMap : finds literal keys in
+DateTimeFormatter ..> Formatters : shares fixture table with
+@enduml

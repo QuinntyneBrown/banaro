@@ -1,0 +1,81 @@
+@startuml
+title UML sequence behaviour — Act on a report
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Administrator" as actor
+box "Frontend — admin application" #E0F2FE
+  participant "ReportDetailPage" as page
+  participant "ModerationActionDialog" as dialog
+  participant "HttpModerationApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ReportActionController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ActOnReport" as action
+  participant "ModerationService" as moderation
+  participant "AuditLogger" as audit
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis" as redis
+end box
+
+actor -> page : Select warn, suspend, remove or dismiss
+page -> dialog : Open moderation-action dialog
+actor -> dialog : Write note, confirm
+dialog -> dialog : Enter busy state
+dialog -> client : actOnReport(id, {action, note})
+client -> controller : POST /api/v1/admin/reports/{id}/actions
+controller -> controller : EnsureAdministrator, ReportPolicy, validate ActOnReportRequest
+controller -> action : handle(admin, report, type, note)
+action -> db : BEGIN; SELECT report FOR UPDATE
+alt report not Open
+  action -> db : ROLLBACK
+  action --> controller : 409 report_closed
+else Open
+  alt warn
+    action -> moderation : warn(member)
+  else suspend
+    action -> moderation : suspend(member)
+    moderation -> db : UPDATE users.suspended_at = now
+  else remove
+    action -> moderation : remove(subject)
+    moderation -> db : UPDATE subject SET removed_at = now
+  else dismiss
+    action -> action : No effect on any member
+  end
+  action -> db : INSERT moderation_action (admin, type, note, time) (L2-033 criterion 2)
+  action -> db : UPDATE report status Actioned or Dismissed
+  action -> audit : record(admin, action, report, note)
+  audit -> db : INSERT audit_entry, append-only (L2-033 criterion 5)
+  action -> db : COMMIT
+  opt suspend
+    action -> redis : SessionRegistry.revokeAll(member) after commit
+  end
+  opt not a dismissal
+    action -> redis : Queue warning, suspension or removal e-mail (L2-033 criterion 2)
+  end
+  action --> controller : Updated report
+end
+controller --> client : 200 AdminReportDetailResource or 409 problem
+client --> dialog : Result or error
+alt success
+  dialog --> page : Close with result
+  page --> actor : Report shows new status and action history
+else failure
+  dialog --> actor : failed state with retry; transaction rolled back
+end
+@enduml

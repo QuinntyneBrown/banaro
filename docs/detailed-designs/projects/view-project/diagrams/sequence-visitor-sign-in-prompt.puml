@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — Visitor prompted to sign in
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ProjectDetailPage" as page
+  participant "Router" as router
+  participant "SignInPage" as signin
+  participant "HttpProjectsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ProjectController" as pctrl
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ProjectPolicy" as policy
+end box
+
+actor -> page : Read project, select "Give feedback" or "Offer to help"
+page -> page : No session; permissions.giveFeedback is false
+page -> router : navigate /sign-in?returnTo=/projects/{id} (L2-013 criterion 6)
+router -> signin : Show sign-in
+actor -> signin : Sign in
+signin -> signin : Accept returnTo only as a same-origin path (L2-003 criterion 6)
+signin -> router : navigate /projects/{id}
+router -> page : Load project again
+page -> client : get(id)
+client -> pctrl : GET /api/v1/projects/{id} with session cookie
+pctrl -> policy : Permissions for the signed-in member
+policy --> pctrl : giveFeedback and offerHelp true for a non-owner
+pctrl --> client : 200 ProjectResource
+client --> page : ProjectDetail
+page --> actor : default state with "Give feedback" and "Offer to help" available
+@enduml

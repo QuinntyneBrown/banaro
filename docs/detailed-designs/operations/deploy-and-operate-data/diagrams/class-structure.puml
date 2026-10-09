@@ -1,0 +1,93 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Deploy and operate data
+
+package "Backend — database" {
+  abstract class Migration <<Laravel>> {
+    +up(): void
+    +down(): void
+  }
+  class ExpandMigration <<convention>> {
+    +up(): adds tables, nullable columns, indexes
+  }
+  class ContractMigration <<convention>> {
+    +up(): drops shapes no running release reads
+  }
+  class Seeder <<Laravel>> {
+    +run(): void
+    +call(seeders: array): void
+  }
+  class DatabaseSeeder {
+    +run(): void
+  }
+  class ReferenceDataSeeder {
+    +run(): void
+    -upsertBy(table: string, key: string, rows: array): void
+  }
+  class DemoDataSeeder {
+    +run(): void
+  }
+}
+
+package "Backend — worker and schedule" {
+  class ScheduleDefinition <<routes/console.php>> {
+    +mondayMatching(): Event
+    +eventReminders(): Event
+    +weeklyDigest(): Event
+    +horizonSnapshot(): Event
+  }
+  class "Illuminate Console Scheduling Event" as SchedEvent <<Laravel>> {
+    +onOneServer(): static
+    +withoutOverlapping(): static
+    +timezone(tz: string): static
+  }
+  interface ShouldBeUnique <<Laravel>> {
+    +uniqueId(): string
+  }
+  class GenerateWeeklySuggestions <<job, matching>>
+  class SendEventReminders <<job, email-notifications>>
+  class SendWeeklyDigests <<job, email-notifications>>
+  class HorizonConfig <<config/horizon.php>> {
+    +supervisors: array
+    +force: bool = false
+  }
+}
+
+package "Pipeline — .ci/" {
+  class ReleaseStages <<pipeline>> {
+    +build(): void
+    +schemaCompat(): void
+    +migrate(): void
+    +seed(): void
+    +rollout(): void
+  }
+}
+
+Migration <|-- ExpandMigration
+Migration <|-- ContractMigration
+Seeder <|-- DatabaseSeeder
+Seeder <|-- ReferenceDataSeeder
+Seeder <|-- DemoDataSeeder
+DatabaseSeeder *-- ReferenceDataSeeder : always
+DatabaseSeeder *-- DemoDataSeeder : local and testing only
+ScheduleDefinition *-- "4" SchedEvent
+ScheduleDefinition ..> GenerateWeeklySuggestions : dispatches
+ScheduleDefinition ..> SendEventReminders : dispatches
+ScheduleDefinition ..> SendWeeklyDigests : dispatches
+GenerateWeeklySuggestions ..|> ShouldBeUnique
+SendEventReminders ..|> ShouldBeUnique
+SendWeeklyDigests ..|> ShouldBeUnique
+ReleaseStages ..> Migration : migrate ~-~-isolated
+ReleaseStages ..> DatabaseSeeder : db:seed
+@enduml

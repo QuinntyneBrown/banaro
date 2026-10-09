@@ -1,0 +1,25 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Meet response-time budgets
+
+Person(member, "Member", "Signed-in, verified builder")
+System_Ext(ci, "CI pipeline", "load-test stage")
+Container_Ext(runner, "Load runner", "Load-testing tool <TO SUPPLY>", "Runs backend/tests/load scenarios")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "List pages that request one page at a time")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Paged, indexed reads; short writes")
+  Container(worker, "Banaro Worker", "Laravel Horizon", "Runs queued notifications and media work")
+  ContainerDb(db, "Banaro database", "Relational database", "Indexed builders, skills, match scores, distances")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions, cached aggregates, queues")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "GET ?page=&per_page=", "JSON/HTTPS")
+Rel(ci, runner, "Starts after seeding")
+Rel(runner, api, "Reference load", "JSON/HTTPS")
+Rel(api, db, "Indexed queries", "SQL")
+Rel(api, redis, "Reads cache, queues jobs after commit", "Redis protocol")
+Rel(worker, redis, "Takes jobs from", "Redis protocol")
+@enduml

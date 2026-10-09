@@ -1,0 +1,44 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Hold conversations
+
+Container(web, "Banaro Web", "Angular", "MessagesPage, ConversationPoller, InboxItem, MessageBubble, HttpMessagingApi")
+ContainerDb(db, "Banaro database", "Relational database", "conversations, conversation_participants, messages")
+ContainerQueue(redis, "Redis", "Redis", "Horizon queues")
+
+Container_Boundary(api, "Banaro API") {
+  Component(convCtrl, "ConversationController", "Laravel controller", "index() for GET /conversations")
+  Component(msgCtrl, "MessageController", "Laravel controller", "index() and store() for /conversations/{id}/messages")
+  Component(readCtrl, "ConversationReadController", "Laravel controller", "update() for PUT /conversations/{id}/read")
+  Component(policy, "ConversationPolicy", "Policy", "view(): participants only, else 404; reply(): 403 for a blocked pair")
+  Component(block, "BlockService", "Domain service (TrustAndSafety)", "isBlockedEitherWay()")
+  Component(list, "ListConversations", "Action", "Inbox by latest message with unread counts")
+  Component(thread, "ListMessages", "Action", "Latest page, or messages after or before a cursor")
+  Component(send, "SendMessage", "Action", "Idempotent reply by client_message_id")
+  Component(read, "MarkConversationRead", "Action", "Moves the read mark forward")
+  Component(models, "Conversation / ConversationParticipant / Message", "Eloquent models", "Threads and read marks")
+  Component(resources, "ConversationSummaryResource / MessageResource", "API resources", "ConversationSummary and ChatMessage shapes")
+  Component(notify, "NewMessageNotification", "Queued notification", "mail and database channels")
+}
+
+Rel(web, convCtrl, "Calls", "JSON/HTTPS")
+Rel(web, msgCtrl, "Calls and polls", "JSON/HTTPS")
+Rel(web, readCtrl, "Calls", "JSON/HTTPS")
+Rel(msgCtrl, policy, "Authorizes with")
+Rel(readCtrl, policy, "Authorizes with")
+Rel(policy, block, "Checks blocked pair")
+Rel(convCtrl, list, "Calls handle()")
+Rel(msgCtrl, thread, "Calls handle()")
+Rel(msgCtrl, send, "Calls handle()")
+Rel(readCtrl, read, "Calls handle()")
+Rel(convCtrl, resources, "Returns")
+Rel(msgCtrl, resources, "Returns")
+Rel(list, models, "Queries")
+Rel(thread, models, "Queries")
+Rel(send, models, "Writes")
+Rel(read, models, "Updates")
+Rel(send, notify, "Queues after commit")
+Rel(models, db, "Reads and writes", "SQL")
+Rel(notify, redis, "Pushed to", "Redis protocol")
+@enduml

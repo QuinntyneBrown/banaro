@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Browse projects
+
+Container(web, "Banaro Web", "Angular", "ProjectsPage, ProjectCard, HttpProjectsApi")
+ContainerDb(db, "Banaro database", "Relational database", "projects, project_looking_for, builders, blocks")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "ProjectController", "Laravel controller", "index(): GET /projects, api_public.php")
+  Component(req, "BrowseProjectsRequest", "Form request", "q, stage, looking_for, page, per_page cap")
+  Component(action, "BrowseProjects", "Action", "Builds ProjectQuery for the optional viewer")
+  Component(search, "ProjectSearchService", "Domain service", "Text, stage and role filters; activity order; 12 per page")
+  Component(block, "BlockService", "Domain service (TrustAndSafety)", "Block relationships of the viewer")
+  Component(models, "Project / ProjectLookingFor", "Eloquent models", "Project fields and roles")
+  Component(resource, "ProjectSummaryResource", "API resource", "ProjectSummary card shape")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, action, "Calls handle()")
+Rel(ctrl, resource, "Returns collection of")
+Rel(action, search, "Calls search()")
+Rel(search, block, "Scopes out blocked owners via applyScope()")
+Rel(search, models, "Queries")
+Rel(models, db, "Reads", "SQL")
+Rel(block, db, "Reads blocks", "SQL")
+@enduml

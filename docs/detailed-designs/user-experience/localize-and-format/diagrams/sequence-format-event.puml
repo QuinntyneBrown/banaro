@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — Format an event page
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "EventDetailPage" as page
+  participant "bnDate, bnDistance, t pipes" as pipes
+  participant "Formatters" as fmt
+  participant "TranslationService" as translation
+  participant "HttpEventsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "EventController" as api
+end box
+
+actor -> page : Open Fall Demo Night
+page -> client : event(id)
+client -> api : GET /api/v1/events/{id}
+api --> client : startsAt 2026-10-15T23:00:00Z, endsAt 2026-10-16T01:30:00Z, distanceKm 5.83, goingCount 64
+client --> page : EventDetail
+page -> pipes : startsAt | bnDate: endsAt
+pipes -> fmt : formatEventRange(start, end)
+fmt -> fmt : formatToParts in en-CA, America/Toronto (EDT, UTC-4)
+fmt -> fmt : Order "Thu 15 Oct 2026"; times joined by en dash; period lower case once
+fmt --> pipes : "Thu 15 Oct 2026, 7:00–9:30 pm" (L2-052 criterion 2)
+page -> pipes : distanceKm | bnDistance
+pipes -> fmt : formatDistance(5.83)
+alt rounded value below 10
+  fmt --> pipes : "5.8 km" (L2-052 criterion 3)
+else 10 or more, for example 26.9
+  fmt --> pipes : "27 km"
+end
+page -> pipes : 'events.going' | t: { count: 64 }
+pipes -> translation : t('events.going', { count: 64 })
+translation -> fmt : formatNumber(64)
+fmt --> translation : "64" (thousands use a comma, for example "1,284") (L2-052 criterion 4)
+translation --> pipes : "64 going"
+page --> actor : Event page in Canadian English and Toronto time
+note over fmt : An event after 1 November 2026 converts with EST (UTC-5) from the same zone name
+@enduml

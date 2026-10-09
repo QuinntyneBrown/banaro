@@ -1,0 +1,48 @@
+@startuml
+title UML sequence behaviour — Open the navigation on a phone
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+participant "Browser" as browser
+box "Frontend — Banaro Web server" #E0F2FE
+  participant "server.ts (SSR)" as server
+end box
+box "Frontend — banaro application" #E0F2FE
+  participant "ShellHeader" as header
+  participant "NavigationSheet" as sheet
+end box
+box "Frontend — components library" #E0F2FE
+  participant "Overlay (CDK)" as overlay
+end box
+
+actor -> browser : Open / at 360 px
+browser -> server : GET /
+server --> browser : HTML; header CSS hides nav links below the nav breakpoint
+browser --> actor : Single column, menu button of 44 x 44 px, no horizontal scroll (L2-049 criterion 1)
+actor -> header : Tap the menu button
+header -> overlay : create(panel for NavigationSheet, backdrop)
+overlay -> sheet : Attach
+sheet -> sheet : Move focus to the first link
+sheet --> actor : Builders, Projects, Events, Matching
+alt member selects a link
+  actor -> sheet : Tap "Builders"
+  sheet -> overlay : detach()
+  sheet --> browser : Navigate to /builders
+else member presses Escape or taps the backdrop
+  actor -> sheet : Escape
+  sheet -> overlay : detach()
+  overlay --> header : Focus returns to the menu button
+end
+@enduml

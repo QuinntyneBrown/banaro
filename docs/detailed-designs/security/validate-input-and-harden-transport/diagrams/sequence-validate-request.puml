@@ -1,0 +1,77 @@
+@startuml
+title UML sequence behaviour — Validate a state-changing request
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "GiveFeedbackDialog" as dialog
+  participant "HttpProjectsApi" as client
+  participant "csrfRecoveryInterceptor" as interceptor
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "SecurityHeaders" as headers
+  participant "VerifyRequestOrigin" as origin
+  participant "ValidateCsrfToken" as csrf
+  participant "FeedbackController" as controller
+  participant "GiveFeedbackRequest" as request
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "GiveFeedback" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Redis" as redis
+  database "Banaro database" as db
+end box
+
+actor -> dialog : Submit feedback text
+dialog -> client : giveFeedback(projectId, body)
+client -> interceptor : POST /api/v1/projects/{id}/feedback with X-XSRF-TOKEN
+interceptor -> headers : Request
+headers -> origin : Next
+alt Origin missing or not in allowed_origins
+  origin --> headers : 419 origin_not_allowed (L2-045 criterion 2)
+  headers --> interceptor : 419 with security headers
+  interceptor --> dialog : Error; no retry
+  dialog --> actor : failed state with "Try again"
+else allowed origin
+  origin -> csrf : Next
+  csrf -> redis : Read session CSRF token
+  redis --> csrf : Token
+  alt token missing or wrong
+    csrf --> headers : 419 csrf_token_mismatch; nothing written (L2-045 criterion 2)
+    headers --> interceptor : 419 with security headers
+    interceptor -> interceptor : GET /sanctum/csrf-cookie, repeat once
+  else token valid
+    csrf -> controller : store(GiveFeedbackRequest, project)
+    controller -> request : Validate type, length 10..1,000, format (L2-045 criterion 1)
+    alt invalid
+      request --> headers : 422 validation_failed with field errors
+      headers --> client : 422 with security headers
+      client --> dialog : ValidationErrors
+      dialog --> actor : invalid state; focus on first invalid field
+    else valid
+      request --> controller : toData()
+      controller -> action : handle(member, data)
+      action -> db : INSERT feedback with bound parameters, body as plain text (L2-045 criterion 5)
+      db --> action : Saved
+      action --> controller : Feedback
+      controller --> headers : 201 FeedbackResource
+      headers --> client : 201 with HSTS, nosniff, Referrer-Policy, Permissions-Policy, CSP (L2-045 criterion 3)
+      client --> dialog : Feedback
+      dialog --> actor : Feedback shown; text encoded by interpolation
+    end
+  end
+end
+@enduml

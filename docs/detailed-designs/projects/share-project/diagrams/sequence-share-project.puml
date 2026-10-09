@@ -1,0 +1,67 @@
+@startuml
+title UML sequence behaviour — Share a project
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "ProjectNewPage" as page
+  participant "HttpProjectsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "ProjectController" as controller
+  participant "ShareProjectRequest" as request
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ShareProject" as action
+  participant "Project" as project
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Fill in the form, select "Share project"
+page -> page : Enter submitting state, disable button, label "Sharing…" (L2-012 criterion 3)
+page -> client : share(draft)
+client -> controller : POST /api/v1/projects
+controller -> controller : Authenticate verified member
+controller -> request : Validate fields
+alt invalid or over-limit value
+  request --> controller : Field errors (L2-012 criteria 2 and 5)
+  controller --> client : 422 with per-field errors
+  client --> page : Field errors
+  page --> actor : invalid state, focus on first invalid field
+else valid
+  request --> controller : validated() without owner_id (L2-044 criterion 4)
+  controller -> action : handle(member, data)
+  action -> db : BEGIN; SELECT users row FOR UPDATE
+  action -> db : COUNT projects WHERE owner_id = member
+  db --> action : Owned project count
+  alt count >= 10
+    action -> db : ROLLBACK
+    action --> controller : ProjectLimitReached
+    controller --> client : 422 code project_limit (L2-012 criterion 4)
+    client --> page : project_limit error
+    page --> actor : Message explaining the limit
+  else under the limit
+    action -> project : Create with owner_id from session
+    action -> db : INSERT project; INSERT project_looking_for rows
+    action -> db : COMMIT
+    action --> controller : Project
+    controller --> client : 201 ProjectResource
+    client --> page : ProjectDetail
+    page --> actor : success state with link to /projects/{id} (L2-012 criterion 1)
+  end
+end
+@enduml

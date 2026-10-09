@@ -1,0 +1,60 @@
+@startuml
+title UML sequence behaviour — Resume matching
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "MatchingPage" as page
+  participant "HttpMatchingApi" as client
+  participant "ToastService" as toast
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "MatchingPauseController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ResumeMatching" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+box "Backend — Banaro Worker" #ECFDF3
+  participant "GenerateWeeklySuggestionsCommand" as cmd
+end box
+
+actor -> page : Select "Resume matching" in the paused state
+page -> page : Button busy
+page -> client : resumeMatching()
+client -> controller : DELETE /api/v1/matching/pause
+controller -> controller : Authenticate verified member, validate ResumeMatchingRequest
+controller -> action : handle(member)
+action -> db : BEGIN; SELECT matching_preference FOR UPDATE
+action -> db : UPDATE status = active, paused_at = null
+action -> db : COMMIT
+note right of action : No suggestions are created now
+action --> controller : Active preference
+controller --> client : 200 MatchingPreferenceResource
+client --> page : MatchingPreferences
+alt success
+  page -> client : getOverview()
+  client --> page : MatchingOverview status active
+  page --> actor : Matching state with the next Monday date
+else server or network error
+  page -> toast : Show danger toast with "Try again"
+  page --> actor : paused state unchanged
+end
+... Next Monday 06:00 America/Toronto ...
+cmd -> db : Select active members, now including this member
+cmd -> cmd : Dispatch GenerateMatchSuggestions (L2-025 criterion 2)
+@enduml

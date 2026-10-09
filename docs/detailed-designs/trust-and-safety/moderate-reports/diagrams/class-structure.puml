@@ -1,0 +1,138 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Moderate reports
+
+package "Frontend — admin application and api library" {
+  class ReportsPage {
+    -api: ModerationApi
+    +reports: Signal<AdminReportSummary[]>
+    +status: 'open' | 'actioned' | 'dismissed'
+  }
+  class ReportDetailPage {
+    -api: ModerationApi
+    +report: Signal<AdminReportDetail>
+    +openActionDialog(type: string): void
+  }
+  class ModerationActionDialog {
+    -api: ModerationApi
+    +state: 'default' | 'invalid' | 'busy' | 'failed'
+    +confirm(note: string): void
+  }
+  interface ModerationApi {
+    +listReports(query: ReportQuery): Observable<Page<AdminReportSummary>>
+    +getReport(id: string): Observable<AdminReportDetail>
+    +actOnReport(id: string, request: ModerationActionRequest): Observable<AdminReportDetail>
+  }
+  class HttpModerationApi
+  class AdminReportSummary {
+    +id: string
+    +status: 'open' | 'actioned' | 'dismissed'
+    +reason: string
+    +subject: SubjectSummary
+    +submissionCount: number
+    +createdAt: string
+  }
+  class ModerationActionRequest {
+    +action: 'warn' | 'suspend' | 'remove' | 'dismiss'
+    +note: string
+  }
+}
+
+package "Backend — Banaro API" {
+  class EnsureAdministrator {
+    +handle(request: Request, next: Closure): Response
+  }
+  class AdminReportController {
+    +index(request: Request): ResourceCollection
+    +show(report: Report): AdminReportDetailResource
+  }
+  class ReportActionController {
+    +store(request: ActOnReportRequest, report: Report): AdminReportDetailResource
+  }
+  class ActOnReport {
+    +handle(admin: User, report: Report, type: ModerationActionType, note: string): Report
+  }
+  class ModerationService {
+    +warn(member: User): void
+    +suspend(member: User): void
+    +remove(subject: ReportSubject): void
+  }
+  class AuditLogger {
+    +record(admin: User, action: string, target: Model, note: string): AuditEntry
+  }
+  class SessionRegistry {
+    +revokeAll(user: User): void
+  }
+  class Report {
+    +int id
+    +ReportStatus status
+    +int reported_user_id
+  }
+  class ModerationAction {
+    +int id
+    +int report_id
+    +int administrator_id
+    +ModerationActionType type
+    +string note
+    +Carbon created_at
+  }
+  class AuditEntry <<immutable>> {
+    +int id
+    +int administrator_id
+    +string action
+    +string target_type
+    +int target_id
+    +string note
+    +array context
+    +Carbon created_at
+  }
+  class User {
+    +int id
+    +Role role
+    +?Carbon suspended_at
+  }
+  enum ModerationActionType {
+    Warn
+    Suspend
+    Remove
+    Dismiss
+  }
+  enum Role {
+    Member
+    Administrator
+  }
+  class AdminReportDetailResource
+}
+
+ReportsPage ..> ModerationApi : uses
+ReportDetailPage ..> ModerationApi : uses
+ModerationActionDialog ..> ModerationApi : uses
+HttpModerationApi ..|> ModerationApi
+ModerationApi ..> AdminReportSummary : returns
+ModerationApi ..> ModerationActionRequest : sends
+HttpModerationApi ..> ReportActionController : HTTPS
+
+EnsureAdministrator ..> User : checks role
+ReportActionController ..> ActOnReport : calls
+ReportActionController ..> AdminReportDetailResource : returns
+AdminReportController ..> AdminReportDetailResource : returns
+ActOnReport ..> ModerationService : applies effect
+ActOnReport ..> AuditLogger : records
+ActOnReport ..> SessionRegistry : revokes after commit
+Report "1" *-- "*" ModerationAction : actions
+ModerationAction --> ModerationActionType : has
+ModerationAction "*" --> "1" User : administrator
+AuditLogger --> AuditEntry : inserts
+User --> Role : has
+@enduml

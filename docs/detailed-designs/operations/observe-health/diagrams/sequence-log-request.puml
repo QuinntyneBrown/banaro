@@ -1,0 +1,62 @@
+@startuml
+title UML sequence behaviour — Log a request
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — banaro application" #E0F2FE
+  participant "HttpXxxApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "LogRequest" as log
+  participant "AssignRequestId" as reqid
+  participant "Other middleware and controller" as controller
+  participant "Exception handling" as exc
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "Action" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  participant "Log channels (JSON to stderr)" as channel
+end box
+
+client -> log : Request
+log -> log : handle(): record start time
+log -> reqid : Pass on
+alt incoming X-Request-Id matches the pattern
+  reqid -> reqid : Reuse it
+else absent or invalid
+  reqid -> reqid : Generate UUID
+end
+reqid -> reqid : Context::add('request_id', id)
+reqid -> controller : Pass on
+controller -> action : handle()
+alt action succeeds
+  action --> controller : Result
+  controller --> reqid : 2xx or 4xx response
+else action throws an unhandled exception
+  action --> controller : Throwable
+  controller -> exc : Pipeline hands the exception to the handler
+  exc -> channel : Report: class, message, stack trace, request_id (L2-053 criterion 4)
+  exc --> reqid : 500 {message: "Server Error", requestId} only (L2-053 criterion 4)
+end
+reqid -> reqid : Set X-Request-Id on the response (L2-053 criterion 3)
+reqid --> log : Final response
+log --> client : Response sent
+log -> log : terminate(request, response)
+log -> channel : One JSON line: request_id, method, route pattern, final status, duration_ms, member_id (L2-053 criteria 3 and 5)
+note right of channel
+  No e-mail, no request or response body,
+  no cookies, no raw client IP
+end note
+@enduml

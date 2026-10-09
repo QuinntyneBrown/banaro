@@ -1,0 +1,64 @@
+@startuml
+title UML sequence behaviour — Go offline and recover
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+participant "Browser window" as window
+box "Frontend — banaro application" #E0F2FE
+  participant "Shell + ConnectionBanner" as banner
+  participant "ConnectivityService" as conn
+  participant "Router" as router
+  participant "ConnectivityInterceptor" as interceptor
+  participant "OfflinePage" as page
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "LivenessController" as live
+end box
+
+window -> conn : offline event
+conn -> conn : status = reconnecting
+conn -> banner : After 3 s: info "Reconnecting…" (L2-028 criterion 6)
+conn -> conn : status = offline
+conn -> banner : warning "You are offline. …"
+actor -> router : Open a page whose code or data is not loaded
+alt lazy route code cannot be fetched
+  router -> router : withNavigationErrorHandler, status is offline
+  router -> page : Show OfflinePage in place, state {failedUrl} (L2-043 criterion 1)
+else essential data request ends with status 0
+  router -> interceptor : GET essential data
+  interceptor -> conn : reportUnreachable()
+  interceptor -> page : ERROR_PAGE_NAVIGATOR.offline(failedUrl) (L2-043 criterion 1)
+end
+page --> actor : "You're offline" with "Try again"
+loop while offline, interval <TO SUPPLY>
+  conn -> live : GET /health/live
+  live --> conn : no response
+end
+opt probes exhausted
+  conn -> conn : status = failed
+  conn -> banner : danger "We couldn't reconnect." with "Try again"
+end
+alt connection returns (online event or probe answers 200)
+  window -> conn : online event
+  conn -> live : GET /health/live
+  live --> conn : 200
+  conn -> conn : status = online
+  conn -> banner : success "Back online." auto-dismisses, pauses on hover or focus (L2-028 criterion 7)
+  page -> router : Re-navigate to failedUrl, the page reloads (L2-043 criterion 1)
+else member selects "Try again"
+  actor -> page : Select "Try again"
+  page -> conn : probeNow()
+end
+@enduml

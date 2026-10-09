@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — In-app notifications
+
+Person(member, "Member", "Signed-in, verified builder")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Notifications page, header bell, UnreadCountStore")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Lists, counts and marks notifications")
+  Container(worker, "Banaro Worker", "Laravel Horizon", "Writes queued database notifications")
+  ContainerDb(db, "Banaro database", "Relational database", "notifications table")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions, Horizon queues")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "GET /api/v1/notifications, unread-count; POST read, read-all", "JSON/HTTPS")
+Rel(api, db, "Reads and marks the member's notifications", "SQL")
+Rel(api, redis, "Reads the session; queues notifications", "Redis protocol")
+Rel(worker, redis, "Takes jobs from", "Redis protocol")
+Rel(worker, db, "Inserts notification rows", "SQL")
+@enduml

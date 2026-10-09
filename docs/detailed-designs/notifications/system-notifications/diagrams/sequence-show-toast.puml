@@ -1,0 +1,62 @@
+@startuml
+title UML sequence behaviour — Show and stack toasts
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "Feature page or dialog" as feature
+end box
+box "Frontend — components library" #E0F2FE
+  participant "ToastService" as svc
+  participant "ToastRegion" as region
+  participant "Toast" as toast
+end box
+
+feature -> svc : show({ variant, title, body, action? })
+svc -> svc : Create ToastRef
+alt fewer than 3 visible
+  svc -> region : Add on top (newest first) (L2-028 criterion 2)
+  region -> toast : Render with role status, or alert for danger (L2-028 criterion 1)
+  toast --> actor : Announced by assistive technology
+else 3 visible
+  svc -> svc : Append to queue (L2-028 criterion 2)
+end
+alt variant success or info
+  svc -> svc : Start 6 s timer (L2-028 criterion 1)
+else variant warning or danger
+  svc -> svc : No timer; stays until dismissed (L2-028 criterion 1)
+end
+opt pointer rests on the toast or focus enters it
+  toast -> svc : pause(ref)
+  svc -> svc : Stop timer, keep remaining time (L2-028 criterion 7)
+  toast -> svc : resume(ref) when pointer and focus leave
+end
+alt member selects the action
+  actor -> toast : Select "Undo" or "Try again"
+  toast -> svc : Action selected
+  svc -> svc : actionTaken? ignore : set actionTaken, run callback once
+  svc -> feature : action.run()
+  svc -> region : Remove toast (L2-028 criterion 3)
+else member selects "Dismiss notification"
+  actor -> toast : Dismiss
+  toast -> svc : dismiss(ref)
+  svc -> region : Remove toast
+else timer ends
+  svc -> region : Remove toast
+end
+opt queue not empty
+  svc -> region : Show oldest queued toast on top
+end
+@enduml

@@ -1,0 +1,108 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Sign in and sign out
+
+package "Frontend — banaro application and api library" {
+  class SignInPage {
+    -session: SessionStore
+    +form: FormGroup<SignInForm>
+    +state: 'default' | 'invalid' | 'submitting' | 'error' | 'signed-out'
+    +retryAfterMinutes: Signal<number | null>
+    +submit(): void
+  }
+  class AccountMenuDialog {
+    -session: SessionStore
+    +member: Signal<MemberSession>
+    +signOut(): void
+  }
+  class Header {
+    +member: Signal<MemberSession | null>
+  }
+  class SessionStore {
+    -api: IdentityApi
+    +member: Signal<MemberSession | null>
+    +load(): Promise<void>
+    +signIn(request: SignInRequest): Observable<MemberSession>
+    +signOut(): Observable<void>
+  }
+  class safeReturnPath <<function>> {
+    +safeReturnPath(value: string | null): string
+  }
+  interface IdentityApi {
+    +csrfCookie(): Observable<void>
+    +getSession(): Observable<MemberSession | null>
+    +signIn(request: SignInRequest): Observable<MemberSession>
+    +signOut(): Observable<void>
+  }
+  class HttpIdentityApi
+  class SignInRequest {
+    +email: string
+    +password: string
+  }
+  class MemberSession {
+    +id: string
+    +name: string
+    +email: string
+    +emailVerified: boolean
+  }
+}
+
+package "Backend — Banaro API" {
+  class SessionController {
+    +show(): SessionResource
+    +store(request: SignInRequest): SessionResource
+    +destroy(): Response
+  }
+  class SignIn {
+    +handle(data: SignInData, request: Request): User
+  }
+  class SignOut {
+    +handle(request: Request): void
+  }
+  class SignInThrottleService {
+    +check(email: string, ip: string): void
+    +recordFailure(email: string, ip: string): void
+    +clear(email: string): void
+    +availableIn(email: string, ip: string): int
+  }
+  class User {
+    +int id
+    +string name
+    +string email
+    +string password
+    +?Carbon email_verified_at
+  }
+  class SessionResource {
+    +toArray(request: Request): array
+  }
+}
+
+SignInPage ..> SessionStore : signs in via
+SignInPage ..> safeReturnPath : uses
+AccountMenuDialog ..> SessionStore : signs out via
+Header ..> AccountMenuDialog : opens
+Header ..> SessionStore : reads
+SessionStore ..> IdentityApi : uses
+HttpIdentityApi ..|> IdentityApi
+IdentityApi ..> SignInRequest : sends
+IdentityApi ..> MemberSession : returns
+HttpIdentityApi ..> SessionController : HTTPS
+
+SessionController ..> SignIn : calls
+SessionController ..> SignOut : calls
+SessionController ..> SessionResource : returns
+SignIn ..> SignInThrottleService : checks / records
+SignIn --> User : loads
+SessionResource ..> User : serializes
+@enduml

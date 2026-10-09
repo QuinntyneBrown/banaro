@@ -319,3 +319,12 @@ Legend: ✅ mock exists · ➖ not applicable (reason in manifest) · ❌ missin
 | Connection banner (`connection-banner`) | [✅](notifications/connection-banner/info.html) | [✅](notifications/connection-banner/success.html) | [✅](notifications/connection-banner/warning.html) | [✅](notifications/connection-banner/danger.html) |  |  |  |  |
 
 <!-- coverage:end -->
+
+## Shared design system
+
+The mocks now consume [the design-system tokens](../design-system/tokens/tokens.css)
+and [component stylesheet](../design-system/assets/components.css) directly.
+The local `assets/tokens.css` and `assets/ui.css` files remain compatibility imports.
+Open [the design system](../design-system/index.html) for foundations, component states,
+patterns and the documented extraction corrections. Edit shared styles there so the
+mocks and future implementation keep one visual vocabulary.

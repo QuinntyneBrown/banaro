@@ -1,0 +1,66 @@
+@startuml
+title UML sequence behaviour — Probe liveness and readiness
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Container orchestrator" as orch
+box "Backend — Banaro API application" #D1FADF
+  participant "LogRequest" as log
+  participant "AssignRequestId" as reqid
+  participant "LivenessController" as live
+  participant "ReadinessController" as ready
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ReadinessService" as svc
+  participant "DatabaseCheck / CacheCheck / QueueCheck" as checks
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  database "Redis" as redis
+end box
+
+== Liveness ==
+orch -> log : GET /health/live
+log -> reqid : Pass on
+reqid -> live : No session, CSRF, auth, rate limit or maintenance check
+live --> reqid : 200 {status: "ok"}, no dependency touched (L2-053 criterion 1)
+reqid --> log : Response with X-Request-Id
+log --> orch : 200
+log -> log : terminate(): one JSON line (L2-053 criterion 3)
+
+== Readiness ==
+orch -> log : GET /health/ready
+log -> reqid : Pass on
+reqid -> ready : Route
+ready -> svc : check()
+svc -> checks : DatabaseCheck.passes()
+checks -> db : SELECT 1
+alt database reachable
+  db --> checks : 1
+  svc -> checks : CacheCheck.passes()
+  checks -> redis : PING cache connection
+  svc -> checks : QueueCheck.passes()
+  checks -> redis : PING queue connection
+end
+alt every check passes
+  svc --> ready : ready
+  ready --> orch : 200 {status: "ready"} (L2-053 criterion 2)
+  orch -> orch : Route traffic to the instance
+else any check fails or times out
+  svc -> svc : Log check name and error at warning level
+  svc --> ready : not ready
+  ready --> orch : 503 {status: "unavailable"}, no internal detail (L2-053 criterion 2)
+  orch -> orch : Remove the instance from traffic, no restart
+end
+@enduml

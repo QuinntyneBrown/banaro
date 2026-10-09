@@ -1,0 +1,61 @@
+@startuml
+title UML sequence behaviour — List records with the block list applied
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "DirectoryPage" as page
+  participant "HttpDirectoryApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "BuilderController" as controller
+  participant "BuilderResource" as resource
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ListBuilders" as action
+  participant "Builder::visibleTo" as scope
+  participant "BlockService" as block
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Redis" as redis
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /builders
+page -> client : list(filters, page)
+client -> controller : GET /api/v1/builders?page=1
+controller -> controller : Validate ListBuildersRequest
+controller -> action : handle(member, filters)
+action -> scope : visibleTo(member)
+scope -> block : blockedIdsFor(member)
+block -> redis : GET blocked ids for member
+alt cache miss
+  redis --> block : Nothing cached
+  block -> db : SELECT blocked and blocking member ids
+  db --> block : Ids in both directions
+  block -> redis : SET blocked ids for member
+else cache hit
+  redis --> block : Cached ids
+end
+block --> scope : Block list
+scope -> scope : Exclude block list, apply privacy and draft rules (L2-044 criterion 5)
+action -> db : SELECT builders WHERE user_id NOT IN (block list) AND visible ...
+db --> action : One page of visible builders
+action --> controller : Paginated builders
+controller -> resource : Serialize explicit fields; omit hidden fields (L2-036)
+resource --> client : 200 page of BuilderResource
+client --> page : Builders
+page --> actor : Cards without blocked builders; no client-side filtering
+@enduml

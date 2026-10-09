@@ -1,0 +1,36 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Generate weekly suggestions
+
+ContainerDb(db, "Banaro database", "Relational database", "matching_preferences, builders, blocks, match_suggestions, matching_runs")
+ContainerQueue(redis, "Redis", "Redis", "Scheduler lock, Horizon queues")
+
+Container_Boundary(worker, "Banaro Worker") {
+  Component(schedule, "routes/console.php", "Laravel scheduler", "Monday 06:00 America/Toronto, onOneServer, withoutOverlapping")
+  Component(cmd, "GenerateWeeklySuggestionsCommand", "Artisan command", "Fixes the ISO week key, dispatches one job per active member")
+  Component(job, "GenerateMatchSuggestions", "Queued job, ShouldBeUnique", "One member, one ISO week")
+  Component(action, "GenerateSuggestionsForMember", "Action", "Locks, checks the run, stores up to three suggestions")
+  Component(cal, "MatchingScheduleService", "Domain service", "ISO week key, next run date")
+  Component(candidates, "MatchCandidateService", "Domain service", "Applies the eligibility rules")
+  Component(score, "MatchScoreService", "Domain service", "Integer 0-100 score and reasons")
+  Component(distance, "DistanceService", "Domain service (directory)", "Kilometres between neighbourhoods")
+  Component(block, "BlockService", "Domain service (trust and safety)", "isBlockedEitherWay()")
+  Component(models, "MatchingPreference / MatchSuggestion / MatchingRun", "Eloquent models", "Preferences, suggestions, runs")
+  Component(notify, "MatchSuggestionsReadyNotification", "Queued notification", "database and mail channels")
+}
+
+Rel(schedule, cmd, "Starts")
+Rel(schedule, redis, "Takes lock", "Redis protocol")
+Rel(cmd, cal, "Reads isoWeekOf()")
+Rel(cmd, job, "Dispatches per member")
+Rel(job, redis, "Queued on", "Redis protocol")
+Rel(job, action, "Calls handle()")
+Rel(action, candidates, "Calls eligibleFor()")
+Rel(candidates, distance, "Filters by distance")
+Rel(candidates, block, "Filters blocked pairs")
+Rel(action, score, "Calls scoreFor()")
+Rel(action, models, "Locks, reads and writes")
+Rel(action, notify, "Sends after commit")
+Rel(models, db, "Reads and writes", "SQL")
+@enduml

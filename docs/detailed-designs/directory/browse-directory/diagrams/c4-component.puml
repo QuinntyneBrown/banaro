@@ -1,0 +1,38 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Browse the directory
+
+Container(web, "Banaro Web", "Angular", "DirectoryPage, BuilderCard, HttpDirectoryApi")
+ContainerDb(db, "Banaro database", "Relational database", "builders, builder_skill, neighbourhood_distances, blocks")
+ContainerDb(redis, "Redis", "Redis", "Cached match scores")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "BuilderDirectoryController", "Laravel controller", "GET /builders (api_public.php)")
+  Component(req, "SearchDirectoryRequest", "Form request", "q, sort, page, per_page up to 50")
+  Component(action, "SearchDirectory", "Action", "Scopes, searches, sorts and pages")
+  Component(visibility, "ProfileVisibility", "Settings filter (L2-036)", "Drops or trims profiles by privacy settings")
+  Component(blocks, "Block scope", "Trust-and-safety scope (L2-032)", "Drops builders blocked in either direction")
+  Component(sorter, "DirectorySorter", "Domain service", "Best match, nearest, recently active, newest")
+  Component(match, "MatchScoreService", "Matching domain service (L2-022)", "Viewer's score per candidate")
+  Component(distance, "DistanceService", "Domain service", "Centroid distances, 5 km rounding for City only")
+  Component(presence, "PresenceService", "Domain service", "Online status from last activity")
+  Component(normalizer, "SearchNormalizer", "Domain service", "Lower case, accents removed")
+  Component(resources, "BuilderCardResource / PublicBuilderCardResource / DirectoryPageResource", "API resources", "Member card, visitor card, page meta")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, action, "Calls handle()")
+Rel(ctrl, resources, "Returns")
+Rel(action, visibility, "Applies")
+Rel(action, blocks, "Applies")
+Rel(action, normalizer, "Normalises q")
+Rel(action, sorter, "Orders with")
+Rel(sorter, match, "Reads scores")
+Rel(sorter, distance, "Reads distances")
+Rel(resources, distance, "Formats distance")
+Rel(resources, presence, "Reads status")
+Rel(match, redis, "Caches scores", "Redis protocol")
+Rel(action, db, "Queries one page", "SQL")
+@enduml

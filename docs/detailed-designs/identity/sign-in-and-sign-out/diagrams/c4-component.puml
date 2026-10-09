@@ -1,0 +1,33 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Sign in and sign out
+
+Container(web, "Banaro Web", "Angular", "SignInPage, AccountMenuDialog, SessionStore, HttpIdentityApi")
+ContainerDb(db, "Banaro database", "Relational database", "users")
+ContainerQueue(redis, "Redis", "Redis", "Sessions, failed-attempt counters")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "SessionController", "Laravel controller", "GET, POST and DELETE /session")
+  Component(req, "SignInRequest", "Form request", "E-mail and password format")
+  Component(signin, "SignIn", "Action", "Checks credentials in constant time, starts the session")
+  Component(signout, "SignOut", "Action", "Invalidates the session and the CSRF token")
+  Component(throttle, "SignInThrottleService", "Domain service", "5 failures per account, 20 per IP, 15 minutes")
+  Component(guard, "Session guard", "Laravel Auth, web guard", "login(), logout(), regenerate()")
+  Component(user, "User", "Eloquent model", "Canonical e-mail, password hash")
+  Component(resource, "SessionResource", "API resource", "MemberSession JSON shape")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, signin, "Calls handle()")
+Rel(ctrl, signout, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(signin, throttle, "Checks and records failures")
+Rel(signin, user, "Loads by canonical e-mail")
+Rel(signin, guard, "Logs in, regenerates the session")
+Rel(signout, guard, "Logs out, invalidates the session")
+Rel(throttle, redis, "Counts in", "Redis protocol")
+Rel(guard, redis, "Stores sessions in", "Redis protocol")
+Rel(user, db, "Reads", "SQL")
+@enduml

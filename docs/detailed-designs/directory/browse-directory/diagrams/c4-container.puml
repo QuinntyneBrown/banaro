@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Browse the directory
+
+Person(member, "Member", "Signed-in, verified builder")
+Person(visitor, "Visitor", "Not signed in")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular, SSR", "Directory page, builder cards")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Scopes, searches, sorts and pages builders")
+  ContainerDb(db, "Banaro database", "Relational database", "Builders, skills, neighbourhoods, distances, blocks, privacy settings")
+  ContainerDb(redis, "Redis", "Redis", "Sessions, cached match scores, rate-limit counters")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(visitor, web, "Uses", "HTTPS")
+Rel(web, api, "GET /api/v1/builders", "JSON/HTTPS")
+Rel(api, db, "Queries one page with indexes", "SQL")
+Rel(api, redis, "Reads session and match scores", "Redis protocol")
+@enduml

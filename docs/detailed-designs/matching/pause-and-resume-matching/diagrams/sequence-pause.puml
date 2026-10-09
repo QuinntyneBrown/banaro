@@ -1,0 +1,64 @@
+@startuml
+title UML sequence behaviour — Pause matching
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "MatchingPage" as page
+  participant "PauseMatchingDialog" as dialog
+  participant "HttpMatchingApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "MatchingPauseController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "PauseMatching" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Select "Pause matching"
+page -> dialog : Open pause-matching dialog (focus on "Keep matching")
+actor -> dialog : Confirm "Pause matching"
+dialog -> dialog : busy state, "Keep matching" disabled, no dismissal (L2-025 criterion 3)
+dialog -> client : pauseMatching()
+client -> controller : PUT /api/v1/matching/pause
+controller -> controller : Authenticate verified member, validate PauseMatchingRequest
+controller -> action : handle(member)
+action -> db : BEGIN; SELECT matching_preference FOR UPDATE
+alt not set up
+  action -> db : ROLLBACK
+  action --> controller : 404
+else already paused
+  action -> db : COMMIT
+  action --> controller : Preference unchanged (idempotent)
+else active
+  action -> db : UPDATE status = paused, paused_at = now
+  action -> db : COMMIT
+  action --> controller : Paused preference
+end
+controller --> client : 200 MatchingPreferenceResource
+client --> dialog : Result
+alt success
+  dialog --> page : Close with paused result
+  page -> client : getOverview()
+  client --> page : MatchingOverview status paused
+  page --> actor : paused state with pause date and "Resume matching" (L2-025 criterion 1)
+else server or network error
+  dialog --> actor : failed state with "Try again"; status unchanged (L2-025 criterion 3)
+end
+note over action, db : The Monday job locks the same row and skips paused members;\nMatchCandidateService excludes them as candidates (L2-025 criteria 1 and 4)
+@enduml

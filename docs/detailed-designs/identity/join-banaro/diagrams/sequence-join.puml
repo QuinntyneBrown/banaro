@@ -1,0 +1,75 @@
+@startuml
+title UML sequence behaviour — Join Banaro
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "JoinPage" as page
+  participant "HttpIdentityApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "JoinController" as controller
+  participant "JoinBanaroRequest" as request
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "JoinBanaro" as action
+  participant "EmailVerificationService" as verify
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis" as redis
+end box
+
+actor -> page : Fill in name, e-mail, password; tick code of conduct; select "Join Banaro"
+page -> page : Client-side checks
+alt client-side checks fail
+  page --> actor : invalid state with error summary and inline errors
+else checks pass
+  page -> page : submitting state; button disabled, "Creating your account…" (L2-001 criterion 4)
+  page -> client : join(request)
+  client -> controller : POST /api/v1/join
+  controller -> redis : throttle:join, 5 per IP in 10 minutes
+  alt limit exceeded
+    controller --> client : 429 with Retry-After (L2-001 criterion 6)
+    client --> page : ApiProblem
+    page --> actor : "slow down" message in the error summary
+  else within limit
+    controller -> request : Validate name, e-mail, PasswordPolicy, consent
+    alt validation fails
+      request --> controller : Field errors
+      controller --> client : 422 with per-field errors (L2-001 criterion 2)
+      client --> page : ApiProblem
+      page --> actor : invalid state; each error next to its field
+    else valid
+      controller -> action : handle(JoinData)
+      action -> action : Canonicalize e-mail; Hash::make(password), bcrypt cost >= 12 (L2-001 criterion 5)
+      action -> db : Find user by canonical e-mail
+      alt address not registered
+        action -> db : BEGIN; INSERT user (email_verified_at null, code-of-conduct version and time)
+        action -> verify : issue(user)
+        verify -> db : Store hashed single-use token, expires in 24 hours
+        action -> db : COMMIT
+        action -> redis : Queue VerifyEmailNotification (L2-001 criterion 1)
+      else address already registered (any letter case)
+        action -> redis : Queue AccountAlreadyExistsNotification (L2-001 criterion 3)
+      end
+      action --> controller : Done
+      controller --> client : 202 Accepted, empty body in both cases
+      client --> page : Success
+      page --> actor : success state "Check your e-mail" with the submitted address
+    end
+  end
+end
+@enduml

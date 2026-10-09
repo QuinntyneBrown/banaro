@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Pass on a suggestion
+
+Person(member, "Member", "Active matching member")
+Person(builder, "Suggested builder", "Never told about the pass")
+System(banaro, "Banaro", "Connects Christian product builders in Toronto and the GTA")
+
+Rel(member, banaro, "Passes on a suggestion, with an optional reason, using", "HTTPS")
+Rel(builder, banaro, "Uses, with no view of passes", "HTTPS")
+@enduml

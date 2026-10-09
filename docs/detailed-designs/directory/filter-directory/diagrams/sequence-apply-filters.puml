@@ -1,0 +1,67 @@
+@startuml
+title UML sequence behaviour — Apply directory filters
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "DirectoryPage" as page
+  participant "FilterSheet" as sheet
+  participant "DirectoryQueryCodec" as codec
+  participant "HttpDirectoryApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "BuilderDirectoryController" as controller
+  participant "SearchDirectoryRequest" as request
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "SearchDirectory" as action
+  participant "DirectoryFilterApplier" as applier
+  participant "FacetCounter" as counter
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+alt viewport 992 px or wider
+  actor -> page : Tick "Founders", "Co-founding"; press "Product strategy" in the sidebar
+else viewport below 992 px
+  actor -> page : Select "Filters"
+  page -> sheet : Open bottom sheet, move focus inside (L2-010 criterion 6)
+  actor -> sheet : Choose options, then "Apply"
+  sheet --> page : Staged selection; focus returns to "Filters"
+end
+page -> codec : encode(selection)
+codec --> page : role=founder&openTo=co-founding&skills=product-strategy
+page -> page : Write to URL, reset page to 1 (L2-010 criterion 3)
+page -> client : searchBuilders(query with filters)
+client -> controller : GET /api/v1/builders?role[]=founder&open_to[]=co-founding&skills[]=product-strategy
+controller -> request : Validate enum membership (L2-045 criterion 1)
+controller -> action : handle(viewer, query)
+action -> action : DirectoryFilters with distance 40 km when none chosen (L2-010 criterion 2)
+action -> applier : apply(query, filters, viewer)
+applier -> db : AND across groups, OR within a group, within distance limit (L2-010 criterion 1)
+action -> db : Sort and load one page (see Browse the directory)
+action -> counter : countsFor(filters, viewer)
+counter -> db : Per group, count with the other groups applied, same privacy and block scopes
+counter --> action : Option counts
+action --> controller : Page, total, facets
+controller --> client : 200 DirectoryPageResource with meta.facets and meta.appliedFilters
+client --> page : DirectoryResultPage
+alt builders found
+  page --> actor : filtered state, active-filter chips, counts beside each option
+else no builder matches
+  page --> actor : no-results state with active filters, "Clear all filters" and widen distance (L2-010 criterion 4)
+end
+@enduml

@@ -1,0 +1,65 @@
+@startuml
+title UML sequence behaviour — Download my data
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "DataExportPanel" as panel
+  participant "HttpSettingsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "DataExportController" as controller
+end box
+box "Backend — Banaro Worker" #ECFDF3
+  participant "BuildDataExport" as job
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+  queue "Redis" as redis
+  database "Media storage" as media
+end box
+
+actor -> panel : Select "Download my data"
+panel -> client : requestDataExport()
+client -> controller : POST /api/v1/settings/data-exports
+controller -> db : INSERT data_export (pending) for session user
+controller -> redis : Dispatch BuildDataExport(export)
+controller --> client : 202 DataExportResource (pending)
+client --> panel : DataExport
+panel --> actor : Preparing archive
+
+redis -> job : Deliver BuildDataExport
+job -> db : Read profile, projects, messages and RSVPs of the member
+job -> media : Write JSON archive under a random name
+job -> db : UPDATE export ready, expires_at = now + 24 hours (L2-038 criterion 5)
+
+loop until ready or failed
+  panel -> client : getDataExport(id)
+  client -> controller : GET /api/v1/settings/data-exports/{id}
+  controller -> controller : DataExportPolicy: owner only
+  controller --> client : Status, and when ready a temporarySignedRoute URL (24 hours)
+end
+client --> panel : Ready with downloadUrl
+panel --> actor : Download link with expiry time
+
+actor -> controller : GET /api/v1/settings/data-exports/{id}/download?expires&signature
+controller -> controller : Check session owner and signature
+alt signature invalid or expired after 24 hours
+  controller --> actor : 403 link expired
+else valid
+  controller -> media : Read archive
+  controller --> actor : application/json attachment
+end
+@enduml

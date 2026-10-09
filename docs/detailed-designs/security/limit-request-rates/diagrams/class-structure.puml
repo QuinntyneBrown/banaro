@@ -1,0 +1,97 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Limit request rates
+
+package "Frontend — api library and banaro application" {
+  class rateLimitInterceptor <<HttpInterceptorFn>> {
+    +intercept(req, next): Observable<HttpEvent>
+  }
+  class RateLimitedError {
+    +limiter: string
+    +retryAfterSeconds: number
+    +retryAfterMinutes(): number
+  }
+  interface RateLimitNotice <<RATE_LIMIT_NOTICE>> {
+    +notify(error: RateLimitedError): void
+  }
+  class ToastService {
+    +warning(key: string, params?: object): void
+  }
+  class GiveFeedbackDialog {
+    +state: 'default' | 'busy' | 'invalid' | 'failed'
+    +errorKey: Signal<string | null>
+    +submit(): void
+  }
+  class SignInPage {
+    +errorKey: Signal<string | null>
+    +retryMinutes: Signal<number | null>
+  }
+}
+
+package "Backend — Banaro API" {
+  class RateLimitServiceProvider {
+    +boot(): void
+  }
+  class "RateLimiter" as LaravelRateLimiter <<facade>> {
+    +for(name: string, callback: Closure): void
+    +hit(key: string, decaySeconds: int): int
+    +tooManyAttempts(key: string, max: int): bool
+    +availableIn(key: string): int
+    +clear(key: string): void
+  }
+  class Limit {
+    +{static} perMinute(n: int): Limit
+    +{static} perMinutes(minutes: int, n: int): Limit
+    +{static} perHour(n: int): Limit
+    +{static} perDay(n: int): Limit
+    +by(key: string): Limit
+  }
+  class ThrottleRequestsWithRedis
+  class ThrottleRequestsWithLogging {
+    #buildException(request: Request, key: string, maxAttempts: int, responseCallback: ?callable): Throwable
+  }
+  class ClientFingerprint {
+    +forRequest(request: Request): string
+    +forEmail(email: string): string
+  }
+  class AttemptLimiter {
+    +tooManyFailures(keys: array, max: array): bool
+    +recordFailure(keys: array, decaySeconds: int): void
+    +availableIn(keys: array): int
+    +clear(key: string): void
+  }
+  class SignIn {
+    +handle(credentials: SignInData, request: Request): User
+  }
+  class ThrottleRequestsException {
+    +getHeaders(): array
+  }
+}
+
+ThrottleRequestsWithLogging --|> ThrottleRequestsWithRedis
+ThrottleRequestsWithLogging ..> ClientFingerprint : logs hashed id
+ThrottleRequestsWithLogging ..> ThrottleRequestsException : builds
+RateLimitServiceProvider ..> LaravelRateLimiter : registers limiters
+RateLimitServiceProvider ..> Limit : returns
+RateLimitServiceProvider ..> ClientFingerprint : keys by
+AttemptLimiter ..> LaravelRateLimiter : wraps
+SignIn ..> AttemptLimiter : checks and records
+SignIn ..> ThrottleRequestsException : throws when exhausted
+
+rateLimitInterceptor ..> RateLimitedError : throws
+rateLimitInterceptor ..> RateLimitNotice : general limit
+ToastService ..|> RateLimitNotice : bound in app.config.ts
+GiveFeedbackDialog ..> RateLimitedError : maps to rateLimit.feedback
+SignInPage ..> RateLimitedError : maps to rateLimit.signIn
+@enduml

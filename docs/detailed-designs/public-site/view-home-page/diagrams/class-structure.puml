@@ -1,0 +1,141 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — View the home page
+
+package "Frontend — banaro application and api library" {
+  class HomePage {
+    -api: PublicSiteApi
+    -session: AuthSession
+    -seo: SeoService
+    +statistics: Signal<PlatformStatistics | null>
+    +builders: Signal<SectionState<FeaturedBuilder[]>>
+    +projects: Signal<SectionState<FeaturedProject[]>>
+    +events: Signal<SectionState<UpcomingEvent[]>>
+    +pageState: Signal<'loading' | 'default' | 'partial' | 'error'>
+    +retry(section: 'builders' | 'projects' | 'events'): void
+    +retryAll(): void
+  }
+  class "SectionState<T>" as SectionState {
+    +status: 'loading' | 'loaded' | 'failed'
+    +data: T | null
+  }
+  class SeoService {
+    +setTitle(title: string): void
+    +setDescription(text: string): void
+    +setCanonical(url: string): void
+    +noindex(): void
+  }
+  interface PublicSiteApi {
+    +statistics(): Observable<PlatformStatistics>
+    +featuredBuilders(): Observable<FeaturedBuilder[]>
+    +featuredProjects(): Observable<FeaturedProject[]>
+    +upcomingEvents(): Observable<UpcomingEvent[]>
+  }
+  class HttpPublicSiteApi
+  class InMemoryPublicSiteApi
+  class PlatformStatistics {
+    +builders: number
+    +projects: number
+    +coFounderMatches: number
+    +eventsThisYear: number
+    +year: number
+    +computedAt: string
+  }
+  class FeaturedBuilder {
+    +id: string
+    +name: string
+    +role: string
+    +neighbourhood: string
+    +skills: string[]
+    +photoUrl: string | null
+  }
+  class FeaturedProject
+  class UpcomingEvent
+  class AuthSession {
+    +member: Signal<MemberSummary | null>
+  }
+}
+
+package "Backend — Banaro API" {
+  class HomeController {
+    +statistics(): PlatformStatisticsResource
+    +builders(): AnonymousResourceCollection
+    +projects(): AnonymousResourceCollection
+    +events(): AnonymousResourceCollection
+  }
+  class GetPlatformStatistics {
+    +handle(): PlatformStatistics
+  }
+  class ListFeaturedBuilders {
+    +handle(): Collection<Builder>
+  }
+  class ListFeaturedProjects {
+    +handle(): Collection<Project>
+  }
+  class ListUpcomingEvents {
+    +handle(): Collection<Event>
+  }
+  class PlatformStatisticsService {
+    -ttlSeconds: int = 600
+    +current(): PlatformStatistics
+    -count(): PlatformStatistics
+  }
+  class "PlatformStatistics" as PlatformStatisticsDto <<value object>> {
+    +int builders
+    +int projects
+    +int coFounderMatches
+    +int eventsThisYear
+    +int year
+    +CarbonImmutable computedAt
+  }
+  class Builder
+  class Project
+  class MatchSuggestion
+  class Event
+  class PlatformStatisticsResource
+  class FeaturedBuilderResource
+  class FeaturedProjectResource
+  class UpcomingEventResource
+}
+
+HomePage ..> PublicSiteApi : uses
+HomePage ..> SeoService : uses
+HomePage ..> AuthSession : reads
+HomePage *-- "3" SectionState
+HttpPublicSiteApi ..|> PublicSiteApi
+InMemoryPublicSiteApi ..|> PublicSiteApi
+PublicSiteApi ..> PlatformStatistics : returns
+PublicSiteApi ..> FeaturedBuilder : returns
+PublicSiteApi ..> FeaturedProject : returns
+PublicSiteApi ..> UpcomingEvent : returns
+HttpPublicSiteApi ..> HomeController : HTTPS
+
+HomeController ..> GetPlatformStatistics : calls
+HomeController ..> ListFeaturedBuilders : calls
+HomeController ..> ListFeaturedProjects : calls
+HomeController ..> ListUpcomingEvents : calls
+HomeController ..> PlatformStatisticsResource : returns
+HomeController ..> FeaturedBuilderResource : returns
+HomeController ..> FeaturedProjectResource : returns
+HomeController ..> UpcomingEventResource : returns
+GetPlatformStatistics ..> PlatformStatisticsService : calls
+PlatformStatisticsService ..> PlatformStatisticsDto : creates
+PlatformStatisticsService ..> Builder : counts
+PlatformStatisticsService ..> Project : counts
+PlatformStatisticsService ..> MatchSuggestion : counts
+PlatformStatisticsService ..> Event : counts
+ListFeaturedBuilders ..> Builder : queries
+ListFeaturedProjects ..> Project : queries
+ListUpcomingEvents ..> Event : queries
+@enduml

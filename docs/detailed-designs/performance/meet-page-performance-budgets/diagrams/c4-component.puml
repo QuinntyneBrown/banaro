@@ -1,0 +1,40 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Meet page-performance budgets
+
+Container(api, "Banaro API", "Laravel", "Page data, image variants")
+System_Ext(ci, "CI pipeline", "Stages and runner")
+
+Container_Boundary(web, "Banaro Web — banaro application") {
+  Component(routes, "app.routes.ts", "Angular router", "loadComponent per page; dialogs by dynamic import")
+  Component(server, "server.ts and app.config.server.ts", "Angular SSR", "Server-rendered shell and hydration")
+  Component(page, "DirectoryPage", "Page", "Skeleton grid, then 12 builder cards")
+  Component(card, "bn-builder-card", "components library", "Fixed image box, clamped text")
+  Component(skeleton, "bn-skeleton", "components library", "Variants sized like the final cards")
+  Component(image, "bn-avatar and bn-photo", "components library", "NgOptimizedImage with width, height, priority or lazy")
+  Component(loader, "banaroImageLoader", "IMAGE_LOADER", "Width to WebP variant URL")
+}
+
+Container_Boundary(perf, "perf-test application and runner") {
+  Component(scenarios, "src/scenarios/*.ts and index.ts", "Scenario components", "One per bn-* component plus DirectoryResults and DarkTheme")
+  Component(renderer, "src/renderer.ts", "Renderer", "Reads scenario, iterations, renderType; marks timing")
+  Component(runner, "e2e/perf-test/perf-test.mjs", "Node runner", "Profiles branch and base; writes perf-test.md, results.json, .cpuprofile")
+  Component(config, "e2e/perf-test/config/", "Configuration", "scenario-iterations.mjs, runs, render types, thresholds, exclusions")
+}
+
+Rel(routes, page, "Lazily loads")
+Rel(server, routes, "Renders")
+Rel(page, skeleton, "Shows while loading")
+Rel(page, card, "Shows when data arrives")
+Rel(card, image, "Renders portrait with")
+Rel(image, loader, "Builds srcset with")
+Rel(page, api, "GET /api/v1/builders", "JSON/HTTPS")
+Rel(loader, api, "Requests image variants", "HTTPS")
+Rel(renderer, scenarios, "Loads by name")
+Rel(scenarios, card, "Renders")
+Rel(scenarios, skeleton, "Renders")
+Rel(runner, renderer, "Opens ?scenario=&iterations=&renderType=", "CDP")
+Rel(runner, config, "Reads")
+Rel(ci, runner, "Runs with --fail-on-regression")
+@enduml

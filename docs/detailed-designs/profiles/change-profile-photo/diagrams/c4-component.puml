@@ -1,0 +1,44 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Change profile photo
+
+Container(web, "Banaro Web", "Angular", "ChangePhotoDialog, PhotoFileCheck, HttpProfilesApi")
+ContainerDb(db, "Banaro database", "Relational database", "builders, profile_photos")
+ContainerDb(media, "Media storage", "Private file storage", "Quarantine and ready photo files")
+ContainerQueue(redis, "Redis", "Redis", "Horizon queues")
+Container(worker, "Banaro Worker", "Laravel Horizon", "Runs ScanProfilePhoto")
+System_Ext(scanner, "Media scanner", "Malware-scanning service")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "ProfilePhotoController", "Laravel controller", "POST, GET, DELETE /me/photo; GET /photos/{photo}")
+  Component(req, "UploadProfilePhotoRequest", "Form request", "Size up to 5 MB, sniffed type, 480 px minimum, crop bounds")
+  Component(upload, "UploadProfilePhoto", "Action", "Processes, stores in quarantine, queues the scan")
+  Component(remove, "RemoveProfilePhoto", "Action", "Clears the photo and deletes the file")
+  Component(processor, "PhotoProcessor", "Domain service", "Crop, resize to 480 x 480, re-encode without metadata")
+  Component(job, "ScanProfilePhoto", "Queued job", "Scans, then marks ready or rejected")
+  Component(port, "MediaScanner", "Contract and adapter", "Port to the Media scanner")
+  Component(models, "Builder / ProfilePhoto", "Eloquent models", "Photo reference and status")
+  Component(policy, "ProfilePhotoPolicy", "Policy", "Owner-only access to photo status and removal")
+  Component(resource, "ProfilePhotoResource", "API resource", "ProfilePhoto JSON shape")
+}
+
+Rel(web, ctrl, "Calls", "multipart and JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, policy, "Authorizes with")
+Rel(ctrl, upload, "Calls handle()")
+Rel(ctrl, remove, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(upload, processor, "Calls process()")
+Rel(upload, media, "Writes to quarantine")
+Rel(upload, models, "Creates pending photo")
+Rel(upload, job, "Dispatches after commit")
+Rel(job, redis, "Pushed to", "Redis protocol")
+Rel(worker, job, "Runs")
+Rel(job, port, "Calls scan()")
+Rel(port, scanner, "Sends file to", "HTTPS")
+Rel(job, models, "Marks ready or rejected")
+Rel(remove, models, "Clears photo_id, deletes row")
+Rel(remove, media, "Deletes file")
+Rel(models, db, "Reads and writes", "SQL")
+@enduml

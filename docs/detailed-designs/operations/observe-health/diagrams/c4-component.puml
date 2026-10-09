@@ -1,0 +1,33 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Observe health
+
+System_Ext(orchestrator, "Container orchestrator", "Product <TO SUPPLY>")
+System_Ext(logs, "Log collector", "Product <TO SUPPLY>")
+ContainerDb(db, "Banaro database", "Relational database", "SELECT 1")
+ContainerDb(redis, "Redis", "Redis", "Cache and queue connections")
+
+Container_Boundary(api, "Banaro API") {
+  Component(log, "LogRequest", "Terminable global middleware, first", "Writes one JSON line in terminate()")
+  Component(reqid, "AssignRequestId", "Global middleware, second", "Sets request ID in Context and X-Request-Id")
+  Component(exc, "Exception handling", "bootstrap/app.php withExceptions", "Reports with trace; generic 500 with requestId")
+  Component(live, "LivenessController", "Health controller", "200, no dependency access")
+  Component(ready, "ReadinessController", "Health controller", "200 or 503, no detail")
+  Component(svc, "ReadinessService", "Domain service", "Runs checks, stops at first failure")
+  Component(checks, "DatabaseCheck / CacheCheck / QueueCheck", "HealthCheck implementations", "SELECT 1, PING, PING")
+  Component(channel, "requests and default log channels", "Monolog JsonFormatter", "One JSON object per line to stderr")
+}
+
+Rel(orchestrator, log, "Probes pass through", "HTTP")
+Rel(log, reqid, "Passes request to")
+Rel(reqid, live, "Routes /health/live to")
+Rel(reqid, ready, "Routes /health/ready to")
+Rel(ready, svc, "Calls check()")
+Rel(svc, checks, "Runs")
+Rel(checks, db, "SELECT 1", "SQL")
+Rel(checks, redis, "PING", "Redis protocol")
+Rel(exc, channel, "Reports exceptions to")
+Rel(log, channel, "Writes request line to")
+Rel(channel, logs, "Collected from", "stderr")
+@enduml

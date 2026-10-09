@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Unsubscribe from a link
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member (not signed in)" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "UnsubscribePage" as page
+  participant "HttpSettingsApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "UnsubscribeController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "Unsubscribe" as action
+  participant "UnsubscribeTokenService" as tokens
+  participant "SetEmailPreference" as set
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Follow unsubscribe link /unsubscribe?token=… from an e-mail
+page --> actor : busy state
+page -> client : unsubscribe(token)
+client -> controller : POST /api/v1/email-preferences/unsubscribe (api_public.php, no session)
+controller -> action : handle(token)
+action -> tokens : verify(token)
+tokens -> tokens : Recompute HMAC-SHA256, compare with hash_equals()
+alt signature fails or token malformed
+  tokens --> action : null
+  action --> controller : 422 invalid_unsubscribe_link, nothing changed (L2-037 criterion 3)
+  controller --> client : 422 problem
+  client --> page : Error
+  page --> actor : error state
+else signature valid
+  tokens --> action : UnsubscribeClaim(user, category)
+  action -> set : handle(user, category, false)
+  set -> db : UPSERT email_preferences (user, category, false)
+  set --> action : Saved
+  action --> controller : Category
+  controller --> client : 200 {category, enabled: false}
+  client --> page : Result
+  page --> actor : success state confirms the category is off (L2-037 criterion 2)
+end
+@enduml

@@ -1,0 +1,92 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Block a builder
+
+package "Frontend — banaro application and api library" {
+  class BlockBuilderDialog {
+    -api: TrustAndSafetyApi
+    +builderId: string
+    +state: 'default' | 'busy' | 'failed'
+    +confirm(): void
+  }
+  class BlockedBuildersSection {
+    -api: TrustAndSafetyApi
+    +blocked: Signal<BlockedBuilder[]>
+    +unblock(builderId: string): void
+  }
+  interface TrustAndSafetyApi {
+    +block(builderId: string): Observable<void>
+    +unblock(builderId: string): Observable<void>
+    +listBlocked(): Observable<BlockedBuilder[]>
+  }
+  class HttpTrustAndSafetyApi
+  class BlockedBuilder {
+    +builderId: string
+    +name: string
+    +photoUrl: string | null
+    +blockedAt: string
+  }
+}
+
+package "Backend — Banaro API" {
+  class BlockController {
+    +index(request: Request): ResourceCollection
+    +store(request: BlockBuilderRequest, builder: User): Response
+    +destroy(request: UnblockBuilderRequest, builder: User): Response
+  }
+  class BlockBuilder {
+    +handle(blocker: User, blocked: User): Block
+  }
+  class UnblockBuilder {
+    +handle(blocker: User, blocked: User): void
+  }
+  class BlockService {
+    +isBlockedEitherWay(a: User, b: User): bool
+    +applyScope(query: Builder, viewer: User, userColumn: string): Builder
+    +blockedByMember(blocker: User): Collection
+  }
+  class ExcludesBlockedUsers <<trait>> {
+    +scopeWithoutBlockedFor(query: Builder, viewer: User): Builder
+  }
+  class Block {
+    +int id
+    +int blocker_id
+    +int blocked_id
+    +Carbon created_at
+  }
+  class User {
+    +int id
+    +string name
+  }
+  class BlockedBuilderResource
+}
+
+BlockBuilderDialog ..> TrustAndSafetyApi : uses
+BlockedBuildersSection ..> TrustAndSafetyApi : uses
+HttpTrustAndSafetyApi ..|> TrustAndSafetyApi
+TrustAndSafetyApi ..> BlockedBuilder : returns
+HttpTrustAndSafetyApi ..> BlockController : HTTPS
+
+BlockController ..> BlockBuilder : calls
+BlockController ..> UnblockBuilder : calls
+BlockController ..> BlockedBuilderResource : returns
+BlockController ..> BlockService : lists via
+BlockBuilder ..> BlockService : checks reverse block
+BlockBuilder --> Block : creates
+UnblockBuilder --> Block : deletes
+ExcludesBlockedUsers ..> BlockService : delegates to
+BlockService ..> Block : queries
+Block "*" --> "1" User : blocker
+Block "*" --> "1" User : blocked
+@enduml

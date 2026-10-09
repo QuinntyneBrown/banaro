@@ -1,0 +1,36 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — System notifications
+
+Container(api, "Banaro API", "Laravel", "SiteAnnouncementController, Admin\\SiteAnnouncementController, session")
+
+Container_Boundary(web, "Banaro Web") {
+  Component(feature, "Feature pages and dialogs", "Angular", "Raise toasts after actions")
+  Component(toastsvc, "ToastService", "components library service", "Queue, 3 visible, timers, action once")
+  Component(region, "ToastRegion / Toast / RsvpToast", "components library", "bn-toast-region, bn-toast, bn-rsvp-toast")
+  Component(bannersvc, "BannerService", "components library service", "Keyed banners, success auto-dismiss")
+  Component(stack, "BannerStack / Banner", "components library", "bn-banner-stack, bn-banner above the header")
+  Component(dismiss, "DismissalStore", "components library", "localStorage dismissals with expiry")
+  Component(account, "AccountBannerSource", "banaro shell", "Unverified e-mail, paused matching, expiring session")
+  Component(site, "SiteBannerSource", "banaro shell", "Current site announcement")
+  Component(conn, "ConnectionBannerSource", "banaro shell", "Offline, reconnecting, failed, restored")
+  Component(session, "SessionService", "api library", "Session user")
+  Component(connectivity, "ConnectivityService / ConnectivityInterceptor", "api library", "online/offline events, unreachable API")
+  Component(annapi, "HttpAnnouncementsApi", "api library", "ANNOUNCEMENTS_API")
+}
+
+Rel(feature, toastsvc, "Calls show()")
+Rel(toastsvc, region, "Renders")
+Rel(account, session, "Reads conditions")
+Rel(account, bannersvc, "show() and clear()")
+Rel(site, annapi, "Calls current()")
+Rel(site, bannersvc, "show()")
+Rel(conn, connectivity, "Subscribes")
+Rel(conn, bannersvc, "show() and clear()")
+Rel(bannersvc, stack, "Renders")
+Rel(bannersvc, dismiss, "Reads and records dismissals")
+Rel(annapi, api, "GET /api/v1/announcements/current", "JSON/HTTPS")
+Rel(session, api, "Reads the session user", "JSON/HTTPS")
+Rel(connectivity, api, "Observes responses from", "JSON/HTTPS")
+@enduml

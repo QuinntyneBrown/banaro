@@ -1,0 +1,102 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — About and contact
+
+package "Frontend — banaro application and api library" {
+  class AboutPage {
+    -seo: SeoService
+  }
+  class ContactPage {
+    -api: PublicSiteApi
+    +form: FormGroup<ContactForm>
+    +state: Signal<'default' | 'invalid' | 'submitting' | 'success'>
+    +errors: Signal<FieldError[]>
+    +submit(): void
+  }
+  class ContactForm {
+    +name: FormControl<string>
+    +email: FormControl<string>
+    +topic: FormControl<string>
+    +message: FormControl<string>
+    +website: FormControl<string>
+  }
+  interface PublicSiteApi {
+    +sendContactMessage(request: ContactMessageRequest): Observable<void>
+  }
+  class HttpPublicSiteApi
+  class InMemoryPublicSiteApi
+  class ContactMessageRequest {
+    +name: string
+    +email: string
+    +topic: string
+    +message: string
+    +website: string
+  }
+  class SeoService
+}
+
+package "Backend — Banaro API and Worker" {
+  class ContactMessageController {
+    +store(request: SendContactMessageRequest): JsonResponse
+  }
+  class SendContactMessageRequest {
+    +rules(): array
+    +toData(): ContactMessageData
+  }
+  class SendContactMessage {
+    +handle(data: ContactMessageData): void
+  }
+  class ContactMessageData <<value object>> {
+    +string name
+    +string email
+    +ContactTopic topic
+    +string message
+    +?string website
+    +isHoneypotFilled(): bool
+  }
+  enum ContactTopic {
+    General
+    Partnership
+    Press
+    ReportProblem
+    ProposeEvent
+  }
+  class DeliverContactMessage <<ShouldQueue>> {
+    +int tries = 5
+    +backoff(): array
+    +handle(mailer: Mailer): void
+    +failed(e: Throwable): void
+  }
+  interface Mailer
+  class ContactMessageMail
+}
+
+AboutPage ..> SeoService : uses
+ContactPage *-- ContactForm
+ContactPage ..> PublicSiteApi : uses
+HttpPublicSiteApi ..|> PublicSiteApi
+InMemoryPublicSiteApi ..|> PublicSiteApi
+PublicSiteApi ..> ContactMessageRequest : sends
+HttpPublicSiteApi ..> ContactMessageController : HTTPS
+
+ContactMessageController ..> SendContactMessageRequest : validates with
+ContactMessageController ..> SendContactMessage : calls
+SendContactMessageRequest ..> ContactMessageData : creates
+SendContactMessage ..> ContactMessageData : reads
+ContactMessageData --> ContactTopic : has
+SendContactMessage ..> DeliverContactMessage : dispatches
+DeliverContactMessage --> ContactMessageData : carries
+DeliverContactMessage ..> Mailer : sends via
+DeliverContactMessage ..> ContactMessageMail : builds
+@enduml

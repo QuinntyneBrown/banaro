@@ -1,0 +1,62 @@
+@startuml
+title UML sequence behaviour — Restore and clear directory filters
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "DirectoryPage" as page
+  participant "DirectoryQueryCodec" as codec
+  participant "HttpDirectoryApi" as client
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "BuilderDirectoryController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "SearchDirectory" as action
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Reload, or open a shared /builders?role=designer&area=oakville&skills=kotlin link
+page -> codec : decode(queryParams)
+codec --> page : Selection; unknown values dropped
+page -> client : searchBuilders(query)
+client -> controller : GET /api/v1/builders with the same filters
+alt a value fails validation
+  controller --> client : 422 with the rejected keys
+  client --> page : Error
+  page -> page : Drop rejected keys from the URL and query again
+else valid
+  controller -> action : handle(viewer, query)
+  action -> db : Same filtered page and counts
+  action --> controller : Result
+  controller --> client : 200 DirectoryPageResource
+  client --> page : DirectoryResultPage
+  page --> actor : Same filters ticked and same results (L2-010 criterion 3)
+end
+
+actor -> page : Select "Clear all"
+page -> codec : encode(empty selection)
+page -> page : Remove filter keys from the URL, reset page to 1
+page -> client : searchBuilders(query without filters)
+client -> controller : GET /api/v1/builders
+controller -> action : handle(viewer, query)
+action -> db : Default scope within 40 km of the member's neighbourhood (L2-010 criterion 2)
+action --> controller : Result
+controller --> client : 200 DirectoryPageResource
+client --> page : DirectoryResultPage
+page --> actor : default state; the live region announces the new count
+@enduml

@@ -1,0 +1,60 @@
+@startuml
+title UML sequence behaviour — Report a lost and restored connection
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+participant "Browser (window)" as browser
+box "Frontend — banaro application" #E0F2FE
+  participant "ConnectivityInterceptor" as interceptor
+  participant "ConnectivityService" as conn
+  participant "ConnectionBannerSource" as source
+  participant "BannerService" as svc
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "Banaro API" as api
+end box
+
+alt browser fires offline
+  browser -> conn : offline event
+  conn -> source : state offline
+  source -> svc : show(connection, warning, no dismiss) (L2-028 criterion 6)
+  svc --> actor : Offline warning banner
+else API unreachable
+  interceptor -> api : Any request
+  api --> interceptor : Status 0, 502 or 504
+  interceptor -> conn : reportUnreachable()
+  note right of interceptor : 503 maintenance goes to the\nmaintenance page instead (L2-043)
+  conn -> source : state reconnecting
+  source -> source : Wait 3 s
+  source -> svc : show(connection, info "Reconnecting")
+  svc --> actor : Info banner
+end
+opt reconnect attempts fail
+  conn -> source : state failed
+  source -> svc : show(connection, danger, "Try again") (L2-028 criterion 6)
+  svc --> actor : Danger banner, role alert
+end
+alt browser fires online, or a request succeeds
+  browser -> conn : online event
+  interceptor -> conn : reportReachable()
+  conn -> source : state online
+  source -> svc : show(connection, success, auto-dismiss 5 s) (L2-028 criterion 6)
+  svc --> actor : Success banner
+  opt pointer rests or focus enters
+    svc -> svc : Pause auto-dismiss (L2-028 criterion 7)
+  end
+  svc -> svc : Clear after 5 s
+end
+@enduml

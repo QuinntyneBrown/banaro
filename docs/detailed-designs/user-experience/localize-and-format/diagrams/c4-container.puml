@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Localize and format
+
+Person(member, "Member", "Signed-in builder")
+System_Ext(ci, "CI pipeline", "i18n stage")
+
+System_Boundary(banaro, "Banaro") {
+  Container(web, "Banaro Web", "Angular SSR", "TranslationService, t pipe, date, distance and number formatters")
+  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "GET /api/v1/i18n/{locale}; translator for validation and e-mail")
+  Container(worker, "Banaro Worker", "Laravel Horizon", "Renders e-mail with the catalogue and Toronto time")
+  ContainerQueue(redis, "Redis", "Redis", "Cached merged catalogue")
+}
+
+Rel(member, web, "Uses", "HTTPS")
+Rel(web, api, "GET /api/v1/i18n/en-CA once per render", "JSON/HTTPS")
+Rel(api, redis, "Caches catalogue by locale and hash", "Redis protocol")
+Rel(worker, redis, "Takes e-mail jobs from", "Redis protocol")
+Rel(ci, api, "Runs i18n:check over backend and frontend sources")
+@enduml

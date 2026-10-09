@@ -1,0 +1,93 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Meet accessibility standards
+
+package "Frontend — components and api libraries" {
+  class "TitleStrategy (Angular)" as TitleStrategy {
+    +updateTitle(snapshot: RouterStateSnapshot): void
+  }
+  class BanaroTitleStrategy {
+    -i18n: TranslationService
+    +updateTitle(snapshot: RouterStateSnapshot): void
+  }
+  class "LiveAnnouncer (CDK)" as LiveAnnouncer {
+    +announce(message: string, politeness?: AriaLivePoliteness): Promise<void>
+  }
+  class Announcer <<Injectable>> {
+    +polite(key: string, params?: object): void
+    +assertive(key: string, params?: object): void
+  }
+  class BnDialog <<Injectable>> {
+    +open<T, R>(component: Type<T>, config?: BnDialogConfig): DialogRef<R, T>
+  }
+  class BnDialogConfig {
+    +role: 'dialog' | 'alertdialog'
+    +autoFocus: string = 'first-tabbable'
+    +restoreFocus: boolean = true
+    +busy: Signal<boolean>
+  }
+  class SkipLink <<bn-skip-link>> {
+    +target = '#main'
+  }
+  class Toast <<bn-toast>> {
+    +variant: 'info' | 'success' | 'warning' | 'danger'
+    +role(): 'status' | 'alert'
+  }
+  class StatusDot <<bn-status-dot>> {
+    +status: 'online' | 'away' | 'offline'
+    +label: string
+  }
+}
+
+package "Frontend — banaro application" {
+  class Shell {
+    +onNavigationEnd(): void
+    -focusMain(): void
+  }
+  class CancelRsvpDialog {
+    +state: 'default' | 'busy' | 'failed'
+    +busy: Signal<boolean>
+  }
+}
+
+package "End-to-end — e2e" {
+  class AxeSpec <<a11y/axe.spec.ts>> {
+    +tags = [wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa]
+    +themes = ['light', 'dark']
+  }
+  class KeyboardSpec <<specs/user-experience/keyboard.spec.ts>>
+  class ShellPage <<page object>> {
+    +skipLink(): Locator
+    +tabOrder(): Promise<string[]>
+    +focusedOutline(): Promise<Outline>
+  }
+  class "CancelRsvpDialog (page object)" as CancelPO {
+    +isFocusTrapped(): Promise<boolean>
+    +pressEscape(): Promise<void>
+  }
+  class RouteManifestEntry <<routes.manifest.ts>>
+}
+
+BanaroTitleStrategy --|> TitleStrategy
+Announcer --> LiveAnnouncer : wraps
+Shell *-- SkipLink
+Shell ..> Announcer : announces title
+Shell ..> BanaroTitleStrategy : titles via router
+CancelRsvpDialog ..> BnDialog : opened by
+BnDialog ..> BnDialogConfig
+Toast ..> Announcer : no focus change
+AxeSpec ..> RouteManifestEntry : iterates
+KeyboardSpec ..> ShellPage
+KeyboardSpec ..> CancelPO
+@enduml

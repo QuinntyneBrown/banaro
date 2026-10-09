@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Edit own profile
+
+Container(web, "Banaro Web", "Angular", "ProfileEditPage, BuilderProfilePage, HttpProfilesApi")
+ContainerDb(db, "Banaro database", "Relational database", "builders, builder_skill, experience_entries, profile_links")
+
+Container_Boundary(api, "Banaro API") {
+  Component(ctrl, "OwnProfileController", "Laravel controller", "GET and PUT /me/profile")
+  Component(req, "UpdateOwnProfileRequest", "Form request", "Bio up to 500, skills up to 12, link URLs, neighbourhood list")
+  Component(get, "GetOwnProfile", "Action", "Loads the editable profile and option lists")
+  Component(update, "UpdateOwnProfile", "Action", "Writes the whole profile in one transaction")
+  Component(catalogue, "SkillCatalogue", "Domain service", "Resolves catalogue and custom skills")
+  Component(models, "Builder / ExperienceEntry / ProfileLink / Skill", "Eloquent models", "Profile content")
+  Component(resource, "OwnProfileResource", "API resource", "OwnProfile JSON shape")
+  Component(event, "ProfileUpdated", "Domain event", "Lets the directory refresh search text")
+}
+
+Rel(web, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, req, "Validates with")
+Rel(ctrl, get, "Calls handle()")
+Rel(ctrl, update, "Calls handle()")
+Rel(ctrl, resource, "Returns")
+Rel(get, models, "Reads")
+Rel(update, catalogue, "Resolves skills")
+Rel(update, models, "Writes")
+Rel(update, event, "Dispatches after commit")
+Rel(models, db, "Reads and writes", "SQL")
+@enduml

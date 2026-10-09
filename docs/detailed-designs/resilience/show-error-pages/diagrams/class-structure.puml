@@ -1,0 +1,95 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Show error pages
+
+package "Frontend — api library" {
+  interface ErrorPageNavigator <<token ERROR_PAGE_NAVIGATOR>> {
+    +notFound(): void
+    +forbidden(): void
+    +serverError(referenceId: string | null, failedUrl: string): void
+  }
+  class HttpErrorStatusInterceptor {
+    -navigator: ErrorPageNavigator
+    +intercept(req: HttpRequest, next: HttpHandler): Observable<HttpEvent>
+    -referenceIdOf(error: HttpErrorResponse): string | null
+    -isMaintenance(error: HttpErrorResponse): boolean
+  }
+  class ESSENTIAL_DATA <<HttpContextToken<boolean>>>
+}
+
+package "Frontend — banaro application" {
+  class RouterErrorPageNavigator {
+    -router: Router
+    +notFound(): void
+    +forbidden(): void
+    +serverError(referenceId: string | null, failedUrl: string): void
+  }
+  class AppErrorHandler {
+    -navigator: ErrorPageNavigator
+    +handleError(error: unknown): void
+  }
+  abstract class ErrorPageBase {
+    -seo: SeoService
+    -responseInit: ResponseInit | null
+    #status: number
+    +ngOnInit(): void
+  }
+  class NotFoundPage {
+    #status = 404
+    +search(text: string): void
+  }
+  class ForbiddenPage {
+    #status = 403
+    +goBack(): void
+  }
+  class ServerErrorPage {
+    #status = 500
+    +referenceId: string | null
+    +failedUrl: string
+    +tryAgain(): void
+  }
+  class SeoService {
+    +setTitle(title: string): void
+    +noindex(): void
+  }
+}
+
+package "Backend — Banaro API" {
+  class AssignRequestId <<middleware>> {
+    +handle(request: Request, next: Closure): Response
+  }
+  class ExceptionRendering <<bootstrap/app.php withExceptions>> {
+    +render(e: Throwable, request: Request): JsonResponse
+  }
+  class GenericServerErrorBody {
+    +string message
+    +string requestId
+  }
+}
+
+RouterErrorPageNavigator ..|> ErrorPageNavigator
+HttpErrorStatusInterceptor ..> ErrorPageNavigator : calls
+HttpErrorStatusInterceptor ..> ESSENTIAL_DATA : reads
+AppErrorHandler ..> ErrorPageNavigator : calls
+ErrorPageBase <|-- NotFoundPage
+ErrorPageBase <|-- ForbiddenPage
+ErrorPageBase <|-- ServerErrorPage
+ErrorPageBase ..> SeoService : uses
+RouterErrorPageNavigator ..> NotFoundPage : routes to
+RouterErrorPageNavigator ..> ForbiddenPage : routes to
+RouterErrorPageNavigator ..> ServerErrorPage : routes to
+HttpErrorStatusInterceptor ..> AssignRequestId : reads X-Request-Id
+ExceptionRendering ..> GenericServerErrorBody : returns
+ExceptionRendering ..> AssignRequestId : reads request ID
+@enduml

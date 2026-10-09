@@ -1,0 +1,76 @@
+@startuml
+title UML sequence behaviour — List notifications and open one
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Member" as actor
+box "Frontend — banaro application" #E0F2FE
+  participant "NotificationsPage" as page
+  participant "UnreadCountStore" as store
+  participant "HttpNotificationsApi" as client
+  participant "Router" as router
+end box
+box "Backend — Banaro API application" #D1FADF
+  participant "NotificationController" as controller
+end box
+box "Backend — Banaro Application and Domain" #ECFDF3
+  participant "ListNotifications" as list
+  participant "MarkNotificationRead" as mark
+  participant "BlockService" as block
+end box
+box "Backend — Banaro Infrastructure" #FFF4E5
+  database "Banaro database" as db
+end box
+
+actor -> page : Open /notifications
+page --> actor : loading state
+page -> client : list(1)
+client -> controller : GET /api/v1/notifications?page=1
+controller -> controller : Authenticate, validate ListNotificationsRequest (12 by default, 50 at most)
+controller -> list : handle(member, 1, 12)
+list -> db : member.notifications() ORDER BY created_at DESC, id DESC (L2-027 criteria 1 and 5)
+db --> list : Rows of this member only
+loop each row with an actor
+  list -> block : isBlockedEitherWay(member, actor)
+  block --> list : Drop when blocked (L2-044 criterion 5)
+end
+list --> controller : Page of notifications
+controller --> client : 200 NotificationResource collection
+client --> page : AppNotification[]
+alt none
+  page --> actor : empty state (L2-027 criterion 4)
+else some unread
+  page --> actor : default state, New and Earlier, kind, text, time, unread markers (L2-027 criterion 1)
+else all read
+  page --> actor : read state "You are all caught up."
+end
+opt request fails
+  page --> actor : error state with "Try again" (L2-027 criterion 4)
+end
+
+actor -> page : Select a notification
+page -> client : markRead(id)
+page -> router : navigate(notificationRoute(subject)) (L2-027 criterion 1)
+client -> controller : POST /api/v1/notifications/{id}/read
+controller -> db : Resolve {id} through member.notifications()
+alt another member's id
+  controller --> client : 404 (L2-027 criterion 5, L2-044 criterion 1)
+else own notification
+  controller -> mark : handle(notification)
+  mark -> db : UPDATE read_at = now WHERE read_at IS NULL
+  controller --> client : 204
+  client --> store : decrement()
+end
+router --> actor : Subject page
+@enduml
