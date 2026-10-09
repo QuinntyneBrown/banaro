@@ -1,0 +1,38 @@
+{
+  "project": "Banaro · Bauhaus",
+  "concept": {
+    "name": "Bauhaus",
+    "axes": "Primary geometry · asymmetry · no photos",
+    "brief": "Bauhaus composition: red, yellow, blue and black circles, squares and triangles, bold geometric sans, asymmetric layouts; avatars are generated shapes."
+  },
+  "screens": [
+    {
+      "id": "home",
+      "kind": "page",
+      "title": "Home",
+      "route": "/",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "empty": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "error": "Concept exploration round: only the default state is mocked. Written once this concept is chosen."
+      }
+    },
+    {
+      "id": "directory",
+      "kind": "page",
+      "title": "Builder directory",
+      "route": "/builders",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "empty": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "error": "Concept exploration round: only the default state is mocked. Written once this concept is chosen."
+      }
+    }
+  ]
+}

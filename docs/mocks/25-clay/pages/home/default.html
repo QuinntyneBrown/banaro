@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home · default — Banaro · Clay</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="home">
+<meta name="mock:state" content="default">
+<meta name="description" content="Signed-out home in puffy pastel clay: a clay stage of builder characters, inflated area cards, clay-ring portraits, jelly project cards and a lilac matching slab.">
+<link rel="stylesheet" href="../../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/tokens.css">
+<link rel="stylesheet" href="../../assets/ui.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+<style>
+  .hero__stage-wrap { position: relative; }
+  .duo { display: grid; gap: var(--space-8); align-items: center; }
+  @media (min-width: 64rem) { .duo { grid-template-columns: 1.2fr 1fr; } }
+  .proof-stack { display: flex; }
+  .proof-stack .avatar { --size: 2.75rem; }
+  .proof-stack .avatar + .avatar { margin-left: calc(var(--space-3) * -1); }
+  .see-all { display: flex; justify-content: center; margin-top: var(--space-10); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="container topbar__inner">
+    <a class="brand" href="../home/default.html"><span class="brand__blob" aria-hidden="true"></span>Banaro</a>
+    <nav class="topbar__nav" aria-label="Primary">
+      <ul class="nav-pills">
+        <li><a href="../directory/default.html">Builders</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#events">Events</a></li>
+        <li><a href="#matching">Matching</a></li>
+      </ul>
+    </nav>
+    <div class="topbar__actions">
+      <button type="button" class="btn topbar__signin">Sign in</button>
+      <a class="btn btn--primary" href="#join">Join Banaro</a>
+      <details class="menu">
+        <summary class="icon-btn" aria-label="Open menu">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </summary>
+        <div class="menu__panel">
+          <ul>
+            <li><a href="../directory/default.html">Builders</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#events">Events</a></li>
+            <li><a href="#matching">Matching</a></li>
+            <li><a href="#join">Sign in</a></li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow"><span class="eyebrow__dot" aria-hidden="true"></span>Toronto &amp; the GTA · 1,284 builders</p>
+        <h1 class="hero__title" id="hero-title">Build what matters, with <em>believers</em> down the street.</h1>
+        <p class="hero__lead">Banaro connects Christian founders, engineers, designers and product managers across Toronto and the GTA — so you can find collaborators, share what you're making, and meet in person.</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary btn--lg" href="#join">Join Banaro</a>
+          <a class="btn btn--lg" href="../directory/default.html">Browse builders</a>
+        </div>
+        <div class="hero__proof">
+          <span class="proof-stack" aria-hidden="true">
+            <span class="avatar avatar--mint"><img src="../../../assets/photos/grace-liu.jpg" alt="" width="480" height="480"></span>
+            <span class="avatar avatar--lilac"><img src="../../../assets/photos/daniel-reyes.jpg" alt="" width="480" height="480"></span>
+            <span class="avatar avatar--sky"><img src="../../../assets/photos/ruth-alvarez.jpg" alt="" width="480" height="480"></span>
+          </span>
+          <span><strong>38 builders online now</strong>, a streetcar ride away.</span>
+        </div>
+      </div>
+
+      <div class="hero__stage-wrap">
+        <div class="stage" aria-hidden="true">
+          <span class="stage__cloud" style="left: 8%; top: 12%; width: 22cqi;"></span>
+          <span class="stage__cloud" style="left: 46%; top: 6%; width: 16cqi;"></span>
+          <span class="stage__tower"><span class="stage__tower-shaft"></span><span class="stage__tower-pod"></span><span class="stage__tower-pod stage__tower-pod--small"></span></span>
+          <span class="blob" style="--tone: var(--clay-butter); --tone-lo: var(--clay-butter-lo); left: 84%; top: 18%; width: 9cqi; height: 9cqi; --delay: -1s;"></span>
+          <span class="blob blob--ring" style="--tone: var(--clay-mint); left: 6%; top: 34%; width: 13cqi; height: 13cqi; --delay: -2s;"></span>
+          <span class="blob blob--pill" style="--tone: var(--clay-rose); --tone-lo: var(--clay-peach-lo); left: 56%; top: 30%; width: 12cqi; height: 5cqi; rotate: -24deg;"></span>
+          <span class="stage__floor"></span>
+          <span class="stage__bubble" style="left: 10%; top: 26%;">Demo night, Thursday?</span>
+          <span class="clayling clayling--peach clayling--idle" style="left: 8%; bottom: 14%;"><span class="clayling__body"></span><span class="clayling__prop clayling__prop--laptop"></span></span>
+          <span class="clayling clayling--mint clayling--idle" style="left: 30%; bottom: 18%; --s: 23cqi; --delay: -0.8s;"><span class="clayling__prop clayling__prop--wave"></span><span class="clayling__body"></span><span class="clayling__prop clayling__prop--hat"></span></span>
+          <span class="clayling clayling--lilac clayling--idle" style="left: 54%; bottom: 13%; --delay: -1.7s;"><span class="clayling__body"></span><span class="clayling__prop clayling__prop--cup"></span></span>
+          <span class="clayling clayling--sky clayling--idle" style="left: 75%; bottom: 10%; --s: 16cqi; --delay: -2.4s;"><span class="clayling__body"></span><span class="clayling__prop clayling__prop--heart"></span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" aria-labelledby="stats-title">
+    <h2 class="visually-hidden" id="stats-title">Banaro in numbers</h2>
+    <ul class="stats">
+      <li class="stat clay--peach"><span class="stat__num">1,284</span><span class="stat__label">builders</span></li>
+      <li class="stat clay--mint"><span class="stat__num">312</span><span class="stat__label">projects</span></li>
+      <li class="stat clay--lilac"><span class="stat__num">96</span><span class="stat__label">co-founder matches</span></li>
+      <li class="stat clay--sky"><span class="stat__num">48</span><span class="stat__label">events in 2026</span></li>
+    </ul>
+  </section>
+
+  <section class="section" id="areas" aria-labelledby="areas-title">
+    <div class="container">
+      <div class="section__head">
+        <p class="eyebrow"><span class="eyebrow__dot" style="--eyebrow-dot: var(--clay-mint);" aria-hidden="true"></span>Four ways in</p>
+        <h2 class="section__title" id="areas-title">Everything a builder needs, squished into one place.</h2>
+      </div>
+      <ul class="areas">
+        <li class="area clay--peach has-clayling">
+          <span class="clayling clayling--peach" aria-hidden="true"><span class="clayling__body"></span><span class="clayling__prop clayling__prop--laptop"></span></span>
+          <h3 class="area__title">Builder directory</h3>
+          <p class="area__text">Find local builders by skill, role and neighbourhood.</p>
+          <a class="area__link" href="../directory/default.html">Browse builders</a>
+        </li>
+        <li class="area clay--mint has-clayling">
+          <span class="clayling clayling--mint" aria-hidden="true"><span class="clayling__body"></span><span class="clayling__prop clayling__prop--hat"></span></span>
+          <h3 class="area__title">Project showcase</h3>
+          <p class="area__text">Share what you're building, ask for feedback, find collaborators.</p>
+          <a class="area__link" href="#projects">See projects</a>
+        </li>
+        <li class="area clay--sky has-clayling">
+          <span class="clayling clayling--sky" aria-hidden="true"><span class="clayling__body"></span><span class="clayling__prop clayling__prop--cup"></span></span>
+          <h3 class="area__title">Meetups and events</h3>
+          <p class="area__text">Demo nights, prayer breakfasts and workshops across the GTA.</p>
+          <a class="area__link" href="#events">See events</a>
+        </li>
+        <li class="area clay--lilac has-clayling">
+          <span class="clayling clayling--lilac" aria-hidden="true"><span class="clayling__body"></span><span class="clayling__prop clayling__prop--heart"></span></span>
+          <h3 class="area__title">Co-founder matching</h3>
+          <p class="area__text">Meet a co-founder, an advisor or a contributor who shares your faith.</p>
+          <a class="area__link" href="#matching">Start matching</a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="builders" aria-labelledby="builders-title">
+    <div class="container">
+      <div class="section__head section__head--row">
+        <div class="section__head">
+          <p class="eyebrow"><span class="eyebrow__dot" style="--eyebrow-dot: var(--clay-lilac);" aria-hidden="true"></span>Featured builders</p>
+          <h2 class="section__title" id="builders-title">Your neighbours are already building.</h2>
+        </div>
+      </div>
+      <ul class="builders-rail">
+<!--gen:featured-->
+        <li class="bcard clay--peach has-clayling">
+          <span class="avatar avatar--peach avatar--lg" aria-hidden="true"><img src="../../../assets/photos/daniel-reyes.jpg" alt="" width="480" height="480"><span class="avatar__online" aria-hidden="true"></span></span>
+          <div>
+            <h3 class="bcard__name"><a href="../directory/default.html">Daniel Reyes</a></h3>
+            <p class="bcard__role">Full-stack engineer · Mississauga</p>
+          </div>
+          <p>Ten years shipping Laravel apps; now building Psalter after hours and looking for a founder to go full time with.</p>
+          <ul class="beads" aria-label="Skills"><li class="bead">Laravel</li><li class="bead">Angular</li><li class="bead">PostgreSQL</li></ul>
+          <div class="bcard__meta"><span class="tag tag--cofounding"><span class="tag__dot" aria-hidden="true"></span>Open to co-founding</span></div>
+        </li>
+        <li class="bcard clay--mint has-clayling">
+          <span class="avatar avatar--mint avatar--lg" aria-hidden="true"><img src="../../../assets/photos/grace-liu.jpg" alt="" width="480" height="480"><span class="avatar__online" aria-hidden="true"></span></span>
+          <div>
+            <h3 class="bcard__name"><a href="../directory/default.html">Grace Liu</a></h3>
+            <p class="bcard__role">Product designer · Markham</p>
+          </div>
+          <p>Designs calm interfaces for churches and charities; happiest in a Figma file with a coffee.</p>
+          <ul class="beads" aria-label="Skills"><li class="bead">Figma</li><li class="bead">Design systems</li><li class="bead">Prototyping</li></ul>
+          <div class="bcard__meta"><span class="tag tag--contributing"><span class="tag__dot" aria-hidden="true"></span>Open to contributing</span></div>
+        </li>
+        <li class="bcard clay--lilac has-clayling">
+          <span class="avatar avatar--lilac avatar--lg" aria-hidden="true"><img src="../../../assets/photos/noah-fischer.jpg" alt="" width="480" height="480"></span>
+          <div>
+            <h3 class="bcard__name"><a href="../directory/default.html">Noah Fischer</a></h3>
+            <p class="bcard__role">Backend &amp; data engineer · The Annex</p>
+          </div>
+          <p>Turns messy spreadsheets into honest dashboards for charities.</p>
+          <ul class="beads" aria-label="Skills"><li class="bead">Python</li><li class="bead">PostgreSQL</li><li class="bead">Data pipelines</li></ul>
+          <div class="bcard__meta"><span class="tag tag--cofounding"><span class="tag__dot" aria-hidden="true"></span>Open to co-founding</span></div>
+        </li>
+        <li class="bcard clay--sky has-clayling">
+          <span class="avatar avatar--sky avatar--lg" aria-hidden="true"><img src="../../../assets/photos/caleb-morgan.jpg" alt="" width="480" height="480"><span class="avatar__online" aria-hidden="true"></span></span>
+          <div>
+            <h3 class="bcard__name"><a href="../directory/default.html">Caleb Morgan</a></h3>
+            <p class="bcard__role">Frontend engineer · Etobicoke</p>
+          </div>
+          <p>Two years into frontend and looking for a real product to learn on.</p>
+          <ul class="beads" aria-label="Skills"><li class="bead">Angular</li><li class="bead">TypeScript</li><li class="bead">Accessibility</li></ul>
+          <div class="bcard__meta"><span class="tag tag--contributing"><span class="tag__dot" aria-hidden="true"></span>Open to contributing</span></div>
+        </li>
+        <li class="bcard clay--butter has-clayling">
+          <span class="avatar avatar--butter avatar--lg" aria-hidden="true"><img src="../../../assets/photos/sofia-marquez.jpg" alt="" width="480" height="480"></span>
+          <div>
+            <h3 class="bcard__name"><a href="../directory/default.html">Sofia Marquez</a></h3>
+            <p class="bcard__role">Growth &amp; marketing · Liberty Village</p>
+          </div>
+          <p>Helped three newcomer programmes grow past 1,000 members.</p>
+          <ul class="beads" aria-label="Skills"><li class="bead">Lifecycle marketing</li><li class="bead">SEO</li><li class="bead">Community</li></ul>
+          <div class="bcard__meta"><span class="tag tag--contributing"><span class="tag__dot" aria-hidden="true"></span>Open to contributing</span></div>
+        </li>
+        <li class="bcard clay--peach has-clayling">
+          <span class="avatar avatar--peach avatar--lg" aria-hidden="true"><img src="../../../assets/photos/hannah-kowalski.jpg" alt="" width="480" height="480"></span>
+          <div>
+            <h3 class="bcard__name"><a href="../directory/default.html">Hannah Kowalski</a></h3>
+            <p class="bcard__role">UX researcher · Roncesvalles</p>
+          </div>
+          <p>Listens for a living; advises early teams on what to build first.</p>
+          <ul class="beads" aria-label="Skills"><li class="bead">User interviews</li><li class="bead">Usability testing</li><li class="bead">Synthesis</li></ul>
+          <div class="bcard__meta"><span class="tag tag--advising"><span class="tag__dot" aria-hidden="true"></span>Open to advising</span></div>
+        </li>
+<!--/gen:featured-->
+      </ul>
+      <div class="see-all"><a class="btn btn--lg" href="../directory/default.html">See all 1,284 builders</a></div>
+    </div>
+  </section>
+
+  <section class="section" id="projects" aria-labelledby="projects-title">
+    <div class="container">
+      <div class="section__head">
+        <p class="eyebrow"><span class="eyebrow__dot" style="--eyebrow-dot: var(--clay-butter);" aria-hidden="true"></span>Project showcase</p>
+        <h2 class="section__title" id="projects-title">Works in progress, still soft enough to shape.</h2>
+        <p class="section__lead">312 projects are asking for feedback, contributors and co-founders right now.</p>
+      </div>
+      <ul class="projects">
+<!--gen:projects-->
+        <li class="project clay--lilac project--feature">
+          <div class="project__top">
+            <span class="project__mark" aria-hidden="true">P</span>
+            <div><h3 class="project__name">Psalter</h3><p class="project__owner">by Daniel Reyes</p></div>
+          </div>
+          <p class="project__line">Scripture memory with spaced repetition</p>
+          <p class="project__line" style="color: var(--color-fg-muted);">Daniel ships Laravel by day and Psalter by night. He's after open-source contributors who love Scripture and spaced repetition.</p>
+          <div class="has-clayling" style="display: flex; gap: var(--space-2); align-items: end; min-height: 7rem;" aria-hidden="true">
+            <span class="clayling clayling--lilac clayling--idle" style="--s: 6rem;"><span class="clayling__body"></span><span class="clayling__prop clayling__prop--laptop"></span></span>
+            <span class="clayling clayling--butter clayling--idle" style="--s: 4.5rem; --delay: -1.4s;"><span class="clayling__body"></span><span class="clayling__prop clayling__prop--cup"></span></span>
+          </div>
+          <div class="project__facts"><span class="bead">1,900 beta users</span><span class="tag">Looking for: Contributors (open source)</span></div>
+          <div class="project__foot"><span style="display: inline-flex; gap: var(--space-2); align-items: center;"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18.5V6.5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9z"/></svg>41 comments</span><button type="button" class="btn btn--sm">Give feedback</button></div>
+        </li>
+        <li class="project clay--mint">
+          <div class="project__top">
+            <span class="project__mark" aria-hidden="true">G</span>
+            <div><h3 class="project__name">Gather</h3><p class="project__owner">by Grace Liu</p></div>
+          </div>
+          <p class="project__line">Check-in and RSVP for small church events</p>
+          <div class="project__facts"><span class="bead">Prototype</span><span class="tag">Looking for: Frontend engineer</span></div>
+          <div class="project__foot"><span style="display: inline-flex; gap: var(--space-2); align-items: center;"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18.5V6.5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9z"/></svg>12 comments</span><button type="button" class="btn btn--sm">Give feedback</button></div>
+        </li>
+        <li class="project clay--sky">
+          <div class="project__top">
+            <span class="project__mark" aria-hidden="true">L</span>
+            <div><h3 class="project__name">Ledgerline</h3><p class="project__owner">by Noah Fischer</p></div>
+          </div>
+          <p class="project__line">Plain-language giving reports for charities</p>
+          <div class="project__facts"><span class="bead">Pilot · 4 charities</span><span class="tag">Looking for: Advisor (CRA compliance)</span></div>
+          <div class="project__foot"><span style="display: inline-flex; gap: var(--space-2); align-items: center;"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18.5V6.5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9z"/></svg>9 comments</span><button type="button" class="btn btn--sm">Give feedback</button></div>
+        </li>
+        <li class="project clay--peach">
+          <div class="project__top">
+            <span class="project__mark" aria-hidden="true">K</span>
+            <div><h3 class="project__name">Kindred</h3><p class="project__owner">by Sofia Marquez</p></div>
+          </div>
+          <p class="project__line">Mentor matching for newcomers to Canada</p>
+          <div class="project__facts"><span class="bead">Pilot · 3 churches</span><span class="tag">Looking for: Contributors</span></div>
+          <div class="project__foot"><span style="display: inline-flex; gap: var(--space-2); align-items: center;"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18.5V6.5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9z"/></svg>17 comments</span><button type="button" class="btn btn--sm">Give feedback</button></div>
+        </li>
+        <li class="project clay--butter">
+          <div class="project__top">
+            <span class="project__mark" aria-hidden="true">S</span>
+            <div><h3 class="project__name">Sabbath</h3><p class="project__owner">by Ruth Alvarez</p></div>
+          </div>
+          <p class="project__line">A gentle rest and screen-time coach</p>
+          <div class="project__facts"><span class="bead">Design</span><span class="tag">Looking for: iOS engineer</span></div>
+          <div class="project__foot"><span style="display: inline-flex; gap: var(--space-2); align-items: center;"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18.5V6.5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9z"/></svg>14 comments</span><button type="button" class="btn btn--sm">Give feedback</button></div>
+        </li>
+<!--/gen:projects-->
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="voices-title">
+    <div class="container duo">
+      <h2 class="visually-hidden" id="voices-title">What builders say</h2>
+      <figure class="speech" style="margin: 0;">
+        <blockquote class="speech__quote">“Within a week I was advising two founders, both a streetcar ride from my house.”</blockquote>
+        <figcaption class="speech__by"><strong>Hannah Kowalski</strong>, UX researcher, Roncesvalles</figcaption>
+      </figure>
+      <div class="verse">
+        <p class="verse__text">“Two are better than one, because they have a good return for their labour.”</p>
+        <p class="verse__ref">Ecclesiastes 4:9</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="events" aria-labelledby="events-title">
+    <div class="container">
+      <div class="section__head">
+        <p class="eyebrow"><span class="eyebrow__dot" style="--eyebrow-dot: var(--clay-sky);" aria-hidden="true"></span>Upcoming events</p>
+        <h2 class="section__title" id="events-title">Pull up a chair. Bring your laptop.</h2>
+      </div>
+      <ul class="events">
+<!--gen:events-->
+        <li class="event">
+          <time class="event__date clay--peach" datetime="2026-10-15T19:00"><span class="event__mon">Oct</span><span class="event__day">15</span><span class="event__dow">Thu</span></time>
+          <div>
+            <h3 class="event__title">Fall Demo Night</h3>
+            <p class="event__meta"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="4"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>Thu 15 Oct 2026, 7:00–9:30 pm</span><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Centre for Social Innovation, 192 Spadina Ave</span></p>
+          </div>
+          <div class="event__foot"><span class="event__going"><span class="meter" aria-hidden="true"><span class="meter__fill" style="width: 80%;"></span></span>64 going · 16 spots left · 6 demos</span><button type="button" class="btn btn--sm btn--primary">RSVP</button></div>
+        </li>
+        <li class="event">
+          <time class="event__date clay--butter" datetime="2026-10-17T08:00"><span class="event__mon">Oct</span><span class="event__day">17</span><span class="event__dow">Sat</span></time>
+          <div>
+            <h3 class="event__title">Builders' Prayer Breakfast</h3>
+            <p class="event__meta"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="4"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>Sat 17 Oct, 8:00–9:30 am</span><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>St. Matthew's Hall, Leslieville</span></p>
+          </div>
+          <div class="event__foot"><span class="event__going">22 going</span><button type="button" class="btn btn--sm">RSVP</button></div>
+        </li>
+        <li class="event">
+          <time class="event__date clay--mint" datetime="2026-10-20T18:30"><span class="event__mon">Oct</span><span class="event__day">20</span><span class="event__dow">Tue</span></time>
+          <div>
+            <h3 class="event__title">Design Critique Circle</h3>
+            <p class="event__meta"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="4"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>Tue 20 Oct, 6:30–8:30 pm</span><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Markham Village Library, community room</span></p>
+          </div>
+          <div class="event__foot"><span class="event__going">15 going</span><button type="button" class="btn btn--sm">RSVP</button></div>
+        </li>
+        <li class="event">
+          <time class="event__date clay--lilac" datetime="2026-10-29T19:00"><span class="event__mon">Oct</span><span class="event__day">29</span><span class="event__dow">Thu</span></time>
+          <div>
+            <h3 class="event__title">Co-founder Mixer</h3>
+            <p class="event__meta"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="4"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>Thu 29 Oct, 7:00–9:00 pm</span><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>The Assembly Hall, Liberty Village</span></p>
+          </div>
+          <div class="event__foot"><span class="event__going">41 going</span><button type="button" class="btn btn--sm">RSVP</button></div>
+        </li>
+<!--/gen:events-->
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="matching" aria-labelledby="matching-title">
+    <div class="container">
+      <div class="slab has-clayling">
+        <div class="slab__copy">
+          <p class="eyebrow"><span class="eyebrow__dot" style="--eyebrow-dot: var(--clay-rose);" aria-hidden="true"></span>Co-founder matching</p>
+          <h2 class="slab__title" id="matching-title">Looking for a co-founder?</h2>
+          <p class="slab__text">Tell us what you're building and who you need. We'll suggest three builders nearby every Monday.</p>
+          <a class="btn btn--primary btn--lg" href="#join">Start matching</a>
+        </div>
+        <div class="slab__art" aria-hidden="true">
+          <span class="clayling clayling--peach clayling--idle"><span class="clayling__body"></span><span class="clayling__prop clayling__prop--laptop"></span></span>
+          <span class="clayling clayling--sky clayling--idle" style="--delay: -1.2s;"><span class="clayling__body"></span><span class="clayling__prop clayling__prop--heart"></span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" id="join" aria-labelledby="join-title">
+    <div class="duo" style="padding-block: var(--space-8);">
+      <div class="section__head" style="margin: 0;">
+        <h2 class="section__title" id="join-title">Join 1,284 builders across the GTA.</h2>
+        <p class="section__lead">It's free. Make a profile, list what you're building, and say hello to someone nearby.</p>
+      </div>
+      <div class="hero__actions">
+        <button type="button" class="btn btn--primary btn--lg">Join Banaro</button>
+        <button type="button" class="btn btn--lg">Sign in</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer__grid">
+    <div style="display: grid; gap: var(--space-4);">
+      <a class="brand" href="../home/default.html"><span class="brand__blob" aria-hidden="true"></span>Banaro</a>
+      <p class="footer__small">Made in Toronto. © 2026 Banaro.</p>
+    </div>
+    <div style="display: grid; gap: var(--space-6);">
+      <nav aria-label="Footer">
+        <ul class="footer__links">
+          <li><a href="#main">About</a></li>
+          <li><a href="#main">Code of conduct</a></li>
+          <li><a href="#main">Privacy</a></li>
+          <li><a href="#main">Contact</a></li>
+        </ul>
+      </nav>
+      <p class="footer__small">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
+    </div>
+  </div>
+</footer>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../../index.html" aria-label="All concepts">⌂</a>
+  <a class="mock-bar__home" href="../../../24-sketchbook/pages/home/default.html" aria-label="Previous concept: Sketchbook">‹</a>
+  <span class="mock-bar__screen">25 · Clay</span>
+  <ul class="mock-bar__states">
+    <li><a href="default.html" aria-current="page">Home</a></li>
+    <li><a href="../directory/default.html">Directory</a></li>
+  </ul>
+  <a class="mock-bar__home" href="../../../26-broadsheet/pages/home/default.html" aria-label="Next concept: The Banaro Courier">›</a>
+  <button type="button" data-theme-toggle aria-pressed="false">☾ Dark</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

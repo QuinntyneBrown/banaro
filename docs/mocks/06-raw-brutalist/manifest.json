@@ -1,0 +1,38 @@
+{
+  "project": "Banaro · Raw",
+  "concept": {
+    "name": "Raw",
+    "axes": "Brutalism · density · no textures",
+    "brief": "Brutalist web: default-looking serif, blue underlined links, thick black borders, visible table structure, monospace metadata, harsh yellow highlight, zero radius, zero shadows, everything on one long page."
+  },
+  "screens": [
+    {
+      "id": "home",
+      "kind": "page",
+      "title": "Home",
+      "route": "/",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "empty": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "error": "Concept exploration round: only the default state is mocked. Written once this concept is chosen."
+      }
+    },
+    {
+      "id": "directory",
+      "kind": "page",
+      "title": "Builder directory",
+      "route": "/builders",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "empty": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "error": "Concept exploration round: only the default state is mocked. Written once this concept is chosen."
+      }
+    }
+  ]
+}

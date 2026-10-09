@@ -1,0 +1,38 @@
+{
+  "project": "Banaro · Chat Native",
+  "concept": {
+    "name": "Chat Native",
+    "axes": "Conversational UI · real-time typing",
+    "brief": "Banaro as a conversation: the home page is a chat with the Banaro guide, the directory arrives as rich message cards with quick replies and a live typing indicator."
+  },
+  "screens": [
+    {
+      "id": "home",
+      "kind": "page",
+      "title": "Home",
+      "route": "/",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "empty": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "error": "Concept exploration round: only the default state is mocked. Written once this concept is chosen."
+      }
+    },
+    {
+      "id": "directory",
+      "kind": "page",
+      "title": "Builder directory",
+      "route": "/builders",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "empty": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "error": "Concept exploration round: only the default state is mocked. Written once this concept is chosen."
+      }
+    }
+  ]
+}

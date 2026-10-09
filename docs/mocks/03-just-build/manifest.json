@@ -1,0 +1,38 @@
+{
+  "project": "Banaro · Just Build",
+  "concept": {
+    "name": "Just Build",
+    "axes": "Nike-inspired · large photography · tight line height",
+    "brief": "Nike.com energy: enormous condensed uppercase headlines with line-height under 1, black/white with one volt accent, full-bleed photography, shop-style filter sidebar and product-grid builder cards."
+  },
+  "screens": [
+    {
+      "id": "home",
+      "kind": "page",
+      "title": "Home",
+      "route": "/",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "empty": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "error": "Concept exploration round: only the default state is mocked. Written once this concept is chosen."
+      }
+    },
+    {
+      "id": "directory",
+      "kind": "page",
+      "title": "Builder directory",
+      "route": "/builders",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "empty": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "error": "Concept exploration round: only the default state is mocked. Written once this concept is chosen."
+      }
+    }
+  ]
+}

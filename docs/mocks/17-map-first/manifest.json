@@ -1,0 +1,38 @@
+{
+  "project": "Banaro · Map First",
+  "concept": {
+    "name": "Map First",
+    "axes": "Map illustration · neighbourhoods · real-time pins",
+    "brief": "The GTA is the interface: a stylised map of Toronto and the lakeshore with clustered builder and event pins, and a split map/list directory."
+  },
+  "screens": [
+    {
+      "id": "home",
+      "kind": "page",
+      "title": "Home",
+      "route": "/",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "empty": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "error": "Concept exploration round: only the default state is mocked. Written once this concept is chosen."
+      }
+    },
+    {
+      "id": "directory",
+      "kind": "page",
+      "title": "Builder directory",
+      "route": "/builders",
+      "states": [
+        "default"
+      ],
+      "not_applicable": {
+        "loading": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "empty": "Concept exploration round: only the default state is mocked. Written once this concept is chosen.",
+        "error": "Concept exploration round: only the default state is mocked. Written once this concept is chosen."
+      }
+    }
+  ]
+}

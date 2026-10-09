@@ -1,0 +1,413 @@
+/* ==========================================================================
+   Noir & Gold — design tokens.
+   Black, ivory and gold leaf. Bodoni Moda (a high-contrast didone) for
+   display and small-caps labels, Cormorant Garamond for reading. Square
+   corners, hairline gold rules and slow, long fades (600 ms – 2.4 s).
+   Light theme is ivory paper with black and gold; dark is the noir original.
+   Tiers: primitives (--palette-*, --font-family-*, --font-size-*) feed semantic
+   tokens (--color-*, --text-*, --space-*, --radius-*, --shadow-*, --duration-*,
+   --ease-*, --z-*, --layout-*). Components in ui.css read semantic tokens only.
+   Light is :root; dark applies with [data-theme="dark"] or the OS preference.
+   ========================================================================== */
+
+:root {
+  /* ---------- Primitives: colour --------------------------------------- */
+  --palette-ivory-50: #fbf7ee;
+  --palette-ivory-100: #f5efe3;
+  --palette-ivory-200: #ece3d1;
+  --palette-ivory-300: #ddd1b8;
+  --palette-ivory-400: #c9bb9e;
+  --palette-umber-300: #bdb19a;
+  --palette-umber-400: #a0947d;
+  --palette-umber-500: #8a7a5c;
+  --palette-umber-600: #6b604f;
+  --palette-umber-700: #4f4639;
+  --palette-noir-600: #3a342b;
+  --palette-noir-700: #26221c;
+  --palette-noir-800: #1a1713;
+  --palette-noir-850: #12100d;
+  --palette-noir-900: #0b0a08;
+  --palette-noir-950: #0e0c09;
+  --palette-gold-900: #3a2c0e;
+  --palette-gold-800: #5a4413;
+  --palette-gold-700: #7e5f1c;
+  --palette-gold-600: #8c6a22;
+  --palette-gold-550: #a8812f;
+  --palette-gold-500: #b8913f;
+  --palette-gold-400: #c9a24a;
+  --palette-gold-300: #d4b067;
+  --palette-gold-200: #e9cf86;
+  --palette-gold-100: #f2dc97;
+  --palette-gold-50: #f7ecc9;
+  --palette-claret-300: #e59a8f;
+  --palette-claret-700: #8e2a1f;
+  --palette-claret-950: #2a0f0b;
+  --palette-claret-50: #f6e1dc;
+  --palette-sage-300: #a9c29a;
+  --palette-sage-700: #3f5f34;
+  --palette-sage-950: #131c10;
+  --palette-sage-50: #e5ecdc;
+  --font-family-display: "Bodoni Moda", "Playfair Display", "Didot", "Bodoni 72", Georgia, serif;
+  --font-family-serif: "Cormorant Garamond", "EB Garamond", Garamond, Georgia, serif;
+  --font-family-sans: "Cormorant Garamond", "EB Garamond", Garamond, Georgia, serif;
+  --font-family-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  /* ---------- Primitives: type, space, shape, motion, layout ----------- */
+  --space-0: 0;
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --layout-breakpoint-sm: 40rem;
+  --layout-breakpoint-md: 48rem;
+  --layout-breakpoint-lg: 64rem;
+  --layout-breakpoint-xl: 80rem;
+  --layout-breakpoint-2xl: 96rem;
+  --layout-columns: 4;
+  --layout-gutter: var(--space-4);
+  --layout-margin: var(--space-4);
+  --layout-container-max: 88rem;
+  --layout-measure: 52ch;
+  --layout-sidebar-width: 16rem;
+  --layout-topbar-height: 5.5rem;
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-full: 9999px;
+  --border-width-hairline: 1px;
+  --border-width-thick: 2px;
+  --duration-instant: 0ms;
+  --duration-fast: 240ms;
+  --duration-base: 600ms;
+  --duration-slow: 1200ms;
+  --duration-deliberate: 1800ms;
+  --ease-standard: cubic-bezier(0.45, 0, 0.2, 1);
+  --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-exit: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 100;
+  --z-dropdown: 1000;
+  --z-overlay: 1200;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+  --z-tooltip: 1600;
+  --target-min: 1.5rem;
+  --target-comfortable: 2.75rem;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 3px;
+  --control-height-sm: 2rem;
+  --control-height-md: 3rem;
+  --control-height-lg: 3.75rem;
+  --font-size-xs: 0.8125rem;
+  --font-size-sm: 0.9375rem;
+  --font-size-md: 1.1875rem;
+  --font-size-lg: 1.375rem;
+  --font-size-xl: 1.625rem;
+  --font-size-2xl: 2rem;
+  --font-size-3xl: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+  --font-size-4xl: clamp(2.75rem, 1.5rem + 5vw, 5.5rem);
+  --font-size-5xl: clamp(3rem, 1rem + 7.5vw, 8.5rem);
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.02;
+  --line-height-snug: 1.2;
+  --line-height-normal: 1.55;
+  --line-height-relaxed: 1.75;
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.24em;
+  --letter-spacing-wider: 0.38em;
+  --space-28: 7rem;
+  --space-32: 8rem;
+  --space-40: 10rem;
+  --duration-glacial: 2400ms;
+
+  /* ---------- Semantic: colour (light) --------------------------------- */
+  --color-bg-canvas: var(--palette-ivory-100);
+  --color-bg-surface: var(--palette-ivory-50);
+  --color-bg-surface-raised: var(--palette-ivory-50);
+  --color-bg-surface-sunken: var(--palette-ivory-200);
+  --color-bg-subtle: var(--palette-ivory-200);
+  --color-bg-subtle-hover: var(--palette-ivory-300);
+  --color-bg-inverse: var(--palette-noir-950);
+  --color-bg-backdrop: rgb(14 12 9 / 0.7);
+  --color-fg-default: var(--palette-noir-950);
+  --color-fg-muted: var(--palette-umber-700);
+  --color-fg-subtle: var(--palette-umber-600);
+  --color-fg-disabled: var(--palette-umber-400);
+  --color-fg-inverse: var(--palette-ivory-100);
+  --color-fg-link: var(--palette-noir-950);
+  --color-fg-link-hover: var(--palette-gold-700);
+  --color-border-default: var(--palette-ivory-300);
+  --color-border-strong: var(--palette-umber-600);
+  --color-border-inverse: var(--palette-noir-600);
+  --color-accent: var(--palette-noir-950);
+  --color-accent-hover: var(--palette-noir-700);
+  --color-accent-active: var(--palette-noir-600);
+  --color-accent-subtle: var(--palette-gold-50);
+  --color-accent-subtle-hover: var(--palette-gold-100);
+  --color-fg-on-accent: var(--palette-ivory-100);
+  --color-fg-accent: var(--palette-gold-700);
+  --color-focus-ring: var(--palette-gold-700);
+  --color-focus-ring-offset: var(--palette-ivory-100);
+  --color-info-bg: var(--palette-ivory-200);
+  --color-info-fg: var(--palette-noir-950);
+  --color-info-border: var(--palette-umber-500);
+  --color-info-icon: var(--palette-noir-950);
+  --color-info-solid: var(--palette-noir-950);
+  --color-success-bg: var(--palette-sage-50);
+  --color-success-fg: var(--palette-sage-700);
+  --color-success-border: var(--palette-sage-300);
+  --color-success-icon: var(--palette-sage-700);
+  --color-success-solid: var(--palette-sage-700);
+  --color-warning-bg: var(--palette-gold-50);
+  --color-warning-fg: var(--palette-gold-800);
+  --color-warning-border: var(--palette-gold-400);
+  --color-warning-icon: var(--palette-gold-700);
+  --color-warning-solid: var(--palette-gold-700);
+  --color-danger-bg: var(--palette-claret-50);
+  --color-danger-fg: var(--palette-claret-700);
+  --color-danger-border: var(--palette-claret-300);
+  --color-danger-icon: var(--palette-claret-700);
+  --color-danger-solid: var(--palette-claret-700);
+  --color-danger-solid-hover: var(--palette-noir-950);
+  --color-fg-on-danger: var(--palette-ivory-50);
+  --color-gold: var(--palette-gold-700);
+  --color-gold-line: var(--palette-gold-500);
+  --color-gold-leaf: linear-gradient(115deg, var(--palette-gold-800) 0%, var(--palette-gold-600) 30%, var(--palette-gold-550) 48%, var(--palette-gold-700) 66%, var(--palette-gold-800) 100%);
+  --color-gold-fill: linear-gradient(115deg, var(--palette-gold-500), var(--palette-gold-200) 50%, var(--palette-gold-500));
+  --color-gold-leaf-bright: linear-gradient(115deg, var(--palette-gold-600) 0%, var(--palette-gold-300) 28%, var(--palette-gold-100) 46%, var(--palette-gold-400) 62%, var(--palette-gold-600) 100%);
+  --color-on-gold: var(--palette-noir-950);
+  --color-duo-shadow: var(--palette-noir-950);
+  --color-duo-light: var(--palette-gold-200);
+  --color-photo-fg: var(--palette-ivory-100);
+  --color-photo-scrim: rgb(11 10 8 / 0.72);
+
+  /* ---------- Semantic: typography roles ------------------------------- */
+  --text-display: var(--font-weight-regular) var(--font-size-5xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h1: var(--font-weight-regular) var(--font-size-4xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h2: var(--font-weight-regular) var(--font-size-3xl) / 1.05 var(--font-family-display);
+  --text-h3: var(--font-weight-regular) var(--font-size-xl) / var(--line-height-snug) var(--font-family-display);
+  --text-h4: var(--font-weight-semibold) var(--font-size-lg) / var(--line-height-snug) var(--font-family-serif);
+  --text-body-lg: var(--font-weight-medium) var(--font-size-lg) / var(--line-height-normal) var(--font-family-serif);
+  --text-body: var(--font-weight-medium) var(--font-size-md) / var(--line-height-normal) var(--font-family-serif);
+  --text-body-sm: var(--font-weight-medium) var(--font-size-sm) / var(--line-height-normal) var(--font-family-serif);
+  --text-caption: var(--font-weight-medium) var(--font-size-xs) / var(--line-height-normal) var(--font-family-serif);
+  --text-label: var(--font-weight-medium) var(--font-size-xs) / 1.3 var(--font-family-display);
+  --text-overline: var(--font-weight-medium) var(--font-size-xs) / 1.3 var(--font-family-display);
+  --text-code: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-mono);
+
+  /* ---------- Semantic: elevation -------------------------------------- */
+  --shadow-color: 58 44 14;
+  --shadow-1: 0 1px 0 rgb(var(--shadow-color) / 0.08);
+  --shadow-2: 0 12px 30px -18px rgb(var(--shadow-color) / 0.35);
+  --shadow-3: 0 24px 60px -28px rgb(var(--shadow-color) / 0.45);
+  --shadow-4: 0 40px 90px -30px rgb(var(--shadow-color) / 0.55);
+  --shadow-focus: 0 0 0 var(--focus-ring-offset) var(--color-focus-ring-offset), 0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width)) var(--color-focus-ring);
+
+  color-scheme: light;
+}
+
+/* Responsive layout tokens: columns, gutters and margins grow with the viewport. */
+@media (min-width: 48rem) {
+  :root {
+    --layout-columns: 8;
+    --layout-gutter: var(--space-8);
+    --layout-margin: var(--space-8);
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --layout-columns: 12;
+    --layout-gutter: var(--space-8);
+    --layout-margin: var(--space-16);
+  }
+}
+
+/* ---------- Dark theme ----------------------------------------------------- */
+[data-theme="dark"] {
+  --color-bg-canvas: var(--palette-noir-900);
+  --color-bg-surface: var(--palette-noir-850);
+  --color-bg-surface-raised: var(--palette-noir-800);
+  --color-bg-surface-sunken: var(--palette-noir-900);
+  --color-bg-subtle: var(--palette-noir-800);
+  --color-bg-subtle-hover: var(--palette-noir-700);
+  --color-bg-inverse: var(--palette-ivory-100);
+  --color-bg-backdrop: rgb(0 0 0 / 0.75);
+  --color-fg-default: var(--palette-ivory-200);
+  --color-fg-muted: var(--palette-umber-300);
+  --color-fg-subtle: var(--palette-umber-400);
+  --color-fg-disabled: var(--palette-umber-600);
+  --color-fg-inverse: var(--palette-noir-950);
+  --color-fg-link: var(--palette-ivory-200);
+  --color-fg-link-hover: var(--palette-gold-300);
+  --color-border-default: var(--palette-noir-700);
+  --color-border-strong: var(--palette-umber-400);
+  --color-border-inverse: var(--palette-ivory-400);
+  --color-accent: var(--palette-gold-300);
+  --color-accent-hover: var(--palette-gold-200);
+  --color-accent-active: var(--palette-gold-100);
+  --color-accent-subtle: var(--palette-gold-900);
+  --color-accent-subtle-hover: var(--palette-gold-800);
+  --color-fg-on-accent: var(--palette-noir-900);
+  --color-fg-accent: var(--palette-gold-300);
+  --color-focus-ring: var(--palette-gold-300);
+  --color-focus-ring-offset: var(--palette-noir-900);
+  --color-info-bg: var(--palette-noir-800);
+  --color-info-fg: var(--palette-ivory-200);
+  --color-info-border: var(--palette-umber-500);
+  --color-info-icon: var(--palette-ivory-200);
+  --color-info-solid: var(--palette-ivory-200);
+  --color-success-bg: var(--palette-sage-950);
+  --color-success-fg: var(--palette-sage-300);
+  --color-success-border: var(--palette-sage-700);
+  --color-success-icon: var(--palette-sage-300);
+  --color-success-solid: var(--palette-sage-300);
+  --color-warning-bg: var(--palette-gold-900);
+  --color-warning-fg: var(--palette-gold-200);
+  --color-warning-border: var(--palette-gold-600);
+  --color-warning-icon: var(--palette-gold-300);
+  --color-warning-solid: var(--palette-gold-300);
+  --color-danger-bg: var(--palette-claret-950);
+  --color-danger-fg: var(--palette-claret-300);
+  --color-danger-border: var(--palette-claret-700);
+  --color-danger-icon: var(--palette-claret-300);
+  --color-danger-solid: var(--palette-claret-300);
+  --color-danger-solid-hover: var(--palette-ivory-100);
+  --color-fg-on-danger: var(--palette-noir-900);
+  --color-gold: var(--palette-gold-300);
+  --color-gold-line: var(--palette-gold-600);
+  --color-gold-leaf: linear-gradient(115deg, var(--palette-gold-600) 0%, var(--palette-gold-300) 28%, var(--palette-gold-100) 46%, var(--palette-gold-400) 62%, var(--palette-gold-600) 100%);
+  --color-gold-fill: linear-gradient(115deg, var(--palette-gold-500), var(--palette-gold-200) 50%, var(--palette-gold-500));
+  --color-gold-leaf-bright: linear-gradient(115deg, var(--palette-gold-600) 0%, var(--palette-gold-300) 28%, var(--palette-gold-100) 46%, var(--palette-gold-400) 62%, var(--palette-gold-600) 100%);
+  --color-on-gold: var(--palette-noir-950);
+  --color-duo-shadow: var(--palette-noir-900);
+  --color-duo-light: var(--palette-gold-300);
+  --color-photo-fg: var(--palette-ivory-100);
+  --color-photo-scrim: rgb(11 10 8 / 0.72);
+  --shadow-color: 0 0 0;
+  --shadow-1: 0 1px 0 rgb(var(--shadow-color) / 0.6);
+  --shadow-2: 0 12px 30px -18px rgb(var(--shadow-color) / 0.9);
+  --shadow-3: 0 24px 60px -28px rgb(var(--shadow-color) / 0.95);
+  --shadow-4: 0 40px 90px -30px rgb(var(--shadow-color) / 1);
+  color-scheme: dark;
+}
+
+/* Follow the OS preference unless the page has explicitly chosen light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-canvas: var(--palette-noir-900);
+    --color-bg-surface: var(--palette-noir-850);
+    --color-bg-surface-raised: var(--palette-noir-800);
+    --color-bg-surface-sunken: var(--palette-noir-900);
+    --color-bg-subtle: var(--palette-noir-800);
+    --color-bg-subtle-hover: var(--palette-noir-700);
+    --color-bg-inverse: var(--palette-ivory-100);
+    --color-bg-backdrop: rgb(0 0 0 / 0.75);
+    --color-fg-default: var(--palette-ivory-200);
+    --color-fg-muted: var(--palette-umber-300);
+    --color-fg-subtle: var(--palette-umber-400);
+    --color-fg-disabled: var(--palette-umber-600);
+    --color-fg-inverse: var(--palette-noir-950);
+    --color-fg-link: var(--palette-ivory-200);
+    --color-fg-link-hover: var(--palette-gold-300);
+    --color-border-default: var(--palette-noir-700);
+    --color-border-strong: var(--palette-umber-400);
+    --color-border-inverse: var(--palette-ivory-400);
+    --color-accent: var(--palette-gold-300);
+    --color-accent-hover: var(--palette-gold-200);
+    --color-accent-active: var(--palette-gold-100);
+    --color-accent-subtle: var(--palette-gold-900);
+    --color-accent-subtle-hover: var(--palette-gold-800);
+    --color-fg-on-accent: var(--palette-noir-900);
+    --color-fg-accent: var(--palette-gold-300);
+    --color-focus-ring: var(--palette-gold-300);
+    --color-focus-ring-offset: var(--palette-noir-900);
+    --color-info-bg: var(--palette-noir-800);
+    --color-info-fg: var(--palette-ivory-200);
+    --color-info-border: var(--palette-umber-500);
+    --color-info-icon: var(--palette-ivory-200);
+    --color-info-solid: var(--palette-ivory-200);
+    --color-success-bg: var(--palette-sage-950);
+    --color-success-fg: var(--palette-sage-300);
+    --color-success-border: var(--palette-sage-700);
+    --color-success-icon: var(--palette-sage-300);
+    --color-success-solid: var(--palette-sage-300);
+    --color-warning-bg: var(--palette-gold-900);
+    --color-warning-fg: var(--palette-gold-200);
+    --color-warning-border: var(--palette-gold-600);
+    --color-warning-icon: var(--palette-gold-300);
+    --color-warning-solid: var(--palette-gold-300);
+    --color-danger-bg: var(--palette-claret-950);
+    --color-danger-fg: var(--palette-claret-300);
+    --color-danger-border: var(--palette-claret-700);
+    --color-danger-icon: var(--palette-claret-300);
+    --color-danger-solid: var(--palette-claret-300);
+    --color-danger-solid-hover: var(--palette-ivory-100);
+    --color-fg-on-danger: var(--palette-noir-900);
+    --color-gold: var(--palette-gold-300);
+    --color-gold-line: var(--palette-gold-600);
+    --color-gold-leaf: linear-gradient(115deg, var(--palette-gold-600) 0%, var(--palette-gold-300) 28%, var(--palette-gold-100) 46%, var(--palette-gold-400) 62%, var(--palette-gold-600) 100%);
+    --color-gold-fill: linear-gradient(115deg, var(--palette-gold-500), var(--palette-gold-200) 50%, var(--palette-gold-500));
+    --color-gold-leaf-bright: linear-gradient(115deg, var(--palette-gold-600) 0%, var(--palette-gold-300) 28%, var(--palette-gold-100) 46%, var(--palette-gold-400) 62%, var(--palette-gold-600) 100%);
+    --color-on-gold: var(--palette-noir-950);
+    --color-duo-shadow: var(--palette-noir-900);
+    --color-duo-light: var(--palette-gold-300);
+    --color-photo-fg: var(--palette-ivory-100);
+    --color-photo-scrim: rgb(11 10 8 / 0.72);
+    --shadow-color: 0 0 0;
+    --shadow-1: 0 1px 0 rgb(var(--shadow-color) / 0.6);
+    --shadow-2: 0 12px 30px -18px rgb(var(--shadow-color) / 0.9);
+    --shadow-3: 0 24px 60px -28px rgb(var(--shadow-color) / 0.95);
+    --shadow-4: 0 40px 90px -30px rgb(var(--shadow-color) / 1);
+    color-scheme: dark;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --duration-glacial: 0.01ms; }
+}
+
+/* ---------- Preference overrides ------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0.01ms;
+    --duration-base: 0.01ms;
+    --duration-slow: 0.01ms;
+    --duration-deliberate: 0.01ms;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-border-default: var(--color-border-strong);
+    --color-fg-muted: var(--color-fg-default);
+    --color-fg-subtle: var(--color-fg-muted);
+  }
+}
+
+/* Windows High Contrast / forced colours: hand control to system colours. */
+@media (forced-colors: active) {
+  :root {
+    --color-focus-ring: Highlight;
+    --color-border-default: CanvasText;
+    --color-border-strong: CanvasText;
+  }
+}

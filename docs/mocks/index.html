@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Banaro — 40 design concepts</title>
+<meta name="description" content="Forty visual concepts for the Banaro home page and builder directory.">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+  /* Gallery chrome only (not a product concept): its own small token set. */
+  :root {
+    --g-bg: #f4f3ef; --g-surface: #ffffff; --g-fg: #17171a; --g-muted: #5b5b63; --g-border: #dcdad3; --g-accent: #1f4fd6; --g-accent-fg: #ffffff; --g-shadow: 0 1px 2px rgb(0 0 0 / .06), 0 8px 24px rgb(0 0 0 / .06);
+    --g-radius: 14px; --g-space: 1rem; color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --g-bg: #111114; --g-surface: #1b1b20; --g-fg: #f1f0ec; --g-muted: #a7a6ad; --g-border: #2d2d35; --g-accent: #8fb0ff; --g-accent-fg: #0b1430; --g-shadow: 0 1px 2px rgb(0 0 0 / .4), 0 8px 24px rgb(0 0 0 / .35); }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--g-bg); color: var(--g-fg); font: 400 1rem/1.55 Inter, system-ui, sans-serif; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--g-accent); outline-offset: 3px; }
+  .skip { position: absolute; left: -999px; } .skip:focus { left: 1rem; top: 1rem; background: var(--g-surface); padding: .5rem 1rem; z-index: 2; }
+  header { padding: clamp(2rem, 6vw, 5rem) clamp(1rem, 4vw, 3rem) 1.5rem; max-width: 96rem; margin-inline: auto; }
+  h1 { font: 700 clamp(2.2rem, 6vw, 4.5rem)/1 "Inter Display", Inter, sans-serif; letter-spacing: -0.03em; margin: 0 0 1rem; text-wrap: balance; }
+  header p { max-width: 46rem; color: var(--g-muted); margin: 0 0 1.5rem; font-size: 1.125rem; }
+  .tools { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+  .tools input { font: inherit; padding: .65rem 1rem; min-width: min(100%, 22rem); border-radius: 999px; border: 1px solid var(--g-border); background: var(--g-surface); color: var(--g-fg); }
+  .tools a { font-weight: 600; }
+  .count { color: var(--g-muted); font-size: .875rem; }
+  main { max-width: 96rem; margin-inline: auto; padding: 0 clamp(1rem, 4vw, 3rem) 4rem; display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); }
+  .concept { background: var(--g-surface); border: 1px solid var(--g-border); border-radius: var(--g-radius); overflow: hidden; box-shadow: var(--g-shadow); display: flex; flex-direction: column; }
+  .concept[hidden] { display: none; }
+  .concept__shots { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; background: var(--g-border); }
+  .concept__shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .concept__shot--dir { position: absolute; inset: 0; opacity: 0; transition: opacity .25s ease; }
+  .concept__shots:hover .concept__shot--dir, .concept__shots:focus-visible .concept__shot--dir { opacity: 1; }
+  .concept__body { padding: 1rem 1.25rem 1.25rem; display: flex; flex-direction: column; gap: .35rem; flex: 1; }
+  .concept__num { margin: 0; font: 600 .75rem/1 "JetBrains Mono", monospace; color: var(--g-muted); letter-spacing: .08em; }
+  .concept__name { margin: 0; font: 700 1.35rem/1.2 "Inter Display", Inter, sans-serif; letter-spacing: -0.01em; }
+  .concept__axes { margin: 0; font-size: .8125rem; font-weight: 600; color: var(--g-accent); }
+  .concept__brief { margin: 0; font-size: .9375rem; color: var(--g-muted); flex: 1; }
+  .concept__links { list-style: none; display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; margin: .5rem 0 0; }
+  .concept__links a { display: inline-flex; align-items: center; min-height: 2rem; padding: 0 .8rem; border-radius: 999px; border: 1px solid var(--g-border); text-decoration: none; font-size: .875rem; font-weight: 600; }
+  .concept__links a:hover { background: var(--g-accent); color: var(--g-accent-fg); border-color: var(--g-accent); }
+  .concept__links li:first-child a { background: var(--g-fg); color: var(--g-bg); border-color: var(--g-fg); }
+  @media (prefers-reduced-motion: reduce) { .concept__shot--dir { transition: none; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to concepts</a>
+<header>
+  <h1>Banaro — 40 design concepts</h1>
+  <p>The same two pages — the signed-out <strong>home page</strong> and the signed-in <strong>builder directory</strong> — designed forty different ways, from Swiss minimalism to WebGPU auroras. Hover a preview to see the directory. Every mock has a light and dark theme, works at phone width, and opens from disk.</p>
+  <div class="tools">
+    <label for="filter" class="count">Filter</label>
+    <input id="filter" type="search" placeholder="Try “photos”, “animation”, “dark”, “cartoon”, “Apple”">
+    <span class="count" id="count" aria-live="polite">40 concepts</span>
+    <a href="README.md">Cast, copy and conventions</a>
+  </div>
+</header>
+<main id="main">
+<article class="concept" data-search="swiss grid minimalism · whitespace · no photos international typographic style: a strict 12-column grid, flush-left grotesque type, hairline rules, huge section numerals and a single signal-red accent. no photos, no illustrations — the grid is the decoration.">
+  <a class="concept__shots" href="01-swiss-grid/pages/home/default.html" aria-label="Open Swiss Grid home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/01-swiss-grid-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/01-swiss-grid-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/01-swiss-grid-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/01-swiss-grid-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">01</p>
+    <h2 class="concept__name">Swiss Grid</h2>
+    <p class="concept__axes">Minimalism · whitespace · no photos</p>
+    <p class="concept__brief">International Typographic Style: a strict 12-column grid, flush-left grotesque type, hairline rules, huge section numerals and a single signal-red accent. No photos, no illustrations — the grid is the decoration.</p>
+    <ul class="concept__links">
+      <li><a href="01-swiss-grid/pages/home/default.html">Home</a></li>
+      <li><a href="01-swiss-grid/pages/directory/default.html">Directory</a></li>
+      <li><a href="01-swiss-grid/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="01-swiss-grid/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="keynote apple-inspired · large photos · scroll animations apple.com-style product storytelling: giant tight-tracked headlines, centred heroes, alternating light-grey/white/black sections, frosted sticky sub-nav, pill buttons, ‘learn more ›’ links and scroll-driven reveals (animation-timeline: view()).">
+  <a class="concept__shots" href="02-apple-keynote/pages/home/default.html" aria-label="Open Keynote home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/02-apple-keynote-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/02-apple-keynote-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/02-apple-keynote-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/02-apple-keynote-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">02</p>
+    <h2 class="concept__name">Keynote</h2>
+    <p class="concept__axes">Apple-inspired · large photos · scroll animations</p>
+    <p class="concept__brief">Apple.com-style product storytelling: giant tight-tracked headlines, centred heroes, alternating light-grey/white/black sections, frosted sticky sub-nav, pill buttons, ‘Learn more ›’ links and scroll-driven reveals (animation-timeline: view()).</p>
+    <ul class="concept__links">
+      <li><a href="02-apple-keynote/pages/home/default.html">Home</a></li>
+      <li><a href="02-apple-keynote/pages/directory/default.html">Directory</a></li>
+      <li><a href="02-apple-keynote/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="02-apple-keynote/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="just build nike-inspired · large photography · tight line height nike.com energy: enormous condensed uppercase headlines with line-height under 1, black/white with one volt accent, full-bleed photography, shop-style filter sidebar and product-grid builder cards.">
+  <a class="concept__shots" href="03-just-build/pages/home/default.html" aria-label="Open Just Build home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/03-just-build-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/03-just-build-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/03-just-build-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/03-just-build-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">03</p>
+    <h2 class="concept__name">Just Build</h2>
+    <p class="concept__axes">Nike-inspired · large photography · tight line height</p>
+    <p class="concept__brief">Nike.com energy: enormous condensed uppercase headlines with line-height under 1, black/white with one volt accent, full-bleed photography, shop-style filter sidebar and product-grid builder cards.</p>
+    <ul class="concept__links">
+      <li><a href="03-just-build/pages/home/default.html">Home</a></li>
+      <li><a href="03-just-build/pages/directory/default.html">Directory</a></li>
+      <li><a href="03-just-build/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="03-just-build/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="material you google-inspired · tonal colour · micro-animations google material 3: tonal palettes from one seed colour, navigation rail, pill search bar, filter chips, fab, large rounded shapes, state layers and ripple micro-interactions.">
+  <a class="concept__shots" href="04-material-you/pages/home/default.html" aria-label="Open Material You home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/04-material-you-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/04-material-you-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/04-material-you-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/04-material-you-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">04</p>
+    <h2 class="concept__name">Material You</h2>
+    <p class="concept__axes">Google-inspired · tonal colour · micro-animations</p>
+    <p class="concept__brief">Google Material 3: tonal palettes from one seed colour, navigation rail, pill search bar, filter chips, FAB, large rounded shapes, state layers and ripple micro-interactions.</p>
+    <ul class="concept__links">
+      <li><a href="04-material-you/pages/home/default.html">Home</a></li>
+      <li><a href="04-material-you/pages/directory/default.html">Directory</a></li>
+      <li><a href="04-material-you/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="04-material-you/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="beaver crew cartoon characters · paper textures · playful cut-paper cartoon world starring bram, a hard-hatted beaver mascot, and his crew. layered paper shapes, grain texture, wobbly hand-cut edges, characters reacting to empty space and hover.">
+  <a class="concept__shots" href="05-beaver-crew/pages/home/default.html" aria-label="Open Beaver Crew home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/05-beaver-crew-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/05-beaver-crew-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/05-beaver-crew-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/05-beaver-crew-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">05</p>
+    <h2 class="concept__name">Beaver Crew</h2>
+    <p class="concept__axes">Cartoon characters · paper textures · playful</p>
+    <p class="concept__brief">Cut-paper cartoon world starring Bram, a hard-hatted beaver mascot, and his crew. Layered paper shapes, grain texture, wobbly hand-cut edges, characters reacting to empty space and hover.</p>
+    <ul class="concept__links">
+      <li><a href="05-beaver-crew/pages/home/default.html">Home</a></li>
+      <li><a href="05-beaver-crew/pages/directory/default.html">Directory</a></li>
+      <li><a href="05-beaver-crew/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="05-beaver-crew/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="raw brutalism · density · no textures brutalist web: default-looking serif, blue underlined links, thick black borders, visible table structure, monospace metadata, harsh yellow highlight, zero radius, zero shadows, everything on one long page.">
+  <a class="concept__shots" href="06-raw-brutalist/pages/home/default.html" aria-label="Open Raw home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/06-raw-brutalist-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/06-raw-brutalist-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/06-raw-brutalist-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/06-raw-brutalist-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">06</p>
+    <h2 class="concept__name">Raw</h2>
+    <p class="concept__axes">Brutalism · density · no textures</p>
+    <p class="concept__brief">Brutalist web: default-looking serif, blue underlined links, thick black borders, visible table structure, monospace metadata, harsh yellow highlight, zero radius, zero shadows, everything on one long page.</p>
+    <ul class="concept__links">
+      <li><a href="06-raw-brutalist/pages/home/default.html">Home</a></li>
+      <li><a href="06-raw-brutalist/pages/directory/default.html">Directory</a></li>
+      <li><a href="06-raw-brutalist/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="06-raw-brutalist/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="the builder quarterly editorial · serif · high text density print-magazine editorial: an issue cover, drop caps, multi-column long-form feature, pull quotes, bylines and an alphabetical ‘index of builders’ directory. medium photography with captions.">
+  <a class="concept__shots" href="07-editorial/pages/home/default.html" aria-label="Open The Builder Quarterly home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/07-editorial-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/07-editorial-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/07-editorial-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/07-editorial-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">07</p>
+    <h2 class="concept__name">The Builder Quarterly</h2>
+    <p class="concept__axes">Editorial · serif · high text density</p>
+    <p class="concept__brief">Print-magazine editorial: an issue cover, drop caps, multi-column long-form feature, pull quotes, bylines and an alphabetical ‘Index of builders’ directory. Medium photography with captions.</p>
+    <ul class="concept__links">
+      <li><a href="07-editorial/pages/home/default.html">Home</a></li>
+      <li><a href="07-editorial/pages/directory/default.html">Directory</a></li>
+      <li><a href="07-editorial/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="07-editorial/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="quiet extreme whitespace · line-height 1.9 · minimal a single narrow column of small, airy text on warm paper. no photos, no colour except ink and one tiny accent dot, gentle fades. everything a reader needs and nothing more.">
+  <a class="concept__shots" href="08-quiet/pages/home/default.html" aria-label="Open Quiet home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/08-quiet-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/08-quiet-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/08-quiet-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/08-quiet-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">08</p>
+    <h2 class="concept__name">Quiet</h2>
+    <p class="concept__axes">Extreme whitespace · line-height 1.9 · minimal</p>
+    <p class="concept__brief">A single narrow column of small, airy text on warm paper. No photos, no colour except ink and one tiny accent dot, gentle fades. Everything a reader needs and nothing more.</p>
+    <ul class="concept__links">
+      <li><a href="08-quiet/pages/home/default.html">Home</a></li>
+      <li><a href="08-quiet/pages/directory/default.html">Directory</a></li>
+      <li><a href="08-quiet/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="08-quiet/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="live pulse real-time features · dashboard · dark-first a living community: online-now presence, streaming activity feed, live rsvp counters, countdown to the next event, typing indicators and connection status, simulated with a small script.">
+  <a class="concept__shots" href="09-live-pulse/pages/home/default.html" aria-label="Open Live Pulse home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/09-live-pulse-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/09-live-pulse-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/09-live-pulse-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/09-live-pulse-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">09</p>
+    <h2 class="concept__name">Live Pulse</h2>
+    <p class="concept__axes">Real-time features · dashboard · dark-first</p>
+    <p class="concept__brief">A living community: online-now presence, streaming activity feed, live RSVP counters, countdown to the next event, typing indicators and connection status, simulated with a small script.</p>
+    <ul class="concept__links">
+      <li><a href="09-live-pulse/pages/home/default.html">Home</a></li>
+      <li><a href="09-live-pulse/pages/directory/default.html">Directory</a></li>
+      <li><a href="09-live-pulse/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="09-live-pulse/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="aurora bleeding edge · webgpu · view transitions a webgpu shader aurora hero (canvas fallback), cross-document view transitions between the two pages, popover api filters, css anchor positioning, @starting-style entry animations, scroll-driven animation and :has() selectors.">
+  <a class="concept__shots" href="10-aurora-gpu/pages/home/default.html" aria-label="Open Aurora home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/10-aurora-gpu-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/10-aurora-gpu-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/10-aurora-gpu-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/10-aurora-gpu-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">10</p>
+    <h2 class="concept__name">Aurora</h2>
+    <p class="concept__axes">Bleeding edge · WebGPU · view transitions</p>
+    <p class="concept__brief">A WebGPU shader aurora hero (canvas fallback), cross-document View Transitions between the two pages, Popover API filters, CSS anchor positioning, @starting-style entry animations, scroll-driven animation and :has() selectors.</p>
+    <ul class="concept__links">
+      <li><a href="10-aurora-gpu/pages/home/default.html">Home</a></li>
+      <li><a href="10-aurora-gpu/pages/directory/default.html">Directory</a></li>
+      <li><a href="10-aurora-gpu/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="10-aurora-gpu/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="stained glass jewel-tone palette · leaded textures · illustration cathedral glass reimagined: a rose-window hero built from svg facets, cards as leaded panes, light-through-glass glows, jewel-tone palette on deep lead-grey.">
+  <a class="concept__shots" href="11-stained-glass/pages/home/default.html" aria-label="Open Stained Glass home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/11-stained-glass-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/11-stained-glass-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/11-stained-glass-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/11-stained-glass-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">11</p>
+    <h2 class="concept__name">Stained Glass</h2>
+    <p class="concept__axes">Jewel-tone palette · leaded textures · illustration</p>
+    <p class="concept__brief">Cathedral glass reimagined: a rose-window hero built from SVG facets, cards as leaded panes, light-through-glass glows, jewel-tone palette on deep lead-grey.</p>
+    <ul class="concept__links">
+      <li><a href="11-stained-glass/pages/home/default.html">Home</a></li>
+      <li><a href="11-stained-glass/pages/directory/default.html">Directory</a></li>
+      <li><a href="11-stained-glass/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="11-stained-glass/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="riso zine risograph grain · two-colour · halftone photos a photocopied community zine: fluorescent pink and teal overprints with misregistration, halftone photos, paper grain, rotated stickers and hand-cut headline type.">
+  <a class="concept__shots" href="12-riso-zine/pages/home/default.html" aria-label="Open Riso Zine home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/12-riso-zine-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/12-riso-zine-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/12-riso-zine-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/12-riso-zine-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">12</p>
+    <h2 class="concept__name">Riso Zine</h2>
+    <p class="concept__axes">Risograph grain · two-colour · halftone photos</p>
+    <p class="concept__brief">A photocopied community zine: fluorescent pink and teal overprints with misregistration, halftone photos, paper grain, rotated stickers and hand-cut headline type.</p>
+    <ul class="concept__links">
+      <li><a href="12-riso-zine/pages/home/default.html">Home</a></li>
+      <li><a href="12-riso-zine/pages/directory/default.html">Directory</a></li>
+      <li><a href="12-riso-zine/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="12-riso-zine/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="nordic warm whitespace · small photos · muted palette scandinavian calm: oat and birch neutrals, sage accent, soft rounded corners, small square photos, generous breathing room and slow, quiet micro-animations.">
+  <a class="concept__shots" href="13-nordic/pages/home/default.html" aria-label="Open Nordic home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/13-nordic-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/13-nordic-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/13-nordic-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/13-nordic-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">13</p>
+    <h2 class="concept__name">Nordic</h2>
+    <p class="concept__axes">Warm whitespace · small photos · muted palette</p>
+    <p class="concept__brief">Scandinavian calm: oat and birch neutrals, sage accent, soft rounded corners, small square photos, generous breathing room and slow, quiet micro-animations.</p>
+    <ul class="concept__links">
+      <li><a href="13-nordic/pages/home/default.html">Home</a></li>
+      <li><a href="13-nordic/pages/directory/default.html">Directory</a></li>
+      <li><a href="13-nordic/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="13-nordic/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="neo brutal thick outlines · hard shadows · pastel · bounce gumroad-style neo-brutalism: chunky black outlines, offset hard shadows, saturated pastel blocks, sticker badges and springy press animations.">
+  <a class="concept__shots" href="14-neo-brutal/pages/home/default.html" aria-label="Open Neo Brutal home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/14-neo-brutal-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/14-neo-brutal-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/14-neo-brutal-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/14-neo-brutal-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">14</p>
+    <h2 class="concept__name">Neo Brutal</h2>
+    <p class="concept__axes">Thick outlines · hard shadows · pastel · bounce</p>
+    <p class="concept__brief">Gumroad-style neo-brutalism: chunky black outlines, offset hard shadows, saturated pastel blocks, sticker badges and springy press animations.</p>
+    <ul class="concept__links">
+      <li><a href="14-neo-brutal/pages/home/default.html">Home</a></li>
+      <li><a href="14-neo-brutal/pages/directory/default.html">Directory</a></li>
+      <li><a href="14-neo-brutal/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="14-neo-brutal/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="glass night glassmorphism · gradient blobs · depth frosted-glass panels floating over slowly drifting colour blobs, backdrop blur, luminous borders and soft parallax.">
+  <a class="concept__shots" href="15-glass-night/pages/home/default.html" aria-label="Open Glass Night home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/15-glass-night-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/15-glass-night-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/15-glass-night-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/15-glass-night-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">15</p>
+    <h2 class="concept__name">Glass Night</h2>
+    <p class="concept__axes">Glassmorphism · gradient blobs · depth</p>
+    <p class="concept__brief">Frosted-glass panels floating over slowly drifting colour blobs, backdrop blur, luminous borders and soft parallax.</p>
+    <ul class="concept__links">
+      <li><a href="15-glass-night/pages/home/default.html">Home</a></li>
+      <li><a href="15-glass-night/pages/directory/default.html">Directory</a></li>
+      <li><a href="15-glass-night/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="15-glass-night/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="blueprint grid-paper texture · line drawings · technical an architect&#x27;s drawing set: cyan grid paper, white line drawings with dimension lines, monospace annotations and a title block — builders shown as a drawing schedule.">
+  <a class="concept__shots" href="16-blueprint/pages/home/default.html" aria-label="Open Blueprint home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/16-blueprint-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/16-blueprint-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/16-blueprint-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/16-blueprint-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">16</p>
+    <h2 class="concept__name">Blueprint</h2>
+    <p class="concept__axes">Grid-paper texture · line drawings · technical</p>
+    <p class="concept__brief">An architect&#x27;s drawing set: cyan grid paper, white line drawings with dimension lines, monospace annotations and a title block — builders shown as a drawing schedule.</p>
+    <ul class="concept__links">
+      <li><a href="16-blueprint/pages/home/default.html">Home</a></li>
+      <li><a href="16-blueprint/pages/directory/default.html">Directory</a></li>
+      <li><a href="16-blueprint/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="16-blueprint/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="map first map illustration · neighbourhoods · real-time pins the gta is the interface: a stylised map of toronto and the lakeshore with clustered builder and event pins, and a split map/list directory.">
+  <a class="concept__shots" href="17-map-first/pages/home/default.html" aria-label="Open Map First home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/17-map-first-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/17-map-first-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/17-map-first-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/17-map-first-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">17</p>
+    <h2 class="concept__name">Map First</h2>
+    <p class="concept__axes">Map illustration · neighbourhoods · real-time pins</p>
+    <p class="concept__brief">The GTA is the interface: a stylised map of Toronto and the lakeshore with clustered builder and event pins, and a split map/list directory.</p>
+    <ul class="concept__links">
+      <li><a href="17-map-first/pages/home/default.html">Home</a></li>
+      <li><a href="17-map-first/pages/directory/default.html">Directory</a></li>
+      <li><a href="17-map-first/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="17-map-first/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="bento bento tiles · hover micro-interactions · small photos linear/apple-style bento boxes: a modular grid of differently sized tiles, each telling one fact, with subtle gradients and hover lifts.">
+  <a class="concept__shots" href="18-bento/pages/home/default.html" aria-label="Open Bento home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/18-bento-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/18-bento-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/18-bento-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/18-bento-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">18</p>
+    <h2 class="concept__name">Bento</h2>
+    <p class="concept__axes">Bento tiles · hover micro-interactions · small photos</p>
+    <p class="concept__brief">Linear/Apple-style bento boxes: a modular grid of differently sized tiles, each telling one fact, with subtle gradients and hover lifts.</p>
+    <ul class="concept__links">
+      <li><a href="18-bento/pages/home/default.html">Home</a></li>
+      <li><a href="18-bento/pages/directory/default.html">Directory</a></li>
+      <li><a href="18-bento/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="18-bento/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="web 95 retro nostalgia · tiled textures · pixel art mid-90s desktop web: bevelled windows, title bars, tiled backgrounds, pixel icons, a marquee, a guestbook and a hit counter that ticks up live.">
+  <a class="concept__shots" href="19-web-95/pages/home/default.html" aria-label="Open Web 95 home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/19-web-95-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/19-web-95-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/19-web-95-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/19-web-95-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">19</p>
+    <h2 class="concept__name">Web 95</h2>
+    <p class="concept__axes">Retro nostalgia · tiled textures · pixel art</p>
+    <p class="concept__brief">Mid-90s desktop web: bevelled windows, title bars, tiled backgrounds, pixel icons, a marquee, a guestbook and a hit counter that ticks up live.</p>
+    <ul class="concept__links">
+      <li><a href="19-web-95/pages/home/default.html">Home</a></li>
+      <li><a href="19-web-95/pages/directory/default.html">Directory</a></li>
+      <li><a href="19-web-95/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="19-web-95/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="console maximum density · line-height 1.3 · keyboard-first a power-user console: small type, tight leading, a command palette, keyboard shortcuts everywhere and a sortable 24-row table directory. no photos.">
+  <a class="concept__shots" href="20-dense-console/pages/home/default.html" aria-label="Open Console home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/20-dense-console-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/20-dense-console-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/20-dense-console-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/20-dense-console-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">20</p>
+    <h2 class="concept__name">Console</h2>
+    <p class="concept__axes">Maximum density · line-height 1.3 · keyboard-first</p>
+    <p class="concept__brief">A power-user console: small type, tight leading, a command palette, keyboard shortcuts everywhere and a sortable 24-row table directory. No photos.</p>
+    <ul class="concept__links">
+      <li><a href="20-dense-console/pages/home/default.html">Home</a></li>
+      <li><a href="20-dense-console/pages/directory/default.html">Directory</a></li>
+      <li><a href="20-dense-console/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="20-dense-console/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="warm community large people photography · earthy palette · rounded people first: big warm candid photographs of real gatherings, earthy terracotta and cream, rounded photo cards like a home-sharing marketplace.">
+  <a class="concept__shots" href="21-warm-community/pages/home/default.html" aria-label="Open Warm Community home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/21-warm-community-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/21-warm-community-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/21-warm-community-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/21-warm-community-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">21</p>
+    <h2 class="concept__name">Warm Community</h2>
+    <p class="concept__axes">Large people photography · earthy palette · rounded</p>
+    <p class="concept__brief">People first: big warm candid photographs of real gatherings, earthy terracotta and cream, rounded photo cards like a home-sharing marketplace.</p>
+    <ul class="concept__links">
+      <li><a href="21-warm-community/pages/home/default.html">Home</a></li>
+      <li><a href="21-warm-community/pages/directory/default.html">Directory</a></li>
+      <li><a href="21-warm-community/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="21-warm-community/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="kinetic kinetic typography · marquees · variable fonts type that moves: scrolling marquees, letter-by-letter reveals, variable-weight hover, scroll-scaled headlines. black, white and highlighter yellow.">
+  <a class="concept__shots" href="22-kinetic-type/pages/home/default.html" aria-label="Open Kinetic home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/22-kinetic-type-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/22-kinetic-type-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/22-kinetic-type-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/22-kinetic-type-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">22</p>
+    <h2 class="concept__name">Kinetic</h2>
+    <p class="concept__axes">Kinetic typography · marquees · variable fonts</p>
+    <p class="concept__brief">Type that moves: scrolling marquees, letter-by-letter reveals, variable-weight hover, scroll-scaled headlines. Black, white and highlighter yellow.</p>
+    <ul class="concept__links">
+      <li><a href="22-kinetic-type/pages/home/default.html">Home</a></li>
+      <li><a href="22-kinetic-type/pages/directory/default.html">Directory</a></li>
+      <li><a href="22-kinetic-type/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="22-kinetic-type/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="noir &amp; gold dark luxury · duotone photos · slow motion black, ivory and gold leaf, high-contrast didone serif, sparse copy, large duotone photographs and long, slow fades.">
+  <a class="concept__shots" href="23-noir-gold/pages/home/default.html" aria-label="Open Noir &amp; Gold home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/23-noir-gold-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/23-noir-gold-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/23-noir-gold-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/23-noir-gold-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">23</p>
+    <h2 class="concept__name">Noir &amp; Gold</h2>
+    <p class="concept__axes">Dark luxury · duotone photos · slow motion</p>
+    <p class="concept__brief">Black, ivory and gold leaf, high-contrast didone serif, sparse copy, large duotone photographs and long, slow fades.</p>
+    <ul class="concept__links">
+      <li><a href="23-noir-gold/pages/home/default.html">Home</a></li>
+      <li><a href="23-noir-gold/pages/directory/default.html">Directory</a></li>
+      <li><a href="23-noir-gold/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="23-noir-gold/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="sketchbook hand-drawn · dot-grid paper · marker highlights a founder&#x27;s notebook: dot-grid paper, handwritten headings, marker highlights, doodled arrows and wobbly hand-drawn borders.">
+  <a class="concept__shots" href="24-sketchbook/pages/home/default.html" aria-label="Open Sketchbook home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/24-sketchbook-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/24-sketchbook-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/24-sketchbook-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/24-sketchbook-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">24</p>
+    <h2 class="concept__name">Sketchbook</h2>
+    <p class="concept__axes">Hand-drawn · dot-grid paper · marker highlights</p>
+    <p class="concept__brief">A founder&#x27;s notebook: dot-grid paper, handwritten headings, marker highlights, doodled arrows and wobbly hand-drawn borders.</p>
+    <ul class="concept__links">
+      <li><a href="24-sketchbook/pages/home/default.html">Home</a></li>
+      <li><a href="24-sketchbook/pages/directory/default.html">Directory</a></li>
+      <li><a href="24-sketchbook/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="24-sketchbook/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="clay claymorphism · soft 3d · pastel characters puffy clay-like ui: inflated cards and buttons, layered soft shadows, pastel palette and squishy css-3d blob characters that bounce.">
+  <a class="concept__shots" href="25-clay/pages/home/default.html" aria-label="Open Clay home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/25-clay-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/25-clay-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/25-clay-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/25-clay-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">25</p>
+    <h2 class="concept__name">Clay</h2>
+    <p class="concept__axes">Claymorphism · soft 3D · pastel characters</p>
+    <p class="concept__brief">Puffy clay-like UI: inflated cards and buttons, layered soft shadows, pastel palette and squishy CSS-3D blob characters that bounce.</p>
+    <ul class="concept__links">
+      <li><a href="25-clay/pages/home/default.html">Home</a></li>
+      <li><a href="25-clay/pages/directory/default.html">Directory</a></li>
+      <li><a href="25-clay/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="25-clay/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="the banaro courier newspaper · very high text density · halftone a toronto &amp; gta broadsheet: blackletter masthead, six-column dense text, rules, grayscale halftone photos and a classifieds-style builder directory.">
+  <a class="concept__shots" href="26-broadsheet/pages/home/default.html" aria-label="Open The Banaro Courier home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/26-broadsheet-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/26-broadsheet-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/26-broadsheet-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/26-broadsheet-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">26</p>
+    <h2 class="concept__name">The Banaro Courier</h2>
+    <p class="concept__axes">Newspaper · very high text density · halftone</p>
+    <p class="concept__brief">A Toronto &amp; GTA broadsheet: blackletter masthead, six-column dense text, rules, grayscale halftone photos and a classifieds-style builder directory.</p>
+    <ul class="concept__links">
+      <li><a href="26-broadsheet/pages/home/default.html">Home</a></li>
+      <li><a href="26-broadsheet/pages/directory/default.html">Directory</a></li>
+      <li><a href="26-broadsheet/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="26-broadsheet/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="y2k chrome y2k · chrome gradients · holographic millennium optimism: liquid chrome type, iridescent holographic panels, bubble buttons, sparkles and a starfield.">
+  <a class="concept__shots" href="27-y2k-chrome/pages/home/default.html" aria-label="Open Y2K Chrome home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/27-y2k-chrome-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/27-y2k-chrome-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/27-y2k-chrome-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/27-y2k-chrome-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">27</p>
+    <h2 class="concept__name">Y2K Chrome</h2>
+    <p class="concept__axes">Y2K · chrome gradients · holographic</p>
+    <p class="concept__brief">Millennium optimism: liquid chrome type, iridescent holographic panels, bubble buttons, sparkles and a starfield.</p>
+    <ul class="concept__links">
+      <li><a href="27-y2k-chrome/pages/home/default.html">Home</a></li>
+      <li><a href="27-y2k-chrome/pages/directory/default.html">Directory</a></li>
+      <li><a href="27-y2k-chrome/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="27-y2k-chrome/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="monochrome essay black-and-white full-bleed photography · scroll-snap a photo essay: full-bleed black-and-white photographs, scroll-snap chapters, minimal serif captions and lots of darkness.">
+  <a class="concept__shots" href="28-mono-essay/pages/home/default.html" aria-label="Open Monochrome Essay home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/28-mono-essay-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/28-mono-essay-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/28-mono-essay-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/28-mono-essay-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">28</p>
+    <h2 class="concept__name">Monochrome Essay</h2>
+    <p class="concept__axes">Black-and-white full-bleed photography · scroll-snap</p>
+    <p class="concept__brief">A photo essay: full-bleed black-and-white photographs, scroll-snap chapters, minimal serif captions and lots of darkness.</p>
+    <ul class="concept__links">
+      <li><a href="28-mono-essay/pages/home/default.html">Home</a></li>
+      <li><a href="28-mono-essay/pages/directory/default.html">Directory</a></li>
+      <li><a href="28-mono-essay/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="28-mono-essay/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="isometric city isometric illustration · saturated palette an illustrated isometric toronto where every building holds builders: tiny characters at windows, a streetcar, a cn tower, and a directory of ‘addresses’.">
+  <a class="concept__shots" href="29-isometric-city/pages/home/default.html" aria-label="Open Isometric City home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/29-isometric-city-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/29-isometric-city-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/29-isometric-city-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/29-isometric-city-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">29</p>
+    <h2 class="concept__name">Isometric City</h2>
+    <p class="concept__axes">Isometric illustration · saturated palette</p>
+    <p class="concept__brief">An illustrated isometric Toronto where every building holds builders: tiny characters at windows, a streetcar, a CN Tower, and a directory of ‘addresses’.</p>
+    <ul class="concept__links">
+      <li><a href="29-isometric-city/pages/home/default.html">Home</a></li>
+      <li><a href="29-isometric-city/pages/directory/default.html">Directory</a></li>
+      <li><a href="29-isometric-city/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="29-isometric-city/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="plain &amp; clear accessibility-first · large type · no decoration gov.uk-inspired clarity: 19px base, very high contrast, line-height 1.6, plain language, thick focus states, single column, zero decoration.">
+  <a class="concept__shots" href="30-plain-clear/pages/home/default.html" aria-label="Open Plain &amp; Clear home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/30-plain-clear-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/30-plain-clear-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/30-plain-clear-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/30-plain-clear-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">30</p>
+    <h2 class="concept__name">Plain &amp; Clear</h2>
+    <p class="concept__axes">Accessibility-first · large type · no decoration</p>
+    <p class="concept__brief">GOV.UK-inspired clarity: 19px base, very high contrast, line-height 1.6, plain language, thick focus states, single column, zero decoration.</p>
+    <ul class="concept__links">
+      <li><a href="30-plain-clear/pages/home/default.html">Home</a></li>
+      <li><a href="30-plain-clear/pages/directory/default.html">Directory</a></li>
+      <li><a href="30-plain-clear/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="30-plain-clear/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="gradient mesh stripe-inspired · animated mesh · polished saas stripe-style polish: an animated mesh-gradient hero, slanted section edges, crisp product ui vignettes built in html and precise micro-copy.">
+  <a class="concept__shots" href="31-gradient-mesh/pages/home/default.html" aria-label="Open Gradient Mesh home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/31-gradient-mesh-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/31-gradient-mesh-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/31-gradient-mesh-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/31-gradient-mesh-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">31</p>
+    <h2 class="concept__name">Gradient Mesh</h2>
+    <p class="concept__axes">Stripe-inspired · animated mesh · polished SaaS</p>
+    <p class="concept__brief">Stripe-style polish: an animated mesh-gradient hero, slanted section edges, crisp product UI vignettes built in HTML and precise micro-copy.</p>
+    <ul class="concept__links">
+      <li><a href="31-gradient-mesh/pages/home/default.html">Home</a></li>
+      <li><a href="31-gradient-mesh/pages/directory/default.html">Directory</a></li>
+      <li><a href="31-gradient-mesh/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="31-gradient-mesh/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="chat native conversational ui · real-time typing banaro as a conversation: the home page is a chat with the banaro guide, the directory arrives as rich message cards with quick replies and a live typing indicator.">
+  <a class="concept__shots" href="32-chat-native/pages/home/default.html" aria-label="Open Chat Native home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/32-chat-native-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/32-chat-native-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/32-chat-native-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/32-chat-native-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">32</p>
+    <h2 class="concept__name">Chat Native</h2>
+    <p class="concept__axes">Conversational UI · real-time typing</p>
+    <p class="concept__brief">Banaro as a conversation: the home page is a chat with the Banaro guide, the directory arrives as rich message cards with quick replies and a live typing indicator.</p>
+    <ul class="concept__links">
+      <li><a href="32-chat-native/pages/home/default.html">Home</a></li>
+      <li><a href="32-chat-native/pages/directory/default.html">Directory</a></li>
+      <li><a href="32-chat-native/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="32-chat-native/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="swipe match card stack · gesture micro-animations · photos mobile-app matching: a photo card stack you swipe (or arrow-key) through for co-founders, with tilt, spring and stamp animations, and a grid toggle.">
+  <a class="concept__shots" href="33-swipe-match/pages/home/default.html" aria-label="Open Swipe Match home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/33-swipe-match-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/33-swipe-match-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/33-swipe-match-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/33-swipe-match-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">33</p>
+    <h2 class="concept__name">Swipe Match</h2>
+    <p class="concept__axes">Card stack · gesture micro-animations · photos</p>
+    <p class="concept__brief">Mobile-app matching: a photo card stack you swipe (or arrow-key) through for co-founders, with tilt, spring and stamp animations, and a grid toggle.</p>
+    <ul class="concept__links">
+      <li><a href="33-swipe-match/pages/home/default.html">Home</a></li>
+      <li><a href="33-swipe-match/pages/directory/default.html">Directory</a></li>
+      <li><a href="33-swipe-match/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="33-swipe-match/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="kraft &amp; letterpress kraft-paper texture · letterpress · polaroids crafted print: kraft and linen textures, debossed letterpress type, terracotta and olive inks, small taped polaroids and rubber stamps.">
+  <a class="concept__shots" href="34-kraft-letterpress/pages/home/default.html" aria-label="Open Kraft &amp; Letterpress home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/34-kraft-letterpress-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/34-kraft-letterpress-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/34-kraft-letterpress-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/34-kraft-letterpress-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">34</p>
+    <h2 class="concept__name">Kraft &amp; Letterpress</h2>
+    <p class="concept__axes">Kraft-paper texture · letterpress · polaroids</p>
+    <p class="concept__brief">Crafted print: kraft and linen textures, debossed letterpress type, terracotta and olive inks, small taped polaroids and rubber stamps.</p>
+    <ul class="concept__links">
+      <li><a href="34-kraft-letterpress/pages/home/default.html">Home</a></li>
+      <li><a href="34-kraft-letterpress/pages/directory/default.html">Directory</a></li>
+      <li><a href="34-kraft-letterpress/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="34-kraft-letterpress/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="scrollytelling scroll-driven story · sticky scenes · parallax a story told by scrolling: sticky scenes, parallax layers and illustrations that assemble as you scroll, driven by css scroll timelines.">
+  <a class="concept__shots" href="35-scrollytelling/pages/home/default.html" aria-label="Open Scrollytelling home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/35-scrollytelling-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/35-scrollytelling-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/35-scrollytelling-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/35-scrollytelling-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">35</p>
+    <h2 class="concept__name">Scrollytelling</h2>
+    <p class="concept__axes">Scroll-driven story · sticky scenes · parallax</p>
+    <p class="concept__brief">A story told by scrolling: sticky scenes, parallax layers and illustrations that assemble as you scroll, driven by CSS scroll timelines.</p>
+    <ul class="concept__links">
+      <li><a href="35-scrollytelling/pages/home/default.html">Home</a></li>
+      <li><a href="35-scrollytelling/pages/directory/default.html">Directory</a></li>
+      <li><a href="35-scrollytelling/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="35-scrollytelling/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="synthwave neon · perspective grid · glow retro-future neon: a perspective grid horizon, sunset gradient sun, glowing magenta/cyan type and scanlines; light theme is pastel daytime vaporwave.">
+  <a class="concept__shots" href="36-synthwave/pages/home/default.html" aria-label="Open Synthwave home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/36-synthwave-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/36-synthwave-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/36-synthwave-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/36-synthwave-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">36</p>
+    <h2 class="concept__name">Synthwave</h2>
+    <p class="concept__axes">Neon · perspective grid · glow</p>
+    <p class="concept__brief">Retro-future neon: a perspective grid horizon, sunset gradient sun, glowing magenta/cyan type and scanlines; light theme is pastel daytime vaporwave.</p>
+    <ul class="concept__links">
+      <li><a href="36-synthwave/pages/home/default.html">Home</a></li>
+      <li><a href="36-synthwave/pages/directory/default.html">Directory</a></li>
+      <li><a href="36-synthwave/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="36-synthwave/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="bauhaus primary geometry · asymmetry · no photos bauhaus composition: red, yellow, blue and black circles, squares and triangles, bold geometric sans, asymmetric layouts; avatars are generated shapes.">
+  <a class="concept__shots" href="37-bauhaus/pages/home/default.html" aria-label="Open Bauhaus home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/37-bauhaus-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/37-bauhaus-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/37-bauhaus-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/37-bauhaus-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">37</p>
+    <h2 class="concept__name">Bauhaus</h2>
+    <p class="concept__axes">Primary geometry · asymmetry · no photos</p>
+    <p class="concept__brief">Bauhaus composition: red, yellow, blue and black circles, squares and triangles, bold geometric sans, asymmetric layouts; avatars are generated shapes.</p>
+    <ul class="concept__links">
+      <li><a href="37-bauhaus/pages/home/default.html">Home</a></li>
+      <li><a href="37-bauhaus/pages/directory/default.html">Directory</a></li>
+      <li><a href="37-bauhaus/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="37-bauhaus/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="spatial visionos-inspired · depth · pointer parallax apple vision pro-style spatial ui: floating glass windows with depth over a blurred environment photo, ornaments, and pointer-tracked 3d tilt.">
+  <a class="concept__shots" href="38-spatial/pages/home/default.html" aria-label="Open Spatial home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/38-spatial-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/38-spatial-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/38-spatial-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/38-spatial-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">38</p>
+    <h2 class="concept__name">Spatial</h2>
+    <p class="concept__axes">visionOS-inspired · depth · pointer parallax</p>
+    <p class="concept__brief">Apple Vision Pro-style spatial UI: floating glass windows with depth over a blurred environment photo, ornaments, and pointer-tracked 3D tilt.</p>
+    <ul class="concept__links">
+      <li><a href="38-spatial/pages/home/default.html">Home</a></li>
+      <li><a href="38-spatial/pages/directory/default.html">Directory</a></li>
+      <li><a href="38-spatial/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="38-spatial/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="scrapbook collage · cut-out photos · stickers · tape a community scrapbook: cut-out photos with white borders, washi tape, rotated stickers, doodles and handwritten notes on a cork-and-paper texture.">
+  <a class="concept__shots" href="39-sticker-collage/pages/home/default.html" aria-label="Open Scrapbook home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/39-sticker-collage-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/39-sticker-collage-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/39-sticker-collage-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/39-sticker-collage-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">39</p>
+    <h2 class="concept__name">Scrapbook</h2>
+    <p class="concept__axes">Collage · cut-out photos · stickers · tape</p>
+    <p class="concept__brief">A community scrapbook: cut-out photos with white borders, washi tape, rotated stickers, doodles and handwritten notes on a cork-and-paper texture.</p>
+    <ul class="concept__links">
+      <li><a href="39-sticker-collage/pages/home/default.html">Home</a></li>
+      <li><a href="39-sticker-collage/pages/directory/default.html">Directory</a></li>
+      <li><a href="39-sticker-collage/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="39-sticker-collage/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+<article class="concept" data-search="soft illustrated flat illustrated characters · pastel · gentle loops headspace-like warmth: round, friendly flat characters (coding, praying, sharing coffee), pastel orange and sky, and gentle looping micro-animations.">
+  <a class="concept__shots" href="40-soft-illustrated/pages/home/default.html" aria-label="Open Soft Illustrated home page">
+    <picture class="concept__shot concept__shot--home"><source srcset="assets/thumbs/40-soft-illustrated-home-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/40-soft-illustrated-home-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+    <picture class="concept__shot concept__shot--dir"><source srcset="assets/thumbs/40-soft-illustrated-directory-dark.jpg" media="(prefers-color-scheme: dark)"><img src="assets/thumbs/40-soft-illustrated-directory-light.jpg" alt="" width="640" height="400" loading="lazy"></picture>
+  </a>
+  <div class="concept__body">
+    <p class="concept__num">40</p>
+    <h2 class="concept__name">Soft Illustrated</h2>
+    <p class="concept__axes">Flat illustrated characters · pastel · gentle loops</p>
+    <p class="concept__brief">Headspace-like warmth: round, friendly flat characters (coding, praying, sharing coffee), pastel orange and sky, and gentle looping micro-animations.</p>
+    <ul class="concept__links">
+      <li><a href="40-soft-illustrated/pages/home/default.html">Home</a></li>
+      <li><a href="40-soft-illustrated/pages/directory/default.html">Directory</a></li>
+      <li><a href="40-soft-illustrated/pages/home/default.html?theme=dark">Dark</a></li>
+      <li><a href="40-soft-illustrated/README.md">Notes</a></li>
+    </ul>
+  </div>
+</article>
+</main>
+<script>
+  (function () {
+    var input = document.getElementById('filter'), count = document.getElementById('count');
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.concept'));
+    input.addEventListener('input', function () {
+      var q = input.value.trim().toLowerCase(), shown = 0;
+      cards.forEach(function (c) { var hit = !q || c.dataset.search.indexOf(q) !== -1; c.hidden = !hit; if (hit) shown++; });
+      count.textContent = shown + (shown === 1 ? ' concept' : ' concepts');
+    });
+  })();
+</script>
+</body>
+</html>

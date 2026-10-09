@@ -1,0 +1,358 @@
+/* ==========================================================================
+   Quiet — design tokens
+   Warm paper, one ink, one small terracotta dot. Small type (15px) on a very
+   tall line (1.9), a single narrow column and a lot of air. The dark theme is
+   the same page by lamplight.
+   ========================================================================== */
+:root {
+  /* ---------- Primitives: colour --------------------------------------- */
+  --palette-paper: #f4f0e8;
+  --palette-paper-raised: #f8f5ef;
+  --palette-paper-sunken: #ece6da;
+  --palette-paper-line: #e2dbcd;
+  --palette-paper-line-strong: #8f887c;
+  --palette-ink: #2a2723;
+  --palette-ink-soft: #6b655c;
+  --palette-ink-faint: #b7b0a3;
+  --palette-dot: #b4532a;
+  --palette-dot-deep: #93421f;
+  --palette-lamp: #191714;
+  --palette-lamp-raised: #211e1a;
+  --palette-lamp-sunken: #14120f;
+  --palette-lamp-line: #34302a;
+  --palette-lamp-line-strong: #7d766b;
+  --palette-lamp-ink: #dcd5c8;
+  --palette-lamp-ink-soft: #9c958a;
+  --palette-lamp-ink-faint: #5a544b;
+  --palette-lamp-dot: #d9774b;
+  --palette-lamp-dot-hi: #e8956f;
+
+  /* ---------- Semantic: colour (light) --------------------------------- */
+  --color-bg-canvas: var(--palette-paper);
+  --color-bg-surface: var(--palette-paper);
+  --color-bg-surface-raised: var(--palette-paper-raised);
+  --color-bg-surface-sunken: var(--palette-paper-sunken);
+  --color-bg-subtle: var(--palette-paper-sunken);
+  --color-bg-subtle-hover: var(--palette-paper-line);
+  --color-bg-inverse: var(--palette-ink);
+  --color-bg-backdrop: rgb(42 39 35 / 0.4);
+  --color-fg-default: var(--palette-ink);
+  --color-fg-muted: var(--palette-ink-soft);
+  --color-fg-subtle: var(--palette-ink-soft);
+  --color-fg-disabled: var(--palette-ink-faint);
+  --color-fg-inverse: var(--palette-paper);
+  --color-fg-link: var(--palette-ink);
+  --color-fg-link-hover: var(--palette-dot-deep);
+  --color-border-default: var(--palette-paper-line);
+  --color-border-strong: var(--palette-paper-line-strong);
+  --color-border-inverse: var(--palette-ink-soft);
+  --color-accent: var(--palette-dot);
+  --color-accent-hover: var(--palette-dot-deep);
+  --color-accent-active: var(--palette-dot-deep);
+  --color-accent-subtle: var(--palette-paper-sunken);
+  --color-accent-subtle-hover: var(--palette-paper-line);
+  --color-fg-on-accent: var(--palette-paper);
+  --color-fg-accent: var(--palette-dot-deep);
+  --color-focus-ring: var(--palette-ink);
+  --color-focus-ring-offset: var(--palette-paper);
+  --color-info-bg: var(--palette-paper-sunken);
+  --color-info-fg: var(--palette-ink);
+  --color-info-border: var(--palette-paper-line-strong);
+  --color-info-icon: var(--palette-ink-soft);
+  --color-info-solid: var(--palette-ink);
+  --color-success-bg: var(--palette-paper-sunken);
+  --color-success-fg: var(--palette-ink);
+  --color-success-border: var(--palette-paper-line-strong);
+  --color-success-icon: var(--palette-dot);
+  --color-success-solid: var(--palette-ink);
+  --color-warning-bg: var(--palette-paper-sunken);
+  --color-warning-fg: var(--palette-ink);
+  --color-warning-border: var(--palette-paper-line-strong);
+  --color-warning-icon: var(--palette-dot);
+  --color-warning-solid: var(--palette-ink);
+  --color-danger-bg: var(--palette-paper-sunken);
+  --color-danger-fg: var(--palette-dot-deep);
+  --color-danger-border: var(--palette-dot);
+  --color-danger-icon: var(--palette-dot);
+  --color-danger-solid: var(--palette-dot-deep);
+  --color-danger-solid-hover: var(--palette-ink);
+  --color-fg-on-danger: var(--palette-paper);
+  --color-dot: var(--palette-dot);
+
+  /* ---------- Primitives: typography ----------------------------------- */
+  --font-family-display: "Instrument Serif", "EB Garamond", Georgia, serif;
+  --font-family-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-family-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.8125rem;
+  --font-size-md: 0.9375rem;
+  --font-size-lg: 1.0625rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.75rem;
+  --font-size-4xl: 2.125rem;
+  --font-size-5xl: 2.5rem;
+  --font-weight-regular: 400;
+  --font-weight-medium: 400;
+  --font-weight-semibold: 500;
+  --font-weight-bold: 500;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.5;
+  --line-height-normal: 1.9;
+  --line-height-relaxed: 2;
+  --letter-spacing-tight: -0.005em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.06em;
+
+  /* ---------- Semantic: typography roles ------------------------------- */
+  --text-display: var(--font-weight-regular) var(--font-size-5xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h1: var(--font-weight-regular) var(--font-size-4xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h2: var(--font-weight-regular) var(--font-size-md) / var(--line-height-normal) var(--font-family-sans);
+  --text-h3: var(--font-weight-semibold) var(--font-size-md) / var(--line-height-normal) var(--font-family-sans);
+  --text-h4: var(--font-weight-semibold) var(--font-size-md) / var(--line-height-normal) var(--font-family-sans);
+  --text-body-lg: var(--font-weight-regular) var(--font-size-lg) / var(--line-height-normal) var(--font-family-sans);
+  --text-body: var(--font-weight-regular) var(--font-size-md) / var(--line-height-normal) var(--font-family-sans);
+  --text-body-sm: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-sans);
+  --text-caption: var(--font-weight-regular) var(--font-size-xs) / var(--line-height-normal) var(--font-family-sans);
+  --text-label: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-sans);
+  --text-overline: var(--font-weight-regular) var(--font-size-xs) / var(--line-height-normal) var(--font-family-sans);
+  --text-code: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-mono);
+  --dot-size: 0.375rem;
+
+  /* ---------- Semantic: spacing ---------------------------------------- */
+  --space-0: 0;
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 5rem;
+  --space-20: 7rem;
+  --space-24: 10rem;
+
+  /* ---------- Semantic: layout ----------------------------------------- */
+  --layout-breakpoint-sm: 40rem;
+  --layout-breakpoint-md: 48rem;
+  --layout-breakpoint-lg: 64rem;
+  --layout-breakpoint-xl: 80rem;
+  --layout-breakpoint-2xl: 96rem;
+  --layout-columns: 4;
+  --layout-gutter: var(--space-4);
+  --layout-margin: var(--space-6);
+  --layout-container-max: 33rem;
+  --layout-measure: 33rem;
+  --layout-sidebar-width: 16rem;
+  --layout-topbar-height: auto;
+
+  /* ---------- Semantic: shape ------------------------------------------ */
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
+  --radius-full: 9999px;
+  --border-width-hairline: 1px;
+  --border-width-thick: 1px;
+
+  /* ---------- Semantic: elevation -------------------------------------- */
+  --shadow-color: 42 39 35;
+  --shadow-1: none;
+  --shadow-2: 0 1px 0 var(--color-border-default);
+  --shadow-3: 0 12px 40px rgb(var(--shadow-color) / 0.08);
+  --shadow-4: 0 24px 64px rgb(var(--shadow-color) / 0.12);
+  --shadow-focus: 0 0 0 1px var(--color-focus-ring-offset), 0 0 0 2px var(--color-focus-ring);
+
+  /* ---------- Semantic: motion ----------------------------------------- */
+  --duration-instant: 0ms;
+  --duration-fast: 200ms;
+  --duration-base: 400ms;
+  --duration-slow: 700ms;
+  --duration-deliberate: 1200ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-enter: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-exit: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-spring: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --stagger: 80ms;
+
+  /* ---------- Semantic: z-order ---------------------------------------- */
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 100;
+  --z-dropdown: 1000;
+  --z-overlay: 1200;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+  --z-tooltip: 1600;
+
+  /* ---------- Semantic: interaction ------------------------------------ */
+  --target-min: 1.5rem;
+  --target-comfortable: 2.75rem;
+  --focus-ring-width: 1px;
+  --focus-ring-offset: 4px;
+  --control-height-sm: 1.75rem;
+  --control-height-md: 2.25rem;
+  --control-height-lg: 2.75rem;
+  color-scheme: light;
+}
+
+/* Responsive layout tokens: columns, gutters and margins grow with the viewport. */
+@media (min-width: 48rem) {
+  :root {
+    --layout-columns: 8;
+    --layout-gutter: var(--space-6);
+    --layout-margin: var(--space-10);
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --layout-columns: 12;
+    --layout-gutter: var(--space-8);
+    --layout-margin: var(--space-12);
+  }
+}
+
+/* ---------- Dark theme ----------------------------------------------------- */
+[data-theme="dark"] {
+  --color-bg-canvas: var(--palette-lamp);
+  --color-bg-surface: var(--palette-lamp);
+  --color-bg-surface-raised: var(--palette-lamp-raised);
+  --color-bg-surface-sunken: var(--palette-lamp-sunken);
+  --color-bg-subtle: var(--palette-lamp-raised);
+  --color-bg-subtle-hover: var(--palette-lamp-line);
+  --color-bg-inverse: var(--palette-lamp-ink);
+  --color-bg-backdrop: rgb(0 0 0 / 0.55);
+  --color-fg-default: var(--palette-lamp-ink);
+  --color-fg-muted: var(--palette-lamp-ink-soft);
+  --color-fg-subtle: var(--palette-lamp-ink-soft);
+  --color-fg-disabled: var(--palette-lamp-ink-faint);
+  --color-fg-inverse: var(--palette-lamp);
+  --color-fg-link: var(--palette-lamp-ink);
+  --color-fg-link-hover: var(--palette-lamp-dot-hi);
+  --color-border-default: var(--palette-lamp-line);
+  --color-border-strong: var(--palette-lamp-line-strong);
+  --color-border-inverse: var(--palette-lamp-ink-soft);
+  --color-accent: var(--palette-lamp-dot);
+  --color-accent-hover: var(--palette-lamp-dot-hi);
+  --color-accent-active: var(--palette-lamp-dot-hi);
+  --color-accent-subtle: var(--palette-lamp-raised);
+  --color-accent-subtle-hover: var(--palette-lamp-line);
+  --color-fg-on-accent: var(--palette-lamp);
+  --color-fg-accent: var(--palette-lamp-dot-hi);
+  --color-focus-ring: var(--palette-lamp-ink);
+  --color-focus-ring-offset: var(--palette-lamp);
+  --color-info-bg: var(--palette-lamp-raised);
+  --color-info-fg: var(--palette-lamp-ink);
+  --color-info-border: var(--palette-lamp-line-strong);
+  --color-info-icon: var(--palette-lamp-ink-soft);
+  --color-info-solid: var(--palette-lamp-ink);
+  --color-success-bg: var(--palette-lamp-raised);
+  --color-success-fg: var(--palette-lamp-ink);
+  --color-success-border: var(--palette-lamp-line-strong);
+  --color-success-icon: var(--palette-lamp-dot);
+  --color-success-solid: var(--palette-lamp-ink);
+  --color-warning-bg: var(--palette-lamp-raised);
+  --color-warning-fg: var(--palette-lamp-ink);
+  --color-warning-border: var(--palette-lamp-line-strong);
+  --color-warning-icon: var(--palette-lamp-dot);
+  --color-warning-solid: var(--palette-lamp-ink);
+  --color-danger-bg: var(--palette-lamp-raised);
+  --color-danger-fg: var(--palette-lamp-dot-hi);
+  --color-danger-border: var(--palette-lamp-dot);
+  --color-danger-icon: var(--palette-lamp-dot);
+  --color-danger-solid: var(--palette-lamp-dot);
+  --color-danger-solid-hover: var(--palette-lamp-ink);
+  --color-fg-on-danger: var(--palette-lamp);
+  --color-dot: var(--palette-lamp-dot);
+  color-scheme: dark;
+}
+
+/* Follow the OS preference unless the page has explicitly chosen light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-canvas: var(--palette-lamp);
+    --color-bg-surface: var(--palette-lamp);
+    --color-bg-surface-raised: var(--palette-lamp-raised);
+    --color-bg-surface-sunken: var(--palette-lamp-sunken);
+    --color-bg-subtle: var(--palette-lamp-raised);
+    --color-bg-subtle-hover: var(--palette-lamp-line);
+    --color-bg-inverse: var(--palette-lamp-ink);
+    --color-bg-backdrop: rgb(0 0 0 / 0.55);
+    --color-fg-default: var(--palette-lamp-ink);
+    --color-fg-muted: var(--palette-lamp-ink-soft);
+    --color-fg-subtle: var(--palette-lamp-ink-soft);
+    --color-fg-disabled: var(--palette-lamp-ink-faint);
+    --color-fg-inverse: var(--palette-lamp);
+    --color-fg-link: var(--palette-lamp-ink);
+    --color-fg-link-hover: var(--palette-lamp-dot-hi);
+    --color-border-default: var(--palette-lamp-line);
+    --color-border-strong: var(--palette-lamp-line-strong);
+    --color-border-inverse: var(--palette-lamp-ink-soft);
+    --color-accent: var(--palette-lamp-dot);
+    --color-accent-hover: var(--palette-lamp-dot-hi);
+    --color-accent-active: var(--palette-lamp-dot-hi);
+    --color-accent-subtle: var(--palette-lamp-raised);
+    --color-accent-subtle-hover: var(--palette-lamp-line);
+    --color-fg-on-accent: var(--palette-lamp);
+    --color-fg-accent: var(--palette-lamp-dot-hi);
+    --color-focus-ring: var(--palette-lamp-ink);
+    --color-focus-ring-offset: var(--palette-lamp);
+    --color-info-bg: var(--palette-lamp-raised);
+    --color-info-fg: var(--palette-lamp-ink);
+    --color-info-border: var(--palette-lamp-line-strong);
+    --color-info-icon: var(--palette-lamp-ink-soft);
+    --color-info-solid: var(--palette-lamp-ink);
+    --color-success-bg: var(--palette-lamp-raised);
+    --color-success-fg: var(--palette-lamp-ink);
+    --color-success-border: var(--palette-lamp-line-strong);
+    --color-success-icon: var(--palette-lamp-dot);
+    --color-success-solid: var(--palette-lamp-ink);
+    --color-warning-bg: var(--palette-lamp-raised);
+    --color-warning-fg: var(--palette-lamp-ink);
+    --color-warning-border: var(--palette-lamp-line-strong);
+    --color-warning-icon: var(--palette-lamp-dot);
+    --color-warning-solid: var(--palette-lamp-ink);
+    --color-danger-bg: var(--palette-lamp-raised);
+    --color-danger-fg: var(--palette-lamp-dot-hi);
+    --color-danger-border: var(--palette-lamp-dot);
+    --color-danger-icon: var(--palette-lamp-dot);
+    --color-danger-solid: var(--palette-lamp-dot);
+    --color-danger-solid-hover: var(--palette-lamp-ink);
+    --color-fg-on-danger: var(--palette-lamp);
+    --color-dot: var(--palette-lamp-dot);
+    color-scheme: dark;
+  }
+}
+
+/* ---------- Preference overrides ------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0.01ms;
+    --duration-base: 0.01ms;
+    --duration-slow: 0.01ms;
+    --duration-deliberate: 0.01ms;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-border-default: var(--color-border-strong);
+    --color-fg-muted: var(--color-fg-default);
+    --color-fg-subtle: var(--color-fg-muted);
+  }
+}
+
+/* Windows High Contrast / forced colours: hand control to system colours. */
+@media (forced-colors: active) {
+  :root {
+    --color-focus-ring: Highlight;
+    --color-border-default: CanvasText;
+    --color-border-strong: CanvasText;
+  }
+}

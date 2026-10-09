@@ -1,0 +1,533 @@
+/* ==========================================================================
+   Banaro · Clay — design tokens
+   Claymorphism: puffy inflated surfaces lit from the top left, pastel clay
+   (peach, mint, lilac, sky, butter) on a lilac-cream table, plum ink type.
+   Dark theme = the same clay after sunset: a plum studio, dusky pastels and
+   softer highlights. Every colour value in the concept lives in this file.
+   ========================================================================== */
+
+:root {
+  /* ---------- Primitives: clay palette ---------------------------------- */
+  --palette-white: #ffffff;
+  --palette-black: #000000;
+
+  --palette-cream-50: #fffaf6;
+  --palette-cream-100: #fbf4ff;
+  --palette-lilac-50: #f5effb;
+  --palette-lilac-100: #efe7fa;
+  --palette-lilac-150: #e9dff8;
+  --palette-lilac-200: #e2d6f5;
+  --palette-lilac-300: #cbbdff;
+  --palette-lilac-400: #b9a5ff;
+  --palette-lilac-500: #9c84f0;
+  --palette-lilac-700: #5b3cc4;
+  --palette-lilac-800: #47309a;
+
+  --palette-peach-100: #ffe6da;
+  --palette-peach-200: #ffd6c4;
+  --palette-peach-300: #ffbd9f;
+  --palette-peach-400: #ffa580;
+  --palette-peach-500: #ff9168;
+  --palette-peach-600: #f27a4f;
+  --palette-peach-800: #9c3814;
+  --palette-peach-950: #3b1a0e;
+
+  --palette-mint-100: #dcf7e8;
+  --palette-mint-200: #c3f0d8;
+  --palette-mint-300: #9de4bf;
+  --palette-mint-400: #78d6a6;
+  --palette-mint-800: #1b6a43;
+
+  --palette-sky-100: #dcefff;
+  --palette-sky-200: #c4e2ff;
+  --palette-sky-300: #9ccdff;
+  --palette-sky-400: #78b9f7;
+  --palette-sky-800: #1d5891;
+
+  --palette-butter-100: #fff4d1;
+  --palette-butter-200: #ffeaa8;
+  --palette-butter-300: #ffdb78;
+  --palette-butter-400: #f7c84f;
+  --palette-butter-800: #7a5600;
+
+  --palette-rose-200: #ffc9d6;
+  --palette-rose-300: #ffaec2;
+
+  --palette-plum-50: #f6f0ff;
+  --palette-plum-200: #d6cbea;
+  --palette-plum-300: #c2b6da;
+  --palette-plum-400: #8a7ba3;
+  --palette-plum-500: #6b5f80;
+  --palette-plum-600: #5a4e70;
+  --palette-plum-700: #463a5e;
+  --palette-plum-800: #352b50;
+  --palette-plum-850: #2b2342;
+  --palette-plum-900: #2b2140;
+  --palette-plum-920: #241c37;
+  --palette-plum-950: #1d1630;
+  --palette-plum-990: #161024;
+
+  /* dusky pastels for the dark theme */
+  --palette-peach-dusk: #563842;
+  --palette-mint-dusk: #24483f;
+  --palette-lilac-dusk: #3f3468;
+  --palette-sky-dusk: #263f5e;
+  --palette-butter-dusk: #50462c;
+
+  --palette-green-500: #2e9a62;
+  --palette-green-700: #1b6a43;
+  --palette-red-100: #ffdcd8;
+  --palette-red-300: #ff9e93;
+  --palette-red-600: #c8372a;
+  --palette-red-700: #a32a1f;
+  --palette-red-950: #3a1410;
+
+  /* ---------- Primitives: typography ----------------------------------- */
+  --font-family-display: "Fredoka", "Baloo 2", ui-rounded, "Nunito", system-ui, sans-serif;
+  --font-family-sans: "Nunito", ui-rounded, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-family-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  --font-size-xs: 0.8125rem;  /* 13px  captions, beads */
+  --font-size-sm: 0.9375rem;  /* 15px  secondary text */
+  --font-size-md: 1.0625rem;  /* 17px  body: round faces read small */
+  --font-size-lg: 1.25rem;    /* 20px  lead */
+  --font-size-xl: 1.5rem;     /* 24px  h4 */
+  --font-size-2xl: 1.875rem;  /* 30px  h3 */
+  --font-size-3xl: clamp(2rem, 1.4rem + 2.4vw, 3rem);       /* h2 */
+  --font-size-4xl: clamp(2.5rem, 1.6rem + 3.6vw, 4.25rem);  /* h1 */
+  --font-size-5xl: clamp(2.75rem, 1.4rem + 5.6vw, 5.75rem); /* display */
+
+  --font-weight-regular: 500;   /* Nunito reads best a touch heavier on pastel */
+  --font-weight-medium: 600;
+  --font-weight-semibold: 700;
+  --font-weight-bold: 800;
+
+  --line-height-tight: 1.04;
+  --line-height-snug: 1.2;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.75;
+
+  --letter-spacing-tight: -0.015em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.06em;
+
+  /* ---------- Semantic: colour (light) --------------------------------- */
+  --color-bg-canvas: var(--palette-lilac-50);
+  --color-bg-surface: var(--palette-cream-50);
+  --color-bg-surface-raised: var(--palette-white);
+  --color-bg-surface-sunken: var(--palette-lilac-100);
+  --color-bg-subtle: var(--palette-lilac-100);
+  --color-bg-subtle-hover: var(--palette-lilac-150);
+  --color-bg-inverse: var(--palette-plum-900);
+  --color-bg-backdrop: rgba(43, 33, 64, 0.5);
+
+  --color-fg-default: var(--palette-plum-900);
+  --color-fg-muted: var(--palette-plum-600);
+  --color-fg-subtle: var(--palette-plum-500);
+  --color-fg-disabled: var(--palette-plum-400);
+  --color-fg-inverse: var(--palette-cream-50);
+  --color-fg-link: var(--palette-lilac-700);
+  --color-fg-link-hover: var(--palette-lilac-800);
+
+  --color-border-default: var(--palette-lilac-200);
+  --color-border-strong: var(--palette-plum-400);
+  --color-border-inverse: var(--palette-plum-700);
+
+  --color-accent: var(--palette-peach-400);
+  --color-accent-hover: var(--palette-peach-500);
+  --color-accent-active: var(--palette-peach-600);
+  --color-accent-subtle: var(--palette-peach-100);
+  --color-accent-subtle-hover: var(--palette-peach-200);
+  --color-fg-on-accent: var(--palette-peach-950);
+  --color-fg-accent: var(--palette-peach-800);
+
+  --color-focus-ring: var(--palette-lilac-700);
+  --color-focus-ring-offset: var(--color-bg-surface);
+
+  --color-info-bg: var(--palette-sky-100);
+  --color-info-fg: var(--palette-sky-800);
+  --color-info-border: var(--palette-sky-300);
+  --color-info-icon: var(--palette-sky-800);
+  --color-info-solid: var(--palette-sky-800);
+
+  --color-success-bg: var(--palette-mint-100);
+  --color-success-fg: var(--palette-mint-800);
+  --color-success-border: var(--palette-mint-300);
+  --color-success-icon: var(--palette-green-500);
+  --color-success-solid: var(--palette-green-700);
+
+  --color-warning-bg: var(--palette-butter-100);
+  --color-warning-fg: var(--palette-butter-800);
+  --color-warning-border: var(--palette-butter-300);
+  --color-warning-icon: var(--palette-butter-800);
+  --color-warning-solid: var(--palette-butter-800);
+
+  --color-danger-bg: var(--palette-red-100);
+  --color-danger-fg: var(--palette-red-700);
+  --color-danger-border: var(--palette-red-300);
+  --color-danger-icon: var(--palette-red-600);
+  --color-danger-solid: var(--palette-red-600);
+  --color-danger-solid-hover: var(--palette-red-700);
+  --color-fg-on-danger: var(--palette-white);
+
+  /* ---------- Concept: clay tints and lighting ------------------------- */
+  /* card tints (surfaces you can set text on) */
+  --clay-tint-peach: var(--palette-peach-100);
+  --clay-tint-mint: var(--palette-mint-100);
+  --clay-tint-lilac: var(--palette-lilac-150);
+  --clay-tint-sky: var(--palette-sky-100);
+  --clay-tint-butter: var(--palette-butter-100);
+  /* character bodies (decorative clay) */
+  --clay-peach: var(--palette-peach-300);
+  --clay-peach-lo: var(--palette-peach-500);
+  --clay-mint: var(--palette-mint-300);
+  --clay-mint-lo: var(--palette-mint-400);
+  --clay-lilac: var(--palette-lilac-300);
+  --clay-lilac-lo: var(--palette-lilac-500);
+  --clay-sky: var(--palette-sky-300);
+  --clay-sky-lo: var(--palette-sky-400);
+  --clay-butter: var(--palette-butter-300);
+  --clay-butter-lo: var(--palette-butter-400);
+  --clay-rose: var(--palette-rose-300);
+  --clay-blush: var(--palette-rose-200);
+  --clay-ink: var(--palette-plum-900);
+  --clay-highlight: var(--palette-white);
+  --clay-screen: var(--palette-plum-700);
+  --clay-steel: var(--palette-plum-200);
+  --clay-online: var(--palette-mint-400);
+  --clay-online-ring: var(--palette-cream-50);
+
+  /* light comes from the top left; shade and drop are tinted plum, never grey */
+  --clay-hi: 255 255 255;
+  --clay-lo: 120 86 170;
+  --clay-drop: 98 70 150;
+  --clay-hi-alpha: 0.9;
+  --clay-lo-alpha: 0.16;
+  --clay-drop-alpha: 0.28;
+
+  /* ---------- Semantic: typography roles ------------------------------- */
+  --text-display: 600 var(--font-size-5xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h1: 600 var(--font-size-4xl) / var(--line-height-tight) var(--font-family-display);
+  --text-h2: 600 var(--font-size-3xl) / 1.08 var(--font-family-display);
+  --text-h3: 600 var(--font-size-2xl) / var(--line-height-snug) var(--font-family-display);
+  --text-h4: 600 var(--font-size-xl) / var(--line-height-snug) var(--font-family-display);
+  --text-body-lg: var(--font-weight-regular) var(--font-size-lg) / var(--line-height-normal) var(--font-family-sans);
+  --text-body: var(--font-weight-regular) var(--font-size-md) / var(--line-height-normal) var(--font-family-sans);
+  --text-body-sm: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-sans);
+  --text-caption: var(--font-weight-medium) var(--font-size-xs) / 1.45 var(--font-family-sans);
+  --text-label: var(--font-weight-bold) var(--font-size-sm) / 1.3 var(--font-family-sans);
+  --text-overline: 600 var(--font-size-xs) / 1.3 var(--font-family-display);
+  --text-code: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-normal) var(--font-family-mono);
+
+  /* ---------- Semantic: spacing (4px base, generous) -------------------- */
+  --space-0: 0;
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ---------- Semantic: layout ----------------------------------------- */
+  --layout-breakpoint-sm: 40rem;
+  --layout-breakpoint-md: 48rem;
+  --layout-breakpoint-lg: 64rem;
+  --layout-breakpoint-xl: 80rem;
+  --layout-breakpoint-2xl: 96rem;
+
+  --layout-columns: 4;
+  --layout-gutter: var(--space-4);
+  --layout-margin: var(--space-4);
+  --layout-container-max: 76rem;
+  --layout-measure: 60ch;
+  --layout-sidebar-width: 18.5rem;
+  --layout-topbar-height: 4.5rem;
+
+  /* ---------- Semantic: shape (very round) ----------------------------- */
+  --radius-xs: 0.5rem;     /* 8px  checkbox */
+  --radius-sm: 0.875rem;   /* 14px beads, small inputs */
+  --radius-md: 1.375rem;   /* 22px buttons, inputs */
+  --radius-lg: 1.75rem;    /* 28px cards */
+  --radius-xl: 2.5rem;     /* 40px slabs, panels */
+  --radius-2xl: 3.5rem;    /* 56px hero stage */
+  --radius-full: 9999px;
+  --radius-blob: 52% 48% 46% 54% / 56% 54% 46% 44%;
+
+  --border-width-hairline: 1px;
+  --border-width-thick: 2px;
+  --border-width-clay: 0.375rem; /* 6px avatar clay ring */
+
+  /* ---------- Semantic: elevation (clay = inner light + inner shade + soft drop) */
+  --shadow-color: 98 70 150;
+  --shadow-1:
+    inset -3px -4px 8px rgb(var(--clay-lo) / var(--clay-lo-alpha)),
+    inset 3px 4px 8px rgb(var(--clay-hi) / var(--clay-hi-alpha)),
+    0 6px 14px -6px rgb(var(--clay-drop) / var(--clay-drop-alpha));
+  --shadow-2:
+    inset -6px -8px 16px rgb(var(--clay-lo) / var(--clay-lo-alpha)),
+    inset 6px 8px 14px rgb(var(--clay-hi) / var(--clay-hi-alpha)),
+    0 16px 30px -12px rgb(var(--clay-drop) / var(--clay-drop-alpha)),
+    0 4px 10px -4px rgb(var(--clay-drop) / calc(var(--clay-drop-alpha) * 0.5));
+  --shadow-3:
+    inset -10px -12px 24px rgb(var(--clay-lo) / var(--clay-lo-alpha)),
+    inset 10px 12px 22px rgb(var(--clay-hi) / var(--clay-hi-alpha)),
+    0 28px 48px -16px rgb(var(--clay-drop) / calc(var(--clay-drop-alpha) * 1.2)),
+    0 8px 16px -6px rgb(var(--clay-drop) / calc(var(--clay-drop-alpha) * 0.6));
+  --shadow-4:
+    inset -12px -16px 30px rgb(var(--clay-lo) / var(--clay-lo-alpha)),
+    inset 12px 14px 26px rgb(var(--clay-hi) / var(--clay-hi-alpha)),
+    0 40px 70px -20px rgb(var(--clay-drop) / calc(var(--clay-drop-alpha) * 1.4));
+  --shadow-pressed:
+    inset 5px 7px 12px rgb(var(--clay-lo) / calc(var(--clay-lo-alpha) * 1.6)),
+    inset -4px -5px 10px rgb(var(--clay-hi) / var(--clay-hi-alpha));
+  --shadow-well:
+    inset 4px 6px 12px rgb(var(--clay-lo) / calc(var(--clay-lo-alpha) * 1.3)),
+    inset -4px -4px 10px rgb(var(--clay-hi) / var(--clay-hi-alpha));
+  --shadow-focus: 0 0 0 3px var(--color-focus-ring-offset), 0 0 0 6px var(--color-focus-ring);
+
+  /* ---------- Semantic: motion (bouncy) -------------------------------- */
+  --duration-instant: 0ms;
+  --duration-fast: 140ms;
+  --duration-base: 240ms;
+  --duration-slow: 420ms;
+  --duration-deliberate: 620ms;   /* squish-and-settle on hover */
+  --duration-idle: 3.6s;          /* idle bob of the clay characters */
+  --ease-standard: cubic-bezier(0.3, 0, 0.2, 1);
+  --ease-enter: cubic-bezier(0, 0, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.8, 0.5, 1);
+  --ease-squish: cubic-bezier(0.5, -0.4, 0.3, 1.6);
+
+  /* ---------- Semantic: z-order ---------------------------------------- */
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 100;
+  --z-dropdown: 1000;
+  --z-overlay: 1200;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+  --z-tooltip: 1600;
+
+  /* ---------- Semantic: interaction ------------------------------------ */
+  --target-min: 1.5rem;
+  --target-comfortable: 2.75rem;
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 3px;
+  --control-height-sm: 2.25rem;
+  --control-height-md: 2.75rem;
+  --control-height-lg: 3.5rem;
+
+  color-scheme: light;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --layout-columns: 8;
+    --layout-gutter: var(--space-6);
+    --layout-margin: var(--space-8);
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --layout-columns: 12;
+    --layout-gutter: var(--space-8);
+    --layout-margin: var(--space-12);
+  }
+}
+
+/* ---------- Dark theme: clay after sunset ---------------------------------- */
+[data-theme="dark"] {
+/* DARK-START */
+    --color-bg-canvas: var(--palette-plum-950);
+    --color-bg-surface: var(--palette-plum-850);
+    --color-bg-surface-raised: var(--palette-plum-800);
+    --color-bg-surface-sunken: var(--palette-plum-990);
+    --color-bg-subtle: var(--palette-plum-800);
+    --color-bg-subtle-hover: var(--palette-plum-700);
+    --color-bg-inverse: var(--palette-plum-50);
+    --color-bg-backdrop: rgba(10, 6, 20, 0.7);
+
+    --color-fg-default: var(--palette-plum-50);
+    --color-fg-muted: var(--palette-plum-200);
+    --color-fg-subtle: var(--palette-plum-300);
+    --color-fg-disabled: var(--palette-plum-500);
+    --color-fg-inverse: var(--palette-plum-900);
+    --color-fg-link: var(--palette-lilac-300);
+    --color-fg-link-hover: var(--palette-lilac-100);
+
+    --color-border-default: var(--palette-plum-700);
+    --color-border-strong: var(--palette-plum-400);
+    --color-border-inverse: var(--palette-plum-200);
+
+    --color-accent: var(--palette-peach-300);
+    --color-accent-hover: var(--palette-peach-200);
+    --color-accent-active: var(--palette-peach-100);
+    --color-accent-subtle: var(--palette-peach-dusk);
+    --color-accent-subtle-hover: var(--palette-lilac-dusk);
+    --color-fg-on-accent: var(--palette-peach-950);
+    --color-fg-accent: var(--palette-peach-300);
+
+    --color-focus-ring: var(--palette-butter-300);
+    --color-focus-ring-offset: var(--palette-plum-950);
+
+    --color-info-bg: var(--palette-sky-dusk);
+    --color-info-fg: var(--palette-sky-200);
+    --color-info-border: var(--palette-sky-400);
+    --color-info-icon: var(--palette-sky-300);
+    --color-info-solid: var(--palette-sky-300);
+    --color-success-bg: var(--palette-mint-dusk);
+    --color-success-fg: var(--palette-mint-200);
+    --color-success-border: var(--palette-mint-400);
+    --color-success-icon: var(--palette-mint-300);
+    --color-success-solid: var(--palette-mint-300);
+    --color-warning-bg: var(--palette-butter-dusk);
+    --color-warning-fg: var(--palette-butter-200);
+    --color-warning-border: var(--palette-butter-400);
+    --color-warning-icon: var(--palette-butter-300);
+    --color-warning-solid: var(--palette-butter-300);
+    --color-danger-bg: var(--palette-red-950);
+    --color-danger-fg: var(--palette-red-300);
+    --color-danger-border: var(--palette-red-600);
+    --color-danger-icon: var(--palette-red-300);
+    --color-danger-solid: var(--palette-red-300);
+    --color-danger-solid-hover: var(--palette-red-100);
+    --color-fg-on-danger: var(--palette-red-950);
+
+    --clay-tint-peach: var(--palette-peach-dusk);
+    --clay-tint-mint: var(--palette-mint-dusk);
+    --clay-tint-lilac: var(--palette-lilac-dusk);
+    --clay-tint-sky: var(--palette-sky-dusk);
+    --clay-tint-butter: var(--palette-butter-dusk);
+    --clay-ink: var(--palette-plum-990);
+    --clay-screen: var(--palette-plum-950);
+    --clay-steel: var(--palette-plum-300);
+    --clay-online-ring: var(--palette-plum-850);
+
+    --clay-hi: 255 240 255;
+    --clay-lo: 0 0 0;
+    --clay-drop: 4 0 14;
+    --clay-hi-alpha: 0.13;
+    --clay-lo-alpha: 0.38;
+    --clay-drop-alpha: 0.6;
+    --shadow-color: 4 0 14;
+
+    color-scheme: dark;
+/* DARK-END */
+}
+
+/* MEDIA-DARK-START */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-canvas: var(--palette-plum-950);
+    --color-bg-surface: var(--palette-plum-850);
+    --color-bg-surface-raised: var(--palette-plum-800);
+    --color-bg-surface-sunken: var(--palette-plum-990);
+    --color-bg-subtle: var(--palette-plum-800);
+    --color-bg-subtle-hover: var(--palette-plum-700);
+    --color-bg-inverse: var(--palette-plum-50);
+    --color-bg-backdrop: rgba(10, 6, 20, 0.7);
+
+    --color-fg-default: var(--palette-plum-50);
+    --color-fg-muted: var(--palette-plum-200);
+    --color-fg-subtle: var(--palette-plum-300);
+    --color-fg-disabled: var(--palette-plum-500);
+    --color-fg-inverse: var(--palette-plum-900);
+    --color-fg-link: var(--palette-lilac-300);
+    --color-fg-link-hover: var(--palette-lilac-100);
+
+    --color-border-default: var(--palette-plum-700);
+    --color-border-strong: var(--palette-plum-400);
+    --color-border-inverse: var(--palette-plum-200);
+
+    --color-accent: var(--palette-peach-300);
+    --color-accent-hover: var(--palette-peach-200);
+    --color-accent-active: var(--palette-peach-100);
+    --color-accent-subtle: var(--palette-peach-dusk);
+    --color-accent-subtle-hover: var(--palette-lilac-dusk);
+    --color-fg-on-accent: var(--palette-peach-950);
+    --color-fg-accent: var(--palette-peach-300);
+
+    --color-focus-ring: var(--palette-butter-300);
+    --color-focus-ring-offset: var(--palette-plum-950);
+
+    --color-info-bg: var(--palette-sky-dusk);
+    --color-info-fg: var(--palette-sky-200);
+    --color-info-border: var(--palette-sky-400);
+    --color-info-icon: var(--palette-sky-300);
+    --color-info-solid: var(--palette-sky-300);
+    --color-success-bg: var(--palette-mint-dusk);
+    --color-success-fg: var(--palette-mint-200);
+    --color-success-border: var(--palette-mint-400);
+    --color-success-icon: var(--palette-mint-300);
+    --color-success-solid: var(--palette-mint-300);
+    --color-warning-bg: var(--palette-butter-dusk);
+    --color-warning-fg: var(--palette-butter-200);
+    --color-warning-border: var(--palette-butter-400);
+    --color-warning-icon: var(--palette-butter-300);
+    --color-warning-solid: var(--palette-butter-300);
+    --color-danger-bg: var(--palette-red-950);
+    --color-danger-fg: var(--palette-red-300);
+    --color-danger-border: var(--palette-red-600);
+    --color-danger-icon: var(--palette-red-300);
+    --color-danger-solid: var(--palette-red-300);
+    --color-danger-solid-hover: var(--palette-red-100);
+    --color-fg-on-danger: var(--palette-red-950);
+
+    --clay-tint-peach: var(--palette-peach-dusk);
+    --clay-tint-mint: var(--palette-mint-dusk);
+    --clay-tint-lilac: var(--palette-lilac-dusk);
+    --clay-tint-sky: var(--palette-sky-dusk);
+    --clay-tint-butter: var(--palette-butter-dusk);
+    --clay-ink: var(--palette-plum-990);
+    --clay-screen: var(--palette-plum-950);
+    --clay-steel: var(--palette-plum-300);
+    --clay-online-ring: var(--palette-plum-850);
+
+    --clay-hi: 255 240 255;
+    --clay-lo: 0 0 0;
+    --clay-drop: 4 0 14;
+    --clay-hi-alpha: 0.13;
+    --clay-lo-alpha: 0.38;
+    --clay-drop-alpha: 0.6;
+    --shadow-color: 4 0 14;
+
+    color-scheme: dark;
+  }
+}
+/* MEDIA-DARK-END */
+
+/* ---------- Preference overrides ------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0.01ms;
+    --duration-base: 0.01ms;
+    --duration-slow: 0.01ms;
+    --duration-deliberate: 0.01ms;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-border-default: var(--color-border-strong);
+    --color-fg-muted: var(--color-fg-default);
+    --color-fg-subtle: var(--color-fg-muted);
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --color-focus-ring: Highlight;
+    --color-border-default: CanvasText;
+    --color-border-strong: CanvasText;
+  }
+}
