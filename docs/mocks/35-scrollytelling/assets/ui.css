@@ -16,6 +16,7 @@ body {
   timeline-scope: --c1, --c2, --c3, --c4, --c5, --c6, --c7, --ch2, --ch3, --ch4, --results;
 }
 img, svg { display: block; max-width: 100%; }
+img { height: auto; }
 h1, h2, h3, h4, p, ul, ol, dl, dd, figure, blockquote { margin: 0; }
 ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
 h1, h2, h3, h4 { text-wrap: balance; letter-spacing: var(--letter-spacing-tight); }

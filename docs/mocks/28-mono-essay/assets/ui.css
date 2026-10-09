@@ -145,6 +145,7 @@ button, input, select { font: inherit; color: inherit; }
     @keyframes rise { from { opacity: 0; transform: translateY(2rem); } }
     .chapter__print img { animation: develop linear forwards; animation-timeline: view(); animation-range: entry 0% cover 45%; }
     .chapter__caption, .print { animation: rise linear forwards; animation-timeline: view(); animation-range: entry 0% entry 80%; }
+    .chapter--prologue .chapter__caption, .chapter--prologue .chapter__print img { animation: none; }  /* the opening is never held back */
   }
 }
 
