@@ -394,3 +394,6 @@ a { color: var(--color-fg-link); }
 .md-dir > * { min-width: 0; }
 .md-progress__active { width: calc(var(--md-value, 0) * 1%); max-width: calc(100% - var(--space-2)); }
 .icon--outline { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; }
+.md-search { min-width: 0; }
+.md-topbar > .md-iconbtn { flex: none; }
+@media (max-width: 74.99rem) { .md-dir > aside { order: -1; } }

@@ -107,4 +107,14 @@ changes; a pause control and reduced-motion default for every auto-updating regi
   item per few seconds to screen readers.
 
 <!-- coverage:start -->
+
+Legend: ✅ mock exists · ➖ not applicable (reason in manifest) · ❌ missing
+
+### Pages
+
+| Screen | default | loading | empty | error | Requirements |
+|---|---|---|---|---|---|
+| Home (`home`) | [✅](pages/home/default.html) | ➖ | ➖ | ➖ |  |
+| Builder directory (`directory`) | [✅](pages/directory/default.html) | ➖ | ➖ | ➖ |  |
+
 <!-- coverage:end -->

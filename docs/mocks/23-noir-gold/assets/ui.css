@@ -40,7 +40,7 @@ button, input, select { font: inherit; color: inherit; }
 
 /* ---------- Monogram & header ---------------------------------------------- */
 .monogram { position: relative; display: inline-grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; color: var(--color-fg-default); font: var(--font-weight-regular) 1.5rem / 1 var(--font-family-display); font-style: italic; text-decoration: none; }
-.monogram::before { content: ""; position: absolute; inset: 0; border-radius: 50%; padding: 1px; background: var(--color-gold-leaf); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+.monogram::before { content: ""; position: absolute; inset: 0; border-radius: 50%; padding: 1px; background: var(--color-gold-leaf); -webkit-mask: linear-gradient(var(--color-fg-default) 0 0) content-box, linear-gradient(var(--color-fg-default) 0 0); -webkit-mask-composite: xor; mask: linear-gradient(var(--color-fg-default) 0 0) content-box exclude, linear-gradient(var(--color-fg-default) 0 0); }
 .brand { display: inline-flex; align-items: center; gap: var(--space-3); color: var(--color-fg-default); text-decoration: none; }
 .brand:hover { color: var(--color-fg-default); }
 .brand__word { font: var(--font-weight-regular) 1.125rem / 1 var(--font-family-display); letter-spacing: var(--letter-spacing-wider); text-transform: uppercase; }
