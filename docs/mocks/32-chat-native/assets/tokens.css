@@ -159,6 +159,7 @@
   --color-typing-dot: var(--palette-ink-400);
   --color-header-bg: var(--palette-white);
   --color-tick: var(--palette-teal-100);
+  --color-skill-bg: var(--palette-sand-100);
 
   /* ---------- Semantic: typography roles ------------------------------- */
   --text-display: var(--font-weight-black) var(--font-size-5xl) / var(--line-height-tight) var(--font-family-display);
@@ -357,6 +358,7 @@
   --color-typing-dot: #a2b2ad;
   --color-header-bg: var(--palette-night-900);
   --color-tick: var(--palette-teal-800);
+  --color-skill-bg: var(--palette-night-950);
 
   --shadow-color: 0 0 0;
   --shadow-1: 0 1px 1.5px rgb(0 0 0 / 0.5);
@@ -445,6 +447,7 @@
     --color-typing-dot: #a2b2ad;
     --color-header-bg: var(--palette-night-900);
     --color-tick: var(--palette-teal-800);
+    --color-skill-bg: var(--palette-night-950);
 
     --shadow-color: 0 0 0;
     --shadow-1: 0 1px 1.5px rgb(0 0 0 / 0.5);

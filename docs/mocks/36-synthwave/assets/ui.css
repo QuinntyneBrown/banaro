@@ -81,28 +81,30 @@ button, input, select { font: inherit; color: inherit; }
 .me img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-xs); }
 
 /* ---------- Hero: sunset over the grid ------------------------------------ */
-.horizon { position: relative; overflow: hidden; isolation: isolate; min-height: 46rem; padding-top: var(--space-12); background: linear-gradient(to bottom, var(--color-sky-top) 0%, var(--color-sky-mid) 42%, var(--color-sky-low) 62%); }
-.horizon__stars { position: absolute; inset: 0 0 40%; z-index: -3; background-image: radial-gradient(1.5px 1.5px at 8% 12%, var(--color-star) 50%, transparent 51%), radial-gradient(1px 1px at 22% 30%, var(--color-star) 50%, transparent 51%), radial-gradient(2px 2px at 38% 8%, var(--color-star) 50%, transparent 51%), radial-gradient(1px 1px at 55% 24%, var(--color-star) 50%, transparent 51%), radial-gradient(1.5px 1.5px at 71% 10%, var(--color-star) 50%, transparent 51%), radial-gradient(1px 1px at 86% 28%, var(--color-star) 50%, transparent 51%), radial-gradient(2px 2px at 94% 6%, var(--color-star) 50%, transparent 51%), radial-gradient(1px 1px at 64% 40%, var(--color-star) 50%, transparent 51%); }
-.horizon__sun { position: absolute; z-index: -2; left: 50%; bottom: 36%; translate: -50% 42%; width: min(30rem, 86vw); aspect-ratio: 1; border-radius: var(--radius-full); background: linear-gradient(to bottom, var(--color-sun-1) 8%, var(--color-sun-2) 52%, var(--color-sun-3) 92%); box-shadow: 0 0 80px var(--color-glow-1);
+.horizon { position: relative; overflow: hidden; isolation: isolate; padding-top: var(--space-12); background: linear-gradient(to bottom, var(--color-sky-top) 0%, var(--color-sky-top) 30%, var(--color-sky-mid) 100%); }
+.horizon__scene { position: relative; isolation: isolate; overflow: hidden; height: 20rem; background: linear-gradient(to bottom, transparent 0%, var(--color-sky-low) 62%); }
+@media (min-width: 64rem) { .horizon__scene { height: 24rem; } }
+.horizon__stars { position: absolute; inset: 0 0 30%; z-index: -3; background-image: radial-gradient(1.5px 1.5px at 8% 12%, var(--color-star) 50%, transparent 51%), radial-gradient(1px 1px at 22% 30%, var(--color-star) 50%, transparent 51%), radial-gradient(2px 2px at 38% 8%, var(--color-star) 50%, transparent 51%), radial-gradient(1px 1px at 55% 24%, var(--color-star) 50%, transparent 51%), radial-gradient(1.5px 1.5px at 71% 10%, var(--color-star) 50%, transparent 51%), radial-gradient(1px 1px at 86% 28%, var(--color-star) 50%, transparent 51%), radial-gradient(2px 2px at 94% 6%, var(--color-star) 50%, transparent 51%), radial-gradient(1px 1px at 64% 40%, var(--color-star) 50%, transparent 51%); }
+.horizon__sun { position: absolute; z-index: -2; left: 50%; bottom: 38%; translate: -50% 18%; width: min(22rem, 70vw); aspect-ratio: 1; border-radius: var(--radius-full); background: linear-gradient(to bottom, var(--color-sun-1) 8%, var(--color-sun-2) 52%, var(--color-sun-3) 92%); box-shadow: 0 0 80px var(--color-glow-1);
   -webkit-mask: linear-gradient(to bottom, black 0 48%, transparent 48% 51%, black 51% 59%, transparent 59% 63%, black 63% 70%, transparent 70% 75.5%, black 75.5% 81%, transparent 81% 88%, black 88%);
   mask: linear-gradient(to bottom, black 0 48%, transparent 48% 51%, black 51% 59%, transparent 59% 63%, black 63% 70%, transparent 70% 75.5%, black 75.5% 81%, transparent 81% 88%, black 88%); }
-.horizon__mountains { position: absolute; z-index: -1; left: 0; right: 0; bottom: 36%; width: 100%; height: 9rem; }
+.horizon__mountains { position: absolute; z-index: -1; left: 0; right: 0; bottom: 38%; width: 100%; height: 9rem; }
 .horizon__mountains .m-fill { fill: var(--color-mountain); }
 .horizon__mountains .m-line { fill: none; stroke: var(--color-mountain-line); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
-.horizon__floor { position: absolute; z-index: -1; inset: auto 0 0; height: 36%; perspective: var(--grid-perspective); overflow: hidden; background: var(--color-floor); border-top: 2px solid var(--color-grid-line); box-shadow: 0 0 24px var(--color-grid-glow); }
-.horizon__grid { position: absolute; inset: 0 -60% -120%; transform-origin: 50% 0; transform: rotateX(var(--grid-tilt)); background-image: linear-gradient(to bottom, var(--color-grid-line) 2px, transparent 2px), linear-gradient(to right, var(--color-grid-line) 2px, transparent 2px); background-size: var(--grid-cell) var(--grid-cell); }
+.horizon__floor { position: absolute; z-index: -1; inset: auto 0 0; height: 38%; perspective: var(--grid-perspective); perspective-origin: 50% 0; overflow: hidden; background: var(--color-floor); border-top: 2px solid var(--color-grid-line); box-shadow: 0 0 24px var(--color-grid-glow); }
+.horizon__grid { position: absolute; inset: 0 -100% auto; height: 300%; transform-origin: 50% 0; transform: rotateX(var(--grid-tilt)); background-image: linear-gradient(to bottom, var(--color-grid-line) 2px, transparent 2px), linear-gradient(to right, var(--color-grid-line) 2px, transparent 2px); background-size: var(--grid-cell) var(--grid-cell); }
 .horizon__floor::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, var(--color-grid-glow), transparent 45%); opacity: 0.6; }
 @media (prefers-reduced-motion: no-preference) {
   .horizon__grid { animation: grid-run var(--duration-grid) linear infinite; }
   @keyframes grid-run { from { background-position: 0 0; } to { background-position: 0 var(--grid-cell); } }
 }
-.horizon__copy { position: relative; display: grid; gap: var(--space-5); justify-items: center; text-align: center; padding-bottom: 22rem; }
+.horizon__copy { position: relative; display: grid; gap: var(--space-5); justify-items: center; text-align: center; padding-bottom: var(--space-4); }
 .horizon__title { font: var(--text-display); letter-spacing: var(--letter-spacing-display); text-transform: uppercase; max-width: 18ch; color: var(--color-fg-default); }
 .horizon__title span { color: var(--color-fg-accent); }
 .horizon__sub { font: var(--text-body-lg); color: var(--color-fg-default); max-width: 40rem; }
 .horizon__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); }
 .horizon__hud { display: inline-flex; align-items: center; gap: var(--space-3); padding: var(--space-1) var(--space-4); border: var(--border-width-hairline) solid var(--color-neon-2); border-radius: var(--radius-full); background: var(--color-bg-glass); font: var(--text-label); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-fg-accent-2); }
-@media (min-width: 64rem) { .horizon { min-height: 52rem; } .horizon__copy { padding-bottom: 24rem; } }
+
 
 /* ---------- Sections ------------------------------------------------------- */
 .section { padding-block: var(--space-20); }

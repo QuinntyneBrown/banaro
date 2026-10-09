@@ -97,4 +97,14 @@ motion the mesh is a still gradient and transitions collapse to 0.01 ms.
 - Does a three-dimensional hero hold up on low-end Android devices? Test the blur cost.
 
 <!-- coverage:start -->
+
+Legend: ✅ mock exists · ➖ not applicable (reason in manifest) · ❌ missing
+
+### Pages
+
+| Screen | default | loading | empty | error | Requirements |
+|---|---|---|---|---|---|
+| Home (`home`) | [✅](pages/home/default.html) | ➖ | ➖ | ➖ |  |
+| Builder directory (`directory`) | [✅](pages/directory/default.html) | ➖ | ➖ | ➖ |  |
+
 <!-- coverage:end -->
