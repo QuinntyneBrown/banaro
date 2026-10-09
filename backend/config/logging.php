@@ -1,5 +1,6 @@
 <?php
 
+use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -51,6 +52,24 @@ return [
     */
 
     'channels' => [
+
+        // One JSON object per line on stderr, collected by the orchestrator (L2-053).
+        'json' => [
+            'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'handler' => StreamHandler::class,
+            'formatter' => JsonFormatter::class,
+            'with' => ['stream' => 'php://stderr'],
+            'processors' => [PsrLogMessageProcessor::class],
+        ],
+
+        'requests' => [
+            'driver' => 'monolog',
+            'level' => 'info',
+            'handler' => StreamHandler::class,
+            'formatter' => JsonFormatter::class,
+            'with' => ['stream' => 'php://stderr'],
+        ],
 
         'stack' => [
             'driver' => 'stack',
