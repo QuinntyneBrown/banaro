@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
-
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+/*
+| Scheduled commands, run by the scheduler service. Every entry uses ->onOneServer() so it runs
+| exactly once across worker replicas (L2-054 criterion 5); the cache store is Redis.
+*/
