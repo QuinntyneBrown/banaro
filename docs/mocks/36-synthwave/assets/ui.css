@@ -206,7 +206,8 @@ button, input, select { font: inherit; color: inherit; }
 .coop__title { font: var(--text-h2); text-transform: uppercase; letter-spacing: var(--letter-spacing-display); }
 .coop__text { font: var(--text-body-lg); }
 @media (prefers-reduced-motion: no-preference) {
-  .slot--p2 .slot__face { animation: blink 1s steps(2, start) infinite; }
+  .slot--p2 .slot__face { animation: dim 1s steps(2, start) infinite; }
+  @keyframes dim { to { opacity: 0.35; } }
 }
 
 /* ---------- Neon sign verse and CRT testimonial --------------------------- */
@@ -309,3 +310,12 @@ button, input, select { font: inherit; color: inherit; }
 .player__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); margin-top: var(--space-2); padding-top: var(--space-3); border-top: var(--border-width-hairline) dashed var(--color-border-strong); }
 .pager { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--space-4); margin-top: var(--space-12); }
 .pager__page { font: var(--text-hud); font-size: var(--font-size-2xl); color: var(--color-hud); }
+
+/* Phones: the Player 1 stat sheet keeps one value column, for the match meter only. */
+@media (max-width: 47.99rem) {
+  .stats__row { grid-template-columns: 4.5rem minmax(0, 1fr); }
+  .stats__row:first-child { grid-template-columns: 4.5rem minmax(0, 1fr) auto; }
+  .stats__row:not(:first-child) .stats__value { display: none; }
+  .p1 .portrait { aspect-ratio: 4 / 3; }
+  .p1 .portrait img { object-position: 50% 30%; }
+}
