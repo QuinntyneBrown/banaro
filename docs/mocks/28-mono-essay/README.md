@@ -87,4 +87,14 @@ Theme as a change of venue (gallery vs. dark room), driven entirely by layout to
 directory shows that a big portrait grid with three caption lines can carry everything a card can.
 
 <!-- coverage:start -->
+
+Legend: ✅ mock exists · ➖ not applicable (reason in manifest) · ❌ missing
+
+### Pages
+
+| Screen | default | loading | empty | error | Requirements |
+|---|---|---|---|---|---|
+| Home (`home`) | [✅](pages/home/default.html) | ➖ | ➖ | ➖ |  |
+| Builder directory (`directory`) | [✅](pages/directory/default.html) | ➖ | ➖ | ➖ |  |
+
 <!-- coverage:end -->
