@@ -6,6 +6,7 @@ export * from './lib/auth/forward-request-cookies';
 export * from './lib/auth/guards';
 export * from './lib/auth/provide-session';
 export * from './lib/auth/safe-return-path';
+export * from './lib/auth/session-recovery';
 export * from './lib/auth/session-store';
 export * from './lib/http/api-error';
 export * from './lib/http/connectivity';

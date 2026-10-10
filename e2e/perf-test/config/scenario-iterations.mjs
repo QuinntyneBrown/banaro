@@ -2,6 +2,7 @@
 // clear a flag (AGENTS.md).
 export const scenarioIterations = {
   DarkTheme: 80,
+  Dialog: 300,
   ErrorPage: 300,
   Footer: 250,
   FormLayout: 300,

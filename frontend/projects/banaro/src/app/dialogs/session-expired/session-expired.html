@@ -1,0 +1,76 @@
+<bn-dialog
+  [heading]="'identity.expired.title' | t"
+  [description]="'identity.expired.description' | t"
+  [dismissible]="false"
+  [busy]="state() === 'busy'"
+  form
+  (submitted)="signIn()"
+>
+  <svg slot="icon" class="icon" viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M12 7.5V12l3 2" />
+  </svg>
+  @if (alert(); as a) {
+    <bn-alert variant="danger" [heading]="a.title">{{ a.body ?? '' }}</bn-alert>
+  }
+  <bn-field [label]="'identity.expired.email' | t" controlId="expired-email">
+    <input
+      bn-input
+      id="expired-email"
+      name="expired-email"
+      type="email"
+      autocomplete="username"
+      readonly
+      [value]="email"
+    />
+  </bn-field>
+  <div class="field">
+    <label class="field__label" [attr.for]="passwordId">{{
+      'identity.expired.password' | t
+    }}</label>
+    <input
+      bn-input
+      type="password"
+      autocomplete="current-password"
+      required
+      [id]="passwordId"
+      [name]="passwordId"
+      [ngModel]="password()"
+      (ngModelChange)="password.set($event)"
+      [readonly]="state() === 'busy'"
+      [invalid]="state() === 'invalid'"
+      [attr.aria-describedby]="state() === 'invalid' ? passwordId + '-err' : null"
+    />
+    @if (state() === 'invalid') {
+      <p class="field__error" [id]="passwordId + '-err'">
+        <span
+          >{{ 'identity.expired.invalid.before' | t }}
+          <a href="/forgot-password" target="_blank" rel="noopener"
+            >{{ 'identity.expired.invalid.reset' | t
+            }}<span class="vh">{{ 'identity.join.newTab' | t }}</span></a
+          >.</span
+        >
+      </p>
+    }
+  </div>
+  <button slot="actions" bn-button variant="quiet" type="button" (click)="signOut()">
+    {{ 'identity.expired.signOut' | t }}
+  </button>
+  <button
+    slot="actions"
+    bn-button
+    variant="primary"
+    type="submit"
+    [busy]="state() === 'busy'"
+    [disabled]="state() === 'busy'"
+  >
+    {{
+      (state() === 'busy'
+        ? 'identity.signIn.submitting'
+        : state() === 'failed'
+          ? 'identity.signIn.retry'
+          : 'identity.expired.signIn'
+      ) | t
+    }}
+  </button>
+</bn-dialog>

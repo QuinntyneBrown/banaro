@@ -166,5 +166,21 @@
   },
   "session": {
     "expired": "Your session has expired."
+  },
+  "expired": {
+    "title": "Your session has expired",
+    "description": "For your safety Banaro signed you out after a long break. Sign back in and your unsaved changes will still be here.",
+    "email": "E-mail",
+    "password": "Password",
+    "signIn": "Sign back in",
+    "signOut": "Sign out",
+    "invalid": {
+      "before": "That password doesn't match. Try again, or",
+      "reset": "reset it"
+    },
+    "failed": {
+      "title": "We couldn't sign you in",
+      "body": "Banaro couldn't reach the server. Your edit is still safe on this page."
+    }
   }
 }

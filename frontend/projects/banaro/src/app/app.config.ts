@@ -30,11 +30,14 @@ import {
   provideSession,
   PROFILES_API,
   PUBLIC_SITE_API,
+  SESSION_RECOVERY,
+  sessionExpiryInterceptor,
   TranslationService,
 } from 'api';
 import { TOAST_DISMISS_LABEL } from 'components';
 import { routes } from './app.routes';
 import { AppErrorHandler } from './shared/app-error-handler';
+import { DialogSessionRecovery } from './shared/dialog-session-recovery';
 import { RouterErrorPageNavigator } from './shared/router-error-page-navigator';
 
 export const appConfig: ApplicationConfig = {
@@ -59,6 +62,8 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([
         forwardRequestCookiesInterceptor,
         connectivityInterceptor,
+        // Before the CSRF interceptor, so a request retried after sign-in carries the new token.
+        sessionExpiryInterceptor,
         csrfCookieInterceptor,
         maintenanceInterceptor,
       ]),
@@ -79,6 +84,7 @@ export const appConfig: ApplicationConfig = {
     { provide: IDENTITY_API, useClass: HttpIdentityApi },
     { provide: PROFILES_API, useClass: HttpProfilesApi },
     { provide: ERROR_PAGE_NAVIGATOR, useClass: RouterErrorPageNavigator },
+    { provide: SESSION_RECOVERY, useClass: DialogSessionRecovery },
     {
       provide: TOAST_DISMISS_LABEL,
       useFactory: () => {

@@ -8,6 +8,7 @@ import Button from './Button';
 import ButtonBusy from './ButtonBusy';
 import Choice from './Choice';
 import DarkTheme from './DarkTheme';
+import Dialog from './Dialog';
 import EmptyState from './EmptyState';
 import ErrorPage from './ErrorPage';
 import Field from './Field';
@@ -38,6 +39,7 @@ export const scenarios: Record<string, Type<unknown>> = {
   ButtonBusy,
   Choice,
   DarkTheme,
+  Dialog,
   EmptyState,
   ErrorPage,
   Field,
