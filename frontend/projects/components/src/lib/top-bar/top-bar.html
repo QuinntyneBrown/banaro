@@ -1,0 +1,48 @@
+<header class="header">
+  <div class="wrap header__inner">
+    <a bn-brand routerLink="/" [attr.aria-label]="brandLabel()" [name]="brandName()"></a>
+    @if (items().length) {
+      <nav class="nav" id="primary-nav" popover [attr.aria-label]="navLabel()">
+        <ul class="nav__list">
+          @for (item of items(); track item.link) {
+            <li>
+              <a
+                class="nav__link"
+                [routerLink]="item.link"
+                routerLinkActive
+                ariaCurrentWhenActive="page"
+                >{{ item.label }}</a
+              >
+            </li>
+          }
+        </ul>
+        <button
+          bn-button
+          variant="quiet"
+          type="button"
+          class="nav__close"
+          popovertarget="primary-nav"
+          popovertargetaction="hide"
+        >
+          {{ closeMenuLabel() }}
+        </button>
+      </nav>
+    }
+    <div class="header__actions">
+      <ng-content select="[slot=actions]" />
+      @if (items().length) {
+        <button
+          type="button"
+          class="menu-btn"
+          popovertarget="primary-nav"
+          [attr.aria-label]="menuLabel()"
+        >
+          <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h10" />
+          </svg>
+          <span class="menu-btn__label">{{ menuLabel() }}</span>
+        </button>
+      }
+    </div>
+  </div>
+</header>

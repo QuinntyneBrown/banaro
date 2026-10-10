@@ -1,5 +1,8 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { App } from './app/app';
+import { provideRouter } from '@angular/router';
+import { Renderer } from './renderer';
 
-bootstrapApplication(App, appConfig).catch((err) => console.error(err));
+bootstrapApplication(Renderer, { providers: [provideRouter([])] }).catch((err) => {
+  window.__perfError = String(err);
+  document.body.dataset['perfStatus'] = 'error';
+});

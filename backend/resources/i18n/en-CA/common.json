@@ -1,3 +1,28 @@
 {
-  "brand": "Banaro"
+  "brand": "Banaro",
+  "wordmark": "banaro",
+  "brandHome": "Banaro home",
+  "skipToContent": "Skip to content",
+  "nav": {
+    "label": "Primary",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "builders": "Builders",
+    "projects": "Projects",
+    "events": "Events",
+    "matching": "Matching"
+  },
+  "actions": {
+    "signIn": "Sign in",
+    "join": "Join Banaro"
+  },
+  "footer": {
+    "label": "Footer",
+    "made": "Made in Toronto. © {year} Banaro.",
+    "about": "About",
+    "codeOfConduct": "Code of conduct",
+    "privacy": "Privacy",
+    "contact": "Contact",
+    "land": "Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples."
+  }
 }

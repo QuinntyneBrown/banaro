@@ -2,4 +2,8 @@
  * Public API Surface of components
  */
 
-export {};
+export * from './lib/brand/brand';
+export * from './lib/button/button';
+export * from './lib/footer/footer';
+export * from './lib/skip-link/skip-link';
+export * from './lib/top-bar/top-bar';

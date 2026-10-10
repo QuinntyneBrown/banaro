@@ -1,0 +1,166 @@
+/* Extracted from docs/design-system/assets/components.css: btn */
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--control-height-md);
+  padding: 0 var(--space-5);
+  border: var(--border-width-hairline) solid transparent;
+  border-radius: var(--radius-full);
+  font: var(--text-label);
+  letter-spacing: var(--size-uttons----------------------------------------letter-spacing-3);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  background: var(--color-bg-surface);
+  color: var(--color-fg-default);
+}
+:host(.btn--lg) {
+  min-height: var(--control-height-lg);
+  padding: 0 var(--space-8);
+  font-size: var(--font-size-md);
+}
+:host(.btn--sm) {
+  min-height: var(--control-height-sm);
+  padding: 0 var(--space-4);
+}
+:host(.btn--primary) {
+  background: var(--color-accent);
+  color: var(--color-fg-on-accent);
+}
+:host(.btn--primary:hover) {
+  background: var(--color-accent-hover);
+  color: var(--color-fg-on-accent);
+}
+:host(.btn--primary:active) {
+  background: var(--color-accent-active);
+}
+:host(.btn--quiet) {
+  background: transparent;
+  border-color: var(--color-border-strong);
+  color: var(--color-fg-default);
+}
+:host(.btn--quiet:hover) {
+  background: var(--color-bg-surface);
+  border-color: var(--color-fg-default);
+  color: var(--color-fg-default);
+}
+:host(.btn--text) {
+  background: transparent;
+  padding-inline: var(--space-2);
+  color: var(--color-fg-link);
+}
+:host(.btn--text:hover) {
+  color: var(--color-fg-link-hover);
+}
+.btn__arrow {
+  width: var(--space-4);
+  height: var(--space-4);
+}
+@media (prefers-reduced-motion: no-preference) {
+  :host {
+    transition:
+      color var(--duration-fast) var(--ease-standard),
+      background-color var(--duration-base) var(--ease-standard),
+      border-color var(--duration-base) var(--ease-standard),
+      box-shadow var(--duration-base) var(--ease-standard);
+  }
+  :host(.btn--primary:hover) {
+    transform: translateY(calc(-1 * var(--border-width-hairline)));
+  }
+  :host {
+    transition:
+      background-color var(--duration-base) var(--ease-standard),
+      transform var(--duration-base) var(--ease-standard),
+      border-color var(--duration-base) var(--ease-standard);
+  }
+  .btn__arrow {
+    transition: translate var(--duration-base) var(--ease-standard);
+  }
+  :host(:hover) .btn__arrow {
+    translate: var(--size-btn-translate-20) 0;
+  }
+}
+:host(.btn--danger) {
+  background: var(--color-danger-solid);
+  color: var(--color-fg-on-danger);
+}
+:host(.btn--danger:hover) {
+  background: var(--color-danger-solid-hover);
+  color: var(--color-fg-on-danger);
+}
+:host(.btn--block) {
+  display: flex;
+  width: 100%;
+}
+:host([disabled]),
+:host([aria-disabled='true']) {
+  background: var(--color-bg-subtle);
+  color: var(--color-fg-disabled);
+  border-color: transparent;
+  cursor: not-allowed;
+}
+:host([aria-busy='true']) {
+  cursor: progress;
+  gap: var(--space-3);
+}
+:host {
+  --bn-button-bg: var(--color-bg-surface);
+  --bn-button-fg: var(--color-fg-default);
+  background: var(--bn-button-bg);
+  color: var(--bn-button-fg);
+}
+:host(.btn--primary) {
+  --bn-button-bg: var(--color-accent);
+  --bn-button-fg: var(--color-fg-on-accent);
+}
+:host(.btn--danger) {
+  --bn-button-bg: var(--color-danger-solid);
+  --bn-button-fg: var(--color-fg-on-danger);
+}
+:host(.btn--quiet),
+:host(.btn--ghost),
+:host(.btn--text) {
+  --bn-button-bg: var(--color-transparent);
+}
+:host(.btn--text) {
+  --bn-button-fg: var(--color-fg-link);
+}
+:host(.btn--icon) {
+  padding: var(--space-2);
+  min-width: var(--control-height-md);
+}
+:host(.btn--ghost:hover) {
+  background: var(--color-bg-subtle);
+}
+:host(
+  :hover:not(:disabled):not([aria-disabled='true']):not(.btn--primary):not(.btn--danger):not(
+      .btn--text
+    )
+) {
+  background: var(--color-bg-subtle);
+}
+:host(:active) {
+  transform: translateY(var(--space-0-5));
+}
+:host([aria-pressed='true']) {
+  outline: var(--border-width-thick) solid var(--color-accent);
+  outline-offset: var(--space-0-5);
+}
+:host([disabled]),
+:host([aria-disabled='true']) {
+  background: var(--color-bg-subtle);
+  color: var(--color-fg-disabled);
+  transform: none;
+}
+@media (forced-colors: active) {
+  :host {
+    border: var(--border-width-hairline) solid CanvasText;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :host(:active) {
+    transform: none;
+  }
+}

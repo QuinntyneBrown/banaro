@@ -1,1 +1,11 @@
-<router-outlet />
+<bn-skip-link [label]="'common.skipToContent' | t" />
+<bn-header />
+<main id="main">
+  <router-outlet />
+</main>
+<bn-footer
+  [made]="'common.footer.made' | t: { year }"
+  [navLabel]="'common.footer.label' | t"
+  [land]="'common.footer.land' | t"
+  [links]="footerLinks()"
+/>

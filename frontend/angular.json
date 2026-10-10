@@ -28,9 +28,17 @@
               {
                 "glob": "**/*",
                 "input": "projects/banaro/public"
+              },
+              {
+                "glob": "**/*.woff2",
+                "input": "projects/components/src/styles/fonts",
+                "output": "fonts"
               }
             ],
-            "styles": ["projects/banaro/src/styles.scss"],
+            "styles": [
+              "projects/components/src/styles/index.css",
+              "projects/banaro/src/styles.scss"
+            ],
             "server": "projects/banaro/src/main.server.ts",
             "outputMode": "server",
             "security": {
@@ -50,8 +58,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "8kB",
+                  "maximumError": "16kB"
                 }
               ],
               "outputHashing": "all"
@@ -74,7 +82,11 @@
               "buildTarget": "banaro:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 4300,
+            "proxyConfig": "proxy.conf.json"
+          }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
@@ -105,9 +117,18 @@
               {
                 "glob": "**/*",
                 "input": "projects/admin/public"
+              },
+              {
+                "glob": "**/*.woff2",
+                "input": "projects/components/src/styles/fonts",
+                "output": "fonts"
               }
             ],
-            "styles": ["projects/admin/src/styles.scss"]
+            "styles": [
+              "projects/components/src/styles/index.css",
+              "projects/admin/src/styles.scss"
+            ],
+            "baseHref": "/admin/"
           },
           "configurations": {
             "production": {
@@ -143,7 +164,11 @@
               "buildTarget": "admin:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 4301,
+            "proxyConfig": "proxy.conf.json"
+          }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
@@ -174,9 +199,17 @@
               {
                 "glob": "**/*",
                 "input": "projects/perf-test/public"
+              },
+              {
+                "glob": "**/*.woff2",
+                "input": "projects/components/src/styles/fonts",
+                "output": "fonts"
               }
             ],
-            "styles": ["projects/perf-test/src/styles.scss"]
+            "styles": [
+              "projects/components/src/styles/index.css",
+              "projects/perf-test/src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {

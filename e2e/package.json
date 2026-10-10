@@ -1,0 +1,15 @@
+{
+  "name": "banaro-e2e",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:banaro": "playwright test --project=banaro",
+    "test:admin": "playwright test --project=admin"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "@types/node": "^22.20.5",
+    "typescript": "~6.0.2"
+  }
+}

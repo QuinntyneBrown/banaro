@@ -18,7 +18,12 @@ services:
     <<: *banaro-api
     command: php artisan serve --host=0.0.0.0 --port=8000
     ports:
-      - '8000:8000'
+      - '8100:8000'
+    healthcheck:
+      test: ['CMD', 'php', '-r', "exit(@file_get_contents('http://localhost:8000/health/live') ? 0 : 1);"]
+      interval: 3s
+      timeout: 10s
+      retries: 40
 
   worker:
     <<: *banaro-api
