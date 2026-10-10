@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Footer — Component requirements rendering</title>
+<meta name="description" content="Every variant, size and state of footer, in light and dark, keyed to the acceptance criteria in footer.md.">
+<meta name="crd:component" content="footer">
+<!-- The real design-system styles: what renders here is the component, not a picture of it. -->
+<link rel="stylesheet" href="../../design-system/assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../design-system/assets/ds.css">
+<style>
+/* CRD page chrome only. Never restyle the component here. */
+.crd-shell { max-width: 80rem; margin: 0 auto; padding: var(--space-6) var(--space-4); }
+.crd-bar { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; justify-content: space-between; }
+.crd-ac { font: var(--text-overline); color: var(--color-fg-muted); display: block; margin-top: var(--space-2); }
+.crd-frames { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-start; }
+.crd-frame { margin: 0; border: var(--border-width-hairline) dashed var(--color-border-default); padding: var(--space-3); max-width: 100%; overflow: auto; }
+.crd-frame iframe { display: block; border: 0; max-width: 100%; }
+.crd-grid { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); align-items: start; }
+.crd-stage { position: relative; min-width: 0; }
+</style>
+</head>
+<body id="top">
+<a class="skip-link" href="#main">Skip to content</a>
+<main id="main" class="crd-shell">
+  <header class="ds-header">
+    <div class="crd-bar">
+      <p class="ds-kicker">Component requirements · rendering</p>
+      <button class="ds-theme-toggle" type="button" aria-pressed="false">☾ Dark</button>
+    </div>
+    <h1>Footer</h1>
+    <p class="ds-lead">The maker line, footer navigation and land acknowledgement that close every page. Requirements: <a href="footer.md">footer.md</a>. Design system: <a href="../../design-system/components/footer.html">footer</a>.</p>
+    <div class="ds-meta"><span class="ds-pill">Selector <code>bn-footer</code></span><span class="ds-pill">Status: built</span><span class="ds-pill">Traces to L2-039, L2-041, L2-048, L2-049, L2-050, L2-051, L2-052</span></div>
+    <ul class="ds-toc"><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#themes">Both themes</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#contrast">Contrast</a></li><li><a href="#tokens">Tokens</a></li></ul>
+  </header>
+  <p class="ds-na">Specimens drop the footer's top margin so they sit inside their frames. The current-link style is new and is shown inline.</p>
+  <section class="ds-section" id="variants"><h2>Variants</h2>
+    <div class="ds-example"><div class="ds-example__canvas ">
+<div style="width:100%"><footer class="footer" style="margin-top:0"><div class="wrap footer__grid"><p class="footer__made">Made in Toronto. © 2026 Banaro.</p><nav aria-label="Footer"><ul class="footer__links"><li><a href="#">About</a></li><li><a href="#">Code of conduct</a></li><li><a href="#">Privacy</a></li><li><a href="#">Contact</a></li></ul></nav><p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p></div></footer></div>
+    </div><div class="ds-example__caption"><span>Default: one footer on every page. <span class="crd-ac">AC-1, AC-4, AC-9</span></span></div></div>
+  </section>
+  <section class="ds-section" id="sizes"><h2>Sizes</h2><p class="ds-na">One size; height from content.</p></section>
+  <section class="ds-section" id="states"><h2>States</h2>
+    <div class="ds-example"><div class="ds-example__canvas ">
+<div style="width:100%"><footer class="footer" style="margin-top:0"><div class="wrap footer__grid"><p class="footer__made">Made in Toronto. © 2026 Banaro.</p><nav aria-label="Footer"><ul class="footer__links"><li><a href="#" data-state="hover">About</a></li><li><a href="#" data-state="focus">Code of conduct</a></li><li><a href="#" aria-current="page" style="color: var(--color-fg-default); text-decoration: underline">Privacy</a></li><li><a href="#">Contact</a></li></ul></nav><p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p></div></footer></div>
+    </div><div class="ds-example__caption"><span>About hover, Code of conduct focus, Privacy current (<code>aria-current="page"</code>). <span class="crd-ac">AC-2, AC-3</span></span></div></div>
+    <div class="ds-example"><div class="ds-example__canvas ">
+<div style="width:100%"><footer class="footer" style="margin-top:0"><div class="wrap footer__grid"><p class="footer__made">Made in Toronto. © 2026 Banaro.</p><nav aria-label="Footer"><ul class="footer__links"><li><a href="#">About</a></li><li><a href="#">Code of conduct</a></li><li><a href="#">Privacy</a></li><li><a href="#">Contact</a></li></ul></nav></div></footer></div>
+    </div><div class="ds-example__caption"><span>Without the land acknowledgement (<code>land = null</code>). <span class="crd-ac">AC-1</span></span></div></div>
+  </section>
+  <section class="ds-section" id="themes"><h2>Both themes</h2>
+    <div class="ds-themes">
+      <div data-theme="light"><footer class="footer" style="margin-top:0"><div class="wrap footer__grid"><p class="footer__made">Made in Toronto. © 2026 Banaro.</p><nav aria-label="Footer"><ul class="footer__links"><li><a href="#">About</a></li><li><a href="#">Code of conduct</a></li><li><a href="#">Privacy</a></li><li><a href="#">Contact</a></li></ul></nav><p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p></div></footer></div>
+      <div data-theme="dark"><footer class="footer" style="margin-top:0"><div class="wrap footer__grid"><p class="footer__made">Made in Toronto. © 2026 Banaro.</p><nav aria-label="Footer"><ul class="footer__links"><li><a href="#">About</a></li><li><a href="#">Code of conduct</a></li><li><a href="#">Privacy</a></li><li><a href="#">Contact</a></li></ul></nav><p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p></div></footer></div>
+    </div>
+    <span class="crd-ac">AC-5, AC-6</span>
+  </section>
+  <section class="ds-section" id="responsive"><h2>Responsive</h2>
+    <div class="crd-frames">
+      <figure class="crd-frame"><span class="crd-ac">320 px · light · AC-7</span><iframe title="320 pixel wide frame, light theme" width="320" height="420" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;light&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/fonts/fonts.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/components.css&quot;&gt;&lt;/head&gt;&lt;body style=&quot;background: var(--color-bg-canvas); color: var(--color-fg-default)&quot;&gt;&lt;footer class=&quot;footer&quot; style=&quot;margin-top:0&quot;&gt;&lt;div class=&quot;wrap footer__grid&quot;&gt;&lt;p class=&quot;footer__made&quot;&gt;Made in Toronto. © 2026 Banaro.&lt;/p&gt;&lt;nav aria-label=&quot;Footer&quot;&gt;&lt;ul class=&quot;footer__links&quot;&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;About&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;Code of conduct&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;Privacy&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;Contact&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/nav&gt;&lt;p class=&quot;footer__land&quot;&gt;Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.&lt;/p&gt;&lt;/div&gt;&lt;/footer&gt;&lt;/body&gt;&lt;/html&gt;"></iframe></figure>
+      <figure class="crd-frame"><span class="crd-ac">360 px · dark · AC-5, AC-7</span><iframe title="360 pixel wide frame, dark theme" width="360" height="420" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;dark&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/fonts/fonts.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/components.css&quot;&gt;&lt;/head&gt;&lt;body style=&quot;background: var(--color-bg-canvas); color: var(--color-fg-default)&quot;&gt;&lt;footer class=&quot;footer&quot; style=&quot;margin-top:0&quot;&gt;&lt;div class=&quot;wrap footer__grid&quot;&gt;&lt;p class=&quot;footer__made&quot;&gt;Made in Toronto. © 2026 Banaro.&lt;/p&gt;&lt;nav aria-label=&quot;Footer&quot;&gt;&lt;ul class=&quot;footer__links&quot;&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;About&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;Code of conduct&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;Privacy&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;Contact&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/nav&gt;&lt;p class=&quot;footer__land&quot;&gt;Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.&lt;/p&gt;&lt;/div&gt;&lt;/footer&gt;&lt;/body&gt;&lt;/html&gt;"></iframe></figure>
+      <figure class="crd-frame"><span class="crd-ac">1040 px · two columns · AC-8</span><iframe title="1040 pixel wide frame, light theme" width="1040" height="320" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;light&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/fonts/fonts.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/components.css&quot;&gt;&lt;/head&gt;&lt;body style=&quot;background: var(--color-bg-canvas); color: var(--color-fg-default)&quot;&gt;&lt;footer class=&quot;footer&quot; style=&quot;margin-top:0&quot;&gt;&lt;div class=&quot;wrap footer__grid&quot;&gt;&lt;p class=&quot;footer__made&quot;&gt;Made in Toronto. © 2026 Banaro.&lt;/p&gt;&lt;nav aria-label=&quot;Footer&quot;&gt;&lt;ul class=&quot;footer__links&quot;&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;About&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;Code of conduct&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;Privacy&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;Contact&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/nav&gt;&lt;p class=&quot;footer__land&quot;&gt;Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.&lt;/p&gt;&lt;/div&gt;&lt;/footer&gt;&lt;/body&gt;&lt;/html&gt;"></iframe></figure>
+    </div>
+    <p class="ds-na">The perf-test scenario (AC-10) is measured, not drawn.</p>
+  </section>
+  <section class="ds-section" id="contrast"><h2>Contrast</h2>
+    <div class="ds-example__canvas ds-example__canvas--stack">
+      <div class="ds-pair"><span>Links and maker line</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-bg-canvas" data-min="4.5"></span></div>
+      <div class="ds-pair"><span>Land acknowledgement</span><span class="ds-pair__ratio" data-contrast="--color-fg-subtle|--color-bg-canvas" data-min="4.5"></span></div>
+      <div class="ds-pair"><span>Focus ring</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-bg-canvas" data-min="3"></span></div>
+      <div class="ds-pair" data-theme="dark"><span>Dark: Links and maker line</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-bg-canvas" data-min="4.5"></span></div>
+      <div class="ds-pair" data-theme="dark"><span>Dark: Land acknowledgement</span><span class="ds-pair__ratio" data-contrast="--color-fg-subtle|--color-bg-canvas" data-min="4.5"></span></div>
+      <div class="ds-pair" data-theme="dark"><span>Dark: Focus ring</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-bg-canvas" data-min="3"></span></div>
+    </div>
+    <span class="crd-ac">AC-3, AC-5</span>
+  </section>
+  <section class="ds-section" id="tokens"><h2>Tokens</h2>
+    <div class="ds-table-wrap"><table class="ds-table">
+      <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+      <tbody>
+        <tr><td>Rule</td><td><code>--color-border-default</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-border-default" data-swatch></i><span data-token="--color-border-default"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-border-default" data-swatch></i><span data-token="--color-border-default"></span></span></td></tr>
+        <tr><td>Links, maker</td><td><code>--color-fg-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td></tr>
+        <tr><td>Hover</td><td><code>--color-fg-default</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-default" data-swatch></i><span data-token="--color-fg-default"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-default" data-swatch></i><span data-token="--color-fg-default"></span></span></td></tr>
+        <tr><td>Land</td><td><code>--color-fg-subtle</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-subtle" data-swatch></i><span data-token="--color-fg-subtle"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-subtle" data-swatch></i><span data-token="--color-fg-subtle"></span></span></td></tr>
+        <tr><td>Focus ring</td><td><code>--color-focus-ring</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-focus-ring" data-swatch></i><span data-token="--color-focus-ring"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-focus-ring" data-swatch></i><span data-token="--color-focus-ring"></span></span></td></tr>
+        <tr><td>Top gap</td><td><code>--layout-section-gap</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--layout-section-gap" data-swatch></i><span data-token="--layout-section-gap"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--layout-section-gap" data-swatch></i><span data-token="--layout-section-gap"></span></span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <footer class="ds-footer"><span>Banaro component requirements · <a href="README.md">index</a></span><a href="#top">Back to top</a></footer>
+</main>
+<script src="../../design-system/assets/ds.js"></script>
+</body>
+</html>
