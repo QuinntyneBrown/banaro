@@ -5,6 +5,7 @@ x-banaro-api: &banaro-api
   image: banaro-api:dev
   volumes:
     - ./backend:/app
+    - ./frontend:/frontend:ro
   env_file: ./backend/.env
   depends_on:
     postgres:
