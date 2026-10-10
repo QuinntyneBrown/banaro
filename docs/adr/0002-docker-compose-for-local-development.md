@@ -47,7 +47,7 @@ the host with Node.
 
 ## Implementation Notes
 
-- The `api` service listens on `http://localhost:8000`. The Angular dev server proxies `/api` and
+- The `api` service listens on `http://localhost:8100`. The Angular dev server proxies `/api` and
   `/sanctum` to it, so cookies stay first-party.
 - Migrations never run when a container starts (L2-054). Run them with
   `docker compose run --rm api php artisan migrate`.
