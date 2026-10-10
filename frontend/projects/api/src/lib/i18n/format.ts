@@ -27,6 +27,20 @@ export function formatLongDate(isoDate: string): string {
   return `${part('day')} ${part('month')} ${part('year')}`;
 }
 
+/** "10:30 am" in Toronto time, lower case without dots (L2-052 criterion 2). */
+export function formatTime(iso: string | Date): string {
+  const parts = new Intl.DateTimeFormat(LOCALE, {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    timeZone: TIME_ZONE,
+  }).formatToParts(typeof iso === 'string' ? new Date(iso) : iso);
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((p) => p.type === type)?.value ?? '';
+  const period = part('dayPeriod').toLowerCase().replace(/\./g, '').replace(/\s/g, '');
+  return `${part('hour')}:${part('minute')} ${period}`;
+}
+
 @Pipe({ name: 'bnNumber' })
 export class NumberPipe implements PipeTransform {
   transform(value: number): string {

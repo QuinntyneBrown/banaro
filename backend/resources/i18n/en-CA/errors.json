@@ -16,5 +16,14 @@
     "heading": "Something went wrong on our side",
     "lead": "It isn't you. Try again in a moment; your profile and messages are safe.",
     "retry": "Try again"
+  },
+  "maintenance": {
+    "title": "Down for maintenance · Banaro",
+    "heading": "Down for a short maintenance",
+    "leadAt": "We're tending to Banaro and expect to be back by {time} Eastern. Nothing is lost. Thank you for your patience.",
+    "lead": "We're tending to Banaro and expect to be back soon. Nothing is lost. Thank you for your patience.",
+    "checkAgain": "Check again",
+    "contact": "Contact us",
+    "supportEmail": "support@banaro.ca"
   }
 }

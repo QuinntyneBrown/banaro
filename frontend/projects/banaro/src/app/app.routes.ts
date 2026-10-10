@@ -16,6 +16,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/server-error/server-error').then((m) => m.ServerErrorPage),
   },
   {
+    path: 'maintenance',
+    loadComponent: () => import('./pages/maintenance/maintenance').then((m) => m.MaintenancePage),
+  },
+  {
     path: '**',
     loadComponent: () => import('./pages/not-found/not-found').then((m) => m.NotFoundPage),
   },

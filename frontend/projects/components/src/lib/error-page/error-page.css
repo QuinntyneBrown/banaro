@@ -22,3 +22,16 @@
 .error-page__reference code {
   user-select: all;
 }
+.empty__icon {
+  display: grid;
+  place-items: center;
+  width: var(--size-quote-photo-width-9);
+  height: var(--size-quote-photo-height-10);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-subtle);
+  color: var(--color-fg-accent);
+}
+.empty__icon .icon {
+  width: var(--size-empty-icon-icon-width-32);
+  height: var(--size-switch-control-height-24);
+}
