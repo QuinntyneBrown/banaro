@@ -14,12 +14,16 @@ const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 /**
- * Same-origin API: `/api` and `/sanctum` go to the Banaro API, so the browser and server-side
- * rendering both call relative URLs and session cookies stay first-party. The dev server does the
- * same through proxy.conf.json.
+ * Same-origin API: `/api`, `/sanctum` and `/health` go to the Banaro API, so the browser and
+ * server-side rendering both call relative URLs and session cookies stay first-party. The dev
+ * server does the same through proxy.conf.json.
  */
 const apiUrl = new URL(process.env['BANARO_API_URL'] ?? 'http://localhost:8100');
-app.use(['/api', '/sanctum'], (req, res) => {
+app.use(['/api', '/sanctum', '/health'], (req, res) => {
+  // Hop-by-hop headers describe the browser's connection, not this one (RFC 9110 §7.6.1).
+  const headers = { ...req.headers };
+  delete headers.connection;
+  delete headers['keep-alive'];
   const upstream = httpRequest(
     {
       protocol: apiUrl.protocol,
@@ -28,7 +32,7 @@ app.use(['/api', '/sanctum'], (req, res) => {
       method: req.method,
       path: req.originalUrl,
       headers: {
-        ...req.headers,
+        ...headers,
         'x-forwarded-for': [req.headers['x-forwarded-for'], req.socket.remoteAddress]
           .filter(Boolean)
           .join(', '),

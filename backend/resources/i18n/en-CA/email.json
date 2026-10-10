@@ -12,5 +12,27 @@
     "signIn": "Sign in to Banaro",
     "reset": "Forgot your password? Set a new one at {url}",
     "ignore": "If this was not you, you can ignore this e-mail."
+  },
+  "newSignIn": {
+    "subject": "New sign-in to your Banaro account",
+    "intro": "Your Banaro account was signed in to from {browser} on {time} (Toronto time).",
+    "ifYou": "If this was you, there is nothing to do. If it was not, reset your password now so no one else can use your account.",
+    "reset": "Reset your password",
+    "help": "Questions? Write to us at {url}.",
+    "browserOn": "{browser} on {system}",
+    "unknownBrowser": "an unrecognised browser"
+  },
+  "reset": {
+    "subject": "Choose a new Banaro password",
+    "intro": "Someone asked to reset the password for your Banaro account. If it was you, choose a new password with the link below.",
+    "action": "Choose a new password",
+    "expiry": "The link works once and expires in 60 minutes. If you did not ask for it, you can ignore this e-mail; your password stays the same."
+  },
+  "passwordChanged": {
+    "subject": "Your Banaro password was changed",
+    "intro": "The password for your Banaro account was just changed, and every other session was signed out.",
+    "notYou": "If you did not change it, reset your password now so no one else can use your account.",
+    "reset": "Reset your password",
+    "help": "Questions? Write to us at {url}."
   }
 }

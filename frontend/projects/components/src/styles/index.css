@@ -1,3 +1,4 @@
+@import '@angular/cdk/overlay-prebuilt.css';
 /* Banaro foundations, shared by the banaro and admin applications. */
 @import './fonts.css';
 @import './tokens.css';

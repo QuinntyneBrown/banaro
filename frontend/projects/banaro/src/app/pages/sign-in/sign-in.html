@@ -1,0 +1,94 @@
+<div class="wrap">
+  @if (state() === 'signed-out') {
+    <bn-auth-card
+      icon="check"
+      [heading]="'identity.signIn.signedOut.title' | t"
+      [sub]="'identity.signIn.signedOut.sub' | t"
+    >
+      <div class="form-actions">
+        <a bn-button variant="primary" routerLink="/sign-in">{{
+          'identity.signIn.signedOut.again' | t
+        }}</a>
+        <a bn-button variant="quiet" routerLink="/">{{ 'identity.signIn.signedOut.home' | t }}</a>
+      </div>
+    </bn-auth-card>
+  } @else {
+    <bn-auth-card [heading]="'identity.signIn.title' | t" [sub]="'identity.signIn.sub' | t">
+      <form
+        class="form"
+        novalidate
+        [attr.aria-label]="'identity.signIn.formLabel' | t"
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+      >
+        @if (state() === 'invalid') {
+          <bn-form-summary [heading]="'identity.errors.summary' | t" [errors]="summaryErrors()" />
+        }
+        @if (state() === 'error') {
+          <bn-alert variant="danger" [heading]="'identity.signIn.errors.mismatch' | t">
+            {{ 'identity.signIn.errors.mismatchBody' | t }}
+            <a slot="actions" bn-button variant="quiet" size="sm" routerLink="/forgot-password">{{
+              'identity.signIn.errors.reset' | t
+            }}</a>
+          </bn-alert>
+        }
+        @if (formAlert()) {
+          <bn-alert variant="danger" [heading]="formAlert()!" />
+        }
+        <bn-field [label]="'identity.signIn.email' | t" controlId="email" [error]="errors().email">
+          <input
+            bn-input
+            id="email"
+            type="email"
+            autocomplete="email"
+            formControlName="email"
+            [readonly]="state() === 'submitting'"
+            [invalid]="!!errors().email"
+            [attr.aria-describedby]="describedBy('email', errors().email)"
+          />
+        </bn-field>
+        <bn-field
+          [label]="'identity.signIn.password' | t"
+          controlId="password"
+          [error]="errors().password"
+        >
+          <input
+            bn-input
+            id="password"
+            type="password"
+            autocomplete="current-password"
+            formControlName="password"
+            [readonly]="state() === 'submitting'"
+            [invalid]="!!errors().password"
+            [attr.aria-describedby]="describedBy('password', errors().password)"
+          />
+        </bn-field>
+        <p class="field__help">
+          <a routerLink="/forgot-password">{{ 'identity.signIn.forgot' | t }}</a>
+        </p>
+        <div class="form-actions">
+          <button
+            bn-button
+            variant="primary"
+            type="submit"
+            [busy]="state() === 'submitting'"
+            [disabled]="state() === 'submitting' || offline()"
+          >
+            {{
+              (state() === 'submitting'
+                ? 'identity.signIn.submitting'
+                : state() === 'error'
+                  ? 'identity.signIn.retry'
+                  : 'identity.signIn.submit'
+              ) | t
+            }}
+          </button>
+        </div>
+      </form>
+      <span slot="alt">
+        {{ 'identity.signIn.alt' | t }}
+        <a routerLink="/join">{{ 'identity.signIn.join' | t }}</a>
+      </span>
+    </bn-auth-card>
+  }
+</div>

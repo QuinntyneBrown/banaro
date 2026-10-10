@@ -35,5 +35,18 @@
     "failed": "We couldn't reconnect. Check your network, then try again.",
     "retry": "Try again",
     "restored": "Back online. Banaro is up to date."
-  }
+  },
+  "account": {
+    "label": "Your account",
+    "button": "Your account, {name}",
+    "viewProfile": "View profile",
+    "editProfile": "Edit profile",
+    "settings": "Settings",
+    "projects": "Your projects",
+    "signOut": "Sign out"
+  },
+  "toast": {
+    "dismiss": "Dismiss notification"
+  },
+  "optional": "(optional)"
 }

@@ -8,7 +8,12 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   selector: 'bn-field',
   template: `
     <div class="field">
-      <label class="field__label" [attr.for]="controlId()">{{ label() }}</label>
+      <label class="field__label" [attr.for]="controlId()"
+        >{{ label() }}
+        @if (optionalText()) {
+          <span class="field__optional">{{ optionalText() }}</span>
+        }
+      </label>
       <ng-content />
       @if (error()) {
         <p class="field__error" [id]="controlId() + '-err'">
@@ -21,6 +26,11 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       } @else if (help()) {
         <p class="field__help" [id]="controlId() + '-help'">{{ help() }}</p>
       }
+      @if (counter()) {
+        <p class="field__counter" [id]="controlId() + '-count'" aria-live="polite">
+          {{ counter() }}
+        </p>
+      }
     </div>
   `,
   styleUrl: './field.css',
@@ -31,6 +41,10 @@ export class Field {
   readonly controlId = input.required<string>();
   readonly help = input<string>();
   readonly error = input<string | null>();
+  /** The catalogue's "(optional)", shown after the label; required questions get none. */
+  readonly optionalText = input<string | null>(null);
+  /** Pre-formatted character count, "231 / 500", announced as it changes. */
+  readonly counter = input<string | null>(null);
 }
 
 /**

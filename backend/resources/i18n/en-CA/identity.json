@@ -40,5 +40,147 @@
       "nothingTitle": "Nothing yet?",
       "nothingBody": "Look in your spam folder, or wait a minute. The link works for 24 hours."
     }
+  },
+  "signIn": {
+    "meta": {
+      "title": "Sign in · Banaro",
+      "description": "Sign in to Banaro to find builders, share projects and RSVP to events."
+    },
+    "title": "Sign in",
+    "sub": "Welcome back. Pick up where you left off.",
+    "formLabel": "Sign in",
+    "email": "E-mail",
+    "password": "Password",
+    "forgot": "Forgot your password?",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "retry": "Try again",
+    "alt": "New to Banaro?",
+    "join": "Join Banaro",
+    "signedOut": {
+      "title": "You're signed out",
+      "sub": "Thanks for stopping by. Your session on this device has ended, and nothing was left behind.",
+      "again": "Sign in again",
+      "home": "Back to the home page"
+    },
+    "errors": {
+      "mismatch": "Those details don't match",
+      "mismatchBody": "Check your e-mail and password and try again, or reset your password.",
+      "reset": "Reset password",
+      "email": "Enter your e-mail address in the form name@example.com",
+      "password": "Enter your password",
+      "tooMany": "Too many sign-in attempts. Try again in {minutes} minutes.",
+      "tooManyTitle": "Too many sign-in attempts",
+      "failed": "We couldn't sign you in. Try again in a moment."
+    }
+  },
+  "verify": {
+    "meta": {
+      "title": "Confirm your e-mail · Banaro",
+      "description": "Confirm your e-mail address to finish joining Banaro."
+    },
+    "default": {
+      "title": "Confirm your e-mail",
+      "sub": "We sent a link to {email}. Open it to finish joining Banaro.",
+      "resend": "Send the link again",
+      "help": "Need help?"
+    },
+    "success": {
+      "title": "E-mail confirmed",
+      "sub": "Thank you. Your account is ready. Two minutes of questions and your profile is set.",
+      "setUp": "Set up your profile"
+    },
+    "error": {
+      "title": "We couldn't confirm that link",
+      "sub": "It may have expired, or it was already used. Ask for a fresh link and we'll send it to the e-mail you joined with.",
+      "resend": "Send a new link",
+      "signIn": "Back to sign in"
+    },
+    "sent": "If this address still needs confirming, a new link is on its way.",
+    "errors": {
+      "invalid": "We couldn't confirm that link",
+      "tooMany": "You've asked for too many links. Try again in {minutes} minutes.",
+      "failed": "We couldn't send a new link. Try again in a moment.",
+      "unverified": "Confirm your e-mail address to use Banaro."
+    }
+  },
+  "signOut": {
+    "failed": {
+      "title": "We couldn't sign you out",
+      "body": "Check your connection and try again.",
+      "retry": "Try again"
+    }
+  },
+  "forgot": {
+    "meta": {
+      "title": "Forgot your password · Banaro",
+      "description": "Get a link to choose a new Banaro password."
+    },
+    "title": "Forgot your password?",
+    "sub": "Enter the e-mail you joined with and we'll send a link to choose a new password.",
+    "formLabel": "Forgot your password",
+    "email": "E-mail",
+    "submit": "Send reset link",
+    "submitting": "Sending…",
+    "back": "Back to sign in",
+    "success": {
+      "title": "Check your e-mail",
+      "sub": "If an account exists for {email}, a reset link is on its way. It works for 60 minutes.",
+      "again": "Send it again"
+    },
+    "errors": {
+      "tooMany": "Too many requests. Try again in {minutes} minutes.",
+      "failed": "We couldn't send a reset link. Try again in a moment."
+    }
+  },
+  "reset": {
+    "meta": {
+      "title": "Choose a new password · Banaro",
+      "description": "Choose a new password for your Banaro account."
+    },
+    "title": "Choose a new password",
+    "sub": "Choose a new password for {email}.",
+    "formLabel": "Choose a new password",
+    "password": "New password",
+    "passwordHelp": "At least 12 characters.",
+    "confirm": "Confirm new password",
+    "submit": "Update password",
+    "submitting": "Updating…",
+    "success": {
+      "title": "Password updated",
+      "sub": "You can sign in with your new password. For safety, we signed you out everywhere else.",
+      "signIn": "Sign in"
+    },
+    "error": {
+      "title": "This link has expired",
+      "sub": "Reset links work for 60 minutes and only once. Request a new one and we'll send it straight away.",
+      "newLink": "Send a new link",
+      "signIn": "Back to sign in"
+    },
+    "errors": {
+      "mismatch": "The two passwords don't match",
+      "confirmRequired": "Enter the new password again",
+      "same": "Choose a different password. This one is your current password.",
+      "failed": "We couldn't update your password. Try again in a moment."
+    }
+  },
+  "session": {
+    "expired": "Your session has expired."
+  },
+  "expired": {
+    "title": "Your session has expired",
+    "description": "For your safety Banaro signed you out after a long break. Sign back in and your unsaved changes will still be here.",
+    "email": "E-mail",
+    "password": "Password",
+    "signIn": "Sign back in",
+    "signOut": "Sign out",
+    "invalid": {
+      "before": "That password doesn't match. Try again, or",
+      "reset": "reset it"
+    },
+    "failed": {
+      "title": "We couldn't sign you in",
+      "body": "Banaro couldn't reach the server. Your edit is still safe on this page."
+    }
   }
 }

@@ -1,0 +1,77 @@
+/* Extracted from docs/design-system/assets/components.css: menu. Not encapsulated: the panel
+   renders in the CDK overlay container. */
+.menu {
+  min-width: var(--size-enu-and-tabs----------------------------------min-width-30);
+  max-width: 100%;
+  padding: var(--space-2);
+  border-radius: var(--radius-lg);
+  border: var(--border-width-hairline) solid var(--color-border-default);
+  background: var(--color-bg-surface-raised);
+  box-shadow: var(--shadow-3);
+}
+.menu__header {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width-hairline) solid var(--color-border-default);
+  margin-bottom: var(--space-2);
+}
+.menu__header .rows__title {
+  margin: 0;
+  font: var(--text-h4);
+}
+.menu__header .rows__meta {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--color-fg-muted);
+}
+.menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: var(--target-comfortable);
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-fg-default);
+  font: var(--text-body);
+  text-decoration: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.menu__item:hover,
+.menu__item:focus-visible,
+.menu__item[data-state='hover'] {
+  background: var(--color-bg-subtle);
+  color: var(--color-fg-default);
+}
+.menu__item:active,
+.menu__item[data-state='active'] {
+  background: var(--color-accent-subtle-hover);
+}
+.menu__item--danger {
+  color: var(--color-danger-fg);
+}
+.menu__item[aria-disabled='true'] {
+  color: var(--color-fg-disabled);
+  background: var(--color-bg-subtle);
+  cursor: not-allowed;
+}
+.menu__divider {
+  display: block;
+  height: var(--border-width-hairline);
+  margin: var(--space-2) 0;
+  border: 0;
+  background: var(--color-border-default);
+}
+@media (forced-colors: active) {
+  .menu {
+    border-color: CanvasText;
+  }
+  .menu__item:focus-visible {
+    background: Highlight;
+    color: HighlightText;
+  }
+}

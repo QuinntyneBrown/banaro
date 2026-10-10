@@ -11,6 +11,7 @@
 .auth__card {
   width: 100%;
   max-width: var(--size-auth-card-max-width-33);
+  min-width: 0;
   display: grid;
   gap: var(--space-8);
   padding: var(--space-8) var(--space-6);
@@ -53,4 +54,8 @@
 
 .auth__alt:empty {
   display: none;
+}
+
+.auth__card--wide {
+  max-width: var(--size-dialog--lg-max-width-28);
 }

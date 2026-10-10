@@ -1,0 +1,45 @@
+/* Extracted from docs/design-system/assets/components.css: rows, list. Not encapsulated: the hosts
+   are the page's own ul and li. */
+.rows,
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.list {
+  display: grid;
+}
+.rows > li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  border-bottom: var(--border-width-hairline) solid var(--color-border-default);
+}
+.rows__main {
+  flex: 1;
+  min-width: 0;
+}
+.rows__title {
+  margin: 0;
+  font: var(--text-h4);
+  overflow-wrap: anywhere;
+}
+.rows__meta {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--color-fg-muted);
+}
+.list > li {
+  padding-block: var(--space-3);
+  border-bottom: var(--border-width-hairline) solid var(--color-border-default);
+}
+.list a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--target-comfortable);
+}
+.list [aria-current='true'] {
+  background: var(--color-accent-subtle);
+}

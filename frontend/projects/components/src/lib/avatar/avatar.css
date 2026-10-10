@@ -1,0 +1,51 @@
+:host {
+  display: inline-flex;
+  flex: none;
+}
+
+/* Extracted from docs/design-system/assets/components.css: avatar, avatar-initials, tiles */
+.avatar {
+  width: var(--space-10);
+  height: var(--space-10);
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+.avatar-initials {
+  display: grid;
+  place-items: center;
+  width: var(--space-10);
+  height: var(--space-10);
+  flex: none;
+  border-radius: var(--radius-md);
+  font: var(--font-weight-semibold) var(--font-size-sm) / 1 var(--font-family-sans);
+  color: var(--color-tile-fg);
+}
+.avatar--sm {
+  width: var(--space-8);
+  height: var(--space-8);
+}
+.avatar--md {
+  width: var(--space-12);
+  height: var(--space-12);
+}
+.avatar--lg {
+  width: var(--space-16);
+  height: var(--space-16);
+}
+.tile--sage {
+  background: var(--color-tile-sage);
+}
+.tile--clay {
+  background: var(--color-tile-clay);
+}
+.tile--fjord {
+  background: var(--color-tile-fjord);
+}
+.tile--oat {
+  background: var(--color-tile-oat);
+}
+@media (forced-colors: active) {
+  .avatar-initials {
+    border: var(--border-width-hairline) solid CanvasText;
+  }
+}

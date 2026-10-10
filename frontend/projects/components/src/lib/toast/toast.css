@@ -1,0 +1,84 @@
+:host {
+  display: block;
+}
+
+/* Extracted from docs/design-system/assets/components.css: toast, icon-btn */
+.toast {
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-1) var(--space-4);
+  align-items: start;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  border: var(--border-width-hairline) solid var(--color-border-default);
+  background: var(--color-bg-surface-raised);
+  box-shadow: var(--shadow-3);
+}
+.toast > .icon {
+  margin-top: var(--space-1);
+  color: var(--color-info-icon);
+}
+.toast__title {
+  margin: 0;
+  font: var(--text-label);
+}
+.toast__body {
+  grid-column: 2;
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--color-fg-muted);
+}
+.toast__action {
+  grid-column: 2;
+  justify-self: start;
+  margin-top: var(--space-1);
+}
+.toast__close {
+  grid-column: 3;
+  grid-row: 1;
+}
+.toast--success > .icon {
+  color: var(--color-success-icon);
+}
+.toast--warning > .icon {
+  color: var(--color-warning-icon);
+}
+.toast--danger {
+  border-color: var(--color-danger-border);
+}
+.toast--danger > .icon {
+  color: var(--color-danger-icon);
+}
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  margin: calc(-1 * var(--space-1)) calc(-1 * var(--space-2)) 0 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-fg-muted);
+  cursor: pointer;
+}
+.icon-btn:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-fg-default);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .toast {
+    animation: rise var(--duration-slow) var(--ease-enter);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-2));
+  }
+}
+@media (forced-colors: active) {
+  .toast {
+    border-color: CanvasText;
+  }
+}
