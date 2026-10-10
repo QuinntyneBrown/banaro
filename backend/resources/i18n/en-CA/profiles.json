@@ -1,16 +1,112 @@
 {
   "errors": {
-    "neighbourhood": "Choose your neighbourhood or city",
-    "role": "Choose the role that describes you best",
+    "neighbourhood": "Choose where you are based",
+    "role": "Choose the role that fits best",
     "skillsMax": "Choose up to 12 skills. Remove one to add another.",
     "skillNameMax": "Use 40 characters or fewer for a skill",
     "skill": "Choose a skill from the list or type one",
     "openTo": "Choose from co-founding, advising and contributing",
-    "buildingMax": "Use 280 characters or fewer"
+    "buildingMax": "Use 280 characters or fewer",
+    "headlineMax": "Use 80 characters or fewer for your role",
+    "bioMax": "Your bio is {count} characters. Shorten it to 500 or fewer.",
+    "experienceMax": "List up to 10 roles",
+    "experienceTitle": "Enter the role, in 100 characters or fewer",
+    "experienceStart": "Enter when you started, like 2024-03-01",
+    "experienceEnd": "The end date can't be before the start date",
+    "linksMax": "Add up to 5 links",
+    "linkLabel": "Name the link, in 60 characters or fewer",
+    "linkUrl": "Enter a web address that starts with https://, for example https://harvest.example.ca",
+    "openToRequired": "Choose at least one way you are open to working with others.",
+    "lookingForMax": "Use 400 characters or fewer",
+    "nameRequired": "Enter your name so builders know who you are."
   },
   "onboarding": {
     "errors": {
-      "incomplete": "Finish every step before you finish onboarding."
+      "incomplete": "Finish every step before you finish onboarding.",
+      "failed": "We couldn't save your profile. Your answers are still here."
+    },
+    "meta": {
+      "title": "Set up your profile · Banaro",
+      "description": "Three short steps to set up your Banaro profile."
+    },
+    "progress": "Progress",
+    "complete": "Complete",
+    "position": "Step {n} of {total}",
+    "formLabel": "Profile step {n} of {total}",
+    "steps": {
+      "about": "About you",
+      "skills": "Skills",
+      "goals": "Goals"
+    },
+    "chooseOne": "Choose one",
+    "continue": "Continue",
+    "saving": "Saving…",
+    "back": "Back",
+    "finish": "Finish",
+    "finishing": "Finishing…",
+    "about": {
+      "title": "Welcome, let's set up your profile",
+      "sub": "Three short steps. You can change any of it later.",
+      "name": "Full name",
+      "neighbourhood": "Neighbourhood or city",
+      "neighbourhoodHelp": "We use this to show who is nearby. Members only see the neighbourhood, never your address.",
+      "role": "What best describes your role?"
+    },
+    "skills": {
+      "title": "What do you bring?",
+      "sub": "Pick the skills you would offer a teammate, or want to learn alongside one.",
+      "legend": "Skills",
+      "help": "Choose up to 12. Press a skill to select it, press again to remove it.",
+      "selected": "{count} selected",
+      "other": "Something else?",
+      "otherHelp": "Add one skill that isn't listed."
+    },
+    "goals": {
+      "title": "What are you hoping for?",
+      "sub": "This shapes the three people we suggest to you every Monday.",
+      "legend": "What are you open to?",
+      "coFounding": {
+        "title": "Open to co-founding",
+        "text": "I'm looking for a co-founder, or happy to become one."
+      },
+      "advising": {
+        "title": "Open to advising",
+        "text": "I can give a few hours a month to an early team."
+      },
+      "contributing": {
+        "title": "Open to contributing",
+        "text": "I'd like to help on someone's project."
+      },
+      "building": "What are you building?",
+      "buildingHelp": "One or two sentences. It appears on your profile."
+    },
+    "success": {
+      "title": "Welcome to Banaro, {name}",
+      "sub": "Your profile is live. On Monday we will suggest three builders nearby. Here is where to begin.",
+      "nextSteps": "Next steps",
+      "browse": {
+        "title": "Browse builders",
+        "meta": "Find local builders by skill, role and neighbourhood.",
+        "action": "Browse builders"
+      },
+      "share": {
+        "title": "Share a project",
+        "meta": "Tell people what you're building and ask for feedback.",
+        "action": "Share a project"
+      },
+      "events": {
+        "title": "See what's on",
+        "meta": "Demo nights, prayer breakfasts and workshops across the GTA.",
+        "action": "See events"
+      },
+      "dashboard": "Go to your dashboard"
     }
+  },
+  "roles": {
+    "founder": "Founder",
+    "engineer": "Engineer",
+    "designer": "Designer",
+    "productManager": "Product manager",
+    "other": "Other"
   }
 }

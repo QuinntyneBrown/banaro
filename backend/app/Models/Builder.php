@@ -6,6 +6,7 @@ use App\Enums\BuilderRole;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 /** A member's public profile; one per account (L2-006, L2-007). */
@@ -49,6 +50,18 @@ class Builder extends Model
     public function skills(): BelongsToMany
     {
         return $this->belongsToMany(Skill::class)->withPivot('position')->orderByPivot('position');
+    }
+
+    /** @return HasMany<ExperienceEntry, $this> */
+    public function experience(): HasMany
+    {
+        return $this->hasMany(ExperienceEntry::class)->orderBy('position');
+    }
+
+    /** @return HasMany<ProfileLink, $this> */
+    public function links(): HasMany
+    {
+        return $this->hasMany(ProfileLink::class)->orderBy('position');
     }
 
     public function isComplete(): bool

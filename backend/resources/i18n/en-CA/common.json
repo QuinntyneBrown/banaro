@@ -47,5 +47,6 @@
   },
   "toast": {
     "dismiss": "Dismiss notification"
-  }
+  },
+  "optional": "(optional)"
 }
