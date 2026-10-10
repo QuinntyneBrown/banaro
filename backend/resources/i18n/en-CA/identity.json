@@ -162,5 +162,8 @@
       "same": "Choose a different password. This one is your current password.",
       "failed": "We couldn't update your password. Try again in a moment."
     }
+  },
+  "session": {
+    "expired": "Your session has expired."
   }
 }
