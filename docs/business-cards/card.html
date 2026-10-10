@@ -38,6 +38,12 @@
   .back .lead { margin-top: 2px; font-size: 11px; font-weight: 600; color: #eee8dc; }
   .back .tag { margin-top: -4px; font-family: "JetBrains Mono", monospace; font-size: 7.5px; letter-spacing: 0.04em; color: #a8a193; }
   .back .url { position: absolute; bottom: 14px; color: var(--sage-300); }
+
+  /* Print: 1/8 in (12.5px) bleed on every side; trim lines fall where the edges above are. */
+  .card.bleed { width: 375px; height: 225px; }
+  .front.bleed { padding: 38.5px 40.5px; }
+  .front.bleed::after { width: 18.5px; }
+  .back.bleed .url { bottom: 26.5px; }
 </style>
 </head>
 <body>
