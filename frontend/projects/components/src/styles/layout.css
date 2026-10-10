@@ -1,0 +1,59 @@
+/* Page layout utilities shared by every screen. Source: docs/design-system/assets/components.css. */
+.page-block {
+  padding-block: var(--space-10) 0;
+}
+.page-block + .page-block {
+  padding-top: var(--space-12);
+}
+.narrow {
+  max-width: var(--size-search-max-width-18);
+}
+.prose {
+  max-width: var(--size-search-max-width-18);
+  display: grid;
+  gap: var(--space-5);
+}
+.prose h2 {
+  font: var(--text-h2);
+  font-size: var(--font-size-2xl);
+  margin-top: var(--space-6);
+}
+.prose p,
+.prose li {
+  color: var(--color-fg-muted);
+  font: var(--text-body-lg);
+}
+.prose ul {
+  padding-left: var(--space-6);
+  display: grid;
+  gap: var(--space-2);
+}
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.cluster--between {
+  justify-content: space-between;
+}
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+.form {
+  display: grid;
+  gap: var(--space-6);
+}
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+.form-actions--end {
+  justify-content: flex-end;
+}

@@ -1,0 +1,4 @@
+/* Spacing the mock sets inline. */
+.about__actions {
+  margin-top: var(--space-10);
+}

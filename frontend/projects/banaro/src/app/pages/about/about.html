@@ -1,0 +1,31 @@
+<div class="wrap">
+  <div class="page-block narrow">
+    <bn-page-header
+      [eyebrow]="'about.eyebrow' | t"
+      [heading]="'about.title' | t"
+      [sub]="'about.sub' | t"
+    />
+    <div class="prose">
+      <h2>{{ 'about.why.title' | t }}</h2>
+      <p>{{ 'about.why.text' | t }}</p>
+      <h2>{{ 'about.what.title' | t }}</h2>
+      <ul>
+        <li>{{ 'about.what.directory' | t }}</li>
+        <li>{{ 'about.what.projects' | t }}</li>
+        <li>{{ 'about.what.events' | t }}</li>
+        <li>{{ 'about.what.matching' | t }}</li>
+      </ul>
+      <h2>{{ 'about.who.title' | t }}</h2>
+      <p>{{ 'about.who.text' | t }}</p>
+      <h2>{{ 'about.believe.title' | t }}</h2>
+      <p>{{ 'about.believe.text' | t }}</p>
+      <h2>{{ 'about.where.title' | t }}</h2>
+      <p>{{ 'about.where.text' | t }}</p>
+      <p>{{ 'common.footer.land' | t }}</p>
+    </div>
+    <div class="cluster about__actions">
+      <a bn-button variant="primary" routerLink="/join">{{ 'about.join' | t }}</a>
+      <a bn-button variant="quiet" routerLink="/contact">{{ 'about.contact' | t }}</a>
+    </div>
+  </div>
+</div>

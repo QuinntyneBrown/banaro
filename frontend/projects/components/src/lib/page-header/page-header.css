@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+/* Extracted from docs/design-system/assets/components.css: page-head */
+.page-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  padding-block: var(--space-16) var(--space-10);
+}
+.page-head__title {
+  font: var(--text-h1);
+  letter-spacing: var(--letter-spacing-tight);
+}
+.page-head__sub {
+  color: var(--color-fg-muted);
+  font: var(--text-body-lg);
+}

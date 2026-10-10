@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "title": "About · Banaro",
+    "description": "Banaro is a small, local community for Christian product builders in Toronto and the GTA."
+  },
+  "eyebrow": "About",
+  "title": "Build with believers down the street",
+  "sub": "Banaro is a small, local community for Christian product builders in Toronto and the GTA.",
+  "why": {
+    "title": "Why Banaro",
+    "text": "Building a product can be lonely, and building one as a Christian in a busy city can feel lonelier still. Banaro exists so a founder in Leslieville can find an engineer in Mississauga, a designer in Markham, or an advisor a streetcar ride away, and meet over coffee."
+  },
+  "what": {
+    "title": "What you can do here",
+    "directory": "Find local builders by skill, role and neighbourhood.",
+    "projects": "Share what you're building, ask for feedback and look for collaborators.",
+    "events": "Come to demo nights, prayer breakfasts and workshops across the GTA.",
+    "matching": "Meet a co-founder, an advisor or a contributor who shares your faith."
+  },
+  "who": {
+    "title": "Who it is for",
+    "text": "Founders, engineers, designers and product managers who follow Jesus and want to do good work alongside others who do. You do not need to be an expert, and you do not need to agree on everything. You do need to be kind."
+  },
+  "believe": {
+    "title": "What we believe",
+    "text": "Banaro is a Christian community. Our members follow Jesus and hold to the historic Christian faith summed up in the Apostles' Creed. We come from many churches and traditions, and we do not ask anyone to agree with us on every question. Everyone is welcome at our events."
+  },
+  "where": {
+    "title": "Where we are",
+    "text": "Banaro is made in Toronto and runs on a small team and many volunteers. We grow slowly on purpose, so every member feels known."
+  },
+  "join": "Join Banaro",
+  "contact": "Contact us"
+}

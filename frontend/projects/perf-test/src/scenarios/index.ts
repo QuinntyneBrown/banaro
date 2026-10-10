@@ -3,6 +3,7 @@ import Brand from './Brand';
 import Button from './Button';
 import DarkTheme from './DarkTheme';
 import Footer from './Footer';
+import PageHeader from './PageHeader';
 import SkipLink from './SkipLink';
 import TopBar from './TopBar';
 
@@ -12,6 +13,7 @@ export const scenarios: Record<string, Type<unknown>> = {
   Button,
   DarkTheme,
   Footer,
+  PageHeader,
   SkipLink,
   TopBar,
 };
