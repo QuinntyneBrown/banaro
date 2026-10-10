@@ -31,5 +31,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Contact form: 3 messages per hour per client, keyed by a hash of the IP (L2-040, L2-046).
         RateLimiter::for('contact', fn (Request $request) => Limit::perHour(3)->by(hash('sha256', (string) $request->ip())));
+        // Join: 5 attempts per IP in 10 minutes (L2-001 criterion 6).
+        RateLimiter::for('join', fn (Request $request) => Limit::perMinutes(10, 5)->by(hash('sha256', (string) $request->ip())));
     }
 }

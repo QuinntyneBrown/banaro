@@ -1,0 +1,16 @@
+{
+  "greeting": "Hi {name},",
+  "verify": {
+    "subject": "Confirm your e-mail for Banaro",
+    "intro": "Thanks for joining Banaro. Confirm this is your e-mail address to finish setting up your account.",
+    "action": "Confirm my e-mail",
+    "expiry": "This link works once and expires in 24 hours. If you did not join Banaro, you can ignore this e-mail."
+  },
+  "accountExists": {
+    "subject": "You already have a Banaro account",
+    "intro": "Someone just tried to join Banaro with this e-mail address. You already have an account, so nothing has changed.",
+    "signIn": "Sign in to Banaro",
+    "reset": "Forgot your password? Set a new one at {url}",
+    "ignore": "If this was not you, you can ignore this e-mail."
+  }
+}

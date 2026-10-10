@@ -1,0 +1,14 @@
+{
+  "errors": {
+    "summary": "Fix these before continuing",
+    "nameRequired": "Enter your name",
+    "nameMax": "Use 100 characters or fewer",
+    "email": "Enter an e-mail address like name@example.com",
+    "passwordRequired": "Enter a password",
+    "passwordMin": "Use at least 12 characters",
+    "passwordMax": "Use 128 characters or fewer",
+    "passwordCommon": "That password is too common. Choose something harder to guess.",
+    "agree": "Agree to the code of conduct to join",
+    "failed": "We couldn't create your account. Try again in a moment."
+  }
+}

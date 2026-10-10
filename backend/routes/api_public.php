@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Identity\JoinController;
 use App\Http\Controllers\Api\V1\PublicSite\ContactMessageController;
 use App\Http\Controllers\Api\V1\UserExperience\CatalogueController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('i18n/{locale}', [CatalogueController::class, 'show'])
     ->where('locale', '[A-Za-z]{2}-[A-Za-z]{2}')
     ->name('i18n.show');
+
+// L2-001: visitors join.
+Route::post('join', [JoinController::class, 'store'])
+    ->middleware('throttle:join')
+    ->name('join');
 
 // L2-040: visitors can write to the team.
 Route::post('contact-messages', [ContactMessageController::class, 'store'])
