@@ -32,12 +32,21 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/verify-email/verify-email').then((m) => m.VerifyEmailPage),
   },
   {
+    path: 'code-of-conduct',
+    loadComponent: () =>
+      import('./pages/code-of-conduct/code-of-conduct').then((m) => m.CodeOfConductPage),
+  },
+  {
     path: 'privacy',
     loadComponent: () => import('./pages/privacy/privacy').then((m) => m.PrivacyPage),
   },
   {
     path: '500',
     loadComponent: () => import('./pages/server-error/server-error').then((m) => m.ServerErrorPage),
+  },
+  {
+    path: '403',
+    loadComponent: () => import('./pages/forbidden/forbidden').then((m) => m.ForbiddenPage),
   },
   { path: 'offline', component: OfflinePage },
   {

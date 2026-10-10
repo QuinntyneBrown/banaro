@@ -26,7 +26,7 @@ export function createMember({ name = 'Amara Osei', verified = true }: MemberOpt
       INSERT INTO users (name, email, password, email_verified_at, code_of_conduct_version,
                          code_of_conduct_accepted_at, created_at, updated_at)
       SELECT ${quote(name)}, ${quote(email)}, ${quote(STRONG_PASSWORD_HASH)},
-             ${verified ? NOW : 'NULL'}, ${quote('2026-10-01')}, ${NOW}, ${NOW}, ${NOW}
+             ${verified ? NOW : 'NULL'}, ${quote('2026-09-01')}, ${NOW}, ${NOW}, ${NOW}
       RETURNING id`),
   );
   return { id, name, email, password: STRONG_PASSWORD };

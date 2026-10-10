@@ -10,6 +10,7 @@ import { provideClientHydration, withHttpTransferCacheOptions } from '@angular/p
 import {
   provideRouter,
   withComponentInputBinding,
+  withInMemoryScrolling,
   withNavigationErrorHandler,
 } from '@angular/router';
 import {
@@ -41,6 +42,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withComponentInputBinding(),
+      // Table-of-contents links jump to their section (L2-034).
+      withInMemoryScrolling({ anchorScrolling: 'enabled' }),
       // A page whose code cannot load while Banaro is unreachable shows the offline page.
       withNavigationErrorHandler((error) => {
         const browserOffline = typeof navigator !== 'undefined' && navigator.onLine === false;

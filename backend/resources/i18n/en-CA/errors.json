@@ -31,5 +31,12 @@
     "heading": "You're offline",
     "lead": "Banaro can't reach the internet right now. Check your connection; we will reconnect on our own and keep what you were writing. Nothing is sent until you send it.",
     "retry": "Try again"
+  },
+  "forbidden": {
+    "title": "No access · Banaro",
+    "heading": "This one isn't yours to open",
+    "lead": "You don't have access to this page. If you think that's a mistake, let us know and we will take a look.",
+    "back": "Go back",
+    "contact": "Contact us"
   }
 }
