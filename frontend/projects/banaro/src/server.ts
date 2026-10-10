@@ -41,7 +41,13 @@ app.use(
 app.use((req, res, next) => {
   angularApp
     .handle(req)
-    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
+    .then((response) => {
+      if (!response) return next();
+      // Pages vary by the theme and session cookies; never let a shared cache serve them.
+      response.headers.set('Vary', 'Cookie');
+      response.headers.set('Cache-Control', 'private, no-cache');
+      return writeResponseToNodeResponse(response, res);
+    })
     .catch(next);
 });
 

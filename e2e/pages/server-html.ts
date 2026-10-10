@@ -21,6 +21,10 @@ export class ServerHtml {
     return /<link rel="canonical" href="([^"]*)"/.exec(this.html)?.[1];
   }
 
+  themeAttribute(): string | undefined {
+    return /<html[^>]*\sdata-theme="([^"]*)"/.exec(this.html)?.[1];
+  }
+
   headline(): string | undefined {
     const h1 = /<h1[^>]*>([\s\S]*?)<\/h1>/.exec(this.html)?.[1];
     return h1?.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
