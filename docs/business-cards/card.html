@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Banaro business card</title>
+<link rel="stylesheet" href="../design-system/assets/fonts/fonts.css">
+<style>
+  /* 3.5 x 2 in card; rendered at 3x for 1050 x 600 px (300 dpi). */
+  :root {
+    --oat: #f5f0e7; --birch: #fcfaf6; --hairline: #ded4c3;
+    --ink: #2a2b26; --muted: #625d53;
+    --sage: #55715a; --sage-300: #a9bfa5; --sage-950: #18221b;
+    --clay: #a8714f; --clay-300: #d9b79c;
+  }
+  * { margin: 0; box-sizing: border-box; }
+  html, body { background: #fff; }
+  body { font-family: "Manrope", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .card { width: 350px; height: 200px; position: relative; overflow: hidden; }
+
+  /* Front: name and title on birch paper */
+  .front { background: var(--birch); color: var(--ink); padding: 26px 28px; display: flex; flex-direction: column; }
+  .front::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--sage); }
+  .brand { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+  .brand svg { width: 22px; height: 22px; color: var(--sage); }
+  .brand .sun { fill: var(--clay); }
+  .name { margin-top: auto; font-size: 21px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  .role { margin-top: 6px; font-size: 9.5px; font-weight: 500; color: var(--muted); line-height: 1.45; letter-spacing: 0.01em; }
+  .rule { margin: 14px 0 10px; height: 1px; background: var(--hairline); }
+  .foot { display: flex; justify-content: space-between; align-items: baseline; }
+  .kicker { font-family: "JetBrains Mono", monospace; font-size: 6.5px; color: var(--muted); letter-spacing: 0.02em; }
+  .url { font-size: 10px; font-weight: 600; color: var(--sage); letter-spacing: 0.04em; }
+
+  /* Back: mark on deep sage */
+  .back { background: var(--sage-950); color: #eee8dc; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding-bottom: 26px; }
+  .back svg { width: 44px; height: 44px; color: var(--sage-300); }
+  .back .sun { fill: var(--clay-300); }
+  .back .word { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  .back .lead { margin-top: 2px; font-size: 11px; font-weight: 600; color: #eee8dc; }
+  .back .tag { margin-top: -4px; font-family: "JetBrains Mono", monospace; font-size: 7.5px; letter-spacing: 0.04em; color: #a8a193; }
+  .back .url { position: absolute; bottom: 14px; color: var(--sage-300); }
+</style>
+</head>
+<body>
+  <div class="card front" id="front">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.8"/><circle class="sun" cx="25.5" cy="6.5" r="2.4"/></svg>
+      <span>banaro</span>
+    </div>
+    <div class="name">Quinntyne Brown</div>
+    <div class="role">CEO, Founder and Principal Product Engineer</div>
+    <div class="rule"></div>
+    <div class="foot"><span class="url">banaro.ca</span><span class="kicker">Building products in faith · Toronto &amp; GTA</span></div>
+  </div>
+  <div style="height:20px"></div>
+  <div class="card back" id="back">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.4"/><circle class="sun" cx="25.5" cy="6.5" r="2.4"/></svg>
+    <div class="word">banaro</div>
+    <div class="lead">Christian product builders</div>
+    <div class="tag">Founders · Engineers · Designers</div>
+    <div class="url">banaro.ca</div>
+  </div>
+</body>
+</html>
