@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "title": "Privacy · Banaro",
+    "description": "What Banaro collects, why, how long we keep it and what we never do."
+  },
+  "eyebrow": "Privacy",
+  "title": "Your privacy",
+  "sub": "What we collect, why, and what we never do.",
+  "lastUpdated": "Last updated",
+  "intro": "We keep this simple because we think you should be able to read it in five minutes. Banaro follows Canada's Personal Information Protection and Electronic Documents Act (PIPEDA).",
+  "collect": {
+    "title": "What we collect",
+    "given": "What you give us: your name, e-mail, neighbourhood, role, skills, projects and any messages you send through Banaro.",
+    "technical": "A little technical information, such as your browser type, so the site works properly and stays secure."
+  },
+  "use": {
+    "title": "What we do with it",
+    "text": "We use your details to show your profile to other members, suggest people nearby, run events and send e-mail. We e-mail you only for what you ask for: your account, your messages, your event RSVPs and a Monday digest if you turn it on. You can turn any of these off in your settings."
+  },
+  "never": {
+    "title": "What we never do",
+    "sell": "We do not sell your data, and we do not share it with advertisers.",
+    "address": "We do not show your street address. Other members see your neighbourhood only."
+  },
+  "retention": {
+    "title": "How long we keep it",
+    "account": "Your profile, projects, messages and preferences stay while your account is open.",
+    "deletion": "When you delete your account, we erase your personal information within 30 days.",
+    "sessions": "Sign-in sessions end after 30 days without activity, and after 90 days at the most.",
+    "logs": "Technical logs, which never hold your e-mail or messages, are kept for 30 days."
+  },
+  "processors": {
+    "title": "Who helps us run Banaro",
+    "text": "A few service providers process data for us under contract and only on our instructions:",
+    "hosting": "Our hosting provider, which runs our servers and stores our data.",
+    "email": "Our e-mail delivery provider, which sends account, message and event e-mail.",
+    "scanning": "Our file-scanning service, which checks uploaded photos for malware."
+  },
+  "location": {
+    "title": "Where it lives",
+    "text": "Your data is stored in Canada."
+  },
+  "cookies": {
+    "title": "Cookies",
+    "text": "We use essential cookies only: one to keep you signed in and one to remember your light or dark theme. There are no tracking or advertising cookies."
+  },
+  "rights": {
+    "title": "Your rights",
+    "access": "You can see the personal information we hold about you.",
+    "export": "You can download a copy of your data from your settings.",
+    "correct": "You can correct your profile and account details at any time.",
+    "delete": "You can delete your account from your settings."
+  },
+  "contact": {
+    "title": "Contact our privacy lead",
+    "text": "For a copy of your information, a correction or any privacy question, write to privacy@banaro.ca or use our",
+    "link": "contact page"
+  }
+}

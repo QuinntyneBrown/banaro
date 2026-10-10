@@ -1,0 +1,59 @@
+<div class="wrap">
+  <div class="page-block narrow">
+    <bn-page-header [eyebrow]="'privacy.eyebrow' | t" [heading]="'privacy.title' | t">
+      <span slot="sub"
+        >{{ 'privacy.sub' | t }} {{ 'privacy.lastUpdated' | t }}
+        <time [attr.datetime]="updated">{{ updatedLabel }}</time
+        >.</span
+      >
+    </bn-page-header>
+    <div class="prose">
+      <p>{{ 'privacy.intro' | t }}</p>
+      <h2>{{ 'privacy.collect.title' | t }}</h2>
+      <ul>
+        <li>{{ 'privacy.collect.given' | t }}</li>
+        <li>{{ 'privacy.collect.technical' | t }}</li>
+      </ul>
+      <h2>{{ 'privacy.use.title' | t }}</h2>
+      <p>{{ 'privacy.use.text' | t }}</p>
+      <h2>{{ 'privacy.never.title' | t }}</h2>
+      <ul>
+        <li>{{ 'privacy.never.sell' | t }}</li>
+        <li>{{ 'privacy.never.address' | t }}</li>
+      </ul>
+      <h2>{{ 'privacy.retention.title' | t }}</h2>
+      <ul>
+        <li>{{ 'privacy.retention.account' | t }}</li>
+        <li>{{ 'privacy.retention.deletion' | t }}</li>
+        <li>{{ 'privacy.retention.sessions' | t }}</li>
+        <li>{{ 'privacy.retention.logs' | t }}</li>
+      </ul>
+      <h2>{{ 'privacy.processors.title' | t }}</h2>
+      <div>
+        <p>{{ 'privacy.processors.text' | t }}</p>
+        <ul>
+          <li>{{ 'privacy.processors.hosting' | t }}</li>
+          <li>{{ 'privacy.processors.email' | t }}</li>
+          <li>{{ 'privacy.processors.scanning' | t }}</li>
+        </ul>
+      </div>
+      <h2>{{ 'privacy.location.title' | t }}</h2>
+      <p>{{ 'privacy.location.text' | t }}</p>
+      <h2>{{ 'privacy.cookies.title' | t }}</h2>
+      <p>{{ 'privacy.cookies.text' | t }}</p>
+      <h2>{{ 'privacy.rights.title' | t }}</h2>
+      <ul>
+        <li>{{ 'privacy.rights.access' | t }}</li>
+        <li>{{ 'privacy.rights.export' | t }}</li>
+        <li>{{ 'privacy.rights.correct' | t }}</li>
+        <li>{{ 'privacy.rights.delete' | t }}</li>
+      </ul>
+      <h2>{{ 'privacy.contact.title' | t }}</h2>
+      <p>
+        {{ 'privacy.contact.text' | t }}
+        <a routerLink="/contact">{{ 'privacy.contact.link' | t }}</a
+        >.
+      </p>
+    </div>
+  </div>
+</div>

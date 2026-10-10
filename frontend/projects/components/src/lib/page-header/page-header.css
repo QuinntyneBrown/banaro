@@ -17,3 +17,6 @@
   color: var(--color-fg-muted);
   font: var(--text-body-lg);
 }
+.page-head__sub:empty {
+  display: none;
+}

@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-/** Page heading block: eyebrow, the page's only `<h1>` and an optional subtitle. */
+/**
+ * Page heading block: eyebrow, the page's only `<h1>` and an optional subtitle, given as `sub` or
+ * projected with `slot="sub"` when it needs markup.
+ */
 @Component({
   selector: 'bn-page-header',
   template: `
@@ -9,9 +12,12 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
         <p class="eyebrow">{{ eyebrow() }}</p>
       }
       <h1 class="page-head__title" [attr.id]="headingId()">{{ heading() }}</h1>
-      @if (sub()) {
-        <p class="page-head__sub">{{ sub() }}</p>
-      }
+      <p class="page-head__sub">
+        @if (sub()) {
+          {{ sub() }}
+        }
+        <ng-content select="[slot=sub]" />
+      </p>
       <ng-content />
     </div>
   `,

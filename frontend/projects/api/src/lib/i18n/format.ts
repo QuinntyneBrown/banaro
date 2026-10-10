@@ -15,6 +15,18 @@ export function formatDistance(km: number): string {
   return rounded < 10 ? `${rounded.toFixed(1)} km` : `${Math.round(rounded)} km`;
 }
 
+/** "9 October 2026" for a calendar date such as `2026-10-09`: day first, as in L2-052. */
+export function formatLongDate(isoDate: string): string {
+  const parts = new Intl.DateTimeFormat(LOCALE, {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).formatToParts(new Date(`${isoDate}T00:00:00Z`));
+  const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === type)?.value;
+  return `${part('day')} ${part('month')} ${part('year')}`;
+}
+
 @Pipe({ name: 'bnNumber' })
 export class NumberPipe implements PipeTransform {
   transform(value: number): string {
