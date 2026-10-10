@@ -3,7 +3,9 @@ import { Observable, of, throwError } from 'rxjs';
 import {
   JoinRequest,
   MemberSession,
+  PasswordResetLink,
   ResendVerificationRequest,
+  ResetPasswordRequest,
   SignInRequest,
   VerificationOutcome,
 } from '../models/identity';
@@ -18,6 +20,9 @@ export class InMemoryIdentityApi implements IdentityApi {
   readonly verificationTokens = new Set<string>();
   readonly usedTokens = new Set<string>();
   readonly resends: ResendVerificationRequest[] = [];
+  readonly resetRequests: string[] = [];
+  /** Usable reset tokens by e-mail. */
+  readonly resetTokens = new Map<string, string>();
 
   join(request: JoinRequest): Observable<void> {
     this.joined.push(request);
@@ -62,6 +67,27 @@ export class InMemoryIdentityApi implements IdentityApi {
 
   resendVerification(request: ResendVerificationRequest): Observable<void> {
     this.resends.push(request);
+    return of(undefined);
+  }
+
+  requestPasswordReset(email: string): Observable<void> {
+    this.resetRequests.push(email);
+    return of(undefined);
+  }
+
+  checkPasswordReset(link: PasswordResetLink): Observable<boolean> {
+    return of(this.resetTokens.get(link.email) === link.token);
+  }
+
+  resetPassword(request: ResetPasswordRequest): Observable<void> {
+    const account = this.accounts.find((a) => a.email === request.email);
+    if (!account || this.resetTokens.get(request.email) !== request.token) {
+      return throwError(
+        () => new HttpErrorResponse({ status: 422, error: { code: 'reset_link_invalid' } }),
+      );
+    }
+    account.password = request.password;
+    this.resetTokens.delete(request.email);
     return of(undefined);
   }
 }

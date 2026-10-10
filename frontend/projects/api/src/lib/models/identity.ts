@@ -30,3 +30,14 @@ export interface ResendVerificationRequest {
   token?: string;
   email?: string;
 }
+
+/** The two parameters of a reset link. */
+export interface PasswordResetLink {
+  token: string;
+  email: string;
+}
+
+export interface ResetPasswordRequest extends PasswordResetLink {
+  password: string;
+  passwordConfirmation: string;
+}

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { OfflinePage } from './pages/offline/offline';
+import { resetPasswordResolver } from './pages/reset-password/reset-password.resolver';
 import { verifyEmailResolver } from './pages/verify-email/verify-email.resolver';
 
 export const routes: Routes = [
@@ -13,6 +14,17 @@ export const routes: Routes = [
   {
     path: 'sign-in',
     loadComponent: () => import('./pages/sign-in/sign-in').then((m) => m.SignInPage),
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./pages/forgot-password/forgot-password').then((m) => m.ForgotPasswordPage),
+  },
+  {
+    path: 'reset-password',
+    resolve: { linkUsable: resetPasswordResolver },
+    loadComponent: () =>
+      import('./pages/reset-password/reset-password').then((m) => m.ResetPasswordPage),
   },
   {
     path: 'verify-email',
