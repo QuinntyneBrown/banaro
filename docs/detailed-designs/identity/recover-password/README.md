@@ -35,16 +35,19 @@ Banaro Worker looks up the account and sends the e-mail.
   - While the request is in flight, the button reads "Sending…".
   - Any accepted request shows the `success` state with the submitted address and "It works for
     60 minutes" (`L2-004` criterion 1). "Send it again" repeats the request.
-  - A 429 shows a "slow down" message (`L2-004` criterion 5, `L2-046` criterion 2).
+  - A 429 shows a danger `bn-alert`: "Too many requests. Try again in N minutes." (`L2-004`
+    criteria 5 and 7, `L2-046` criterion 2).
 - **`ResetPasswordPage`** (`pages/reset-password/`) — routed page for `/reset-password`, with the states
   `default`, `invalid`, `submitting`, `success` and `error`.
   - It renders the outcome of `resetPasswordResolver`. A rejected link shows the `error` state "This
     link has expired" with "Send a new link" to `/forgot-password` (`L2-004` criterion 3).
   - The `default` state reads "Choose a new password for {email}" and has "New password" and "Confirm
     new password" fields.
-  - Client-side checks cover the 12-character minimum and the confirmation match. Server errors map
-    to the `invalid` state with the specific problem, including reuse of the current password
-    (`L2-004` criterion 4).
+  - Client-side checks cover the 12-character minimum and the confirmation match.
+  - Server errors map to the `invalid` state with the specific problem: reuse of the current password
+    reads "Choose a different password. This one is your current password." and a common password
+    reads "That password is too common. Choose something harder to guess." (`L2-004` criteria 4
+    and 6).
   - The `success` state "Password updated" links to `/sign-in`. `SessionStore` clears any member it
     held.
 - **`resetPasswordResolver`** (`pages/reset-password/`) — Angular route resolver that calls
@@ -90,6 +93,9 @@ Banaro Worker looks up the account and sends the e-mail.
   3. It stores the new hash, rotates `remember_token` and deletes the token, so the link is
      single-use (`L2-004` criterion 2).
   4. It calls `SessionRevocationService::revokeAll()`.
+  5. When `email_verified_at` is null it sets it, because the link proves control of the address
+     (`L2-004` criterion 8).
+  6. It queues `PasswordChangedNotification` (below) (`L2-004` criterion 9).
 - **`PasswordPolicy`** (`Services/Identity/`) — the password rules shared with `join-banaro`: a
   12-character minimum and the common-password list.
 - **`SessionRevocationService`** (`Services/Identity/`) — ends every session of an account. The
@@ -108,6 +114,9 @@ Banaro Worker looks up the account and sends the e-mail.
 - **`ResetPasswordNotification`** (`Notifications/`) — `mail` channel notification with the link to
   `/reset-password` on the Banaro Web origin. It is security e-mail, so preferences do not suppress it
   (`L2-029` criterion 2).
+- **`PasswordChangedNotification`** (`Notifications/`) — security `mail` notification "Your Banaro
+  password was changed", with a link to `/forgot-password` and to the contact page. Preferences do not
+  suppress it.
 
 ### Failure handling
 
@@ -115,18 +124,20 @@ A failed reset transaction rolls back, so the password, the token and the sessio
 page keeps the `default` state and shows a danger `bn-alert` with a retry. A failed request for a link
 shows the same alert on `/forgot-password`.
 
-### Open points
+### Resolved decisions
 
-- Copy for "new password equals the current one": `<TO SUPPLY>`; the `reset-password` invalid mock
-  shows only the length and confirmation errors.
-- Copy for a password found on the common-password list: `<TO SUPPLY>`.
-- Copy for the 429 message on `/forgot-password`: `<TO SUPPLY>`; no mock state shows it.
-- Whether a completed reset also marks an unverified account as verified, since it proves control of
-  the address: `<TO SUPPLY>`.
-- Whether to e-mail the member after a password change: `<TO SUPPLY>`; neither `L2-004` nor `L2-029`
-  lists one.
-- Session revocation takes effect on each old session's next request, not in Redis at once.
-  Acceptance of that timing: `<TO SUPPLY>`.
+- Reuse of the current password reads "Choose a different password. This one is your current password."
+  and a common password reads "That password is too common. Choose something harder to guess."
+  (`L2-004` criterion 6; the `reset-password` invalid mock keeps its length and confirmation errors,
+  and the same field-error slot carries these two).
+- The 429 on `/forgot-password` shows "Too many requests. Try again in N minutes." in a danger
+  `bn-alert` above the form (`L2-004` criterion 7); no mock state shows it.
+- A completed reset marks an unverified account verified (`L2-004` criterion 8).
+- A completed reset e-mails the member "Your Banaro password was changed" (`L2-004` criterion 9,
+  `L2-029` criterion 2).
+- Revocation takes effect on each old session's next request, which is accepted (`L2-004`
+  criterion 10); the current request's session ends at once. The `reset-password` success mock says
+  "we signed you out everywhere else".
 
 ## Requirements
 
@@ -134,7 +145,7 @@ shows the same alert on `/forgot-password`.
 |-------|--------------|-------------|
 | `L2-004` | `L1-001` | A person shall be able to reset a forgotten password by e-mail without learning whether an address is registered. |
 
-The design realizes all five acceptance criteria of `L2-004`. The Description cites each criterion
+The design realizes all ten acceptance criteria of `L2-004`. The Description cites each criterion
 where a component enforces it.
 
 ## Diagrams

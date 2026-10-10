@@ -42,7 +42,8 @@ Redis holds the sessions.
     because the CSRF token belonged to the old session. On 419 the interceptor calls `getSession()`.
     A `null` member is handled as a 401. Otherwise it refreshes the CSRF cookie and retries once.
   - When the member signs out instead, the waiting requests fail with a `SessionEnded` error that
-    pages ignore.
+    pages ignore. A `BroadcastChannel` tells other tabs of a recovery or sign-out (`L2-005`
+    criterion 7).
 - **`SessionRecovery`** / **`SESSION_RECOVERY`** (`api` library, `lib/auth/`) — the contract
   `recover(): Observable<'recovered' | 'signed-out'>` and its injection token. The `api` library
   therefore does not depend on application dialogs. The `banaro` application binds the token in
@@ -58,7 +59,7 @@ Redis holds the sessions.
     "Signing in…". "Sign out" stays enabled.
   - Success closes the dialog with `recovered` (`L2-005` criterion 2).
   - A 422 `invalid_credentials` shows the `invalid` state "That password doesn't match. Try again, or
-    reset it." Focus returns to the password field and the dialog stays open (`L2-005` criterion 3).
+    reset it." with "reset it" linking to `/forgot-password` in a new tab. Focus returns to the password field and the dialog stays open (`L2-005` criterion 3).
   - A network failure or 5xx shows the `failed` state with a danger `bn-alert`, "We couldn't sign you
     in", and "Try again". The alert never auto-dismisses (`L2-005` criterion 3).
   - "Sign out" clears `SessionStore` and closes the dialog with `signed-out`. It then navigates to
@@ -91,15 +92,18 @@ The dialog keeps the page usable underneath after every failure. A wrong passwor
 open. A failed request keeps the input and offers "Try again". The original action is not retried
 until a sign-in succeeds.
 
-### Open points
+### Resolved decisions
 
-- Copy for a 429 from the sign-in throttle inside the dialog: `<TO SUPPLY>`; no dialog state shows it.
-- Behaviour when two browser tabs hold the same expired session, and one tab recovers while the other
-  shows the dialog: `<TO SUPPLY>`.
-- Whether an action that was not idempotent, such as posting a message, is retried after recovery
-  without a confirmation: `<TO SUPPLY>`. `L2-005` criterion 2 retries "the original action" once.
-- Behaviour when a session is revoked by a password reset (`L2-004`) rather than expiry: the dialog
-  opens and the old password fails. Whether the dialog should explain the reset: `<TO SUPPLY>`.
+- A 429 from the sign-in throttle keeps the dialog open and shows a danger `bn-alert`, "Too many
+  sign-in attempts. Try again in N minutes." (`L2-005` criterion 6); no dialog state shows it.
+- Two tabs on one expired session coordinate through a `BroadcastChannel`: when one recovers, the
+  other's dialog closes and its original action retries; when one signs out, the other goes to
+  `/sign-in` (`L2-005` criterion 7).
+- The original action is retried once without a confirmation, whatever its method, because a 401
+  means the server did not process it (`L2-005` criterion 8).
+- When a password reset revoked the session, the dialog adds no explanation. The `invalid` state's
+  "reset it" link opens `/forgot-password` in a new tab so the preserved input survives (`L2-005`
+  criterion 9; `session-expired/invalid.html`).
 
 ## Requirements
 
@@ -107,7 +111,7 @@ until a sign-in succeeds.
 |-------|--------------|-------------|
 | `L2-005` | `L1-001`, `L1-013` | When a member's session expires while they work, the app shall let them sign in again without losing work. |
 
-The design realizes all five acceptance criteria of `L2-005`. The Description cites each criterion
+The design realizes all nine acceptance criteria of `L2-005`. The Description cites each criterion
 where a component enforces it.
 
 ## Diagrams

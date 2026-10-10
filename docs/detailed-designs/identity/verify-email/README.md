@@ -42,7 +42,8 @@ The Banaro Worker sends each new link.
     from the signed-in member in `SessionStore`, or from the address the join page passed in
     navigation state.
   - "Send the link again" and "Send a new link" call `resendVerification()`. The request carries the
-    session, the link's token, or the address from navigation state, whichever is present.
+    session, the link's token, or the address from navigation state, whichever is present. When none
+    identifies an account, "Send a new link" navigates to `/sign-in?returnTo=/verify-email` instead.
 - **`verifyEmailResolver`** (`pages/verify-email/`) — Angular route resolver. It runs during
   server-side rendering, calls `verifyEmail()` once, and maps the result to `success` or `error`. The
   page therefore never shows a loading state.
@@ -110,21 +111,24 @@ The Banaro Worker sends each new link.
 
 A failed transaction rolls back, so the account and token stay unchanged. The resolver then maps the
 error to the `error` state, which still offers a new link. A failed resend shows a danger toast with a
-retry. A 429 shows a "slow down" message (`L2-046` criterion 2).
+retry. A 429 shows "You've asked for too many links. Try again in N minutes." (`L2-002` criterion 5,
+`L2-046` criterion 2).
 
-### Open points
+### Resolved decisions
 
-- Mail scanners that prefetch links: the page verifies during server-side rendering, so a scanner
-  that renders the page would use the token. Mitigation: `<TO SUPPLY>`.
-- Session after verification: the design does not sign the person in when the link is opened. The
-  "Set up your profile" link therefore passes through `/sign-in` with `returnTo=/onboarding` for a
-  person without a session. Confirmation: `<TO SUPPLY>`.
-- A tampered link identifies no account, so "Send a new link" from that `error` state sends nothing.
-  The person signs in and resends from the `default` state. Confirmation: `<TO SUPPLY>`.
-- Copy for the resend success toast and for the 429 message on `/verify-email`: `<TO SUPPLY>`; no mock
-  state shows them.
-- The `join` success mock links "I have confirmed my e-mail" to the `verify-email` `default` state,
-  which asks the person to confirm again. Intended target: `<TO SUPPLY>`.
+- Mail scanners: the link verifies when opened, including by a scanner, and Banaro accepts that
+  because verification proves only control of the mailbox. A person who then opens the used link sees
+  the `error` state with "Back to sign in"; a resend for a verified account sends nothing (`L2-002`
+  criterion 6; `verify-email/error.html`).
+- No session starts when a link is opened. "Set up your profile" reaches onboarding through
+  `/sign-in?returnTo=/onboarding` for a person without a session (`L2-002` criterion 7;
+  `verify-email/success.html`).
+- A link that identifies no account sends "Send a new link" to `/sign-in?returnTo=/verify-email`,
+  where the signed-in `default` state resends (`L2-002` criterion 8).
+- The resend toast reads "If this address still needs confirming, a new link is on its way."; the 429
+  message reads "You've asked for too many links. Try again in N minutes." (`L2-002` criterion 5).
+- The `join` success mock's "I have confirmed my e-mail" now goes to `/sign-in`, so `verify-email`
+  `default` is reached only by an unverified member the guard routes there (`L2-001` criterion 12).
 
 ## Requirements
 
@@ -132,7 +136,7 @@ retry. A 429 shows a "slow down" message (`L2-046` criterion 2).
 |-------|--------------|-------------|
 | `L2-002` | `L1-001` | A new account shall verify its e-mail address through a signed, single-use, expiring link before using member features. |
 
-The design realizes all four acceptance criteria of `L2-002`. The Description cites each criterion
+The design realizes all eight acceptance criteria of `L2-002`. The Description cites each criterion
 where a component enforces it.
 
 ## Diagrams

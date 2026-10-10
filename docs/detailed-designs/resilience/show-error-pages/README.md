@@ -43,18 +43,20 @@ the generic 500 body.
   to `ServerErrorPage`. The final wildcard route `**` also maps to `NotFoundPage` (`L2-042`
   criterion 1).
 - **`NotFoundPage`** (`pages/not-found/`, selector `bn-not-found-page`) — shows "404", the `h1` "We
-  can't find that page" and "The link may be old, or the page may have moved." It offers a search
-  field that opens `/builders?q={text}`, "Browse builders", and a link home. A member sees "Go to
-  your dashboard" in place of the home link (`L2-042` criterion 1). The mock and the specification
-  differ on these actions; see Open points.
+  can't find that page" and "The link may be old, or the page may have moved. Search for a builder,
+  or go back to where you were." It offers a search field ("Search builders", placeholder "Name,
+  skill or project") that opens `/builders?q={text}`, "Browse builders", and a home link: a member
+  sees "Go to your dashboard", a visitor sees "Go to the home page" (`L2-042` criterion 1).
 - **`ForbiddenPage`** (`pages/forbidden/`, selector `bn-forbidden-page`) — shows "403", the `h1`
-  "This one isn't yours to open" and "You don't have access to this page." It offers "Go back" and
-  "Go to your dashboard" (`L2-042` criterion 2). The mock shows "Contact us" in place of "Go back".
+  "This one isn't yours to open" and "You don't have access to this page." It offers "Go to your
+  dashboard", "Go back" and a "Contact us" link (`L2-042` criterion 2). Only members reach it; a
+  visitor's unauthenticated request ends in `/sign-in`.
 - **`ServerErrorPage`** (`pages/server-error/`, selector `bn-server-error-page`) — shows "500", the
-  `h1` "Something went wrong on our side" and "It isn't you." When a reference ID is known, it shows
-  it as selectable text (`L2-042` criterion 3). "Try again" navigates to the failed address again.
-  "Go to your dashboard" leaves the page. It never shows a stack trace, an exception class or any
-  internal detail (`L2-042` criterion 4).
+  `h1` "Something went wrong on our side" and "It isn't you." When the failure came from an API
+  response it shows "Reference ID:" and the request ID as selectable text below the explanation
+  (`L2-042` criteria 3 and 6). "Try again" navigates to the failed address again. "Go to your
+  dashboard" (a visitor sees "Go to the home page") leaves the page. It never shows a stack trace,
+  an exception class or any internal detail (`L2-042` criterion 4).
 - **Shared page rules** (`L2-042` criterion 5) — each error page has exactly one `h1`. Each sets its
   document title from the manifest ("Page not found", "No access", "Something went wrong") through
   `SeoService`. Each calls `SeoService.noindex()`, which adds `<meta name="robots"
@@ -87,7 +89,8 @@ the generic 500 body.
   `handle-offline-and-maintenance` feature, and 422 and 429 to the calling page.
 - **`AppErrorHandler`** (`shared/`) — Angular `ErrorHandler` provided in `app.config.ts`. It catches
   unhandled browser errors, writes them to the console without showing them, and calls
-  `serverError(null, currentUrl)` (`L2-042` criterion 4). An error raised while `ServerErrorPage` is
+  `serverError(null, currentUrl)` (`L2-042` criterion 4). It sends nothing to the server, so the page
+  shows no reference ID (`L2-042` criterion 6). An error raised while `ServerErrorPage` is
   already showing does not trigger a second navigation, which prevents a loop.
 
 ### Backend — Banaro API
@@ -102,19 +105,20 @@ the generic 500 body.
   criterion 4). The log entry for the same request carries the same request ID, so the reference ID
   on the page is also in the server log (`L2-042` criterion 3).
 
-### Open points
+### Resolved decisions
 
-- `L2-042` criterion 1 asks for search and links to the directory and home. The `not-found` mock
-  shows "Go to your dashboard" and "Browse builders" with no search field and no home link. The
-  agreed actions and the search copy: `<TO SUPPLY>`.
-- `L2-042` criterion 2 asks for "go back" or the dashboard. The `forbidden` mock shows "Go to your
-  dashboard" and "Contact us". The agreed actions: `<TO SUPPLY>`.
-- The `server-error` mock shows no reference ID, which `L2-042` criterion 3 requires. Its label and
-  position: `<TO SUPPLY>`.
-- The mocks show only the signed-in variant of each error page. The visitor variant's actions:
-  `<TO SUPPLY>`.
-- Whether browser errors are reported to the server, and through which endpoint or service:
-  `<TO SUPPLY>`. Without such reporting, the server-error page for a browser error has no reference ID.
+- The `not-found` page offers a search field that opens `/builders?q=`, "Browse builders" and a home
+  link, "Go to your dashboard" for a member and "Go to the home page" for a visitor (`L2-042`
+  criterion 1; mock `pages/not-found/default.html`).
+- The `forbidden` page offers "Go to your dashboard", "Go back" and a "Contact us" link (`L2-042`
+  criterion 2; mock `pages/forbidden/default.html`).
+- The `server-error` page shows "Reference ID:" and the request ID below the explanation (`L2-042`
+  criterion 6; mock `pages/server-error/default.html`).
+- The mocks show the signed-in variant. A visitor sees "Go to the home page" in place of "Go to your
+  dashboard" on `not-found` and `server-error`; the visitor never sees `forbidden` (`L2-042`
+  criteria 1 to 3).
+- Browser errors are not reported to the server in this release; they go to the console only, and
+  the page for a browser error shows no reference ID (`L2-042` criterion 6).
 
 ## Requirements
 
@@ -122,8 +126,7 @@ the generic 500 body.
 |-------|--------------|-------------|
 | `L2-042` | `L1-013` | Unknown routes and failures shall lead to a clear page with a way forward. |
 
-The design realizes all five acceptance criteria of `L2-042`. The exact actions on the not-found and
-forbidden pages depend on the open points above.
+The design realizes all six acceptance criteria of `L2-042`.
 
 ## Diagrams
 

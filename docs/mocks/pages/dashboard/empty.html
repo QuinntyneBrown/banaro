@@ -7,6 +7,7 @@
 <meta name="mock:kind" content="page">
 <meta name="mock:screen" content="dashboard">
 <meta name="mock:state" content="empty">
+<meta name="mock:requirements" content="L2-030">
 <meta name="description" content="Dashboard for a brand-new member: three first steps (profile, matching, first event) instead of matches and messages.">
 <link rel="stylesheet" href="../../assets/fonts/fonts.css">
 <link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
@@ -40,20 +41,12 @@
         <h2 class="section__title" id="start-title" style="font-size: var(--font-size-2xl)">Start here</h2>
         <ul class="stack" style="margin-top: var(--space-6)">
           <li class="rows__item"><article class="suggest" aria-labelledby="st-1"><div class="dialog__who"><span class="dialog__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-4 3.6-6 7-6s6.2 2 7 6"/></svg></span><div><h3 class="rows__title" id="st-1">Complete your profile</h3><p class="rows__meta">Step 1 of 3</p></div></div><p class="suggest__why">Add your skills, your neighbourhood and a photo. Builders look at profiles before they reply.</p><div class="cluster"><a class="btn btn--primary btn--sm" href="../../pages/profile-edit/default.html">Complete profile</a></div></article></li>
-          <li class="rows__item"><article class="suggest" aria-labelledby="st-2"><div class="dialog__who"><span class="dialog__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10z"/></svg></span><div><h3 class="rows__title" id="st-2">Start matching</h3><p class="rows__meta">Step 2 of 3</p></div></div><p class="suggest__why">Tell us what you are building and who you need. We will suggest three builders nearby every Monday.</p><div class="cluster"><a class="btn btn--primary btn--sm" href="../../pages/matching/default.html">Start matching</a></div></article></li>
-          <li class="rows__item"><article class="suggest" aria-labelledby="st-3"><div class="dialog__who"><span class="dialog__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><div><h3 class="rows__title" id="st-3">Join your first event</h3><p class="rows__meta">Step 3 of 3</p></div></div><p class="suggest__why">Fall Demo Night is next Thursday, 15 October, with 16 spots left.</p><div class="cluster"><a class="btn btn--primary btn--sm" href="../../pages/event-detail/default.html">See Fall Demo Night</a></div></article></li>
-        </ul>
-      </section>
-      <section aria-labelledby="events-title">
-        <div class="cluster cluster--between"><h2 class="section__title" id="events-title" style="font-size: var(--font-size-2xl)">This week and next</h2>
-        <a class="section__more" href="../../pages/events/default.html">All events <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12h15"/><path d="m13.5 6 6 6-6 6"/></svg></a></div>
-        <ul class="events" style="margin-top: var(--space-6)">
-          <li class="event"><div class="event__date" aria-hidden="true"><span class="event__day">15</span><span class="event__mon">Oct</span></div><h3 class="event__title"><a href="../../pages/event-detail/default.html">Fall Demo Night</a></h3><p class="event__meta">Thu 15 Oct, 7:00–9:30 pm · Centre for Social Innovation, 192 Spadina Ave</p><div class="event__side"><span class="event__going">64 going · 16 spots left</span></div></li>
-          <li class="event"><div class="event__date" aria-hidden="true"><span class="event__day">17</span><span class="event__mon">Oct</span></div><h3 class="event__title"><a href="../../pages/event-detail/default.html">Builders' Prayer Breakfast</a></h3><p class="event__meta">Sat 17 Oct, 8:00–9:30 am · St. Matthew's Hall, Leslieville</p><div class="event__side"><span class="event__going">22 going</span></div></li>
+          <li class="rows__item"><article class="suggest" aria-labelledby="st-2"><div class="dialog__who"><span class="dialog__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><div><h3 class="rows__title" id="st-2">Share a project</h3><p class="rows__meta">Step 2 of 3</p></div></div><p class="suggest__why">Share what you are building and ask for feedback from builders nearby.</p><div class="cluster"><a class="btn btn--primary btn--sm" href="../../pages/project-new/default.html">Share a project</a></div></article></li>
+          <li class="rows__item"><article class="suggest" aria-labelledby="st-3"><div class="dialog__who"><span class="dialog__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10z"/></svg></span><div><h3 class="rows__title" id="st-3">Set up matching</h3><p class="rows__meta">Step 3 of 3</p></div></div><p class="suggest__why">Tell us what you are building and who you need. We will suggest three builders nearby every Monday.</p><div class="cluster"><a class="btn btn--primary btn--sm" href="../../pages/matching/default.html">Set up matching</a></div></article></li>
         </ul>
       </section>
     </div>
-    <aside class="stack" aria-label="Your profile and project">
+    <aside class="stack" aria-label="Your profile and next event">
       <div class="aside-card">
         <h2 class="aside-card__title">Profile</h2>
         <p class="muted">Your profile is 20% complete. Add your skills and what you are looking for.</p>
@@ -61,10 +54,10 @@
         <a class="btn btn--quiet btn--sm" href="../../pages/profile-edit/default.html">Complete profile</a>
       </div>
       <div class="aside-card">
-        <p class="eyebrow">Your project</p>
-        <h2 class="aside-card__title">Nothing shared yet</h2>
-        <p class="muted">Share what you are building and ask for feedback from builders nearby.</p>
-        <a class="btn btn--quiet btn--sm" href="../../pages/project-new/default.html">Share a project</a>
+        <p class="eyebrow">Next event</p>
+        <h2 class="aside-card__title">Fall Demo Night</h2>
+        <p class="muted">Thursday 15 October, 7:00 pm. 16 spots left. You are not going yet, and it is a good first evening.</p>
+        <a class="btn btn--quiet btn--sm" href="../../pages/event-detail/default.html">See Fall Demo Night</a>
       </div>
     </aside>
   </div>

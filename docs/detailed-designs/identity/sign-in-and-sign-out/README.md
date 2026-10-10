@@ -36,13 +36,15 @@ Redis, which holds sessions and rate-limit counters, and to the Banaro database.
 - **`SignInPage`** (`pages/sign-in/`) — routed page for `/sign-in`, with the states `default`,
   `invalid`, `submitting`, `error` and `signed-out`.
   - On submit it validates the form on the client. Empty or malformed fields show the `invalid` state
-    with the error summary and field errors, and no request leaves the browser (`L2-003`
-    criterion 4).
+    with the error summary and field errors, focus on the first invalid field, and no request leaves
+    the browser (`L2-003` criterion 4, `L2-001` criterion 13).
   - While the request is in flight, the fields are read-only and the button reads "Signing in…".
-  - A rejected sign-in shows the `error` state: one `role="alert"` message that names neither field,
-    with the e-mail address kept and focus on the password field (`L2-003` criterion 2).
-  - A 429 response shows a "try again in N minutes" message. N is the `Retry-After` value rounded up
-    to whole minutes (`L2-003` criterion 3).
+  - A rejected sign-in shows the `error` state: one `role="alert"` message, "Those details don't
+    match", that names neither field, with the e-mail address kept and focus on the password field
+    (`L2-003` criterion 2).
+  - A 429 response shows a danger `bn-alert` at the top of the form: "Too many sign-in attempts. Try
+    again in N minutes." N is the `Retry-After` value rounded up to whole minutes, and the e-mail
+    address is kept (`L2-003` criteria 3 and 8).
   - On success it stores the member in `SessionStore`. It then navigates to `safeReturnPath(returnTo)`
     or to `/dashboard` (`L2-003` criteria 1 and 6). An unverified member goes to `/verify-email`
     instead (`L2-002` criterion 4).
@@ -52,8 +54,8 @@ Redis, which holds sessions and rate-limit counters, and to the Banaro database.
 - **`AccountMenuDialog`** (`dialogs/account-menu/`) — non-modal menu built on the CDK Menu overlay
   (`CdkMenuTrigger` on the header avatar, `CdkMenu` and `CdkMenuItem` inside). Focus goes to the first
   item, arrow keys move, and Escape closes the menu and returns focus to the avatar. The items are
-  "View profile", "Edit profile", "Settings", "Your projects" and "Sign out". "Sign out" calls
-  `SessionStore.signOut()`.
+  "View profile", "Edit profile", "Settings", "Your projects" and "Sign out". "Sign out" closes the
+  menu, then calls `SessionStore.signOut()` (`L2-003` criterion 11).
 - **`Header`** (`shell/`) — renders the avatar button that opens the account menu for a signed-in
   member, and the "Sign in" and "Join Banaro" actions for a visitor.
 - **`SessionStore`** (`api` library, `lib/auth/`) — holds the current member as a signal.
@@ -85,7 +87,8 @@ Redis, which holds sessions and rate-limit counters, and to the Banaro database.
   `SessionResource`. `store()` validates through `SignInRequest`, calls `SignIn` and returns
   `SessionResource`. `destroy()` calls `SignOut` and returns 204.
 - **`SignInRequest`** (`Requests/Identity/`) — `email` is required, RFC-valid and at most
-  254 characters. `password` is a required string.
+  254 characters. `password` is a required string. A password longer than 128 characters is counted
+  as a failed attempt and answered with the same generic message (`L2-003` criterion 9).
 - **`SignInThrottleService`** (`Services/Identity/`) — counts failed attempts in Redis under two keys.
   The account key is the SHA-256 of the canonical e-mail; the IP key is the SHA-256 of the client
   address. The limits are 5 failures per account key and 20 per IP key in a 15-minute window. Unknown
@@ -102,7 +105,11 @@ Redis, which holds sessions and rate-limit counters, and to the Banaro database.
   4. On a match it calls `Auth::guard('web')->login()` and `session()->regenerate()`, which issues a
      new session identifier (`L2-003` criterion 1). It records `authenticated_at` in the session for
      the absolute lifetime check (`L2-005` criterion 5). It rehashes the password when
-     `Hash::needsRehash()` is true.
+     `Hash::needsRehash()` is true. Passwords are pre-hashed (SHA-256, base64) before `Hash::check()`,
+     as in `join-banaro`.
+  5. It compares the browser and IP network with those of the account's sessions in the last 90 days.
+     For a first sight on a non-first sign-in it queues `NewSignInNotification`, a security e-mail
+     with the time, approximate city and browser (`L2-003` criterion 10, `L2-029` criterion 2).
 - **`SignOut`** (`Actions/Identity/`) — calls `Auth::guard('web')->logout()`,
   `session()->invalidate()` and `session()->regenerateToken()`. The response expires the session
   cookie (`L2-003` criterion 5).
@@ -119,19 +126,19 @@ A network or server failure during sign-in returns the page to its `default` sta
 `bn-alert` and keeps the e-mail address. A failed sign-out leaves the member signed in and shows a
 danger toast with a retry. The `system-notifications` feature (`L2-028`) owns its timing.
 
-### Open points
+### Resolved decisions
 
-- Generic error copy: `L2-003` criterion 2 quotes "Those details don't match". The `sign-in` error
-  mock reads "We couldn't sign you in" and "That e-mail and password don't match." Choice:
-  `<TO SUPPLY>`.
-- The `sign-in` mocks have no rate-limited state. Copy and layout of the "try again in N minutes"
-  message: `<TO SUPPLY>`.
-- The manifest describes the account menu as a menu that "makes no server call", and the mock links
-  "Sign out" straight to `/sign-in`. `L2-003` criterion 5 destroys the server session. The design
-  closes the menu first, then `SessionStore` makes the call. Confirmation: `<TO SUPPLY>`.
-- `L2-029` criterion 2 lists a "sign-in from new device" security e-mail. `L2-003` does not define a
-  new device or the trigger. Scope: `<TO SUPPLY>`.
-- Maximum accepted password length on sign-in: `<TO SUPPLY>`.
+- The error message is "Those details don't match", with the body "Check your e-mail and password and
+  try again, or reset your password." (`L2-003` criterion 2; `sign-in/error.html` updated).
+- A 429 shows a danger `bn-alert`, "Too many sign-in attempts. Try again in N minutes." (`L2-003`
+  criterion 8). It uses the same alert as `sign-in/error.html`; no separate mock state exists.
+- "Sign out" in the account menu closes the menu and calls `DELETE /api/v1/session`; the mock's link
+  now leads to `sign-in/signed-out.html`, the result of that call (`L2-003` criteria 5 and 11;
+  `dialogs/account-menu/default.html`).
+- "New device" means a browser and IP network the account has not used in the last 90 days, excluding
+  the account's first sign-in; it queues one security e-mail (`L2-003` criterion 10).
+- A password longer than 128 characters counts as a failed attempt with the same generic message
+  (`L2-003` criterion 9).
 
 ## Requirements
 
@@ -139,7 +146,7 @@ danger toast with a retry. The `system-notifications` feature (`L2-028`) owns it
 |-------|--------------|-------------|
 | `L2-003` | `L1-001`, `L1-014` | A verified member shall be able to sign in with e-mail and password, and sign out, with protection against credential guessing. |
 
-The design realizes all seven acceptance criteria of `L2-003`. The Description cites each criterion
+The design realizes all eleven acceptance criteria of `L2-003`. The Description cites each criterion
 where a component enforces it.
 
 ## Diagrams

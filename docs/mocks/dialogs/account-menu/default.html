@@ -7,6 +7,7 @@
 <meta name="mock:kind" content="dialog">
 <meta name="mock:screen" content="account-menu">
 <meta name="mock:state" content="default">
+<meta name="mock:requirements" content="L2-003">
 <meta name="description" content="Account menu anchored under the header avatar over the dashboard: profile, settings, projects, sign out.">
 <link rel="stylesheet" href="../../assets/fonts/fonts.css">
 <link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
@@ -95,10 +96,10 @@
     <a class="menu__item" role="menuitem" href="../../pages/settings/default.html"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4 18 18M18 6l-1.6 1.6M7.6 16.4 6 18"/></svg>Settings</a>
     <a class="menu__item" role="menuitem" href="../../pages/projects/default.html"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.5 8.5 4.5-8.5 4.5L3.5 8z"/><path d="m3.5 12 8.5 4.5 8.5-4.5M3.5 16l8.5 4.5 8.5-4.5"/></svg>Your projects</a>
     <hr class="menu__divider" role="separator">
-    <a class="menu__item" role="menuitem" href="../../pages/sign-in/default.html"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 4.5h-3A2 2 0 0 0 4.5 6.5v11a2 2 0 0 0 2 2h3M15 8l4 4-4 4M19 12H9.5"/></svg>Sign out</a>
+    <a class="menu__item" role="menuitem" href="../../pages/sign-in/signed-out.html"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 4.5h-3A2 2 0 0 0 4.5 6.5v11a2 2 0 0 0 2 2h3M15 8l4 4-4 4M19 12H9.5"/></svg>Sign out</a>
   </div>
 </div>
-<p class="mock-note" style="top: 14rem; right: 1rem">Not modal. Opens from the avatar button, focus goes to the first item, arrow keys move, Escape closes and returns focus to the avatar. Clicking outside closes it.</p>
+<p class="mock-note" style="top: 14rem; right: 1rem">Not modal. Opens from the avatar button, focus goes to the first item, arrow keys move, Escape closes and returns focus to the avatar. Clicking outside closes it. "Sign out" ends the server session and lands on the signed-out sign-in page.</p>
 
 <nav class="mock-bar" aria-label="Mock navigation">
   <a class="mock-bar__home" href="../../index.html" aria-label="Mock gallery">⌂</a>

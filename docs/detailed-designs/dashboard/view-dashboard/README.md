@@ -32,17 +32,24 @@ It reads only.
 
 - **`DashboardPage`** (`pages/dashboard/`) — routed page for `/dashboard`. It shows the `default`,
   `loading`, `empty`, `error` and `partial` states from the mock.
-  - `default` shows the greeting, a one-line summary of new matches, unread messages and events, and
-    the five sections (`L2-030` criterion 1).
-  - `empty` shows the next steps when the member has no activity (`L2-030` criterion 2).
+  - `default` shows the greeting, a one-line summary of new matches, unread messages and events in
+    the next 7 days, and the five sections (`L2-030` criteria 1 and 7). The matches section lists
+    three suggestions in match-score order with "Say hello" and "Pass" (`L2-030` criterion 6). The
+    events and messages sections are omitted when they have no rows (`L2-030` criteria 7 and 8).
+  - `empty` shows the next steps — complete profile, share a project, set up matching — when the
+    member has no activity (`L2-030` criterion 2).
   - `partial` shows each loaded section and, in place of each failed one, an inline message with
-    "Try again" (`L2-030` criterion 3). The retry reloads that section only.
+    "Try again" (`L2-030` criterion 3). The retry reloads that section only. The summary line
+    mentions only the sections that loaded (`L2-030` criterion 11).
   - `loading` shows skeletons sized to the final layout (`L2-048` criterion 4). `error` shows
     "Try again" when the whole request fails or every section fails (`L2-030` criterion 4).
   - The greeting date ("Friday 9 October") and every event time use the America/Toronto zone. The
-    summary line takes its plural forms from the translation catalogue (`L2-052` criterion 1).
-  - The matches section's "Say hello" opens `SayHelloDialog` from `say-hello`. Its second action
-    opens the `pass-suggestion` dialog from `pass-on-suggestion`.
+    greeting is "Good morning" from 05:00 to 11:59, "Good afternoon" from 12:00 to 17:59 and "Good
+    evening" from 18:00 to 04:59; a member with no activity sees "Welcome to Banaro" (`L2-030`
+    criterion 10). The summary line takes its plural forms from the translation catalogue (`L2-052`
+    criterion 1).
+  - The matches section's "Say hello" opens `SayHelloDialog` from `say-hello`. Its second action,
+    "Pass", opens the `pass-suggestion` dialog from `pass-on-suggestion` (`L2-023` criterion 1).
 - **`authGuard`** (`api` library, `lib/auth/`) — route guard shared by both applications. For a
   visitor it redirects to `/sign-in?returnTo=%2Fdashboard`, on the server during SSR and in the
   browser (`L2-030` criterion 5). The `sign-in-and-sign-out` feature owns it.
@@ -80,14 +87,19 @@ It reads only.
   response.
 - **`DashboardSectionProvider`** (`Services/Dashboard/`) — interface with `name()` and
   `load(User $member)`. Five implementations live in `Services/Dashboard/Sections/`:
-  - `MatchesSection` — this week's `MatchSuggestion` rows and the unreviewed count. The matching
-    rules, including block filtering, stay in the `matching` subsystem.
-  - `EventsSection` — upcoming events the member attends, through going `Rsvp` rows and `Event`.
-  - `MessagesSection` — unread conversation count and latest unread previews, through
-    `ConversationParticipant` read marks.
-  - `ProjectsSection` — the member's projects with feedback counts and new feedback counts.
-  - `ProfileSection` — profile completeness and the next missing item, from the `profiles`
-    subsystem's completeness rule.
+  - `MatchesSection` — this week's `MatchSuggestion` rows in match-score order and the unreviewed
+    count. The matching rules, including block filtering, stay in the `matching` subsystem.
+  - `EventsSection` — events the member is going to, through going `Rsvp` rows (not waitlisted) and
+    `Event`, that start within the next 14 days, soonest first. The summary count uses the rows that
+    start within the next 7 days (`L2-030` criterion 7).
+  - `MessagesSection` — unread conversation count and up to 3 latest unread previews, newest first,
+    through `ConversationParticipant` read marks (`L2-030` criterion 8).
+  - `ProjectsSection` — the member's projects with comment counts and new comment counts, where new
+    means posted by someone else since the member last opened that project's feedback (`L2-030`
+    criterion 9).
+  - `ProfileSection` — profile completeness and the next missing item. Completeness is the share of
+    five items filled in, 20% each: name and role, photo, skills, neighbourhood and what the member
+    is looking for (`L2-030` criterion 9).
   Each provider scopes every query to the current member (`L2-044` criteria 1 and 5).
 - **`DashboardResource`** and **`DashboardSectionResource`** (`Resources/Dashboard/`) — serialize the
   `Dashboard` and `DashboardSection` shapes.
@@ -98,30 +110,26 @@ A failed section never fails the whole dashboard while another section loads. Th
 `partial` state, and each section retry either fills its section or leaves the inline message in
 place. A network failure, a 5xx on `GET /dashboard`, or a response where every section failed leads
 to the `error` state with "Try again". The read budget of `L2-047` criterion 1 applies to the whole
-request, so each provider uses indexed queries.
+request, so each provider uses indexed queries, and no section is cached (`L2-030` criterion 12).
 
-### Open points
+### Resolved decisions
 
-- The mock manifest gives the dashboard route as `/home`; `L2-030` uses `/dashboard`.
-  The route is `<TO SUPPLY>`.
-- `L2-030` criterion 1 asks for "upcoming events they attend". The mock's "This week and next"
-  section lists general upcoming events, including in the `empty` state for a member who attends
-  none. The rule is `<TO SUPPLY>`.
-- `L2-030` criterion 1 asks for unread messages, but the mock has no messages section; unread
-  messages appear only in the summary line. The section's layout is `<TO SUPPLY>`.
-- `L2-030` criterion 2 lists the next steps as complete profile, share a project and set up matching.
-  The `empty` mock shows complete profile, start matching and join a first event, with "Share a
-  project" in the project section. The list is `<TO SUPPLY>`.
-- The matches section copy reads "nearest first", but the cards run 94 %, 88 % and 76 % at 26.9 km,
-  5.8 km and 13.5 km, which is match-score order (`L2-022` criterion 1). The copy is `<TO SUPPLY>`.
-- The match card's second action reads "Not now" on the dashboard; `L2-023` criterion 1 names it
-  "Pass". The label is `<TO SUPPLY>`.
-- The summary line counts "1 event this week" while the section lists two events over two weeks.
-  The counting window is `<TO SUPPLY>`.
-- The definition of "new" feedback ("23 comments, 4 new") is `<TO SUPPLY>`, as is the profile
-  completeness rule, which the `profiles` subsystem owns.
-- The greeting's time-of-day boundaries ("Good morning") are `<TO SUPPLY>`.
-- Whether sections are cached in Redis to meet the read budget, and for how long, is `<TO SUPPLY>`.
+- Route: `/dashboard` in `L2-030`, the manifest and this design (settled in gap-analysis iteration 1).
+- The events section lists only events the member is going to in the next 14 days; the summary line
+  counts those in the next 7 days, so the mock says "1 event in the next 7 days" (`L2-030`
+  criterion 7; mock `default.html`). The `empty` mock no longer lists events and shows one
+  suggested public event in the aside instead (`L2-030` criterion 2).
+- The messages section lists up to 3 unread conversations in the existing inbox layout, under the
+  events section, with a link to `/messages` (`L2-030` criterion 8; mocks `default.html` and
+  `partial.html`).
+- The `empty` next steps are complete profile, share a project and set up matching, in that order
+  (`L2-030` criterion 2; mock `empty.html`).
+- The matches line reads "best match first" and the second action reads "Pass" (`L2-030`
+  criterion 6; mocks `default.html` and `partial.html`).
+- "New" feedback means posted by someone else since the member last opened that project's feedback;
+  profile completeness is five items at 20% each (`L2-030` criterion 9).
+- The greeting uses the 05:00 / 12:00 / 18:00 boundaries in America/Toronto (`L2-030` criterion 10).
+- Dashboard data is built per request and never cached in Redis (`L2-030` criterion 12).
 
 ## Requirements
 
@@ -129,7 +137,7 @@ request, so each provider uses indexed queries.
 |-------|--------------|-------------|
 | `L2-030` | `L1-002`, `L1-007`, `L1-013` | A signed-in member's landing page shall summarise what needs their attention. |
 
-The design realizes all five acceptance criteria of `L2-030`. The Description cites each criterion
+The design realizes all twelve acceptance criteria of `L2-030`. The Description cites each criterion
 where a component enforces it.
 
 ## Diagrams

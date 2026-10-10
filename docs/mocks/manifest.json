@@ -6,6 +6,9 @@
       "kind": "page",
       "title": "Home",
       "route": "/",
+      "requirements": [
+        "L2-039"
+      ],
       "states": [
         "default",
         "loading",
@@ -21,6 +24,9 @@
       "kind": "page",
       "title": "Sign in",
       "route": "/sign-in",
+      "requirements": [
+        "L2-003"
+      ],
       "states": [
         "default",
         "invalid",
@@ -38,6 +44,9 @@
       "kind": "page",
       "title": "Join Banaro",
       "route": "/join",
+      "requirements": [
+        "L2-001"
+      ],
       "states": [
         "default",
         "invalid",
@@ -55,6 +64,9 @@
       "kind": "page",
       "title": "Forgot password",
       "route": "/forgot-password",
+      "requirements": [
+        "L2-004"
+      ],
       "states": [
         "default",
         "invalid",
@@ -72,6 +84,9 @@
       "kind": "page",
       "title": "Reset password",
       "route": "/reset-password",
+      "requirements": [
+        "L2-004"
+      ],
       "states": [
         "default",
         "invalid",
@@ -89,6 +104,9 @@
       "kind": "page",
       "title": "Verify e-mail",
       "route": "/verify-email",
+      "requirements": [
+        "L2-002"
+      ],
       "states": [
         "default",
         "success",
@@ -104,6 +122,9 @@
       "kind": "page",
       "title": "Welcome",
       "route": "/welcome",
+      "requirements": [
+        "L2-006"
+      ],
       "states": [
         "default",
         "skills",
@@ -122,7 +143,10 @@
       "id": "dashboard",
       "kind": "page",
       "title": "Dashboard",
-      "route": "/home",
+      "route": "/dashboard",
+      "requirements": [
+        "L2-030"
+      ],
       "states": [
         "default",
         "loading",
@@ -137,6 +161,10 @@
       "kind": "page",
       "title": "Builder directory",
       "route": "/builders",
+      "requirements": [
+        "L2-009",
+        "L2-010"
+      ],
       "states": [
         "default",
         "loading",
@@ -153,7 +181,11 @@
       "id": "builder-profile",
       "kind": "page",
       "title": "Builder profile",
-      "route": "/builders/daniel-reyes",
+      "route": "/builders/{id}",
+      "requirements": [
+        "L2-011",
+        "L2-036"
+      ],
       "states": [
         "default",
         "loading",
@@ -170,7 +202,10 @@
       "id": "profile-edit",
       "kind": "page",
       "title": "Edit profile",
-      "route": "/me/edit",
+      "route": "/profile/edit",
+      "requirements": [
+        "L2-007"
+      ],
       "states": [
         "default",
         "loading",
@@ -188,6 +223,9 @@
       "kind": "page",
       "title": "Projects",
       "route": "/projects",
+      "requirements": [
+        "L2-015"
+      ],
       "states": [
         "default",
         "loading",
@@ -202,7 +240,12 @@
       "id": "project-detail",
       "kind": "page",
       "title": "Project",
-      "route": "/projects/psalter",
+      "route": "/projects/{id}",
+      "requirements": [
+        "L2-013",
+        "L2-016",
+        "L2-017"
+      ],
       "states": [
         "default",
         "loading",
@@ -218,6 +261,9 @@
       "kind": "page",
       "title": "Share a project",
       "route": "/projects/new",
+      "requirements": [
+        "L2-012"
+      ],
       "states": [
         "default",
         "invalid",
@@ -234,7 +280,10 @@
       "id": "project-edit",
       "kind": "page",
       "title": "Edit project",
-      "route": "/projects/harvest/edit",
+      "route": "/projects/{id}/edit",
+      "requirements": [
+        "L2-014"
+      ],
       "states": [
         "default",
         "loading",
@@ -251,6 +300,9 @@
       "kind": "page",
       "title": "Events",
       "route": "/events",
+      "requirements": [
+        "L2-018"
+      ],
       "states": [
         "default",
         "loading",
@@ -264,7 +316,11 @@
       "id": "event-detail",
       "kind": "page",
       "title": "Event",
-      "route": "/events/fall-demo-night",
+      "route": "/events/{id}",
+      "requirements": [
+        "L2-019",
+        "L2-020"
+      ],
       "states": [
         "default",
         "loading",
@@ -284,6 +340,12 @@
       "kind": "page",
       "title": "Matching",
       "route": "/matching",
+      "requirements": [
+        "L2-022",
+        "L2-023",
+        "L2-024",
+        "L2-025"
+      ],
       "states": [
         "default",
         "loading",
@@ -299,6 +361,9 @@
       "kind": "page",
       "title": "Matching setup",
       "route": "/matching/setup",
+      "requirements": [
+        "L2-021"
+      ],
       "states": [
         "default",
         "invalid",
@@ -316,6 +381,9 @@
       "kind": "page",
       "title": "Messages",
       "route": "/messages",
+      "requirements": [
+        "L2-026"
+      ],
       "states": [
         "default",
         "loading",
@@ -330,6 +398,9 @@
       "kind": "page",
       "title": "Notifications",
       "route": "/notifications",
+      "requirements": [
+        "L2-027"
+      ],
       "states": [
         "default",
         "loading",
@@ -344,6 +415,12 @@
       "kind": "page",
       "title": "Settings",
       "route": "/settings",
+      "requirements": [
+        "L2-035",
+        "L2-036",
+        "L2-037",
+        "L2-038"
+      ],
       "states": [
         "default",
         "privacy",
@@ -363,6 +440,9 @@
       "kind": "page",
       "title": "Contact",
       "route": "/contact",
+      "requirements": [
+        "L2-040"
+      ],
       "states": [
         "default",
         "invalid",
@@ -380,6 +460,9 @@
       "kind": "page",
       "title": "About Banaro",
       "route": "/about",
+      "requirements": [
+        "L2-040"
+      ],
       "states": [
         "default"
       ],
@@ -394,6 +477,9 @@
       "kind": "page",
       "title": "Code of conduct",
       "route": "/code-of-conduct",
+      "requirements": [
+        "L2-034"
+      ],
       "states": [
         "default"
       ],
@@ -408,6 +494,9 @@
       "kind": "page",
       "title": "Privacy",
       "route": "/privacy",
+      "requirements": [
+        "L2-041"
+      ],
       "states": [
         "default"
       ],
@@ -422,6 +511,9 @@
       "kind": "page",
       "title": "Page not found",
       "route": "/404",
+      "requirements": [
+        "L2-042"
+      ],
       "states": [
         "default"
       ],
@@ -436,6 +528,9 @@
       "kind": "page",
       "title": "No access",
       "route": "/403",
+      "requirements": [
+        "L2-042"
+      ],
       "states": [
         "default"
       ],
@@ -450,6 +545,9 @@
       "kind": "page",
       "title": "Something went wrong",
       "route": "/500",
+      "requirements": [
+        "L2-042"
+      ],
       "states": [
         "default"
       ],
@@ -464,6 +562,9 @@
       "kind": "page",
       "title": "You're offline",
       "route": "/offline",
+      "requirements": [
+        "L2-043"
+      ],
       "states": [
         "default"
       ],
@@ -478,6 +579,9 @@
       "kind": "page",
       "title": "Down for maintenance",
       "route": "/maintenance",
+      "requirements": [
+        "L2-043"
+      ],
       "states": [
         "default"
       ],
@@ -492,6 +596,9 @@
       "kind": "dialog",
       "title": "Say hello",
       "opens_from": "directory",
+      "requirements": [
+        "L2-026"
+      ],
       "states": [
         "default",
         "busy",
@@ -505,6 +612,9 @@
       "kind": "dialog",
       "title": "Pass on this suggestion",
       "opens_from": "matching",
+      "requirements": [
+        "L2-024"
+      ],
       "states": [
         "default",
         "busy",
@@ -519,6 +629,9 @@
       "kind": "dialog",
       "title": "Give feedback",
       "opens_from": "project-detail",
+      "requirements": [
+        "L2-016"
+      ],
       "states": [
         "default",
         "busy",
@@ -532,6 +645,9 @@
       "kind": "dialog",
       "title": "Offer to help",
       "opens_from": "project-detail",
+      "requirements": [
+        "L2-017"
+      ],
       "states": [
         "default",
         "busy",
@@ -545,6 +661,9 @@
       "kind": "dialog",
       "title": "Delete project",
       "opens_from": "project-edit",
+      "requirements": [
+        "L2-014"
+      ],
       "states": [
         "default",
         "busy",
@@ -558,6 +677,9 @@
       "kind": "dialog",
       "title": "Cancel RSVP",
       "opens_from": "event-detail",
+      "requirements": [
+        "L2-020"
+      ],
       "states": [
         "default",
         "busy",
@@ -572,6 +694,9 @@
       "kind": "dialog",
       "title": "Pause matching",
       "opens_from": "matching",
+      "requirements": [
+        "L2-025"
+      ],
       "states": [
         "default",
         "busy",
@@ -586,6 +711,9 @@
       "kind": "dialog",
       "title": "Report a builder",
       "opens_from": "builder-profile",
+      "requirements": [
+        "L2-031"
+      ],
       "states": [
         "default",
         "busy",
@@ -600,6 +728,9 @@
       "kind": "dialog",
       "title": "Block builder",
       "opens_from": "builder-profile",
+      "requirements": [
+        "L2-032"
+      ],
       "states": [
         "default",
         "busy",
@@ -614,6 +745,9 @@
       "kind": "dialog",
       "title": "Change photo",
       "opens_from": "profile-edit",
+      "requirements": [
+        "L2-008"
+      ],
       "states": [
         "default",
         "busy",
@@ -627,6 +761,9 @@
       "kind": "dialog",
       "title": "Delete account",
       "opens_from": "settings",
+      "requirements": [
+        "L2-038"
+      ],
       "states": [
         "default",
         "busy",
@@ -640,6 +777,9 @@
       "kind": "dialog",
       "title": "Session expired",
       "opens_from": "profile-edit",
+      "requirements": [
+        "L2-005"
+      ],
       "states": [
         "default",
         "busy",
@@ -653,6 +793,9 @@
       "kind": "dialog",
       "title": "Account menu",
       "opens_from": "dashboard",
+      "requirements": [
+        "L2-003"
+      ],
       "states": [
         "default"
       ],
@@ -666,6 +809,9 @@
       "kind": "notification",
       "title": "Toast",
       "opens_from": "directory",
+      "requirements": [
+        "L2-028"
+      ],
       "states": [
         "info",
         "success",
@@ -681,6 +827,10 @@
       "kind": "notification",
       "title": "RSVP toast",
       "opens_from": "event-detail",
+      "requirements": [
+        "L2-020",
+        "L2-028"
+      ],
       "states": [
         "info",
         "success",
@@ -694,6 +844,9 @@
       "kind": "notification",
       "title": "Account banner",
       "opens_from": "dashboard",
+      "requirements": [
+        "L2-028"
+      ],
       "states": [
         "info",
         "success",
@@ -708,6 +861,9 @@
       "kind": "notification",
       "title": "Site banner",
       "opens_from": "dashboard",
+      "requirements": [
+        "L2-028"
+      ],
       "states": [
         "info",
         "success",
@@ -722,6 +878,10 @@
       "kind": "notification",
       "title": "Connection banner",
       "opens_from": "messages",
+      "requirements": [
+        "L2-028",
+        "L2-043"
+      ],
       "states": [
         "info",
         "success",
