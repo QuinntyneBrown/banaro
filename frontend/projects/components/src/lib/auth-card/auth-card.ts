@@ -38,7 +38,7 @@ export type AuthCardIcon = 'mail' | 'check' | 'alert';
               </span>
             }
           }
-          <h1 class="auth__title" id="auth-title">{{ heading() }}</h1>
+          <h1 class="auth__title" id="auth-title" tabindex="-1">{{ heading() }}</h1>
           @if (sub()) {
             <p class="auth__sub">{{ sub() }}</p>
           }

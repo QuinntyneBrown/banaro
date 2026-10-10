@@ -2,6 +2,10 @@
  * Public API Surface of api
  */
 
+export * from './lib/auth/forward-request-cookies';
+export * from './lib/auth/provide-session';
+export * from './lib/auth/safe-return-path';
+export * from './lib/auth/session-store';
 export * from './lib/http/api-error';
 export * from './lib/http/connectivity';
 export * from './lib/http/csrf';

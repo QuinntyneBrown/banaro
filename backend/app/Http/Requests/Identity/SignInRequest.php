@@ -25,8 +25,8 @@ class SignInRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.*' => __('identity.errors.email'),
-            'password.*' => __('identity.errors.passwordRequired'),
+            'email.*' => __('identity.signIn.errors.email'),
+            'password.*' => __('identity.signIn.errors.password'),
         ];
     }
 }

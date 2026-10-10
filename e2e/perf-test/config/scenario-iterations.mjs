@@ -4,5 +4,6 @@ export const scenarioIterations = {
   DarkTheme: 80,
   ErrorPage: 300,
   Footer: 250,
+  Menu: 300,
   TopBar: 70,
 };

@@ -10,6 +10,10 @@ export const routes: Routes = [
   },
   { path: 'join', loadComponent: () => import('./pages/join/join').then((m) => m.JoinPage) },
   {
+    path: 'sign-in',
+    loadComponent: () => import('./pages/sign-in/sign-in').then((m) => m.SignInPage),
+  },
+  {
     path: 'privacy',
     loadComponent: () => import('./pages/privacy/privacy').then((m) => m.PrivacyPage),
   },

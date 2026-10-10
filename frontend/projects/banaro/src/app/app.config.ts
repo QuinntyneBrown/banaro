@@ -12,6 +12,7 @@ import {
   ConnectivityService,
   csrfCookieInterceptor,
   ERROR_PAGE_NAVIGATOR,
+  forwardRequestCookiesInterceptor,
   HttpI18nApi,
   HttpIdentityApi,
   HttpPublicSiteApi,
@@ -19,6 +20,7 @@ import {
   IDENTITY_API,
   maintenanceInterceptor,
   provideI18n,
+  provideSession,
   PUBLIC_SITE_API,
 } from 'api';
 import { routes } from './app.routes';
@@ -41,13 +43,26 @@ export const appConfig: ApplicationConfig = {
     ),
     provideHttpClient(
       withFetch(),
-      withInterceptors([connectivityInterceptor, csrfCookieInterceptor, maintenanceInterceptor]),
+      withInterceptors([
+        forwardRequestCookiesInterceptor,
+        connectivityInterceptor,
+        csrfCookieInterceptor,
+        maintenanceInterceptor,
+      ]),
     ),
-    provideClientHydration(withHttpTransferCacheOptions({})),
+    // The page HTML is private to its viewer (server.ts), so it may carry their own API responses:
+    // the browser then reuses what server-side rendering fetched instead of asking again.
+    provideClientHydration(
+      withHttpTransferCacheOptions({
+        includeRequestsWithAuthHeaders: true,
+        includeNonCacheableRequests: true,
+      }),
+    ),
     { provide: I18N_API, useClass: HttpI18nApi },
     { provide: PUBLIC_SITE_API, useClass: HttpPublicSiteApi },
     { provide: IDENTITY_API, useClass: HttpIdentityApi },
     { provide: ERROR_PAGE_NAVIGATOR, useClass: RouterErrorPageNavigator },
     provideI18n('en-CA'),
+    provideSession(),
   ],
 };

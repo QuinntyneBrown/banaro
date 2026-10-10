@@ -42,9 +42,36 @@
     }
   },
   "signIn": {
+    "meta": {
+      "title": "Sign in · Banaro",
+      "description": "Sign in to Banaro to find builders, share projects and RSVP to events."
+    },
+    "title": "Sign in",
+    "sub": "Welcome back. Pick up where you left off.",
+    "formLabel": "Sign in",
+    "email": "E-mail",
+    "password": "Password",
+    "forgot": "Forgot your password?",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "retry": "Try again",
+    "alt": "New to Banaro?",
+    "join": "Join Banaro",
+    "signedOut": {
+      "title": "You're signed out",
+      "sub": "Thanks for stopping by. Your session on this device has ended, and nothing was left behind.",
+      "again": "Sign in again",
+      "home": "Back to the home page"
+    },
     "errors": {
       "mismatch": "Those details don't match",
-      "tooMany": "Too many sign-in attempts. Try again in {minutes} minutes."
+      "mismatchBody": "Check your e-mail and password and try again, or reset your password.",
+      "reset": "Reset password",
+      "email": "Enter your e-mail address in the form name@example.com",
+      "password": "Enter your password",
+      "tooMany": "Too many sign-in attempts. Try again in {minutes} minutes.",
+      "tooManyTitle": "Too many sign-in attempts",
+      "failed": "We couldn't sign you in. Try again in a moment."
     }
   }
 }
