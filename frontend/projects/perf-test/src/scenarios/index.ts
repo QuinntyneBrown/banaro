@@ -1,5 +1,6 @@
 import { Type } from '@angular/core';
 import Alert from './Alert';
+import Banner from './Banner';
 import Brand from './Brand';
 import Button from './Button';
 import ButtonBusy from './ButtonBusy';
@@ -17,6 +18,7 @@ import TopBar from './TopBar';
 /** Every scenario by name. Add a new component's scenario here in the same change. */
 export const scenarios: Record<string, Type<unknown>> = {
   Alert,
+  Banner,
   Brand,
   Button,
   ButtonBusy,

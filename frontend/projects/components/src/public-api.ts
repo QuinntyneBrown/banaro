@@ -3,6 +3,7 @@
  */
 
 export * from './lib/alert/alert';
+export * from './lib/banner/banner';
 export * from './lib/brand/brand';
 export * from './lib/button/button';
 export * from './lib/error-page/error-page';

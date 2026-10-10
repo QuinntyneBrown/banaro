@@ -9,11 +9,12 @@ import {
 import { RouterOutlet } from '@angular/router';
 import { TranslatePipe, TranslationService } from 'api';
 import { Footer, NavItem, SkipLink, ThemeService } from 'components';
+import { ConnectionBanner } from './shell/connection-banner';
 import { Header } from './shell/header/header';
 import { ThemeShortcut } from './shell/theme-shortcut';
 
 @Component({
-  imports: [RouterOutlet, Header, Footer, SkipLink, TranslatePipe],
+  imports: [RouterOutlet, ConnectionBanner, Header, Footer, SkipLink, TranslatePipe],
   selector: 'bn-root',
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -3,6 +3,7 @@
  */
 
 export * from './lib/http/api-error';
+export * from './lib/http/connectivity';
 export * from './lib/http/csrf';
 export * from './lib/http/error-pages';
 export * from './lib/i18n/format';

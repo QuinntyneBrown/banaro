@@ -1,0 +1,75 @@
+:host {
+  display: block;
+}
+
+/* Extracted from docs/design-system/assets/components.css: banner, icon-btn */
+.icon-btn {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: var(--target-comfortable);
+  height: var(--target-comfortable);
+  border-radius: var(--radius-full);
+  border: 0;
+  background: transparent;
+  color: var(--color-fg-muted);
+  cursor: pointer;
+  text-decoration: none;
+}
+.icon-btn:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-fg-default);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .icon-btn {
+    transition:
+      color var(--duration-fast) var(--ease-standard),
+      background-color var(--duration-base) var(--ease-standard),
+      border-color var(--duration-base) var(--ease-standard),
+      box-shadow var(--duration-base) var(--ease-standard);
+  }
+}
+.banner {
+  border-bottom: var(--border-width-hairline) solid var(--color-info-border);
+  background: var(--color-info-bg);
+  color: var(--color-info-fg);
+}
+.banner__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+  padding-block: var(--space-3);
+}
+.banner__text {
+  flex: 1 1 var(--size-banner-text-flex-25);
+  font: var(--text-body-sm);
+  color: var(--color-fg-default);
+}
+.banner .icon {
+  color: var(--color-info-icon);
+}
+.banner--success {
+  border-color: var(--color-success-border);
+  background: var(--color-success-bg);
+  color: var(--color-success-fg);
+}
+.banner--success .icon {
+  color: var(--color-success-icon);
+}
+.banner--warning {
+  border-color: var(--color-warning-border);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-fg);
+}
+.banner--warning .icon {
+  color: var(--color-warning-icon);
+}
+.banner--danger {
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+  color: var(--color-danger-fg);
+}
+.banner--danger .icon {
+  color: var(--color-danger-icon);
+}

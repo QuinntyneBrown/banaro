@@ -3,6 +3,7 @@ import { ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners } f
 import { provideClientHydration, withHttpTransferCacheOptions } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import {
+  connectivityInterceptor,
   csrfCookieInterceptor,
   ERROR_PAGE_NAVIGATOR,
   HttpI18nApi,
@@ -23,7 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(
       withFetch(),
-      withInterceptors([csrfCookieInterceptor, maintenanceInterceptor]),
+      withInterceptors([connectivityInterceptor, csrfCookieInterceptor, maintenanceInterceptor]),
     ),
     provideClientHydration(withHttpTransferCacheOptions({})),
     { provide: I18N_API, useClass: HttpI18nApi },

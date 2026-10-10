@@ -27,5 +27,13 @@
   },
   "errors": {
     "slowDown": "You're trying too fast. Wait {minutes} minutes, then try again."
+  },
+  "dismissBanner": "Dismiss banner",
+  "connection": {
+    "offline": "You are offline. What you write stays on this page until you reconnect.",
+    "reconnecting": "Reconnecting… Banaro will update as soon as you are back.",
+    "failed": "We couldn't reconnect. Check your network, then try again.",
+    "retry": "Try again",
+    "restored": "Back online. Banaro is up to date."
   }
 }
