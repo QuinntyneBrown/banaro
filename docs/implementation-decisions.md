@@ -30,3 +30,4 @@ a different answer becomes a requirement or design change and then a code change
 | D-015 | about-and-contact | Store contact messages in the database | Not stored; they live only in the queued job and the team inbox | 3 |
 | D-016 | handle-offline-and-maintenance | The maintenance page needs text, but the catalogue endpoint would answer 503 | `/api/v1/i18n/*` is exempt from maintenance mode, like `/health/*` | 3 |
 | D-017 | handle-offline-and-maintenance | Laravel 11 does not record when maintenance began | `expectedBackAt` is the response time plus `--retry`, the moment `Retry-After` names | 3 |
+| D-018 | verify-email | The design signs links with `token`, `expires` and `signature` | The link carries one 64-character random token; only its SHA-256 is stored, with the expiry and use beside it (ADR-0005). An altered token matches no row, which is the tampered-link case of L2-002 criterion 2 | 3 |

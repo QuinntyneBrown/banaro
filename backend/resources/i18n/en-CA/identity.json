@@ -73,5 +73,34 @@
       "tooManyTitle": "Too many sign-in attempts",
       "failed": "We couldn't sign you in. Try again in a moment."
     }
+  },
+  "verify": {
+    "meta": {
+      "title": "Confirm your e-mail · Banaro",
+      "description": "Confirm your e-mail address to finish joining Banaro."
+    },
+    "default": {
+      "title": "Confirm your e-mail",
+      "sub": "We sent a link to {email}. Open it to finish joining Banaro.",
+      "resend": "Send the link again",
+      "help": "Need help?"
+    },
+    "success": {
+      "title": "E-mail confirmed",
+      "sub": "Thank you. Your account is ready. Two minutes of questions and your profile is set.",
+      "setUp": "Set up your profile"
+    },
+    "error": {
+      "title": "We couldn't confirm that link",
+      "sub": "It may have expired, or it was already used. Ask for a fresh link and we'll send it to the e-mail you joined with.",
+      "resend": "Send a new link",
+      "signIn": "Back to sign in"
+    },
+    "sent": "If this address still needs confirming, a new link is on its way.",
+    "errors": {
+      "invalid": "We couldn't confirm that link",
+      "tooMany": "You've asked for too many links. Try again in {minutes} minutes.",
+      "failed": "We couldn't send a new link. Try again in a moment."
+    }
   }
 }
