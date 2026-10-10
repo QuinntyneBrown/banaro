@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Identity\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Identity\JoinController;
+use App\Http\Controllers\Api\V1\Identity\PasswordResetController;
 use App\Http\Controllers\Api\V1\Identity\SessionController;
 use App\Http\Controllers\Api\V1\Identity\VerificationNotificationController;
 use App\Http\Controllers\Api\V1\PublicSite\ContactMessageController;
@@ -37,3 +38,10 @@ Route::post('session', [SessionController::class, 'store'])->name('session.store
 Route::post('email/verify', [EmailVerificationController::class, 'store'])->name('email.verify');
 Route::post('email/verification-notification', [VerificationNotificationController::class, 'store'])
     ->name('email.verification-notification');
+
+// L2-004: the person resetting a password is not signed in.
+Route::post('forgot-password', [PasswordResetController::class, 'requestLink'])
+    ->middleware('throttle:password-reset')
+    ->name('password-reset.request');
+Route::post('reset-password/check', [PasswordResetController::class, 'check'])->name('password-reset.check');
+Route::post('reset-password', [PasswordResetController::class, 'store'])->name('password-reset.store');

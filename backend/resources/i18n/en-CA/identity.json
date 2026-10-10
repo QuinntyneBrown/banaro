@@ -109,5 +109,58 @@
       "body": "Check your connection and try again.",
       "retry": "Try again"
     }
+  },
+  "forgot": {
+    "meta": {
+      "title": "Forgot your password · Banaro",
+      "description": "Get a link to choose a new Banaro password."
+    },
+    "title": "Forgot your password?",
+    "sub": "Enter the e-mail you joined with and we'll send a link to choose a new password.",
+    "formLabel": "Forgot your password",
+    "email": "E-mail",
+    "submit": "Send reset link",
+    "submitting": "Sending…",
+    "back": "Back to sign in",
+    "success": {
+      "title": "Check your e-mail",
+      "sub": "If an account exists for {email}, a reset link is on its way. It works for 60 minutes.",
+      "again": "Send it again"
+    },
+    "errors": {
+      "tooMany": "Too many requests. Try again in {minutes} minutes.",
+      "failed": "We couldn't send a reset link. Try again in a moment."
+    }
+  },
+  "reset": {
+    "meta": {
+      "title": "Choose a new password · Banaro",
+      "description": "Choose a new password for your Banaro account."
+    },
+    "title": "Choose a new password",
+    "sub": "Choose a new password for {email}.",
+    "formLabel": "Choose a new password",
+    "password": "New password",
+    "passwordHelp": "At least 12 characters.",
+    "confirm": "Confirm new password",
+    "submit": "Update password",
+    "submitting": "Updating…",
+    "success": {
+      "title": "Password updated",
+      "sub": "You can sign in with your new password. For safety, we signed you out everywhere else.",
+      "signIn": "Sign in"
+    },
+    "error": {
+      "title": "This link has expired",
+      "sub": "Reset links work for 60 minutes and only once. Request a new one and we'll send it straight away.",
+      "newLink": "Send a new link",
+      "signIn": "Back to sign in"
+    },
+    "errors": {
+      "mismatch": "The two passwords don't match",
+      "confirmRequired": "Enter the new password again",
+      "same": "Choose a different password. This one is your current password.",
+      "failed": "We couldn't update your password. Try again in a moment."
+    }
   }
 }

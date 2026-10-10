@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use App\Services\UserExperience\CatalogueService;
 use App\Services\UserExperience\CatalogueTranslationLoader;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -33,5 +34,10 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('contact', fn (Request $request) => Limit::perHour(3)->by(hash('sha256', (string) $request->ip())));
         // Join: 5 attempts per IP in 10 minutes (L2-001 criterion 6).
         RateLimiter::for('join', fn (Request $request) => Limit::perMinutes(10, 5)->by(hash('sha256', (string) $request->ip())));
+        // Reset links: 5 per hour per address and 5 per hour per IP; unknown addresses count too (L2-004 criterion 5).
+        RateLimiter::for('password-reset', fn (Request $request) => [
+            Limit::perHour(5)->by('email:'.hash('sha256', User::canonicalEmail((string) $request->input('email')))),
+            Limit::perHour(5)->by('ip:'.hash('sha256', (string) $request->ip())),
+        ]);
     }
 }
