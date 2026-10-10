@@ -1,7 +1,7 @@
 {
   "errors": {
     "summary": "Fix these before continuing",
-    "nameRequired": "Enter your name",
+    "nameRequired": "Enter your full name",
     "nameMax": "Use 100 characters or fewer",
     "email": "Enter an e-mail address like name@example.com",
     "passwordRequired": "Enter a password",
@@ -9,6 +9,36 @@
     "passwordMax": "Use 128 characters or fewer",
     "passwordCommon": "That password is too common. Choose something harder to guess.",
     "agree": "Agree to the code of conduct to join",
-    "failed": "We couldn't create your account. Try again in a moment."
+    "failed": "We couldn't create your account. Try again in a moment.",
+    "passwordMinCount": "Use at least 12 characters (you have {count})"
+  },
+  "join": {
+    "meta": {
+      "title": "Join · Banaro",
+      "description": "Join Banaro, free for Christian builders in Toronto and the GTA."
+    },
+    "title": "Join Banaro",
+    "sub": "Free for Christian builders in Toronto and the GTA. It takes about two minutes.",
+    "formLabel": "Join Banaro",
+    "name": "Full name",
+    "email": "E-mail",
+    "password": "Password",
+    "agreeStart": "I will follow the",
+    "codeOfConduct": "code of conduct",
+    "newTab": " (opens in a new tab)",
+    "agreeMiddle": "and have read the",
+    "privacy": "privacy policy",
+    "submit": "Join Banaro",
+    "submitting": "Creating your account…",
+    "alt": "Already a member?",
+    "signIn": "Sign in",
+    "success": {
+      "title": "Check your e-mail",
+      "sub": "We sent a confirmation link to {email}. Open it on this device to finish joining and set up your profile.",
+      "confirmed": "I have confirmed my e-mail",
+      "resend": "Send the link again",
+      "nothingTitle": "Nothing yet?",
+      "nothingBody": "Look in your spam folder, or wait a minute. The link works for 24 hours."
+    }
   }
 }

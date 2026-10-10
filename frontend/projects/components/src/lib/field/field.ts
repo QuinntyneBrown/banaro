@@ -33,6 +33,28 @@ export class Field {
   readonly error = input<string | null>();
 }
 
+/**
+ * A field error on its own, for controls that are not inside `bn-field`, such as a checkbox.
+ * Give the host an `id` and point the control's `aria-describedby` at it.
+ */
+@Component({
+  selector: 'bn-field-error',
+  template: `
+    <p class="field__error">
+      <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="8.5" />
+        <path d="M12 7.5v5M12 15.5h.01" />
+      </svg>
+      <span>{{ message() }}</span>
+    </p>
+  `,
+  styleUrl: './field-error.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FieldError {
+  readonly message = input.required<string>();
+}
+
 /** The id the control's `aria-describedby` should name: the error when shown, else the help. */
 export function fieldDescriptionId(
   controlId: string,

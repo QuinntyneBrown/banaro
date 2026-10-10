@@ -8,6 +8,7 @@ export const routes: Routes = [
     path: 'contact',
     loadComponent: () => import('./pages/contact/contact').then((m) => m.ContactPage),
   },
+  { path: 'join', loadComponent: () => import('./pages/join/join').then((m) => m.JoinPage) },
   {
     path: 'privacy',
     loadComponent: () => import('./pages/privacy/privacy').then((m) => m.PrivacyPage),

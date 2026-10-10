@@ -1,0 +1,32 @@
+:host {
+  display: block;
+}
+
+/* Extracted from docs/design-system/assets/components.css: check */
+.check {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--target-comfortable);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font: var(--text-body-sm);
+}
+.check:hover {
+  background: var(--color-bg-subtle);
+}
+.check__count {
+  color: var(--color-fg-subtle);
+  font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .check {
+    transition:
+      color var(--duration-fast) var(--ease-standard),
+      background-color var(--duration-base) var(--ease-standard),
+      border-color var(--duration-base) var(--ease-standard),
+      box-shadow var(--duration-base) var(--ease-standard);
+  }
+}

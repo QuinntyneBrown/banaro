@@ -16,7 +16,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "serve:ssr:banaro": "node dist/banaro/server/server.mjs",
-    "prepare": "cd .. && husky"
+    "prepare": "cd .. && husky",
+    "serve:e2e": "ng build banaro && node dist/banaro/server/server.mjs"
   },
   "lint-staged": {
     "*.{ts,html}": [

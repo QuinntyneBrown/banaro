@@ -6,7 +6,6 @@ export default defineConfig({
   testDir: '.',
   testMatch: ['specs/**/*.spec.ts'],
   fullyParallel: true,
-  // The Vite SSR dev server is slow under load on Windows; CI serves a production build.
   workers: process.env.CI ? undefined : 2,
   timeout: 60_000,
   expect: { timeout: 10_000 },
@@ -35,8 +34,10 @@ export default defineConfig({
       timeout: 300_000,
     },
     {
-      command: 'npm start',
+      // A production build behind the SSR server's own /api proxy, as in deployment.
+      command: 'npm run serve:e2e',
       cwd: '../frontend',
+      env: { PORT: '4300', BANARO_API_URL: 'http://localhost:8100' },
       url: 'http://localhost:4300',
       reuseExistingServer: !process.env.CI,
       timeout: 300_000,

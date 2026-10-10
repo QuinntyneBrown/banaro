@@ -1,0 +1,118 @@
+<div class="wrap">
+  @if (state() === 'success') {
+    <bn-auth-card
+      icon="mail"
+      [heading]="'identity.join.success.title' | t"
+      [sub]="'identity.join.success.sub' | t: { email: sentTo() }"
+    >
+      <div class="form-actions">
+        <a bn-button variant="primary" routerLink="/sign-in">{{
+          'identity.join.success.confirmed' | t
+        }}</a>
+        <button bn-button variant="quiet" type="button">
+          {{ 'identity.join.success.resend' | t }}
+        </button>
+      </div>
+      <bn-alert [heading]="'identity.join.success.nothingTitle' | t">
+        {{ 'identity.join.success.nothingBody' | t }}
+      </bn-alert>
+    </bn-auth-card>
+  } @else {
+    <bn-auth-card [heading]="'identity.join.title' | t" [sub]="'identity.join.sub' | t">
+      <form
+        class="form"
+        novalidate
+        [attr.aria-label]="'identity.join.formLabel' | t"
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+      >
+        @if (state() === 'invalid') {
+          <bn-form-summary [heading]="'identity.errors.summary' | t" [errors]="summaryErrors()" />
+        }
+        <bn-field [label]="'identity.join.name' | t" [controlId]="ids.name" [error]="errors().name">
+          <input
+            bn-input
+            [id]="ids.name"
+            type="text"
+            autocomplete="name"
+            formControlName="name"
+            [readonly]="state() === 'submitting'"
+            [invalid]="!!errors().name"
+            [attr.aria-describedby]="describedBy(ids.name, errors().name)"
+          />
+        </bn-field>
+        <bn-field
+          [label]="'identity.join.email' | t"
+          [controlId]="ids.email"
+          [error]="errors().email"
+        >
+          <input
+            bn-input
+            [id]="ids.email"
+            type="email"
+            autocomplete="email"
+            formControlName="email"
+            [readonly]="state() === 'submitting'"
+            [invalid]="!!errors().email"
+            [attr.aria-describedby]="describedBy(ids.email, errors().email)"
+          />
+        </bn-field>
+        <bn-field
+          [label]="'identity.join.password' | t"
+          [controlId]="ids.password"
+          [error]="errors().password"
+        >
+          <input
+            bn-input
+            [id]="ids.password"
+            type="password"
+            autocomplete="new-password"
+            formControlName="password"
+            [readonly]="state() === 'submitting'"
+            [invalid]="!!errors().password"
+            [attr.aria-describedby]="describedBy(ids.password, errors().password)"
+          />
+        </bn-field>
+        <div>
+          <bn-check>
+            <input
+              type="checkbox"
+              bn-checkbox
+              [id]="ids.agree"
+              formControlName="agree"
+              [invalid]="!!errors().agree"
+              [attr.aria-describedby]="errors().agree ? 'agree-err' : null"
+            />
+            {{ 'identity.join.agreeStart' | t }}
+            <a routerLink="/code-of-conduct" target="_blank" rel="noopener"
+              >{{ 'identity.join.codeOfConduct' | t
+              }}<span class="vh">{{ 'identity.join.newTab' | t }}</span></a
+            >
+            {{ 'identity.join.agreeMiddle' | t }}
+            <a routerLink="/privacy">{{ 'identity.join.privacy' | t }}</a
+            >.
+          </bn-check>
+          @if (errors().agree) {
+            <bn-field-error id="agree-err" [message]="errors().agree!" />
+          }
+        </div>
+        <div class="form-actions">
+          <button
+            bn-button
+            variant="primary"
+            type="submit"
+            [busy]="state() === 'submitting'"
+            [disabled]="state() === 'submitting' || offline()"
+          >
+            {{
+              (state() === 'submitting' ? 'identity.join.submitting' : 'identity.join.submit') | t
+            }}
+          </button>
+        </div>
+      </form>
+      <span slot="alt">
+        {{ 'identity.join.alt' | t }} <a routerLink="/sign-in">{{ 'identity.join.signIn' | t }}</a>
+      </span>
+    </bn-auth-card>
+  }
+</div>

@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+.field__error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font: var(--text-body-sm);
+  color: var(--color-danger-fg);
+}
+.field__error .icon {
+  margin-top: var(--space-1);
+}
