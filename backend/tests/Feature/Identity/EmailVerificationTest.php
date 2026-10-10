@@ -73,7 +73,10 @@ class EmailVerificationTest extends TestCase
         $token = $this->tokenFor($user);
         Carbon::setTestNow(now()->addHours(24)->addMinute());
 
-        $this->verify($token)->assertStatus(422)->assertJsonPath('code', 'verification_link_invalid');
+        $this->verify($token)
+            ->assertStatus(422)
+            ->assertJsonPath('code', 'verification_link_invalid')
+            ->assertJsonPath('link_known', true);
 
         $this->assertNull($user->fresh()->email_verified_at);
     }
@@ -83,7 +86,10 @@ class EmailVerificationTest extends TestCase
         $user = $this->unverified();
         $token = $this->tokenFor($user);
 
-        $this->verify(strrev($token))->assertStatus(422)->assertJsonPath('code', 'verification_link_invalid');
+        $this->verify(strrev($token))
+            ->assertStatus(422)
+            ->assertJsonPath('code', 'verification_link_invalid')
+            ->assertJsonPath('link_known', false);
 
         $this->assertNull($user->fresh()->email_verified_at);
     }

@@ -1,7 +1,13 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, InjectionToken } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { JoinRequest, MemberSession, SignInRequest } from '../models/identity';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
+import {
+  JoinRequest,
+  MemberSession,
+  ResendVerificationRequest,
+  SignInRequest,
+  VerificationOutcome,
+} from '../models/identity';
 
 export interface IdentityApi {
   join(request: JoinRequest): Observable<void>;
@@ -9,6 +15,9 @@ export interface IdentityApi {
   getSession(): Observable<MemberSession | null>;
   signIn(request: SignInRequest): Observable<MemberSession>;
   signOut(): Observable<void>;
+  /** Opens a verification link; a rejected link is an outcome, not an error. */
+  verifyEmail(token: string): Observable<VerificationOutcome>;
+  resendVerification(request: ResendVerificationRequest): Observable<void>;
 }
 
 export const IDENTITY_API = new InjectionToken<IdentityApi>('IDENTITY_API');
@@ -49,5 +58,22 @@ export class HttpIdentityApi implements IdentityApi {
 
   signOut(): Observable<void> {
     return this.http.delete('/api/v1/session').pipe(map(() => undefined));
+  }
+
+  verifyEmail(token: string): Observable<VerificationOutcome> {
+    return this.http.post('/api/v1/email/verify', { token }).pipe(
+      map((): VerificationOutcome => 'verified'),
+      catchError((error: unknown) =>
+        error instanceof HttpErrorResponse && error.error?.code === 'verification_link_invalid'
+          ? of<VerificationOutcome>({ invalid: true, linkKnown: !!error.error.link_known })
+          : throwError(() => error),
+      ),
+    );
+  }
+
+  resendVerification(request: ResendVerificationRequest): Observable<void> {
+    return this.http
+      .post('/api/v1/email/verification-notification', request)
+      .pipe(map(() => undefined));
   }
 }

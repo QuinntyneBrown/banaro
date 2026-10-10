@@ -36,6 +36,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prepend([LogRequest::class, AssignRequestId::class]);
         $middleware->replace(PreventRequestsDuringMaintenance::class, RespondDuringMaintenance::class);
         $middleware->statefulApi();
+        // Opening a verification link proves itself with the link's secret token and touches no
+        // session, and the page verifies it during server-side rendering, which carries no CSRF token.
+        $middleware->validateCsrfTokens(except: ['api/v1/email/verify']);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->context(fn () => ['request_id' => Context::get('request_id')]);

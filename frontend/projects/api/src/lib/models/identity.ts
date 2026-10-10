@@ -17,3 +17,16 @@ export interface MemberSession {
   email: string;
   emailVerified: boolean;
 }
+
+/** What opening a verification link did (L2-002). */
+export type VerificationOutcome =
+  /** The e-mail is confirmed. */
+  | 'verified'
+  /** Expired, used or tampered; `linkKnown` says whether the link was ever issued. */
+  | { invalid: true; linkKnown: boolean };
+
+/** Identifies the account for a resend; the session is used when neither is given. */
+export interface ResendVerificationRequest {
+  token?: string;
+  email?: string;
+}

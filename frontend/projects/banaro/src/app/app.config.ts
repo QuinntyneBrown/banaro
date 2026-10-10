@@ -7,7 +7,11 @@ import {
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { provideClientHydration, withHttpTransferCacheOptions } from '@angular/platform-browser';
-import { provideRouter, withNavigationErrorHandler } from '@angular/router';
+import {
+  provideRouter,
+  withComponentInputBinding,
+  withNavigationErrorHandler,
+} from '@angular/router';
 import {
   connectivityInterceptor,
   ConnectivityService,
@@ -36,6 +40,7 @@ export const appConfig: ApplicationConfig = {
     { provide: ErrorHandler, useClass: AppErrorHandler },
     provideRouter(
       routes,
+      withComponentInputBinding(),
       // A page whose code cannot load while Banaro is unreachable shows the offline page.
       withNavigationErrorHandler((error) => {
         const browserOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
@@ -59,6 +64,9 @@ export const appConfig: ApplicationConfig = {
       withHttpTransferCacheOptions({
         includeRequestsWithAuthHeaders: true,
         includeNonCacheableRequests: true,
+        // Opening a verification link is a POST made while rendering on the server; the browser
+        // must reuse its answer rather than open the link a second time.
+        includePostRequests: true,
       }),
     ),
     { provide: I18N_API, useClass: HttpI18nApi },

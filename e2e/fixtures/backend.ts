@@ -21,3 +21,6 @@ export function sql(statement: string): string {
 export function resetRateLimits(): void {
   compose('redis', 'redis-cli', '-n', '1', 'FLUSHDB');
 }
+
+/** `now()` as the API stores it: a timestamp without zone in the app's time zone (America/Toronto). */
+export const NOW = "(now() AT TIME ZONE 'America/Toronto')";

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { OfflinePage } from './pages/offline/offline';
+import { verifyEmailResolver } from './pages/verify-email/verify-email.resolver';
 
 export const routes: Routes = [
   { path: '', loadComponent: () => import('./pages/home/home').then((m) => m.HomePage) },
@@ -12,6 +13,11 @@ export const routes: Routes = [
   {
     path: 'sign-in',
     loadComponent: () => import('./pages/sign-in/sign-in').then((m) => m.SignInPage),
+  },
+  {
+    path: 'verify-email',
+    resolve: { outcome: verifyEmailResolver },
+    loadComponent: () => import('./pages/verify-email/verify-email').then((m) => m.VerifyEmailPage),
   },
   {
     path: 'privacy',
