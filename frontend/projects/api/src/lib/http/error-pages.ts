@@ -9,6 +9,8 @@ import { catchError, throwError } from 'rxjs';
 export interface ErrorPageNavigator {
   /** The API is in maintenance; `expectedBackAt` is an ISO time, or null when unknown. */
   maintenance(expectedBackAt: string | null): void;
+  /** Banaro is unreachable and the page at `failedUrl` could not load. */
+  offline(failedUrl: string): void;
 }
 
 export const ERROR_PAGE_NAVIGATOR = new InjectionToken<ErrorPageNavigator>('ERROR_PAGE_NAVIGATOR');

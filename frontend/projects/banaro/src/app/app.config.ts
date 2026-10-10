@@ -1,9 +1,15 @@
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  ApplicationConfig,
+  ErrorHandler,
+  inject,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import { provideClientHydration, withHttpTransferCacheOptions } from '@angular/platform-browser';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withNavigationErrorHandler } from '@angular/router';
 import {
   connectivityInterceptor,
+  ConnectivityService,
   csrfCookieInterceptor,
   ERROR_PAGE_NAVIGATOR,
   HttpI18nApi,
@@ -21,7 +27,16 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     { provide: ErrorHandler, useClass: AppErrorHandler },
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      // A page whose code cannot load while Banaro is unreachable shows the offline page.
+      withNavigationErrorHandler((error) => {
+        const browserOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+        if (browserOffline || inject(ConnectivityService).status() !== 'online') {
+          inject(ERROR_PAGE_NAVIGATOR).offline(error.url);
+        }
+      }),
+    ),
     provideHttpClient(
       withFetch(),
       withInterceptors([connectivityInterceptor, csrfCookieInterceptor, maintenanceInterceptor]),

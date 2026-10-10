@@ -25,5 +25,11 @@
     "checkAgain": "Check again",
     "contact": "Contact us",
     "supportEmail": "support@banaro.ca"
+  },
+  "offline": {
+    "title": "You're offline · Banaro",
+    "heading": "You're offline",
+    "lead": "Banaro can't reach the internet right now. Check your connection; we will reconnect on our own and keep what you were writing. Nothing is sent until you send it.",
+    "retry": "Try again"
   }
 }

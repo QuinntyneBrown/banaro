@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { OfflinePage } from './pages/offline/offline';
 
 export const routes: Routes = [
   { path: '', loadComponent: () => import('./pages/home/home').then((m) => m.HomePage) },
@@ -15,6 +16,7 @@ export const routes: Routes = [
     path: '500',
     loadComponent: () => import('./pages/server-error/server-error').then((m) => m.ServerErrorPage),
   },
+  { path: 'offline', component: OfflinePage },
   {
     path: 'maintenance',
     loadComponent: () => import('./pages/maintenance/maintenance').then((m) => m.MaintenancePage),

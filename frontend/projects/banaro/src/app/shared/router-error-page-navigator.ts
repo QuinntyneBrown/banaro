@@ -7,6 +7,11 @@ export interface MaintenanceState {
   expectedBackAt: string | null;
 }
 
+/** Navigation state carried to the offline page. */
+export interface OfflineState {
+  failedUrl: string;
+}
+
 /** Shows error pages in place, without changing the address, so a reload retries it. */
 @Injectable()
 export class RouterErrorPageNavigator implements ErrorPageNavigator {
@@ -16,5 +21,10 @@ export class RouterErrorPageNavigator implements ErrorPageNavigator {
   maintenance(expectedBackAt: string | null): void {
     const state: MaintenanceState = { expectedBackAt };
     this.injector.get(Router).navigate(['/maintenance'], { skipLocationChange: true, state });
+  }
+
+  offline(failedUrl: string): void {
+    const state: OfflineState = { failedUrl };
+    this.injector.get(Router).navigate(['/offline'], { skipLocationChange: true, state });
   }
 }

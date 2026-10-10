@@ -100,7 +100,7 @@
             variant="primary"
             type="submit"
             [busy]="state() === 'submitting'"
-            [disabled]="state() === 'submitting'"
+            [disabled]="state() === 'submitting' || offline()"
           >
             {{ (state() === 'submitting' ? 'contact.sending' : 'contact.send') | t }}
           </button>

@@ -13,6 +13,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { RouterLink } from '@angular/router';
 import {
   CONTACT_TOPICS,
+  ConnectivityService,
   ContactTopic,
   PUBLIC_SITE_API,
   retryAfterMinutes,
@@ -90,6 +91,9 @@ export class ContactPage {
   });
 
   protected readonly state = signal<State>('default');
+  /** Sending waits for the connection; nothing is sent automatically (L2-043 criterion 5). */
+  private readonly connectivity = inject(ConnectivityService);
+  protected readonly offline = computed(() => this.connectivity.status() === 'offline');
   protected readonly errors = signal<Partial<Record<FieldName, string>>>({});
   protected readonly formError = signal<string | null>(null);
   protected readonly sentTo = signal({ firstName: '', email: '' });
