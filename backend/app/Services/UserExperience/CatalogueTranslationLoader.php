@@ -17,11 +17,27 @@ class CatalogueTranslationLoader implements Loader
         if (($namespace === null || $namespace === '*') && $group !== '*' && $this->catalogue->supports($locale)) {
             $texts = $this->catalogue->group($locale, $group);
             if ($texts !== []) {
-                return $texts;
+                return $this->toLaravelPlaceholders($texts);
             }
         }
 
         return $this->fallback->load($this->catalogue->supports($locale) ? 'en' : $locale, $group, $namespace);
+    }
+
+    /**
+     * The catalogue writes placeholders as `{name}` for the browser; Laravel's translator expects
+     * `:name`.
+     *
+     * @param  array<string, mixed>  $texts
+     * @return array<string, mixed>
+     */
+    private function toLaravelPlaceholders(array $texts): array
+    {
+        array_walk_recursive($texts, function (&$text) {
+            $text = is_string($text) ? preg_replace('/\{(\w+)\}/', ':$1', $text) : $text;
+        });
+
+        return $texts;
     }
 
     public function addNamespace($namespace, $hint)

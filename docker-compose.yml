@@ -6,7 +6,6 @@ x-banaro-api: &banaro-api
   volumes:
     - ./backend:/app
     - ./frontend:/frontend:ro
-  env_file: ./backend/.env
   depends_on:
     postgres:
       condition: service_healthy

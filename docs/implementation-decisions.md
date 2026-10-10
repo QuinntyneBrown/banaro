@@ -22,3 +22,9 @@ a different answer becomes a requirement or design change and then a code change
 | D-007 | view-privacy-policy | Privacy contact | `privacy@banaro.ca`, plus the contact page | 3 |
 | D-008 | view-privacy-policy | "Stored on servers that we pay for and control" depends on unchosen vendors | Shortened to "Your data is stored in Canada." | 3 |
 | D-009 | view-privacy-policy | Last updated date | 9 October 2026, the date this policy text was written | 2 |
+| D-010 | about-and-contact | Contact topics differ between L2-040 and the mock | The L2 list: General, Partnership, Press, Report a problem, Propose an event | 1 |
+| D-011 | about-and-contact | Mock success says "A copy is in your inbox" | No copy is sent: the form would otherwise e-mail unverified addresses | 3 |
+| D-012 | about-and-contact | Is the name required, and how long | Required, at most 100 characters, as at join | 3 |
+| D-013 | about-and-contact | Message length error copy | "Use at least 10 characters" and "Use 2,000 characters or fewer" | 2 |
+| D-014 | about-and-contact | Team inbox | `BANARO_CONTACT_INBOX`, default `team@banaro.ca` | 3 |
+| D-015 | about-and-contact | Store contact messages in the database | Not stored; they live only in the queued job and the team inbox | 3 |
