@@ -21,12 +21,14 @@ import {
   forwardRequestCookiesInterceptor,
   HttpI18nApi,
   HttpIdentityApi,
+  HttpProfilesApi,
   HttpPublicSiteApi,
   I18N_API,
   IDENTITY_API,
   maintenanceInterceptor,
   provideI18n,
   provideSession,
+  PROFILES_API,
   PUBLIC_SITE_API,
   TranslationService,
 } from 'api';
@@ -75,6 +77,7 @@ export const appConfig: ApplicationConfig = {
     { provide: I18N_API, useClass: HttpI18nApi },
     { provide: PUBLIC_SITE_API, useClass: HttpPublicSiteApi },
     { provide: IDENTITY_API, useClass: HttpIdentityApi },
+    { provide: PROFILES_API, useClass: HttpProfilesApi },
     { provide: ERROR_PAGE_NAVIGATOR, useClass: RouterErrorPageNavigator },
     {
       provide: TOAST_DISMISS_LABEL,

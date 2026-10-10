@@ -30,12 +30,28 @@ export interface IdentityApi {
 export const IDENTITY_API = new InjectionToken<IdentityApi>('IDENTITY_API');
 
 interface SessionBody {
-  member: { id: number; name: string; email: string; email_verified: boolean } | null;
+  member: {
+    id: number;
+    name: string;
+    email: string;
+    email_verified: boolean;
+    onboarding_complete: boolean;
+    builder_id: string | null;
+  } | null;
 }
 
 function toMember(body: SessionBody): MemberSession | null {
   const m = body.member;
-  return m ? { id: m.id, name: m.name, email: m.email, emailVerified: m.email_verified } : null;
+  return m
+    ? {
+        id: m.id,
+        name: m.name,
+        email: m.email,
+        emailVerified: m.email_verified,
+        onboardingComplete: m.onboarding_complete,
+        builderId: m.builder_id,
+      }
+    : null;
 }
 
 @Injectable()

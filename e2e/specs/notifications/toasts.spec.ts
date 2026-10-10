@@ -6,7 +6,7 @@
 
 import { expect, test } from '@playwright/test';
 import { resetRateLimits } from '../../fixtures/backend';
-import { createMember } from '../../fixtures/members';
+import { createBuilder } from '../../fixtures/builders';
 import { AccountMenu } from '../../pages/account-menu';
 import { SignInPage } from '../../pages/sign-in.page';
 import { Toasts } from '../../pages/toasts';
@@ -14,7 +14,7 @@ import { Toasts } from '../../pages/toasts';
 test.describe('toasts', () => {
   test.beforeEach(async ({ page }) => {
     resetRateLimits();
-    const member = createMember();
+    const member = createBuilder();
     const signIn = new SignInPage(page);
     await signIn.open('/about');
     await signIn.signIn(member.email, member.password);

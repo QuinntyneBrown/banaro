@@ -7,7 +7,7 @@
 
 import { expect, test } from '@playwright/test';
 import { resetRateLimits } from '../../fixtures/backend';
-import { createMember } from '../../fixtures/members';
+import { createBuilder } from '../../fixtures/builders';
 import { resetLink } from '../../fixtures/password-reset';
 import { ForgotPasswordPage } from '../../pages/forgot-password.page';
 import { ResetPasswordPage } from '../../pages/reset-password.page';
@@ -59,7 +59,7 @@ test.describe('recover a forgotten password', () => {
   });
 
   test('a fresh link sets a new password that then signs in', async ({ page }) => {
-    const member = createMember();
+    const member = createBuilder();
     const reset = new ResetPasswordPage(page);
     await reset.open(resetLink(member));
     await expect(reset.sub).toHaveText(`Choose a new password for ${member.email}.`);
@@ -74,7 +74,7 @@ test.describe('recover a forgotten password', () => {
   });
 
   test('an expired link offers a new one', async ({ page }) => {
-    const member = createMember();
+    const member = createBuilder();
     const reset = new ResetPasswordPage(page);
 
     await reset.open(resetLink(member, { ageMinutes: 61 }));
@@ -84,7 +84,7 @@ test.describe('recover a forgotten password', () => {
   });
 
   test('mismatched and current passwords show their specific problems', async ({ page }) => {
-    const member = createMember();
+    const member = createBuilder();
     const reset = new ResetPasswordPage(page);
     await reset.open(resetLink(member));
 

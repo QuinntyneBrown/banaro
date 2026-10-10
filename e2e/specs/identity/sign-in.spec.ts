@@ -6,7 +6,7 @@
 
 import { expect, test } from '@playwright/test';
 import { resetRateLimits } from '../../fixtures/backend';
-import { createMember } from '../../fixtures/members';
+import { createBuilder } from '../../fixtures/builders';
 import { AccountMenu } from '../../pages/account-menu';
 import { SignInPage } from '../../pages/sign-in.page';
 
@@ -14,7 +14,7 @@ test.describe('sign in and sign out', () => {
   test.beforeEach(() => resetRateLimits());
 
   test('valid details land on the dashboard and the header shows the account', async ({ page }) => {
-    const member = createMember({ name: 'Amara Osei' });
+    const member = createBuilder({ name: 'Amara Osei' });
     const signIn = new SignInPage(page);
     await signIn.open();
 
@@ -25,7 +25,7 @@ test.describe('sign in and sign out', () => {
   });
 
   test('a same-origin return path is honoured and another origin is ignored', async ({ page }) => {
-    const member = createMember();
+    const member = createBuilder();
     const signIn = new SignInPage(page);
 
     await signIn.open('/about');
@@ -39,7 +39,7 @@ test.describe('sign in and sign out', () => {
   });
 
   test('wrong details show one generic message and keep the e-mail', async ({ page }) => {
-    const member = createMember();
+    const member = createBuilder();
     const signIn = new SignInPage(page);
     await signIn.open();
 
@@ -81,7 +81,7 @@ test.describe('sign in and sign out', () => {
   });
 
   test('the account menu moves focus to its first item and Escape returns it', async ({ page }) => {
-    const member = createMember();
+    const member = createBuilder();
     const signIn = new SignInPage(page);
     await signIn.open('/about');
     await signIn.signIn(member.email, member.password);
@@ -107,7 +107,7 @@ test.describe('sign in and sign out', () => {
   test('sign out closes the menu, ends the session and shows the signed-out state', async ({
     page,
   }) => {
-    const member = createMember();
+    const member = createBuilder();
     const signIn = new SignInPage(page);
     await signIn.open('/about');
     await signIn.signIn(member.email, member.password);

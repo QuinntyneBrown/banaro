@@ -8,7 +8,12 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   selector: 'bn-field',
   template: `
     <div class="field">
-      <label class="field__label" [attr.for]="controlId()">{{ label() }}</label>
+      <label class="field__label" [attr.for]="controlId()"
+        >{{ label() }}
+        @if (optionalText()) {
+          <span class="field__optional">{{ optionalText() }}</span>
+        }
+      </label>
       <ng-content />
       @if (error()) {
         <p class="field__error" [id]="controlId() + '-err'">
@@ -31,6 +36,8 @@ export class Field {
   readonly controlId = input.required<string>();
   readonly help = input<string>();
   readonly error = input<string | null>();
+  /** The catalogue's "(optional)", shown after the label; required questions get none. */
+  readonly optionalText = input<string | null>(null);
 }
 
 /**

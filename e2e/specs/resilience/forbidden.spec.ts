@@ -6,7 +6,7 @@
 
 import { expect, test } from '@playwright/test';
 import { resetRateLimits } from '../../fixtures/backend';
-import { createMember } from '../../fixtures/members';
+import { createBuilder } from '../../fixtures/builders';
 import { ErrorPage } from '../../pages/error-page';
 import { SignInPage } from '../../pages/sign-in.page';
 
@@ -38,7 +38,7 @@ test('error pages offer a signed-in member the dashboard instead of the home pag
   page,
 }) => {
   resetRateLimits();
-  const member = createMember();
+  const member = createBuilder();
   const signIn = new SignInPage(page);
   await signIn.open('/about');
   await signIn.signIn(member.email, member.password);

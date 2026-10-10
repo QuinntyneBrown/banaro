@@ -1,0 +1,296 @@
+<div class="wrap">
+  @if (progress(); as p) {
+    @switch (view()) {
+      @case ('success') {
+        <bn-auth-card
+          width="wide"
+          icon="check"
+          [heading]="'profiles.onboarding.success.title' | t: { name: firstName() }"
+          [sub]="'profiles.onboarding.success.sub' | t"
+        >
+          <ul bn-list [attr.aria-label]="'profiles.onboarding.success.nextSteps' | t">
+            <li
+              bn-list-item
+              [title]="'profiles.onboarding.success.browse.title' | t"
+              [meta]="'profiles.onboarding.success.browse.meta' | t"
+            >
+              <a slot="end" bn-button variant="quiet" size="sm" routerLink="/builders">{{
+                'profiles.onboarding.success.browse.action' | t
+              }}</a>
+            </li>
+            <li
+              bn-list-item
+              [title]="'profiles.onboarding.success.share.title' | t"
+              [meta]="'profiles.onboarding.success.share.meta' | t"
+            >
+              <a slot="end" bn-button variant="quiet" size="sm" routerLink="/projects/new">{{
+                'profiles.onboarding.success.share.action' | t
+              }}</a>
+            </li>
+            <li
+              bn-list-item
+              [title]="'profiles.onboarding.success.events.title' | t"
+              [meta]="'profiles.onboarding.success.events.meta' | t"
+            >
+              <a slot="end" bn-button variant="quiet" size="sm" routerLink="/events">{{
+                'profiles.onboarding.success.events.action' | t
+              }}</a>
+            </li>
+          </ul>
+          <div class="form-actions">
+            <a bn-button variant="primary" routerLink="/dashboard">{{
+              'profiles.onboarding.success.dashboard' | t
+            }}</a>
+          </div>
+        </bn-auth-card>
+      }
+      @case ('about') {
+        <bn-auth-card
+          width="wide"
+          [heading]="'profiles.onboarding.about.title' | t"
+          [sub]="'profiles.onboarding.about.sub' | t"
+        >
+          <bn-stepper
+            slot="lead"
+            [steps]="steps()"
+            [current]="stepIndex()"
+            [label]="'profiles.onboarding.progress' | t"
+            [completeLabel]="'profiles.onboarding.complete' | t"
+          />
+          <form
+            class="form"
+            novalidate
+            [attr.aria-label]="'profiles.onboarding.formLabel' | t: { n: 1, total: 3 }"
+            (ngSubmit)="saveAbout()"
+          >
+            @if (summaryErrors().length) {
+              <bn-form-summary
+                [heading]="'identity.errors.summary' | t"
+                [errors]="summaryErrors()"
+              />
+            }
+            <bn-field
+              [label]="'profiles.onboarding.about.name' | t"
+              controlId="name"
+              [error]="errors()['name']"
+            >
+              <input
+                bn-input
+                id="name"
+                name="name"
+                type="text"
+                autocomplete="name"
+                [ngModel]="name()"
+                (ngModelChange)="name.set($event)"
+                [readonly]="busy()"
+                [invalid]="!!errors()['name']"
+                [attr.aria-describedby]="describedBy('name', errors()['name'])"
+              />
+            </bn-field>
+            <bn-field
+              [label]="'profiles.onboarding.about.neighbourhood' | t"
+              controlId="hood"
+              [help]="'profiles.onboarding.about.neighbourhoodHelp' | t"
+              [error]="errors()['hood']"
+            >
+              <select
+                bn-input
+                id="hood"
+                name="hood"
+                [ngModel]="neighbourhoodId()"
+                (ngModelChange)="neighbourhoodId.set($event)"
+                [disabled]="busy()"
+                [invalid]="!!errors()['hood']"
+                [attr.aria-describedby]="describedBy('hood', errors()['hood'], true)"
+              >
+                <option [ngValue]="null">{{ 'profiles.onboarding.chooseOne' | t }}</option>
+                @for (n of p.neighbourhoods; track n.id) {
+                  <option [ngValue]="n.id">{{ n.name }}</option>
+                }
+              </select>
+            </bn-field>
+            <bn-field
+              [label]="'profiles.onboarding.about.role' | t"
+              controlId="role"
+              [error]="errors()['role']"
+            >
+              <select
+                bn-input
+                id="role"
+                name="role"
+                [ngModel]="role()"
+                (ngModelChange)="role.set($event)"
+                [disabled]="busy()"
+                [invalid]="!!errors()['role']"
+                [attr.aria-describedby]="describedBy('role', errors()['role'])"
+              >
+                <option [ngValue]="null">{{ 'profiles.onboarding.chooseOne' | t }}</option>
+                @for (r of p.roles; track r) {
+                  <option [ngValue]="r">{{ roleLabel(r) }}</option>
+                }
+              </select>
+            </bn-field>
+            <div class="form-actions form-actions--end">
+              <button bn-button variant="primary" type="submit" [busy]="busy()" [disabled]="busy()">
+                {{ (busy() ? 'profiles.onboarding.saving' : 'profiles.onboarding.continue') | t }}
+              </button>
+            </div>
+          </form>
+        </bn-auth-card>
+      }
+      @case ('skills') {
+        <bn-auth-card
+          width="wide"
+          [heading]="'profiles.onboarding.skills.title' | t"
+          [sub]="'profiles.onboarding.skills.sub' | t"
+        >
+          <bn-stepper
+            slot="lead"
+            [steps]="steps()"
+            [current]="stepIndex()"
+            [label]="'profiles.onboarding.progress' | t"
+            [completeLabel]="'profiles.onboarding.complete' | t"
+          />
+          <form
+            class="form"
+            novalidate
+            [attr.aria-label]="'profiles.onboarding.formLabel' | t: { n: 2, total: 3 }"
+            (ngSubmit)="saveSkills()"
+          >
+            @if (summaryErrors().length) {
+              <bn-form-summary
+                [heading]="'identity.errors.summary' | t"
+                [errors]="summaryErrors()"
+              />
+            }
+            <fieldset id="skills" class="onboarding__fieldset" tabindex="-1">
+              <legend class="field__label">{{ 'profiles.onboarding.skills.legend' | t }}</legend>
+              <p class="field__help" id="skills-help">
+                {{ 'profiles.onboarding.skills.help' | t }}
+              </p>
+              <ul bn-chip-list aria-describedby="skills-help">
+                @for (skill of p.skillCatalogue; track skill.id) {
+                  <li>
+                    <button
+                      bn-chip
+                      [pressed]="isSkillSelected(skill.id)"
+                      [disabled]="busy()"
+                      (pressedChange)="toggleSkill(skill.id, $event)"
+                    >
+                      {{ skill.name }}
+                    </button>
+                  </li>
+                }
+              </ul>
+              <p class="field__help" aria-live="polite">
+                {{ 'profiles.onboarding.skills.selected' | t: { count: selectedSkills().length } }}
+              </p>
+            </fieldset>
+            <bn-field
+              [label]="'profiles.onboarding.skills.other' | t"
+              [optionalText]="'common.optional' | t"
+              controlId="other-skill"
+              [help]="'profiles.onboarding.skills.otherHelp' | t"
+            >
+              <input
+                bn-input
+                id="other-skill"
+                name="other-skill"
+                type="text"
+                maxlength="40"
+                [ngModel]="otherSkill()"
+                (ngModelChange)="otherSkill.set($event)"
+                [readonly]="busy()"
+                aria-describedby="other-skill-help"
+              />
+            </bn-field>
+            <div class="form-actions form-actions--end">
+              <button bn-button variant="quiet" type="button" (click)="back()">
+                {{ 'profiles.onboarding.back' | t }}
+              </button>
+              <button bn-button variant="primary" type="submit" [busy]="busy()" [disabled]="busy()">
+                {{ (busy() ? 'profiles.onboarding.saving' : 'profiles.onboarding.continue') | t }}
+              </button>
+            </div>
+          </form>
+        </bn-auth-card>
+      }
+      @case ('goals') {
+        <bn-auth-card
+          width="wide"
+          [heading]="'profiles.onboarding.goals.title' | t"
+          [sub]="'profiles.onboarding.goals.sub' | t"
+        >
+          <bn-stepper
+            slot="lead"
+            [steps]="steps()"
+            [current]="stepIndex()"
+            [label]="'profiles.onboarding.progress' | t"
+            [completeLabel]="'profiles.onboarding.complete' | t"
+          />
+          <form
+            class="form"
+            novalidate
+            [attr.aria-label]="'profiles.onboarding.formLabel' | t: { n: 3, total: 3 }"
+            (ngSubmit)="finish()"
+          >
+            @if (summaryErrors().length) {
+              <bn-form-summary
+                [heading]="'identity.errors.summary' | t"
+                [errors]="summaryErrors()"
+              />
+            }
+            <fieldset id="goals" class="onboarding__fieldset" tabindex="-1">
+              <legend class="field__label">{{ 'profiles.onboarding.goals.legend' | t }}</legend>
+              <bn-choices>
+                @for (choice of openToChoices; track choice) {
+                  <bn-choice
+                    [label]="openToLabel(choice, 'title')"
+                    [description]="openToLabel(choice, 'text')"
+                  >
+                    <input
+                      type="checkbox"
+                      name="open-to"
+                      [value]="choice"
+                      [checked]="openTo().has(choice)"
+                      [disabled]="busy()"
+                      (change)="toggleOpenTo(choice, $any($event.target).checked)"
+                    />
+                  </bn-choice>
+                }
+              </bn-choices>
+            </fieldset>
+            <bn-field
+              [label]="'profiles.onboarding.goals.building' | t"
+              [optionalText]="'common.optional' | t"
+              controlId="building"
+              [help]="'profiles.onboarding.goals.buildingHelp' | t"
+              [error]="errors()['building']"
+            >
+              <textarea
+                bn-textarea
+                id="building"
+                name="building"
+                rows="4"
+                maxlength="280"
+                [ngModel]="building()"
+                (ngModelChange)="building.set($event)"
+                [readonly]="busy()"
+                [invalid]="!!errors()['building']"
+                [attr.aria-describedby]="describedBy('building', errors()['building'], true)"
+              ></textarea>
+            </bn-field>
+            <div class="form-actions form-actions--end">
+              <button bn-button variant="quiet" type="button" (click)="back()">
+                {{ 'profiles.onboarding.back' | t }}
+              </button>
+              <button bn-button variant="primary" type="submit" [busy]="busy()" [disabled]="busy()">
+                {{ (busy() ? 'profiles.onboarding.finishing' : 'profiles.onboarding.finish') | t }}
+              </button>
+            </div>
+          </form>
+        </bn-auth-card>
+      }
+    }
+  }
+</div>

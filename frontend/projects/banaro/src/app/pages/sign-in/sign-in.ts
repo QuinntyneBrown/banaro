@@ -12,6 +12,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   ConnectivityService,
+  landingFor,
   retryAfterMinutes,
   safeReturnPath,
   SessionStore,
@@ -114,7 +115,7 @@ export class SignInPage {
     this.session.signIn({ email: email.trim(), password }).subscribe({
       next: (member) => {
         const returnTo = this.route.snapshot.queryParamMap.get('returnTo');
-        const target = member.emailVerified ? safeReturnPath(returnTo) : '/verify-email';
+        const target = landingFor(member, safeReturnPath(returnTo));
         void this.router.navigateByUrl(target);
       },
       error: (error: unknown) => {

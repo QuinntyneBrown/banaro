@@ -11,7 +11,12 @@ export type AuthCardIcon = 'mail' | 'check' | 'alert';
   selector: 'bn-auth-card',
   template: `
     <div class="auth">
-      <section class="auth__card" aria-labelledby="auth-title">
+      <section
+        class="auth__card"
+        [class.auth__card--wide]="width() === 'wide'"
+        aria-labelledby="auth-title"
+      >
+        <ng-content select="[slot=lead]" />
         <div>
           @switch (icon()) {
             @case ('mail') {
@@ -55,4 +60,6 @@ export class AuthCard {
   readonly heading = input.required<string>();
   readonly sub = input<string>();
   readonly icon = input<AuthCardIcon>();
+  /** `wide` fits onboarding's step forms (40 rem). */
+  readonly width = input<'default' | 'wide'>('default');
 }

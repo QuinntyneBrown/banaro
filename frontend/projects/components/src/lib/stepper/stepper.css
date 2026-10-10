@@ -1,0 +1,44 @@
+:host {
+  display: block;
+}
+
+/* Extracted from docs/design-system/assets/components.css: stepper */
+.stepper {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stepper--vertical {
+  flex-direction: column;
+}
+.stepper__step {
+  flex: 1;
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font: var(--text-caption);
+  color: var(--color-fg-subtle);
+}
+.stepper__step::before {
+  content: '';
+  height: var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--color-border-default);
+}
+.stepper__step[aria-current='step'],
+.stepper__step.is-done {
+  color: var(--color-fg-default);
+}
+.stepper__step[aria-current='step']::before,
+.stepper__step.is-done::before {
+  background: var(--color-accent);
+}
+@media (forced-colors: active) {
+  .stepper__step[aria-current='step']::before,
+  .stepper__step.is-done::before {
+    background: Highlight;
+  }
+}

@@ -16,6 +16,10 @@ export interface MemberSession {
   name: string;
   email: string;
   emailVerified: boolean;
+  /** Member pages wait for a finished onboarding (L2-006 criterion 1). */
+  onboardingComplete: boolean;
+  /** The public profile's id, once onboarding has started. */
+  builderId: string | null;
 }
 
 /** What opening a verification link did (L2-002). */

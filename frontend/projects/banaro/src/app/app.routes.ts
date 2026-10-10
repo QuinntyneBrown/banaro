@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { onboardingGuard } from 'api';
 import { OfflinePage } from './pages/offline/offline';
 import { resetPasswordResolver } from './pages/reset-password/reset-password.resolver';
 import { verifyEmailResolver } from './pages/verify-email/verify-email.resolver';
@@ -25,6 +26,11 @@ export const routes: Routes = [
     resolve: { linkUsable: resetPasswordResolver },
     loadComponent: () =>
       import('./pages/reset-password/reset-password').then((m) => m.ResetPasswordPage),
+  },
+  {
+    path: 'welcome',
+    canMatch: [onboardingGuard],
+    loadComponent: () => import('./pages/onboarding/onboarding').then((m) => m.OnboardingPage),
   },
   {
     path: 'verify-email',

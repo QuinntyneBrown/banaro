@@ -20,6 +20,12 @@ export class AccountMenu {
     await this.trigger.click();
   }
 
+  /** Opens the menu and follows one of its destinations. */
+  async go(item: 'View profile' | 'Edit profile' | 'Settings' | 'Your projects'): Promise<void> {
+    await this.open();
+    await this.menu.getByRole('menuitem', { name: item }).click();
+  }
+
   async signOutNow(): Promise<void> {
     await this.open();
     await this.signOut.click();
