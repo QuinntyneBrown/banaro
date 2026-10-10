@@ -17,6 +17,7 @@ python3 .claude/skills/writing-component-requirements-documents/scripts/check_cr
 
 | Component | Selector | Status | L2 trace | CRD | Design system |
 |---|---|---|---|---|---|
+| Accordion | `details[bn-accordion]`, `bn-accordion-group` | planned | L2-048, L2-049, L2-050, L2-051, L2-052 | [accordion.md](accordion.md) · [accordion.html](accordion.html) | [`accordion.html`](../../design-system/components/accordion.html) |
 | Alert and banner | `bn-alert`, `bn-banner` | built | L2-001, L2-003, L2-019, L2-021, L2-024, L2-025, L2-028, L2-030, L2-040, L2-048, L2-049, L2-050, L2-051, L2-052 | [alert.md](alert.md) · [alert.html](alert.html) | [`alert.html`](../../design-system/components/alert.html) |
 | Auth card | `bn-auth-card` | built | L2-001, L2-002, L2-003, L2-004, L2-006, L2-048, L2-049, L2-050, L2-051, L2-052 | [auth-card.md](auth-card.md) · [auth-card.html](auth-card.html) | [`patterns/forms.html`](../../design-system/patterns/forms.html) |
 | Avatar | `bn-avatar`, `ul[bn-avatar-group]` | planned | L2-008, L2-019, L2-048, L2-049, L2-050, L2-051 | [avatar.md](avatar.md) · [avatar.html](avatar.html) | [`avatar.html`](../../design-system/components/avatar.html) |
