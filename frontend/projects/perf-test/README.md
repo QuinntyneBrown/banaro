@@ -24,8 +24,9 @@ cd ../e2e
 npm run perf-test -- --baseline <base-branch dist> --fail-on-regression   # --scenarios Button,TopBar to narrow
 ```
 
-A `<dist>` is a perf-test browser build, such as `frontend/dist/perf-test/browser`. Build the base
-branch into a separate directory (for example in a `git worktree`) and pass it as `--baseline`.
+A `<dist>` is a perf-test browser build, such as `frontend/dist/perf-test/browser`. To build the
+base branch locally, run `npm run perf-test:base -- main ../.perf/base` in `e2e/` and pass
+`--baseline ../.perf/base/browser`; it builds in a temporary git worktree.
 
 The renderer reads `?scenario=<Name>&iterations=<n>&renderType=mount|update` and writes the result
 to `window.__perfResult`.

@@ -6,7 +6,8 @@
     "test": "playwright test",
     "test:banaro": "playwright test --project=banaro",
     "test:admin": "playwright test --project=admin",
-    "perf-test": "node perf-test/perf-test.mjs"
+    "perf-test": "node perf-test/perf-test.mjs",
+    "perf-test:base": "node perf-test/build-base.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.64.0",
