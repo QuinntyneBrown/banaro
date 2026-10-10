@@ -67,7 +67,11 @@ def to_host(selector: str, block: str) -> str:
     if not re.search(rf'\.{re.escape(block)}(?![\w-]*__)', compound):
         return selector
     inner = re.sub(rf'\.{re.escape(block)}(?![\w-])', '', compound)
-    return (f':host({inner})' if inner else ':host') + rest
+    pseudo_element = ''
+    if '::' in inner:
+        inner, pseudo_element = inner.split('::', 1)
+        pseudo_element = '::' + pseudo_element
+    return (f':host({inner})' if inner else ':host') + pseudo_element + rest
 
 
 HOST = None

@@ -24,5 +24,8 @@
     "privacy": "Privacy",
     "contact": "Contact",
     "land": "Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples."
+  },
+  "errors": {
+    "slowDown": "You're trying too fast. Wait {minutes} minutes, then try again."
   }
 }

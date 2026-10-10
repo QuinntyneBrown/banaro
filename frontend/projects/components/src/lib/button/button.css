@@ -171,3 +171,24 @@
     min-height: var(--target-comfortable);
   }
 }
+
+/* Busy spinner (design system .spinner), drawn without an extra element. */
+:host([aria-busy='true'])::before {
+  content: '';
+  width: var(--space-4);
+  height: var(--space-4);
+  flex: none;
+  border-radius: var(--radius-full);
+  border: var(--border-width-thick) solid currentColor;
+  border-right-color: transparent;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :host([aria-busy='true'])::before {
+    animation: spin var(--duration-deliberate) linear infinite;
+  }
+  @keyframes spin {
+    to {
+      rotate: 1turn;
+    }
+  }
+}

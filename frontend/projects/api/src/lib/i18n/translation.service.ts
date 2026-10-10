@@ -1,4 +1,5 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID, REQUEST, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Catalogue, I18N_API } from './i18n-api';
 
@@ -13,9 +14,13 @@ export class TranslationService {
   private readonly api = inject(I18N_API);
   private readonly catalogue = signal<Catalogue>({});
   private locale = 'en-CA';
+  // On the server without a request the build is extracting routes: there is no page to translate.
+  private readonly extractingRoutes =
+    isPlatformServer(inject(PLATFORM_ID)) && !inject(REQUEST, { optional: true });
 
   async load(locale: string): Promise<void> {
     this.locale = locale;
+    if (this.extractingRoutes) return;
     try {
       this.catalogue.set(await firstValueFrom(this.api.catalogue(locale)));
     } catch (error) {

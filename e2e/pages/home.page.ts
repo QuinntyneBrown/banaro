@@ -1,4 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
+import { waitForApp } from './app';
 
 /** Public home page at `/` (docs/mocks/pages/home). */
 export class HomePage {
@@ -27,6 +28,7 @@ export class HomePage {
 
   async open(): Promise<void> {
     await this.page.goto('/');
+    await waitForApp(this.page);
   }
 
   areaTitles(): Promise<string[]> {

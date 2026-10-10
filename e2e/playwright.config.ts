@@ -6,6 +6,10 @@ export default defineConfig({
   testDir: '.',
   testMatch: ['specs/**/*.spec.ts'],
   fullyParallel: true,
+  // The Vite SSR dev server is slow under load on Windows; CI serves a production build.
+  workers: process.env.CI ? undefined : 2,
+  timeout: 60_000,
+  expect: { timeout: 10_000 },
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',

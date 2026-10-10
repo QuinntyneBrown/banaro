@@ -5,6 +5,7 @@ import {
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 import express from 'express';
+import { request as httpRequest } from 'node:http';
 import { join } from 'node:path';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
@@ -13,16 +14,38 @@ const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 /**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/{*splat}', (req, res) => {
- *   // Handle API request
- * });
- * ```
+ * Same-origin API: `/api` and `/sanctum` go to the Banaro API, so the browser and server-side
+ * rendering both call relative URLs and session cookies stay first-party. The dev server does the
+ * same through proxy.conf.json.
  */
+const apiUrl = new URL(process.env['BANARO_API_URL'] ?? 'http://localhost:8100');
+app.use(['/api', '/sanctum'], (req, res) => {
+  const upstream = httpRequest(
+    {
+      protocol: apiUrl.protocol,
+      hostname: apiUrl.hostname,
+      port: apiUrl.port,
+      method: req.method,
+      path: req.originalUrl,
+      headers: {
+        ...req.headers,
+        'x-forwarded-for': [req.headers['x-forwarded-for'], req.socket.remoteAddress]
+          .filter(Boolean)
+          .join(', '),
+        'x-forwarded-proto': req.protocol,
+        'x-forwarded-host': req.headers.host ?? '',
+      },
+    },
+    (response) => {
+      res.writeHead(response.statusCode ?? 502, response.headers);
+      response.pipe(res);
+    },
+  );
+  upstream.on('error', () => {
+    if (!res.headersSent) res.status(502).json({ message: 'Bad Gateway' });
+  });
+  req.pipe(upstream);
+});
 
 /**
  * Serve static files from /browser

@@ -1,4 +1,5 @@
 import { type Page } from '@playwright/test';
+import { waitForApp } from './app';
 
 /** The document theme, read from any screen. */
 export class Theme {
@@ -18,8 +19,7 @@ export class Theme {
 
   /** Presses the `t` shortcut with focus outside any text field. */
   async toggleWithShortcut(): Promise<void> {
-    // The shortcut listens once the application has hydrated.
-    await this.page.waitForLoadState('networkidle');
+    await waitForApp(this.page);
     await this.page.locator('body').click({ position: { x: 1, y: 1 } });
     await this.page.keyboard.press('t');
   }

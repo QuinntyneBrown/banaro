@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslatePipe, TranslationService } from 'api';
 import { Footer, NavItem, SkipLink, ThemeService } from 'components';
@@ -18,6 +25,12 @@ export class App {
   private readonly theme = inject(ThemeService);
 
   protected readonly year = new Date().getFullYear();
+
+  constructor() {
+    // Marks the page as interactive once the application has rendered in the browser.
+    const document = inject(DOCUMENT);
+    afterNextRender(() => document.documentElement.setAttribute('data-app-ready', ''));
+  }
 
   protected readonly footerLinks = computed<NavItem[]>(() => [
     { label: this.i18n.t('common.footer.about'), link: '/about' },

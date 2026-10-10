@@ -1,0 +1,25 @@
+:host {
+  display: block;
+}
+
+/* Extracted from docs/design-system/assets/components.css: form-summary */
+.form-summary {
+  padding: var(--space-5);
+  border: var(--border-width-hairline) solid var(--color-danger-border);
+  border-radius: var(--radius-md);
+  background: var(--color-danger-bg);
+  color: var(--color-danger-fg);
+}
+.form-summary__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font: var(--text-h4);
+}
+.form-summary ul {
+  margin: var(--space-3) 0 0;
+  padding-left: var(--space-6);
+}
+.form-summary a {
+  color: inherit;
+}

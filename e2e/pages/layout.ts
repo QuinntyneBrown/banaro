@@ -1,4 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
+import { waitForApp } from './app';
 
 /** Layout facts that hold on every screen: header navigation, page scroll and touch targets. */
 export class Layout {
@@ -11,7 +12,7 @@ export class Layout {
   }
 
   async openMenu(): Promise<void> {
-    await this.page.waitForLoadState('networkidle');
+    await waitForApp(this.page);
     await this.menuButton.click();
   }
 

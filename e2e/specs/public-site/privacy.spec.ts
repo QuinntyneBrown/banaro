@@ -35,7 +35,6 @@ test('a visitor reads the privacy policy', async ({ page }) => {
 test('the footer link opens the current policy', async ({ page }) => {
   const home = new HomePage(page);
   await home.open();
-  await page.waitForLoadState('networkidle');
 
   await home.footerLink('Privacy').click();
 
