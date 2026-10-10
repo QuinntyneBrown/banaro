@@ -30,7 +30,7 @@ outside a `bn-field`, such as the code-of-conduct checkbox on `/join`.
 Out of scope:
 
 - The error summary at the top of a form and moving focus to the first invalid
-  field — [form summary](form-summary.md) and the page (L2-001 AC 13).
+  field — [form summary](form-layout.md) and the page (L2-001 AC 13).
 - Validation rules and messages — the page and the API (L2-045); the field only
   shows the message it is given.
 - Two-column rows (`.field-row`), form sections (`.form-section`) and the action

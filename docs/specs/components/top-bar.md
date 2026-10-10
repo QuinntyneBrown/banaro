@@ -21,7 +21,7 @@ below 992 px it hides behind a "Menu" button that opens it as a modal sheet.
 This CRD also owns the **icon button** (`.icon-btn`), the round, icon-only control the header uses
 for Messages, Notifications and the theme switch, and that dialogs, toasts and banners use for their
 close and dismiss controls. It is specified here once, in *Icon button*, and the
-[dialog](dialog.md), [toast](toast.md) and [banner](banner.md) CRDs reference it.
+[dialog](dialog.md), [toast](toast.md) and [banner](alert.md) CRDs reference it.
 
 It also owns the product's theme switch (L2-051): a toggle button in the header actions that flips
 between the light and dark themes through `ThemeService` and reflects the current theme, including
@@ -513,7 +513,7 @@ Gaps between the built `bn-top-bar` (`top-bar.ts`, `top-bar.html`, `top-bar.css`
   as L2-027 AC2 states, instead of the mocks' "Notifications, 3 unread". With no unread items they
   are "Notifications" and "Messages".
 - **D-6** *"With search" and "compact" variants?* Not built: no screen uses them; the directory
-  search lives in the page ([search box](search-box.md)).
+  search lives in the page ([search box](search-filter-toolbar.md)).
 - **D-7** *Is the navigation sheet modal?* Yes: it has a backdrop over the page, so it follows the
   modal dialog rules (L2-050 AC2 allows a trap only for modal dialogs), as the
   `adapt-responsive-layout` design's `NavigationSheet` does.

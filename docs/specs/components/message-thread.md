@@ -22,12 +22,12 @@ Use the [inbox](inbox.md) for the list of conversations beside it and the `say-h
 
 Out of scope:
 
-- The reply form's fields: the page projects a form with [field](field.md) +
+- The reply form's fields: the page projects a form with [field](form-field.md) +
   [textarea](textarea.md) and a primary "Send" [button](button.md) into the composer slot.
 - Fetching, polling or pushing new messages, sending, retrying and the 403/404/429 rules
   (L2-026): the page and the `api` library.
 - The `.split` layout and the conversation list; the empty and error states of `/messages`.
-- Connection banners: the [banner](banner.md) above the page.
+- Connection banners: the [banner](alert.md) above the page.
 
 ## Usage
 

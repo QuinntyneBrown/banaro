@@ -33,7 +33,7 @@ It comes in two treatments that share one native element:
 
 Use [radio group](radio-group.md) when there are five or fewer options that each
 need a sentence, [checkbox](checkbox.md) for several answers, and the
-[search box](search-box.md) for free text.
+[search box](search-filter-toolbar.md) for free text.
 
 Out of scope:
 

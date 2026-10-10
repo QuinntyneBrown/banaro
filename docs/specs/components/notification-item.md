@@ -17,7 +17,7 @@ A notification item is one update on `/notifications`: an icon for what kind of 
 the subject ("2 new matches this week"), a quiet detail line, and when it happened. Unread items
 sit on a soft sage tint with a "New" badge; selecting one opens its subject and marks it read.
 
-Use the [toast](toast.md) and [banner](banner.md) for transient and system messages (L2-028),
+Use the [toast](toast.md) and [banner](alert.md) for transient and system messages (L2-028),
 and the [inbox](inbox.md) for conversations.
 
 Out of scope:

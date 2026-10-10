@@ -27,7 +27,7 @@ Out of scope:
 
 - The breadcrumb's own markup and behaviour ([breadcrumb](breadcrumb.md)); the header only gives it
   a place.
-- The search form's behaviour ([search-box](search-box.md)); the header only projects it.
+- The search form's behaviour ([search-box](search-filter-toolbar.md)); the header only projects it.
 - Composing the greeting, counts and date in the sub-copy: the page builds that sentence from L2
   rules (L2-030 greeting and summary line) and passes it in.
 - Moving focus after navigation: the router decides when; the header only offers the target.

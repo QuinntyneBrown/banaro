@@ -39,7 +39,7 @@ Out of scope:
 | Where | Configuration | Slots / content | States seen | Surface |
 |---|---|---|---|---|
 | Every page, dialog and notification mock (49 screens) | `div.wrap` around `main` content | page content | default | canvas |
-| Built [top-bar](top-bar.md), [footer](footer.md), [banner](banner.md) | `.wrap` mixed into `.header__inner`, `.footer__grid`, `.banner__inner` | their own content | default | canvas, banner |
+| Built [top-bar](top-bar.md), [footer](footer.md), [banner](alert.md) | `.wrap` mixed into `.header__inner`, `.footer__grid`, `.banner__inner` | their own content | default | canvas, banner |
 | `pages/dashboard/*`, `pages/builder-profile/*`, `pages/event-detail/*`, `pages/project-detail/*`, `pages/matching/*`, dialogs over them | `div.two-col`: main column + `aside` | main `div.stack.stack--lg` + `aside.stack[aria-label]` of aside cards | default; loading `aria-busy="true" aria-label="Loading your dashboard"` | canvas |
 | `pages/settings/*`, `pages/notifications/*`, `pages/events/*`, `pages/builder-profile/*`, `pages/event-detail/*`, `pages/project-detail/*`, `pages/matching-setup/*` | `div.stack.stack--lg` of `section`s | sections with `h2.section__title` | default; `pages/events/loading` `aria-busy="true"` | canvas |
 | `pages/dashboard/*`, `pages/matching/*`, `dialogs/pass-suggestion`, `dialogs/pause-matching` | `ul.stack` / `section.stack[aria-label]` | list items (suggestions, matches) | default | canvas |

@@ -21,7 +21,7 @@ error come from the surrounding [form field](form-field.md).
 One directive, `Input` (`input[bn-input], select[bn-input]`), serves both this
 CRD and the [select](select.md) CRD; this document specifies its behaviour on
 `<input>`. Use [textarea](textarea.md) for more than one line, the
-[search box](search-box.md) for the directory and project search
+[search box](search-filter-toolbar.md) for the directory and project search
 (`.search__input`), and [slider](slider.md) for distance.
 
 `bn-input-group` lines up a text input with a trailing action button or a short
@@ -32,7 +32,7 @@ Out of scope:
 
 - Label, help, error and counter — [form field](form-field.md).
 - Validation, formatting and what Enter does in a form — the page.
-- Search inputs with a magnifier and clear button — [search box](search-box.md).
+- Search inputs with a magnifier and clear button — [search box](search-filter-toolbar.md).
 - Showing or hiding a password — no screen uses it; see D-5.
 
 ## Usage
