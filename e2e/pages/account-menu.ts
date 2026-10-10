@@ -8,7 +8,7 @@ export class AccountMenu {
   readonly signOut: Locator;
   readonly signInLink: Locator;
 
-  constructor(page: Page) {
+  constructor(private readonly page: Page) {
     this.trigger = page.locator('header').getByRole('button', { name: /^Your account/ });
     this.menu = page.getByRole('menu', { name: 'Your account' });
     this.items = this.menu.getByRole('menuitem');
@@ -18,5 +18,21 @@ export class AccountMenu {
 
   async open(): Promise<void> {
     await this.trigger.click();
+  }
+
+  async signOutNow(): Promise<void> {
+    await this.open();
+    await this.signOut.click();
+  }
+
+  /** Makes sign-out requests fail with a server error until `restoreSignOut()`. */
+  async breakSignOut(): Promise<void> {
+    await this.page.route('**/api/v1/session', (route) =>
+      route.request().method() === 'DELETE' ? route.fulfill({ status: 500, json: {} }) : route.continue(),
+    );
+  }
+
+  async restoreSignOut(): Promise<void> {
+    await this.page.unroute('**/api/v1/session');
   }
 }

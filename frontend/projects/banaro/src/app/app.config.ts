@@ -1,6 +1,7 @@
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
+  computed,
   ErrorHandler,
   inject,
   provideBrowserGlobalErrorListeners,
@@ -22,7 +23,9 @@ import {
   provideI18n,
   provideSession,
   PUBLIC_SITE_API,
+  TranslationService,
 } from 'api';
+import { TOAST_DISMISS_LABEL } from 'components';
 import { routes } from './app.routes';
 import { AppErrorHandler } from './shared/app-error-handler';
 import { RouterErrorPageNavigator } from './shared/router-error-page-navigator';
@@ -62,6 +65,13 @@ export const appConfig: ApplicationConfig = {
     { provide: PUBLIC_SITE_API, useClass: HttpPublicSiteApi },
     { provide: IDENTITY_API, useClass: HttpIdentityApi },
     { provide: ERROR_PAGE_NAVIGATOR, useClass: RouterErrorPageNavigator },
+    {
+      provide: TOAST_DISMISS_LABEL,
+      useFactory: () => {
+        const i18n = inject(TranslationService);
+        return computed(() => i18n.t('common.toast.dismiss'));
+      },
+    },
     provideI18n('en-CA'),
     provideSession(),
   ],

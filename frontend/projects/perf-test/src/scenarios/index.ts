@@ -16,6 +16,8 @@ import PageHeader from './PageHeader';
 import SearchBox from './SearchBox';
 import SkipLink from './SkipLink';
 import Textarea from './Textarea';
+import Toast from './Toast';
+import ToastStack from './ToastStack';
 import TopBar from './TopBar';
 
 /** Every scenario by name. Add a new component's scenario here in the same change. */
@@ -37,5 +39,7 @@ export const scenarios: Record<string, Type<unknown>> = {
   SearchBox,
   SkipLink,
   Textarea,
+  Toast,
+  ToastStack,
   TopBar,
 };

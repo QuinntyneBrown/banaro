@@ -44,5 +44,8 @@
     "settings": "Settings",
     "projects": "Your projects",
     "signOut": "Sign out"
+  },
+  "toast": {
+    "dismiss": "Dismiss notification"
   }
 }

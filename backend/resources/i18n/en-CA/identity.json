@@ -102,5 +102,12 @@
       "tooMany": "You've asked for too many links. Try again in {minutes} minutes.",
       "failed": "We couldn't send a new link. Try again in a moment."
     }
+  },
+  "signOut": {
+    "failed": {
+      "title": "We couldn't sign you out",
+      "body": "Check your connection and try again.",
+      "retry": "Try again"
+    }
   }
 }

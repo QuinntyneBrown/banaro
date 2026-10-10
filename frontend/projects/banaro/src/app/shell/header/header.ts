@@ -12,6 +12,7 @@ import {
   MenuItem,
   menuPositions,
   NavItem,
+  ToastService,
   TopBar,
 } from 'components';
 
@@ -36,6 +37,7 @@ import {
 export class Header {
   private readonly i18n = inject(TranslationService);
   private readonly session = inject(SessionStore);
+  private readonly toasts = inject(ToastService);
 
   protected readonly member = this.session.member;
   protected readonly initials = computed(() => initialsOf(this.member()?.name ?? ''));
@@ -50,8 +52,22 @@ export class Header {
     { label: this.i18n.t('common.nav.matching'), link: '/matching' },
   ]);
 
-  /** The menu has already closed when an item triggers (L2-003 criterion 11). */
+  /**
+   * The menu has already closed when an item triggers. A failed sign-out leaves the member signed
+   * in and offers to try again (L2-003 criterion 11).
+   */
   protected signOut(): void {
-    this.session.signOut().subscribe({ error: () => undefined });
+    this.session.signOut().subscribe({
+      error: () =>
+        this.toasts.show({
+          variant: 'danger',
+          title: this.i18n.t('identity.signOut.failed.title'),
+          body: this.i18n.t('identity.signOut.failed.body'),
+          action: {
+            label: this.i18n.t('identity.signOut.failed.retry'),
+            run: () => this.signOut(),
+          },
+        }),
+    });
   }
 }

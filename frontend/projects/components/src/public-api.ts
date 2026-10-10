@@ -23,4 +23,7 @@ export * from './lib/search-box/search-box';
 export * from './lib/skip-link/skip-link';
 export * from './lib/textarea/textarea';
 export * from './lib/theme/theme.service';
+export * from './lib/toast/toast';
+export * from './lib/toast/toast-region';
+export * from './lib/toast/toast.service';
 export * from './lib/top-bar/top-bar';
