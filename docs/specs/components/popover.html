@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Popover — Component requirements rendering</title>
+<meta name="description" content="Every variant, size and state of popover, in light and dark, keyed to the acceptance criteria in popover.md.">
+<meta name="crd:component" content="popover">
+<!-- The real design-system styles: what renders here is the component, not a picture of it. -->
+<link rel="stylesheet" href="../../design-system/assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../design-system/assets/ds.css">
+<style>
+/* CRD page chrome only. Never restyle the component here. */
+.crd-shell { max-width: 80rem; margin: 0 auto; padding: var(--space-6) var(--space-4); }
+.crd-bar { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; justify-content: space-between; }
+.crd-ac { font: var(--text-overline); color: var(--color-fg-muted); display: block; margin-top: var(--space-2); }
+.crd-frames { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-start; }
+.crd-frame { margin: 0; border: var(--border-width-hairline) dashed var(--color-border-default); padding: var(--space-3); max-width: 100%; overflow: auto; }
+.crd-frame iframe { display: block; border: 0; max-width: 100%; }
+.crd-grid { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); align-items: start; }
+.crd-stage { position: relative; min-width: 0; }
+</style>
+</head>
+<body id="top">
+<a class="skip-link" href="#main">Skip to content</a>
+<main id="main" class="crd-shell">
+  <header class="ds-header">
+    <div class="crd-bar">
+      <p class="ds-kicker">Component requirements · rendering</p>
+      <button class="ds-theme-toggle" type="button" aria-pressed="false">☾ Dark</button>
+    </div>
+    <h1>Popover</h1>
+    <p class="ds-lead">A non-modal panel anchored to a button, holding a title and a short explanation. No mock uses it yet; the builder-profile "More" list is a <a href="menu.md">menu</a> (D-1). Requirements: <a href="popover.md">popover.md</a>. Design system: <a href="../../design-system/components/popover.html">popover</a>.</p>
+    <div class="ds-meta"><span class="ds-pill">Selector <code>bn-popover · [bnPopoverTrigger]</code></span><span class="ds-pill">Status: planned</span><span class="ds-pill">Traces to L2-048, L2-049, L2-050, L2-051, L2-052</span></div>
+    <ul class="ds-toc"><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#themes">Both themes</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#contrast">Contrast</a></li><li><a href="#tokens">Tokens</a></li></ul>
+  </header>
+  <p class="ds-na">The panel is drawn in flow under its trigger for review; in the product it is a CDK connected overlay offset by <code>--space-2</code> (D-6). Title and body spacing follow popover.md's Design section.</p>
+  <section class="ds-section" id="variants"><h2>Variants</h2>
+    <div class="crd-grid">
+    <div class="ds-example"><div class="ds-example__canvas ">
+<div style="display:flex; flex-direction:column; align-items:flex-start; gap: var(--space-2)"><button type="button" class="btn btn--quiet" aria-expanded="true" aria-controls="p1" style="border-color: var(--color-border-strong)">About distances</button><div class="menu popover" id="p1" role="group" tabindex="-1" aria-labelledby="p1-t"><p class="popover__title" id="p1-t" style="margin:0; padding: var(--space-2) var(--space-4); font: var(--text-label); color: var(--color-fg-muted)">Distances</p><div class="popover__body" style="padding: var(--space-2) var(--space-4); font: var(--text-body); color: var(--color-fg-default)"><p style="margin:0">Distances are from your neighbourhood, Leslieville.</p></div></div></div>
+    </div><div class="ds-example__caption"><span>Titled: "Distances" names the group. <span class="crd-ac">AC-2, AC-5, AC-14</span></span></div></div>
+    <div class="ds-example"><div class="ds-example__canvas ">
+<div style="display:flex; flex-direction:column; align-items:flex-start; gap: var(--space-2)"><button type="button" class="btn btn--quiet" aria-expanded="true" aria-controls="p2" style="border-color: var(--color-border-strong)">About distances</button><div class="menu popover" id="p2" role="group" tabindex="-1" aria-label="About distances"><div class="popover__body" style="padding: var(--space-2) var(--space-4); font: var(--text-body); color: var(--color-fg-default)"><p style="margin:0">Distances are from your neighbourhood, Leslieville.</p></div></div></div>
+    </div><div class="ds-example__caption"><span>Untitled: named by <code>label</code>. <span class="crd-ac">AC-9</span></span></div></div>
+    </div>
+    <p class="ds-na">The design system's "actions" and "form" variants are not popovers: an action list is a <a href="menu.md">menu</a> (D-1), a form is a <a href="dialog.md">dialog</a> (D-4).</p>
+  </section>
+  <section class="ds-section" id="sizes"><h2>Sizes</h2><p class="ds-na">One size: the <code>.menu</code> minimum width, growing with its text up to the viewport less the layout margins.</p></section>
+  <section class="ds-section" id="states"><h2>States</h2>
+    <div class="ds-matrix"><table><thead><tr><th scope="col">State</th><th scope="col">Specimen</th></tr></thead><tbody><tr><th scope="row">Closed</th><td><button type="button" class="btn btn--quiet" aria-expanded="false" aria-controls="m1">About distances</button></td></tr><tr><th scope="row">Trigger hover</th><td><button type="button" class="btn btn--quiet" aria-expanded="false" aria-controls="m2" data-state="hover">About distances</button></td></tr><tr><th scope="row">Trigger focus</th><td><button type="button" class="btn btn--quiet" aria-expanded="false" aria-controls="m3" data-state="focus">About distances</button></td></tr><tr><th scope="row">Trigger active</th><td><button type="button" class="btn btn--quiet" aria-expanded="false" aria-controls="m4" data-state="active">About distances</button></td></tr><tr><th scope="row">Open</th><td><div style="display:flex; flex-direction:column; align-items:flex-start; gap: var(--space-2)"><button type="button" class="btn btn--quiet" aria-expanded="true" aria-controls="m5" style="border-color: var(--color-border-strong)">About distances</button><div class="menu popover" id="m5" role="group" tabindex="-1" aria-labelledby="m5-t"><p class="popover__title" id="m5-t" style="margin:0; padding: var(--space-2) var(--space-4); font: var(--text-label); color: var(--color-fg-muted)">Distances</p><div class="popover__body" style="padding: var(--space-2) var(--space-4); font: var(--text-body); color: var(--color-fg-default)"><p style="margin:0">Distances are from your neighbourhood, Leslieville.</p></div></div></div></td></tr><tr><th scope="row">Panel focused (after open)</th><td><div style="display:flex; flex-direction:column; align-items:flex-start; gap: var(--space-2)"><button type="button" class="btn btn--quiet" aria-expanded="true" aria-controls="m6" style="border-color: var(--color-border-strong)">About distances</button><div class="menu popover" id="m6" role="group" tabindex="-1" data-state="focus" style="outline: var(--focus-ring-width) solid var(--color-focus-ring); outline-offset: var(--focus-ring-offset)" aria-labelledby="m6-t"><p class="popover__title" id="m6-t" style="margin:0; padding: var(--space-2) var(--space-4); font: var(--text-label); color: var(--color-fg-muted)">Distances</p><div class="popover__body" style="padding: var(--space-2) var(--space-4); font: var(--text-body); color: var(--color-fg-default)"><p style="margin:0">Distances are from your neighbourhood, Leslieville.</p></div></div></div></td></tr><tr><th scope="row">Disabled trigger</th><td><button type="button" class="btn btn--quiet" disabled aria-expanded="false">About distances</button></td></tr></tbody></table></div>
+    <span class="crd-ac">AC-1, AC-3, AC-4, AC-5, AC-6, AC-7, AC-8</span>
+  </section>
+  <section class="ds-section" id="themes"><h2>Both themes</h2>
+    <div class="ds-themes">
+      <div data-theme="light"><div style="display:flex; flex-direction:column; align-items:flex-start; gap: var(--space-2)"><button type="button" class="btn btn--quiet" aria-expanded="true" aria-controls="tl" style="border-color: var(--color-border-strong)">About distances</button><div class="menu popover" id="tl" role="group" tabindex="-1" aria-labelledby="tl-t"><p class="popover__title" id="tl-t" style="margin:0; padding: var(--space-2) var(--space-4); font: var(--text-label); color: var(--color-fg-muted)">Distances</p><div class="popover__body" style="padding: var(--space-2) var(--space-4); font: var(--text-body); color: var(--color-fg-default)"><p style="margin:0">Distances are from your neighbourhood, Leslieville.</p></div></div></div></div>
+      <div data-theme="dark"><div style="display:flex; flex-direction:column; align-items:flex-start; gap: var(--space-2)"><button type="button" class="btn btn--quiet" aria-expanded="true" aria-controls="td" style="border-color: var(--color-border-strong)">About distances</button><div class="menu popover" id="td" role="group" tabindex="-1" aria-labelledby="td-t"><p class="popover__title" id="td-t" style="margin:0; padding: var(--space-2) var(--space-4); font: var(--text-label); color: var(--color-fg-muted)">Distances</p><div class="popover__body" style="padding: var(--space-2) var(--space-4); font: var(--text-body); color: var(--color-fg-default)"><p style="margin:0">Distances are from your neighbourhood, Leslieville.</p></div></div></div></div>
+    </div>
+    <span class="crd-ac">AC-10, AC-11</span>
+  </section>
+  <section class="ds-section" id="responsive"><h2>Responsive</h2>
+    <p>Layout does not change across breakpoints; the panel keeps inside the viewport. A trigger at the right edge aligns the panel to the trigger's end, and text wraps.</p>
+    <div class="crd-frames">
+      <figure class="crd-frame"><span class="crd-ac">320 px · light · French copy, end-aligned · AC-12</span><iframe title="320 pixel wide frame, light theme" width="320" height="260" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;light&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/fonts/fonts.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/components.css&quot;&gt;&lt;/head&gt;&lt;body style=&quot;background: var(--color-bg-canvas); color: var(--color-fg-default); margin:0&quot;&gt;&lt;div style=&quot;padding: var(--space-4)&quot;&gt;&lt;div style=&quot;display:flex; flex-direction:column; align-items:flex-end; gap: var(--space-2)&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;btn btn--quiet&quot; aria-expanded=&quot;true&quot; aria-controls=&quot;r1&quot; style=&quot;border-color: var(--color-border-strong)&quot;&gt;About distances&lt;/button&gt;&lt;div class=&quot;menu popover&quot; id=&quot;r1&quot; role=&quot;group&quot; tabindex=&quot;-1&quot; aria-labelledby=&quot;r1-t&quot;&gt;&lt;p class=&quot;popover__title&quot; id=&quot;r1-t&quot; style=&quot;margin:0; padding: var(--space-2) var(--space-4); font: var(--text-label); color: var(--color-fg-muted)&quot;&gt;Distances&lt;/p&gt;&lt;div class=&quot;popover__body&quot; style=&quot;padding: var(--space-2) var(--space-4); font: var(--text-body); color: var(--color-fg-default)&quot;&gt;&lt;p style=&quot;margin:0&quot;&gt;Les distances sont calculées depuis votre quartier, Leslieville.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"></iframe></figure>
+      <figure class="crd-frame"><span class="crd-ac">360 px · dark · AC-10, AC-13</span><iframe title="360 pixel wide frame, dark theme" width="360" height="260" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;dark&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/fonts/fonts.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/components.css&quot;&gt;&lt;/head&gt;&lt;body style=&quot;background: var(--color-bg-canvas); color: var(--color-fg-default); margin:0&quot;&gt;&lt;div style=&quot;padding: var(--space-4)&quot;&gt;&lt;div style=&quot;display:flex; flex-direction:column; align-items:flex-start; gap: var(--space-2)&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;btn btn--quiet&quot; aria-expanded=&quot;true&quot; aria-controls=&quot;r2&quot; style=&quot;border-color: var(--color-border-strong)&quot;&gt;About distances&lt;/button&gt;&lt;div class=&quot;menu popover&quot; id=&quot;r2&quot; role=&quot;group&quot; tabindex=&quot;-1&quot; aria-labelledby=&quot;r2-t&quot;&gt;&lt;p class=&quot;popover__title&quot; id=&quot;r2-t&quot; style=&quot;margin:0; padding: var(--space-2) var(--space-4); font: var(--text-label); color: var(--color-fg-muted)&quot;&gt;Distances&lt;/p&gt;&lt;div class=&quot;popover__body&quot; style=&quot;padding: var(--space-2) var(--space-4); font: var(--text-body); color: var(--color-fg-default)&quot;&gt;&lt;p style=&quot;margin:0&quot;&gt;Distances are from your neighbourhood, Leslieville.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"></iframe></figure>
+    </div>
+    <p class="ds-na">The perf-test scenario (AC-15) is measured, not drawn.</p>
+  </section>
+  <section class="ds-section" id="contrast"><h2>Contrast</h2>
+    <div class="ds-example__canvas ds-example__canvas--stack">
+      <div class="ds-pair"><span>Body text</span><span class="ds-pair__ratio" data-contrast="--color-fg-default|--color-bg-surface-raised" data-min="4.5"></span></div>
+      <div class="ds-pair"><span>Title</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-bg-surface-raised" data-min="4.5"></span></div>
+      <div class="ds-pair"><span>Focus ring</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-bg-surface" data-min="3"></span></div>
+      <div class="ds-pair" data-theme="dark"><span>Dark: Body text</span><span class="ds-pair__ratio" data-contrast="--color-fg-default|--color-bg-surface-raised" data-min="4.5"></span></div>
+      <div class="ds-pair" data-theme="dark"><span>Dark: Title</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-bg-surface-raised" data-min="4.5"></span></div>
+      <div class="ds-pair" data-theme="dark"><span>Dark: Focus ring</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-bg-surface" data-min="3"></span></div>
+    </div>
+    <span class="crd-ac">AC-8, AC-10</span>
+  </section>
+  <section class="ds-section" id="tokens"><h2>Tokens</h2>
+    <div class="ds-table-wrap"><table class="ds-table">
+      <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+      <tbody>
+        <tr><td>Panel</td><td><code>--color-bg-surface-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-bg-surface-raised" data-swatch></i><span data-token="--color-bg-surface-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-bg-surface-raised" data-swatch></i><span data-token="--color-bg-surface-raised"></span></span></td></tr>
+        <tr><td>Rule</td><td><code>--color-border-default</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-border-default" data-swatch></i><span data-token="--color-border-default"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-border-default" data-swatch></i><span data-token="--color-border-default"></span></span></td></tr>
+        <tr><td>Title</td><td><code>--color-fg-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td></tr>
+        <tr><td>Body text</td><td><code>--color-fg-default</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-default" data-swatch></i><span data-token="--color-fg-default"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-default" data-swatch></i><span data-token="--color-fg-default"></span></span></td></tr>
+        <tr><td>Open trigger border</td><td><code>--color-border-strong</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-border-strong" data-swatch></i><span data-token="--color-border-strong"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-border-strong" data-swatch></i><span data-token="--color-border-strong"></span></span></td></tr>
+        <tr><td>Elevation</td><td><code>--shadow-3</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--shadow-3" data-swatch></i><span data-token="--shadow-3"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--shadow-3" data-swatch></i><span data-token="--shadow-3"></span></span></td></tr>
+        <tr><td>Radius</td><td><code>--radius-lg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--radius-lg" data-swatch></i><span data-token="--radius-lg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--radius-lg" data-swatch></i><span data-token="--radius-lg"></span></span></td></tr>
+        <tr><td>Layer</td><td><code>--z-popover</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--z-popover" data-swatch></i><span data-token="--z-popover"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--z-popover" data-swatch></i><span data-token="--z-popover"></span></span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <footer class="ds-footer"><span>Banaro component requirements · <a href="README.md">index</a></span><a href="#top">Back to top</a></footer>
+</main>
+<script src="../../design-system/assets/ds.js"></script>
+</body>
+</html>

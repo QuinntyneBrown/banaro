@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prose and legal content — Component requirements rendering</title>
+<meta name="description" content="Every variant, size and state of prose, in light and dark, keyed to the acceptance criteria in prose.md.">
+<meta name="crd:component" content="prose">
+<!-- The real design-system styles: what renders here is the component, not a picture of it. -->
+<link rel="stylesheet" href="../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../design-system/assets/ds.css">
+<style>
+/* CRD page chrome only. Never restyle the component here. */
+.crd-shell { max-width: 80rem; margin: 0 auto; padding: var(--space-6) var(--space-4); }
+.crd-bar { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; justify-content: space-between; }
+.crd-ac { font: var(--text-overline); color: var(--color-fg-muted); display: block; margin-top: var(--space-2); }
+.crd-frames { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-start; }
+.crd-frame { margin: 0; border: var(--border-width-hairline) dashed var(--color-border-default); padding: var(--space-3); max-width: 100%; overflow: auto; }
+.crd-frame iframe { display: block; border: 0; max-width: 100%; }
+.crd-grid { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); align-items: start; }
+.crd-cell { display: grid; gap: var(--space-2); align-content: start; min-width: 0; }
+.crd-cell > .crd-label { font: var(--text-overline); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-fg-subtle); }
+.crd-themes { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); }
+.crd-themes > div { padding: var(--space-5); border-radius: var(--radius-lg); background: var(--color-bg-canvas); color: var(--color-fg-default); display: grid; gap: var(--space-4); align-content: start; min-width: 0; }
+.crd-stack { display: grid; gap: var(--space-4); align-content: start; min-width: 0; }
+.crd-note { font: var(--text-body-sm); color: var(--color-fg-muted); max-width: 60ch; }
+</style>
+</head>
+<body id="top">
+<a class="skip-link" href="#main">Skip to content</a>
+<main id="main" class="crd-shell">
+  <header class="ds-header">
+    <div class="crd-bar">
+      <p class="ds-kicker">Component requirements · rendering</p>
+      <button class="ds-theme-toggle" type="button" aria-pressed="false">☾ Dark</button>
+    </div>
+    <h1>Prose and legal content</h1>
+    <p class="ds-lead">Calm reading typography for About, Privacy, Code of conduct, bios and descriptions. Requirements: <a href="prose.md">prose.md</a>. Design system: <a href="../../design-system/components/prose.html">prose</a>.</p>
+    <div class="ds-meta"><span class="ds-pill">Selector <code>div[bn-prose], section[bn-prose], article[bn-prose]</code></span><span class="ds-pill">Status: planned</span><span class="ds-pill">Traces to L2-007, L2-011, L2-013, L2-019, L2-034, L2-041, L2-048, L2-049, L2-050, L2-051</span></div>
+    <ul class="ds-toc"><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#themes">Both themes</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#contrast">Contrast</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#performance">Performance</a></li></ul>
+  </header>
+<section class="ds-section" id="variants"><h2>Variants</h2><div class="crd-grid"><div class="crd-cell"><span class="crd-label">Legal · code of conduct</span><div class="prose">
+<p>Banaro is a gathering of people who share a faith and a craft. We hope it feels like a well-kept room where everyone is welcome to sit down. This is how we keep it that way.</p>
+<h2 id="be-kind">Be kind and be honest</h2>
+<ul>
+<li>Treat every member with respect, whatever their church, background, seniority or experience.</li>
+<li>Disagree respectfully. Argue with ideas, never with people, and assume the best of one another.</li>
+<li>Give feedback on projects that is specific, generous and useful.</li>
+</ul>
+<h2 id="faith-aligned">Faith-aligned, and welcoming</h2>
+<p>Banaro is a community for Christian builders. We expect members to be gracious to people of every tradition within the church and to guests who are curious. Please do not use the community to pressure anyone about belief.</p>
+<h2 id="ask-first">Ask before you reach out</h2>
+<ul>
+<li>No spam, mass messages or sales pitches to members who have not asked for them.</li>
+<li>No recruiting, investing or hiring approaches without the other person's consent. A first message should say who you are and why you are writing.</li>
+<li>If someone says no or does not reply, leave it there.</li>
+</ul>
+<h2 id="keep-safe">Keep people safe</h2>
+<p>Harassment, discrimination, threats and sharing someone's private information are not tolerated. At events, follow the host's guidance, and look out for anyone who seems uncomfortable.</p>
+<h2 id="if-something-goes-wrong">If something goes wrong</h2>
+<p>Use Report on any profile, project or message, or write to us at <a href="#">the contact page</a>. A person on our team reads every report, usually within one working day, and keeps your report private. Depending on what happened, we may remove content, pause an account or end a membership.</p>
+</div><span class="crd-ac">AC-1, AC-2, AC-8</span></div><div class="crd-cell"><span class="crd-label">Legal · privacy</span><div class="prose">
+<p>We keep this simple because we think you should be able to read it in five minutes.</p>
+<h2>What we collect</h2>
+<ul>
+<li>What you give us: your name, e-mail, neighbourhood, role, skills, projects and any messages you send through Banaro.</li>
+<li>A little technical information, such as your browser type, so the site works properly and stays secure.</li>
+</ul>
+<h2>What we do with it</h2>
+<p>We use your details to show your profile to other members, suggest people nearby, run events and send e-mail. We e-mail you only for what you ask for: your account, your messages, your event RSVPs and a Monday digest if you turn it on. You can turn each of those off in settings.</p>
+<h2>What we never do</h2>
+<ul>
+<li>We do not sell your data, and we do not share it with advertisers.</li>
+<li>We do not show your street address. Other members see your neighbourhood only.</li>
+</ul>
+<h2>Where it lives</h2>
+<p>Your data is stored in Canada, on servers that we pay for and control.</p>
+<h2>Cookies</h2>
+<p>We use essential cookies only: one to keep you signed in and one to remember your light or dark theme. There are no tracking or advertising cookies.</p>
+<h2>Your choices</h2>
+<p>You can edit your profile, download your data or delete your account at any time from your settings. Deleting your account removes your profile and projects within 30 days. For anything else, write to us on <a href="#">the contact page</a>.</p>
+</div><span class="crd-ac">AC-3, AC-13</span></div><div class="crd-cell"><span class="crd-label">Body · member bio (text mode)</span><div class="prose"><p>Ten years shipping Laravel apps; now building Psalter after hours and looking for a founder to go full time with.</p><p>I led the platform team at a Mississauga logistics firm until this spring. Psalter began as a way to memorize Psalms on the GO train and now has 1,900 beta users, so I want to give it my whole week.</p></div><span class="crd-ac">AC-4</span></div><div class="crd-cell"><span class="crd-label">Body · project description</span><div class="prose"><p>Psalter helps you hide Scripture in your heart with short daily reviews spaced just before you would forget.</p><p>It is free and open source.</p></div><span class="crd-ac">AC-6</span></div><div class="crd-cell"><span class="crd-label">Body · event recap</span><div class="prose"><p>Sixty-four builders came to the Centre for Social Innovation. Six demos, seven minutes each, then feedback in small groups until the coffee ran out.</p><ul><li>Psalter passed 1,900 beta users while the room watched.</li><li>Gather found a frontend contributor before the evening was over.</li><li>Eleven introductions were made, three of them between co-founders.</li></ul></div><span class="crd-ac">AC-7</span></div><div class="crd-cell"><span class="crd-label">Contact</span><div class="prose"><p>Write to us at <a href="mailto:hello@banaro.ca">hello@banaro.ca</a>. We reply within two working days.</p></div></div></div></section><section class="ds-section" id="sizes"><h2>Sizes</h2><p class="ds-na">One size: <code>--text-body-lg</code>, capped at <code>--size-search-max-width-18</code>.</p></section><section class="ds-section" id="states"><h2>States</h2><div class="crd-grid"><div class="crd-cell"><span class="crd-label">Default</span><div class="prose"><p>Ten years shipping Laravel apps; now building Psalter after hours and looking for a founder to go full time with.</p><p>I led the platform team at a Mississauga logistics firm until this spring. Psalter began as a way to memorize Psalms on the GO train and now has 1,900 beta users, so I want to give it my whole week.</p></div></div><div class="crd-cell"><span class="crd-label">Sparse</span><div class="prose"><p>Product designer in Riverdale.</p></div><span class="crd-ac">AC-4</span></div><div class="crd-cell"><span class="crd-label">Escaped member text</span><div class="prose"><p>&lt;script&gt;alert(1)&lt;/script&gt; and &lt;a href="x"&gt;link&lt;/a&gt;</p></div><span class="crd-ac">AC-5</span></div><div class="crd-cell"><span class="crd-label">Long URL wraps</span><div class="prose" style="overflow-wrap:anywhere"><p>Notes: https://psalter.example.ca/memorise/psalm-23/verse-by-verse</p></div><span class="crd-ac">AC-12</span></div><div class="crd-cell"><span class="crd-label">Link focus (forced)</span><div class="prose"><p>For anything else, write to us on <a href="#" style="outline: var(--focus-ring-width) solid var(--color-focus-ring); outline-offset: var(--focus-ring-offset); border-radius: var(--radius-sm)">the contact page</a>.</p></div><span class="crd-ac">AC-9</span></div></div></section><section class="ds-section" id="themes"><h2>Both themes</h2><div class="ds-themes"><div data-theme="light"><div class="crd-stack"><div class="prose">
+<p>We keep this simple because we think you should be able to read it in five minutes.</p>
+<h2>What we collect</h2>
+<ul>
+<li>What you give us: your name, e-mail, neighbourhood, role, skills, projects and any messages you send through Banaro.</li>
+<li>A little technical information, such as your browser type, so the site works properly and stays secure.</li>
+</ul>
+<h2>What we do with it</h2>
+<p>We use your details to show your profile to other members, suggest people nearby, run events and send e-mail. We e-mail you only for what you ask for: your account, your messages, your event RSVPs and a Monday digest if you turn it on. You can turn each of those off in settings.</p>
+<h2>What we never do</h2>
+<ul>
+<li>We do not sell your data, and we do not share it with advertisers.</li>
+<li>We do not show your street address. Other members see your neighbourhood only.</li>
+</ul>
+<h2>Where it lives</h2>
+<p>Your data is stored in Canada, on servers that we pay for and control.</p>
+<h2>Cookies</h2>
+<p>We use essential cookies only: one to keep you signed in and one to remember your light or dark theme. There are no tracking or advertising cookies.</p>
+<h2>Your choices</h2>
+<p>You can edit your profile, download your data or delete your account at any time from your settings. Deleting your account removes your profile and projects within 30 days. For anything else, write to us on <a href="#">the contact page</a>.</p>
+</div></div></div><div data-theme="dark"><div class="crd-stack"><div class="prose">
+<p>We keep this simple because we think you should be able to read it in five minutes.</p>
+<h2>What we collect</h2>
+<ul>
+<li>What you give us: your name, e-mail, neighbourhood, role, skills, projects and any messages you send through Banaro.</li>
+<li>A little technical information, such as your browser type, so the site works properly and stays secure.</li>
+</ul>
+<h2>What we do with it</h2>
+<p>We use your details to show your profile to other members, suggest people nearby, run events and send e-mail. We e-mail you only for what you ask for: your account, your messages, your event RSVPs and a Monday digest if you turn it on. You can turn each of those off in settings.</p>
+<h2>What we never do</h2>
+<ul>
+<li>We do not sell your data, and we do not share it with advertisers.</li>
+<li>We do not show your street address. Other members see your neighbourhood only.</li>
+</ul>
+<h2>Where it lives</h2>
+<p>Your data is stored in Canada, on servers that we pay for and control.</p>
+<h2>Cookies</h2>
+<p>We use essential cookies only: one to keep you signed in and one to remember your light or dark theme. There are no tracking or advertising cookies.</p>
+<h2>Your choices</h2>
+<p>You can edit your profile, download your data or delete your account at any time from your settings. Deleting your account removes your profile and projects within 30 days. For anything else, write to us on <a href="#">the contact page</a>.</p>
+</div></div></div></div><span class="crd-ac">AC-10, AC-11</span></section><section class="ds-section" id="responsive"><h2>Responsive</h2><div class="crd-frames"><figure class="crd-frame"><span class="crd-ac">320 px · light · AC-12</span><iframe title="320 pixel wide frame, light theme" width="320" height="520" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;light&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/components.css&quot;&gt;&lt;style&gt;body{margin:0;padding:16px;background:var(--color-bg-canvas)}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;prose&quot; style=&quot;overflow-wrap:anywhere&quot;&gt;&lt;p&gt;Notes: https://psalter.example.ca/memorise/psalm-23/verse-by-verse&lt;/p&gt;&lt;/div&gt;&lt;div class=&quot;prose&quot;&gt;&lt;p&gt;Ten years shipping Laravel apps; now building Psalter after hours and looking for a founder to go full time with.&lt;/p&gt;&lt;p&gt;I led the platform team at a Mississauga logistics firm until this spring. Psalter began as a way to memorize Psalms on the GO train and now has 1,900 beta users, so I want to give it my whole week.&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"></iframe></figure><figure class="crd-frame"><span class="crd-ac">360 px · dark · AC-11</span><iframe title="360 pixel wide frame, dark theme" width="360" height="460" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;dark&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/components.css&quot;&gt;&lt;style&gt;body{margin:0;padding:16px;background:var(--color-bg-canvas)}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;prose&quot;&gt;&lt;p&gt;Sixty-four builders came to the Centre for Social Innovation. Six demos, seven minutes each, then feedback in small groups until the coffee ran out.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Psalter passed 1,900 beta users while the room watched.&lt;/li&gt;&lt;li&gt;Gather found a frontend contributor before the evening was over.&lt;/li&gt;&lt;li&gt;Eleven introductions were made, three of them between co-founders.&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"></iframe></figure><figure class="crd-frame"><span class="crd-ac">768 px · light · AC-13</span><iframe title="768 pixel wide frame, light theme" width="768" height="600" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;light&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/components.css&quot;&gt;&lt;style&gt;body{margin:0;padding:16px;background:var(--color-bg-canvas)}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;prose&quot;&gt;
+&lt;p&gt;Banaro is a gathering of people who share a faith and a craft. We hope it feels like a well-kept room where everyone is welcome to sit down. This is how we keep it that way.&lt;/p&gt;
+&lt;h2 id=&quot;be-kind&quot;&gt;Be kind and be honest&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Treat every member with respect, whatever their church, background, seniority or experience.&lt;/li&gt;
+&lt;li&gt;Disagree respectfully. Argue with ideas, never with people, and assume the best of one another.&lt;/li&gt;
+&lt;li&gt;Give feedback on projects that is specific, generous and useful.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;faith-aligned&quot;&gt;Faith-aligned, and welcoming&lt;/h2&gt;
+&lt;p&gt;Banaro is a community for Christian builders. We expect members to be gracious to people of every tradition within the church and to guests who are curious. Please do not use the community to pressure anyone about belief.&lt;/p&gt;
+&lt;h2 id=&quot;ask-first&quot;&gt;Ask before you reach out&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;No spam, mass messages or sales pitches to members who have not asked for them.&lt;/li&gt;
+&lt;li&gt;No recruiting, investing or hiring approaches without the other person&#x27;s consent. A first message should say who you are and why you are writing.&lt;/li&gt;
+&lt;li&gt;If someone says no or does not reply, leave it there.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;keep-safe&quot;&gt;Keep people safe&lt;/h2&gt;
+&lt;p&gt;Harassment, discrimination, threats and sharing someone&#x27;s private information are not tolerated. At events, follow the host&#x27;s guidance, and look out for anyone who seems uncomfortable.&lt;/p&gt;
+&lt;h2 id=&quot;if-something-goes-wrong&quot;&gt;If something goes wrong&lt;/h2&gt;
+&lt;p&gt;Use Report on any profile, project or message, or write to us at &lt;a href=&quot;#&quot;&gt;the contact page&lt;/a&gt;. A person on our team reads every report, usually within one working day, and keeps your report private. Depending on what happened, we may remove content, pause an account or end a membership.&lt;/p&gt;
+&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"></iframe></figure></div><p class="crd-note">Prose has no breakpoints; it reflows inside its column.</p></section><section class="ds-section" id="contrast"><h2>Contrast</h2><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair" data-theme="light"><span>Light: headings</span><span class="ds-pair__ratio" data-contrast="--color-fg-default|--color-bg-canvas" data-min="4.5"></span></div><div class="ds-pair" data-theme="dark"><span>Dark: headings</span><span class="ds-pair__ratio" data-contrast="--color-fg-default|--color-bg-canvas" data-min="4.5"></span></div><div class="ds-pair" data-theme="light"><span>Light: body</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-bg-canvas" data-min="4.5"></span></div><div class="ds-pair" data-theme="dark"><span>Dark: body</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-bg-canvas" data-min="4.5"></span></div><div class="ds-pair" data-theme="light"><span>Light: links</span><span class="ds-pair__ratio" data-contrast="--color-fg-link|--color-bg-canvas" data-min="4.5"></span></div><div class="ds-pair" data-theme="dark"><span>Dark: links</span><span class="ds-pair__ratio" data-contrast="--color-fg-link|--color-bg-canvas" data-min="4.5"></span></div><div class="ds-pair" data-theme="light"><span>Light: focus ring</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-bg-canvas" data-min="3"></span></div><div class="ds-pair" data-theme="dark"><span>Dark: focus ring</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-bg-canvas" data-min="3"></span></div></div><span class="crd-ac">AC-9, AC-10, AC-11</span></section><section class="ds-section" id="tokens"><h2>Tokens</h2><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Headings</td><td><code>--color-fg-default</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-default" data-swatch></i><span data-token="--color-fg-default"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-default" data-swatch></i><span data-token="--color-fg-default"></span></span></td></tr><tr><td>Body</td><td><code>--color-fg-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td></tr><tr><td>Links</td><td><code>--color-fg-link</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-link" data-swatch></i><span data-token="--color-fg-link"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-link" data-swatch></i><span data-token="--color-fg-link"></span></span></td></tr><tr><td>Link hover</td><td><code>--color-fg-link-hover</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-link-hover" data-swatch></i><span data-token="--color-fg-link-hover"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-link-hover" data-swatch></i><span data-token="--color-fg-link-hover"></span></span></td></tr><tr><td>Gap</td><td><code>--space-5</code></td><td><span data-theme="light" data-token="--space-5"></span></td><td><span data-theme="dark" data-token="--space-5"></span></td></tr><tr><td>Heading margin</td><td><code>--space-6</code></td><td><span data-theme="light" data-token="--space-6"></span></td><td><span data-theme="dark" data-token="--space-6"></span></td></tr><tr><td>Max width</td><td><code>--size-search-max-width-18</code></td><td><span data-theme="light" data-token="--size-search-max-width-18"></span></td><td><span data-theme="dark" data-token="--size-search-max-width-18"></span></td></tr></tbody></table></div></section><section class="ds-section" id="performance"><h2>Performance</h2><p class="crd-note">Scenario <code>Prose</code>: the code of conduct.</p><span class="crd-ac">AC-14</span></section>
+  <footer class="ds-footer"><span>Banaro component requirements · <a href="README.md">index</a></span><a href="#top">Back to top</a></footer>
+</main>
+<script src="../../design-system/assets/ds.js"></script>
+</body>
+</html>

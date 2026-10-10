@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brand — Component requirements rendering</title>
+<meta name="description" content="Every variant, size and state of brand, in light and dark, keyed to the acceptance criteria in brand.md.">
+<meta name="crd:component" content="brand">
+<!-- The real design-system styles: what renders here is the component, not a picture of it. -->
+<link rel="stylesheet" href="../../design-system/assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../design-system/assets/ds.css">
+<style>
+/* CRD page chrome only. Never restyle the component here. */
+.crd-shell { max-width: 80rem; margin: 0 auto; padding: var(--space-6) var(--space-4); }
+.crd-bar { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; justify-content: space-between; }
+.crd-ac { font: var(--text-overline); color: var(--color-fg-muted); display: block; margin-top: var(--space-2); }
+.crd-frames { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-start; }
+.crd-frame { margin: 0; border: var(--border-width-hairline) dashed var(--color-border-default); padding: var(--space-3); max-width: 100%; overflow: auto; }
+.crd-frame iframe { display: block; border: 0; max-width: 100%; }
+.crd-grid { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); align-items: start; }
+.crd-stage { position: relative; min-width: 0; }
+</style>
+</head>
+<body id="top">
+<a class="skip-link" href="#main">Skip to content</a>
+<main id="main" class="crd-shell">
+  <header class="ds-header">
+    <div class="crd-bar">
+      <p class="ds-kicker">Component requirements · rendering</p>
+      <button class="ds-theme-toggle" type="button" aria-pressed="false">☾ Dark</button>
+    </div>
+    <h1>Brand</h1>
+    <p class="ds-lead">The house-and-sun mark with the "banaro" wordmark, as the home link in every header. Requirements: <a href="brand.md">brand.md</a>. Design system: <a href="../../design-system/components/brand.html">brand</a>.</p>
+    <div class="ds-meta"><span class="ds-pill">Selector <code>a[bn-brand]</code></span><span class="ds-pill">Status: built</span><span class="ds-pill">Traces to L2-039, L2-048, L2-049, L2-050, L2-051, L2-052</span></div>
+    <ul class="ds-toc"><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#themes">Both themes</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#contrast">Contrast</a></li><li><a href="#tokens">Tokens</a></li></ul>
+  </header>
+  <section class="ds-section" id="variants"><h2>Variants</h2>
+    <div class="ds-example"><div class="ds-example__canvas ">
+<a class="brand" href="#" aria-label="Banaro home" style="min-height: var(--target-comfortable)"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a>
+    </div><div class="ds-example__caption"><span>Wordmark: mark and "banaro", named "Banaro home". <span class="crd-ac">AC-1, AC-2, AC-4, AC-8</span></span></div></div>
+  </section>
+  <section class="ds-section" id="sizes"><h2>Sizes</h2><p class="ds-na">One size: <code>--space-8</code> mark, <code>--font-size-lg</code> wordmark, at least <code>--target-comfortable</code> tall.</p></section>
+  <section class="ds-section" id="states"><h2>States</h2>
+    <div class="ds-matrix"><table><thead><tr><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th></tr></thead><tbody>
+      <tr><td><a class="brand" href="#" aria-label="Banaro home" style="min-height: var(--target-comfortable)"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a></td><td><a class="brand" href="#" aria-label="Banaro home" style="min-height: var(--target-comfortable)" data-state="hover"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a></td><td><a class="brand" href="#" aria-label="Banaro home" style="min-height: var(--target-comfortable)" data-state="focus"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a></td></tr>
+    </tbody></table></div>
+    <span class="crd-ac">AC-3</span>
+  </section>
+  <section class="ds-section" id="themes"><h2>Both themes</h2>
+    <div class="ds-themes">
+      <div data-theme="light"><a class="brand" href="#" aria-label="Banaro home" style="min-height: var(--target-comfortable)"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a></div>
+      <div data-theme="dark"><a class="brand" href="#" aria-label="Banaro home" style="min-height: var(--target-comfortable)"><svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27V14.5L16 5.5l11 9V27" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.5 27v-6.5h7V27" fill="none" stroke="currentColor" stroke-width="1.6"/><circle class="brand__sun" cx="25.5" cy="6.5" r="2.4"/></svg><span>banaro</span></a></div>
+    </div>
+    <span class="crd-ac">AC-5, AC-6</span>
+  </section>
+  <section class="ds-section" id="responsive"><h2>Responsive</h2>
+    <p>The brand does not change across breakpoints; it is shown at 320 px to prove it stays on one line.</p>
+    <div class="crd-frames">
+      <figure class="crd-frame"><span class="crd-ac">320 px · light · AC-7</span><iframe title="320 pixel wide frame, light theme" width="320" height="100" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;light&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/fonts/fonts.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../../design-system/assets/components.css&quot;&gt;&lt;/head&gt;&lt;body style=&quot;background: var(--color-bg-canvas); color: var(--color-fg-default)&quot;&gt;&lt;div style=&quot;padding: var(--space-4)&quot;&gt;&lt;a class=&quot;brand&quot; href=&quot;#&quot; aria-label=&quot;Banaro home&quot; style=&quot;min-height: var(--target-comfortable)&quot;&gt;&lt;svg class=&quot;brand__mark&quot; viewBox=&quot;0 0 32 32&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M5 27V14.5L16 5.5l11 9V27&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.6&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;path d=&quot;M12.5 27v-6.5h7V27&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;circle class=&quot;brand__sun&quot; cx=&quot;25.5&quot; cy=&quot;6.5&quot; r=&quot;2.4&quot;/&gt;&lt;/svg&gt;&lt;span&gt;banaro&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"></iframe></figure>
+    </div>
+    <p class="ds-na">The perf-test scenario (AC-9) is measured, not drawn.</p>
+  </section>
+  <section class="ds-section" id="contrast"><h2>Contrast</h2>
+    <div class="ds-example__canvas ds-example__canvas--stack">
+      <div class="ds-pair"><span>Wordmark</span><span class="ds-pair__ratio" data-contrast="--color-fg-default|--color-bg-canvas" data-min="4.5"></span></div>
+      <div class="ds-pair"><span>Mark</span><span class="ds-pair__ratio" data-contrast="--color-accent|--color-bg-canvas" data-min="3"></span></div>
+      <div class="ds-pair"><span>Focus ring</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-bg-canvas" data-min="3"></span></div>
+      <div class="ds-pair" data-theme="dark"><span>Dark: Wordmark</span><span class="ds-pair__ratio" data-contrast="--color-fg-default|--color-bg-canvas" data-min="4.5"></span></div>
+      <div class="ds-pair" data-theme="dark"><span>Dark: Mark</span><span class="ds-pair__ratio" data-contrast="--color-accent|--color-bg-canvas" data-min="3"></span></div>
+      <div class="ds-pair" data-theme="dark"><span>Dark: Focus ring</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-bg-canvas" data-min="3"></span></div>
+    </div>
+    <span class="crd-ac">AC-3, AC-5</span>
+  </section>
+  <section class="ds-section" id="tokens"><h2>Tokens</h2>
+    <div class="ds-table-wrap"><table class="ds-table">
+      <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+      <tbody>
+        <tr><td>Wordmark</td><td><code>--color-fg-default</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-default" data-swatch></i><span data-token="--color-fg-default"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-default" data-swatch></i><span data-token="--color-fg-default"></span></span></td></tr>
+        <tr><td>Mark</td><td><code>--color-accent</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-accent" data-swatch></i><span data-token="--color-accent"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-accent" data-swatch></i><span data-token="--color-accent"></span></span></td></tr>
+        <tr><td>Sun</td><td><code>--color-warning-icon</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warning-icon" data-swatch></i><span data-token="--color-warning-icon"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warning-icon" data-swatch></i><span data-token="--color-warning-icon"></span></span></td></tr>
+        <tr><td>Focus ring</td><td><code>--color-focus-ring</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-focus-ring" data-swatch></i><span data-token="--color-focus-ring"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-focus-ring" data-swatch></i><span data-token="--color-focus-ring"></span></span></td></tr>
+        <tr><td>Mark size</td><td><code>--space-8</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--space-8" data-swatch></i><span data-token="--space-8"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--space-8" data-swatch></i><span data-token="--space-8"></span></span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <footer class="ds-footer"><span>Banaro component requirements · <a href="README.md">index</a></span><a href="#top">Back to top</a></footer>
+</main>
+<script src="../../design-system/assets/ds.js"></script>
+</body>
+</html>
