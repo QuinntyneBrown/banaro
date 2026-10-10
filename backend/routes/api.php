@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Identity\SessionController;
+use App\Http\Controllers\Api\V1\Profiles\OnboardingController;
+use App\Http\Middleware\RequireVerifiedEmail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -10,4 +12,14 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
     // L2-003: any signed-in account can sign out, verified or not.
     Route::delete('session', [SessionController::class, 'destroy'])->name('session.destroy');
+
+    // Member features: a verified address is required (L2-002 criterion 4).
+    Route::middleware(RequireVerifiedEmail::class)->group(function () {
+        // L2-006: the member's own onboarding.
+        Route::get('me/onboarding', [OnboardingController::class, 'show'])->name('onboarding.show');
+        Route::put('me/onboarding/about', [OnboardingController::class, 'updateAbout'])->name('onboarding.about');
+        Route::put('me/onboarding/skills', [OnboardingController::class, 'updateSkills'])->name('onboarding.skills');
+        Route::put('me/onboarding/goals', [OnboardingController::class, 'updateGoals'])->name('onboarding.goals');
+        Route::post('me/onboarding/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');
+    });
 });

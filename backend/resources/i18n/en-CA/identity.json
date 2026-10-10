@@ -100,7 +100,8 @@
     "errors": {
       "invalid": "We couldn't confirm that link",
       "tooMany": "You've asked for too many links. Try again in {minutes} minutes.",
-      "failed": "We couldn't send a new link. Try again in a moment."
+      "failed": "We couldn't send a new link. Try again in a moment.",
+      "unverified": "Confirm your e-mail address to use Banaro."
     }
   },
   "signOut": {

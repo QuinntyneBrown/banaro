@@ -57,6 +57,8 @@ class SessionTest extends TestCase
             'name' => 'Amara Osei',
             'email' => 'amara@harvest.example',
             'email_verified' => true,
+            'onboarding_complete' => false,
+            'builder_id' => null,
         ]]);
 
         $this->assertAuthenticatedAs($user, 'web');

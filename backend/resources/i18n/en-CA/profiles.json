@@ -1,0 +1,16 @@
+{
+  "errors": {
+    "neighbourhood": "Choose your neighbourhood or city",
+    "role": "Choose the role that describes you best",
+    "skillsMax": "Choose up to 12 skills. Remove one to add another.",
+    "skillNameMax": "Use 40 characters or fewer for a skill",
+    "skill": "Choose a skill from the list or type one",
+    "openTo": "Choose from co-founding, advising and contributing",
+    "buildingMax": "Use 280 characters or fewer"
+  },
+  "onboarding": {
+    "errors": {
+      "incomplete": "Finish every step before you finish onboarding."
+    }
+  }
+}
