@@ -1,0 +1,15 @@
+<footer class="footer" id="footer">
+  <div class="wrap footer__grid">
+    <p class="footer__made">{{ made() }}</p>
+    <nav [attr.aria-label]="navLabel()">
+      <ul class="footer__links">
+        @for (link of links(); track link.link) {
+          <li>
+            <a [routerLink]="link.link">{{ link.label }}</a>
+          </li>
+        }
+      </ul>
+    </nav>
+    <p class="footer__land">{{ land() }}</p>
+  </div>
+</footer>

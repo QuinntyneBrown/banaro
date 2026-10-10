@@ -7,6 +7,7 @@
 <meta name="mock:kind" content="page">
 <meta name="mock:screen" content="sign-in">
 <meta name="mock:state" content="invalid">
+<meta name="mock:requirements" content="L2-003">
 <meta name="description" content="Sign-in with validation errors; summary at the top and each field flagged.">
 <link rel="stylesheet" href="../../assets/fonts/fonts.css">
 <link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
@@ -47,7 +48,7 @@
     <p class="footer__land">Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples.</p>
   </div>
 </footer>
-<p class="mock-note" style="top: 6rem; right: 1rem">On submit, focus moves to the error summary; each summary link jumps to its field.</p>
+<p class="mock-note" style="top: 6rem; right: 1rem">On submit, focus moves to the first invalid field; the summary is announced (role=alert) and each summary link jumps to its field.</p>
 
 <nav class="mock-bar" aria-label="Mock navigation">
   <a class="mock-bar__home" href="../../index.html" aria-label="Mock gallery">⌂</a>

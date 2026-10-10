@@ -1,0 +1,12 @@
+<div class="wrap">
+  <bn-error-page icon="clock" [heading]="'errors.maintenance.heading' | t" [lead]="lead">
+    <div class="cluster">
+      <button bn-button variant="primary" type="button" (click)="checkAgain()">
+        {{ 'errors.maintenance.checkAgain' | t }}
+      </button>
+      <a bn-button variant="quiet" [href]="'mailto:' + ('errors.maintenance.supportEmail' | t)">{{
+        'errors.maintenance.contact' | t
+      }}</a>
+    </div>
+  </bn-error-page>
+</div>

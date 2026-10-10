@@ -1,0 +1,19 @@
+:host {
+  display: contents;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: var(--space-4);
+  z-index: var(--z-tooltip);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-inverse);
+  color: var(--color-fg-inverse);
+  font: var(--text-label);
+  translate: 0 -200%;
+}
+.skip-link:focus {
+  translate: 0 0;
+}

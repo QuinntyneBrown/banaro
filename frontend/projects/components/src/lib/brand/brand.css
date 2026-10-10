@@ -1,0 +1,31 @@
+/* Extracted from docs/design-system/assets/components.css: brand */
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-fg-default);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-lg);
+  letter-spacing: calc(
+    -1 * var(--size-rand-and-header-------------------------------letter-spacing-2)
+  );
+}
+:host(:hover) {
+  color: var(--color-fg-default);
+}
+.brand__mark {
+  flex: none;
+  width: var(--space-8);
+  height: var(--space-8);
+  color: var(--color-accent);
+}
+.brand__mark .brand__sun {
+  fill: var(--color-warning-icon);
+  stroke: none;
+}
+
+/* L2-049: the brand link is a full-height touch target. */
+:host {
+  min-height: var(--target-comfortable);
+}

@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "title": "Banaro · Christian product builders in Toronto and the GTA",
+    "description": "Banaro connects Christian founders, engineers, designers and product managers across Toronto and the GTA, so you can find collaborators, share what you're making, and meet in person."
+  },
+  "hero": {
+    "eyebrow": "For Christian builders in Toronto and the GTA",
+    "titleStart": "Build what matters, with",
+    "titleEmphasis": "believers down the street.",
+    "lead": "Banaro connects Christian founders, engineers, designers and product managers across Toronto and the GTA — so you can find collaborators, share what you're making, and meet in person.",
+    "join": "Join Banaro",
+    "browse": "Browse builders",
+    "photoAlt": "Two builders talking over coffee at a wooden table",
+    "photoPlace": "Coffee in Leslieville",
+    "photoTime": "Sat, 8:30 am"
+  },
+  "testimonial": {
+    "text": "“Within a week I was advising two founders, both a streetcar ride from my house.”",
+    "by": "Hannah Kowalski · UX researcher, Roncesvalles"
+  },
+  "areas": {
+    "eyebrow": "What Banaro is for",
+    "title": "Four quiet ways to build together",
+    "explore": "Explore",
+    "directory": {
+      "title": "Builder directory",
+      "text": "Find local builders by skill, role and neighbourhood."
+    },
+    "projects": {
+      "title": "Project showcase",
+      "text": "Share what you're building, ask for feedback, find collaborators."
+    },
+    "events": {
+      "title": "Meetups and events",
+      "text": "Demo nights, prayer breakfasts and workshops across the GTA."
+    },
+    "matching": {
+      "title": "Co-founder matching",
+      "text": "Meet a co-founder, an advisor or a contributor who shares your faith."
+    }
+  },
+  "verse": {
+    "label": "Verse",
+    "text": "“Two are better than one, because they have a good return for their labour.”",
+    "reference": "Ecclesiastes 4:9"
+  },
+  "matching": {
+    "eyebrow": "Co-founder matching",
+    "title": "Looking for a co-founder?",
+    "text": "Tell us what you're building and who you need. We'll suggest three builders nearby every Monday.",
+    "start": "Start matching",
+    "example": "A Monday, for example",
+    "day": "Mon",
+    "exampleDaniel": "Daniel Reyes",
+    "exampleDanielRole": "Full-stack engineer",
+    "exampleNoah": "Noah Fischer",
+    "exampleNoahRole": "Backend & data engineer",
+    "exampleCaleb": "Caleb Morgan",
+    "exampleCalebRole": "Frontend engineer"
+  }
+}

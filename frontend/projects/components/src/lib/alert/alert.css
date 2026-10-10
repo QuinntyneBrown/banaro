@@ -1,0 +1,57 @@
+:host {
+  display: block;
+}
+
+/* Extracted from docs/design-system/assets/components.css: alert */
+.alert {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3) var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  border: var(--border-width-hairline) solid var(--color-info-border);
+  background: var(--color-info-bg);
+  color: var(--color-info-fg);
+}
+.alert .icon {
+  margin-top: var(--space-1);
+  color: var(--color-info-icon);
+}
+.alert__title {
+  font: var(--text-h4);
+}
+.alert__body {
+  grid-column: 2;
+  font: var(--text-body-sm);
+  color: var(--color-fg-default);
+}
+.alert__actions {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.alert--success {
+  border-color: var(--color-success-border);
+  background: var(--color-success-bg);
+  color: var(--color-success-fg);
+}
+.alert--success .icon {
+  color: var(--color-success-icon);
+}
+.alert--warning {
+  border-color: var(--color-warning-border);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-fg);
+}
+.alert--warning .icon {
+  color: var(--color-warning-icon);
+}
+.alert--danger {
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+  color: var(--color-danger-fg);
+}
+.alert--danger .icon {
+  color: var(--color-danger-icon);
+}

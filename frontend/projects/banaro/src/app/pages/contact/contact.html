@@ -1,0 +1,111 @@
+<div class="wrap">
+  <div class="page-block narrow">
+    @if (state() === 'success') {
+      <bn-page-header
+        [eyebrow]="'contact.eyebrow' | t"
+        [heading]="'contact.success.title' | t: { name: sentTo().firstName }"
+        [sub]="'contact.success.sub' | t"
+      />
+      <bn-alert variant="success" [heading]="'contact.success.alertTitle' | t">
+        {{ 'contact.success.alertBody' | t: { email: sentTo().email } }}
+        <a slot="actions" bn-button variant="quiet" size="sm" routerLink="/">{{
+          'contact.success.home' | t
+        }}</a>
+      </bn-alert>
+    } @else {
+      <bn-page-header
+        [eyebrow]="'contact.eyebrow' | t"
+        [heading]="'contact.title' | t"
+        [sub]="'contact.sub' | t"
+      />
+      <form
+        class="form"
+        novalidate
+        [attr.aria-label]="'contact.formLabel' | t"
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+      >
+        @if (state() === 'invalid') {
+          <bn-form-summary [heading]="'contact.errors.summary' | t" [errors]="summaryErrors()" />
+        }
+        <bn-field [label]="'contact.name' | t" [controlId]="ids.name" [error]="errors().name">
+          <input
+            #nameInput
+            bn-input
+            [id]="ids.name"
+            type="text"
+            autocomplete="name"
+            formControlName="name"
+            [readonly]="state() === 'submitting'"
+            [invalid]="!!errors().name"
+            [attr.aria-describedby]="describedBy(ids.name, errors().name)"
+          />
+        </bn-field>
+        <bn-field [label]="'contact.email' | t" [controlId]="ids.email" [error]="errors().email">
+          <input
+            bn-input
+            [id]="ids.email"
+            type="email"
+            autocomplete="email"
+            formControlName="email"
+            [readonly]="state() === 'submitting'"
+            [invalid]="!!errors().email"
+            [attr.aria-describedby]="describedBy(ids.email, errors().email)"
+          />
+        </bn-field>
+        <bn-field [label]="'contact.topic' | t" [controlId]="ids.topic" [error]="errors().topic">
+          <select
+            bn-input
+            [id]="ids.topic"
+            formControlName="topic"
+            [attr.disabled]="state() === 'submitting' ? '' : null"
+            [invalid]="!!errors().topic"
+            [attr.aria-describedby]="describedBy(ids.topic, errors().topic)"
+          >
+            <option value="">{{ 'contact.chooseTopic' | t }}</option>
+            @for (topic of topics; track topic.value) {
+              <option [value]="topic.value">{{ topic.key | t }}</option>
+            }
+          </select>
+        </bn-field>
+        <bn-field
+          [label]="'contact.message' | t"
+          [controlId]="ids.message"
+          [help]="'contact.messageHelp' | t"
+          [error]="errors().message"
+        >
+          <textarea
+            bn-textarea
+            [id]="ids.message"
+            rows="6"
+            formControlName="message"
+            [readonly]="state() === 'submitting'"
+            [invalid]="!!errors().message"
+            [attr.aria-describedby]="describedBy(ids.message, errors().message, true)"
+          ></textarea>
+        </bn-field>
+        <div class="vh" aria-hidden="true">
+          <label for="c-website">{{ 'contact.honeypot' | t }}</label>
+          <input
+            id="c-website"
+            type="text"
+            tabindex="-1"
+            autocomplete="off"
+            formControlName="website"
+          />
+        </div>
+        <div class="form-actions">
+          <button
+            bn-button
+            variant="primary"
+            type="submit"
+            [busy]="state() === 'submitting'"
+            [disabled]="state() === 'submitting' || offline()"
+          >
+            {{ (state() === 'submitting' ? 'contact.sending' : 'contact.send') | t }}
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</div>

@@ -7,6 +7,7 @@
 <meta name="mock:kind" content="dialog">
 <meta name="mock:screen" content="session-expired">
 <meta name="mock:state" content="invalid">
+<meta name="mock:requirements" content="L2-005">
 <meta name="description" content="Session-expired with a wrong password: inline error, focus on the password field.">
 <link rel="stylesheet" href="../../assets/fonts/fonts.css">
 <link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
@@ -60,7 +61,7 @@
 <div class="backdrop">
   <div class="dialog " role="dialog" aria-modal="true" aria-labelledby="dlg-title" aria-describedby="dlg-desc">
     <div class="dialog__header"><span class="dialog__icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></span><h2 class="dialog__title" id="dlg-title">Your session has expired</h2></div>
-    <div class="dialog__body"><p id="dlg-desc">For your safety Banaro signed you out after a long break. Sign back in and your unsaved changes will still be here.</p><div class="field"><label class="field__label" for="exp-email">E-mail</label><input class="input" id="exp-email" name="exp-email" type="email" value="amara@harvest.example" autocomplete="username" readonly></div><div class="field"><label class="field__label" for="exp-password">Password</label><input class="input" id="exp-password" name="exp-password" type="password" aria-describedby="exp-password-err" aria-invalid="true" required autocomplete="current-password"><p class="field__error" id="exp-password-err"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg><span>That password doesn&rsquo;t match. Try again, or reset it.</span></p></div></div>
+    <div class="dialog__body"><p id="dlg-desc">For your safety Banaro signed you out after a long break. Sign back in and your unsaved changes will still be here.</p><div class="field"><label class="field__label" for="exp-email">E-mail</label><input class="input" id="exp-email" name="exp-email" type="email" value="amara@harvest.example" autocomplete="username" readonly></div><div class="field"><label class="field__label" for="exp-password">Password</label><input class="input" id="exp-password" name="exp-password" type="password" aria-describedby="exp-password-err" aria-invalid="true" required autocomplete="current-password"><p class="field__error" id="exp-password-err"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5M12 15.5h.01"/></svg><span>That password doesn&rsquo;t match. Try again, or <a href="../../pages/forgot-password/default.html" target="_blank" rel="noopener">reset it<span class="vh"> (opens in a new tab)</span></a>.</span></p></div></div>
     <div class="dialog__footer"><a class="btn btn--quiet" href="../../pages/sign-in/default.html">Sign out</a><button type="submit" class="btn btn--primary">Sign back in</button></div>
   </div>
 </div>

@@ -1,0 +1,15 @@
+<bn-top-bar
+  [brandName]="'common.wordmark' | t"
+  [brandLabel]="'common.brandHome' | t"
+  [navLabel]="'common.nav.label' | t"
+  [menuLabel]="'common.nav.menu' | t"
+  [closeMenuLabel]="'common.nav.closeMenu' | t"
+  [items]="navItems()"
+>
+  <a slot="actions" bn-button variant="text" class="header__signin" routerLink="/sign-in">{{
+    'common.actions.signIn' | t
+  }}</a>
+  <a slot="actions" bn-button variant="primary" size="sm" routerLink="/join">{{
+    'common.actions.join' | t
+  }}</a>
+</bn-top-bar>

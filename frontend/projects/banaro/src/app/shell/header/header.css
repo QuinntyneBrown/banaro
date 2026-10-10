@@ -1,0 +1,10 @@
+/* Sign in collapses into the menu below 64rem (docs/design-system/assets/components.css, header). */
+.header__signin {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .header__signin {
+    display: inline-flex;
+  }
+}

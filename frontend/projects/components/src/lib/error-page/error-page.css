@@ -1,0 +1,37 @@
+:host {
+  display: block;
+}
+
+/* Extracted from docs/design-system/assets/components.css: error-page */
+.error-page {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-6);
+  padding-block: var(--space-24);
+}
+.error-page__code {
+  font: var(--font-weight-light) var(--font-size-5xl) / 1 var(--font-family-display);
+  color: var(--color-fg-subtle);
+  font-variant-numeric: tabular-nums;
+}
+.error-page__title {
+  font: var(--text-h1);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.error-page__reference code {
+  user-select: all;
+}
+.empty__icon {
+  display: grid;
+  place-items: center;
+  width: var(--size-quote-photo-width-9);
+  height: var(--size-quote-photo-height-10);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-subtle);
+  color: var(--color-fg-accent);
+}
+.empty__icon .icon {
+  width: var(--size-empty-icon-icon-width-32);
+  height: var(--size-switch-control-height-24);
+}

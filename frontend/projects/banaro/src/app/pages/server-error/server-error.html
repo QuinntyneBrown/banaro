@@ -1,0 +1,16 @@
+<div class="wrap">
+  <bn-error-page
+    code="500"
+    [heading]="'errors.serverError.heading' | t"
+    [lead]="'errors.serverError.lead' | t"
+    [referenceId]="requestId"
+    [referenceLabel]="'errors.referenceId' | t"
+  >
+    <div class="cluster">
+      <button bn-button variant="primary" type="button" (click)="retry()">
+        {{ 'errors.serverError.retry' | t }}
+      </button>
+      <a bn-button variant="quiet" routerLink="/">{{ 'errors.home' | t }}</a>
+    </div>
+  </bn-error-page>
+</div>

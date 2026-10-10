@@ -7,6 +7,7 @@
 <meta name="mock:kind" content="page">
 <meta name="mock:screen" content="not-found">
 <meta name="mock:state" content="default">
+<meta name="mock:requirements" content="L2-042">
 <meta name="description" content="Page not found.">
 <link rel="stylesheet" href="../../assets/fonts/fonts.css">
 <link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
@@ -28,7 +29,7 @@
 
 <main id="main">
 <div class="wrap">
-<div class="error-page"><p class="error-page__code" aria-hidden="true">404</p><h1 class="error-page__title">We can't find that page</h1><p class="lead">The link may be old, or the page may have moved. Try the builder directory, or go back to where you were.</p><div class="cluster"><a class="btn btn--primary" href="../../pages/dashboard/default.html">Go to your dashboard</a><a class="btn btn--quiet" href="../../pages/directory/default.html">Browse builders</a></div></div>
+<div class="error-page"><p class="error-page__code" aria-hidden="true">404</p><h1 class="error-page__title">We can't find that page</h1><p class="lead">The link may be old, or the page may have moved. Search for a builder, or go back to where you were.</p><form class="search" role="search" action="../../pages/directory/default.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><label class="vh" for="nf-q">Search builders</label><input class="search__input" id="nf-q" name="q" type="search" placeholder="Name, skill or project" autocomplete="off"><button type="submit" class="btn btn--primary">Search</button></form><div class="cluster"><a class="btn btn--quiet" href="../../pages/directory/default.html">Browse builders</a><a class="btn btn--quiet" href="../../pages/dashboard/default.html">Go to your dashboard</a></div></div>
 </div>
 </main>
 

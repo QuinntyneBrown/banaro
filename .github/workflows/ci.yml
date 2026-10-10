@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: .ci/backend-env.sh
+      - run: .ci/backend.sh
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: .ci/frontend.sh
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: .ci/backend-env.sh
+      - run: .ci/e2e.sh
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: e2e/playwright-report
+
+  perf-test:
+    # Required on pull requests that touch the frontend or the perf-test runner (AGENTS.md).
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            perf:
+              - 'frontend/**'
+              - 'e2e/perf-test/**'
+      - uses: actions/setup-node@v4
+        if: steps.changes.outputs.perf == 'true'
+        with:
+          node-version: 22
+      - if: steps.changes.outputs.perf == 'true'
+        env:
+          PERF_REGRESSION_ACCEPTED: ${{ contains(github.event.pull_request.labels.*.name, 'perf-regression-accepted') }}
+        run: .ci/perf-test.sh "origin/${{ github.base_ref }}"
+      - if: always() && steps.changes.outputs.perf == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: perf-test
+          path: e2e/perf-test/logfiles

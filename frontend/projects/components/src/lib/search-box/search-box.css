@@ -1,0 +1,37 @@
+:host {
+  display: block;
+}
+
+/* Extracted from docs/design-system/assets/components.css: search */
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: var(--size-search-max-width-18);
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-5);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-surface);
+  border: var(--border-width-hairline) solid var(--color-border-strong);
+}
+.search:focus-within {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+.search__input {
+  flex: 1;
+  min-width: 0;
+  width: 0;
+  min-height: var(--control-height-md);
+  border: 0;
+  background: transparent;
+  font: var(--text-body);
+}
+.search__input:focus {
+  outline: none;
+}
+.search__input::placeholder {
+  color: var(--color-fg-subtle);
+}
+.search .icon {
+  color: var(--color-fg-subtle);
+}

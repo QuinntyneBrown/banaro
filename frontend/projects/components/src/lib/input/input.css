@@ -1,0 +1,53 @@
+/* Extracted from docs/design-system/assets/components.css: input */
+:host {
+  width: 100%;
+  min-height: var(--control-height-lg);
+  padding: 0 var(--space-4);
+  border: var(--border-width-hairline) solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  color: var(--color-fg-default);
+  font: var(--text-body);
+}
+:host::placeholder {
+  color: var(--color-fg-subtle);
+}
+:host(:hover) {
+  border-color: var(--color-fg-muted);
+}
+:host(:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+:host([aria-invalid='true']) {
+  border-color: var(--color-danger-solid);
+  background: var(--color-danger-bg);
+}
+:host([readonly]),
+:host([disabled]) {
+  background: var(--color-bg-subtle);
+  color: var(--color-fg-muted);
+  cursor: not-allowed;
+}
+:host {
+  --bn-field-border: var(--color-border-strong);
+  border-color: var(--bn-field-border);
+}
+:host([aria-invalid='true']) {
+  --bn-field-border: var(--color-danger-solid);
+}
+:host(.input--sm) {
+  min-height: var(--control-height-sm);
+  font-size: var(--font-size-sm);
+}
+:host(.input--md) {
+  min-height: var(--control-height-md);
+}
+:host(.input--lg) {
+  min-height: var(--control-height-lg);
+}
+@media (forced-colors: active) {
+  :host {
+    border: var(--border-width-hairline) solid CanvasText;
+  }
+}

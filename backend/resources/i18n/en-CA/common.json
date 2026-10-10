@@ -1,0 +1,39 @@
+{
+  "brand": "Banaro",
+  "wordmark": "banaro",
+  "brandHome": "Banaro home",
+  "skipToContent": "Skip to content",
+  "nav": {
+    "label": "Primary",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "builders": "Builders",
+    "projects": "Projects",
+    "events": "Events",
+    "matching": "Matching"
+  },
+  "actions": {
+    "signIn": "Sign in",
+    "join": "Join Banaro"
+  },
+  "footer": {
+    "label": "Footer",
+    "made": "Made in Toronto. © {year} Banaro.",
+    "about": "About",
+    "codeOfConduct": "Code of conduct",
+    "privacy": "Privacy",
+    "contact": "Contact",
+    "land": "Banaro gathers on the traditional territory of many nations, including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples."
+  },
+  "errors": {
+    "slowDown": "You're trying too fast. Wait {minutes} minutes, then try again."
+  },
+  "dismissBanner": "Dismiss banner",
+  "connection": {
+    "offline": "You are offline. What you write stays on this page until you reconnect.",
+    "reconnecting": "Reconnecting… Banaro will update as soon as you are back.",
+    "failed": "We couldn't reconnect. Check your network, then try again.",
+    "retry": "Try again",
+    "restored": "Back online. Banaro is up to date."
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "title": "Contact · Banaro",
+    "description": "Write to the Banaro team. A real person reads every message, usually within two working days."
+  },
+  "eyebrow": "Contact",
+  "title": "Write to us",
+  "sub": "A real person reads every message, usually within two working days.",
+  "formLabel": "Contact Banaro",
+  "name": "Your name",
+  "email": "E-mail",
+  "topic": "Topic",
+  "chooseTopic": "Choose one",
+  "message": "Message",
+  "messageHelp": "Tell us a little context. A real person reads every message, usually within two working days.",
+  "honeypot": "Leave this field empty",
+  "send": "Send message",
+  "sending": "Sending…",
+  "topics": {
+    "general": "General",
+    "partnership": "Partnership",
+    "press": "Press",
+    "reportProblem": "Report a problem",
+    "proposeEvent": "Propose an event"
+  },
+  "errors": {
+    "summary": "Fix these before continuing",
+    "nameRequired": "Enter your name",
+    "nameMax": "Use 100 characters or fewer",
+    "email": "Enter an e-mail address like name@example.com",
+    "topic": "Choose a topic",
+    "messageRequired": "Write a message so we know how to help",
+    "messageMin": "Use at least 10 characters",
+    "messageMax": "Use 2,000 characters or fewer",
+    "failed": "We couldn't send your message. Try again in a moment."
+  },
+  "success": {
+    "title": "Thank you, {name}",
+    "sub": "Your message is on its way to us.",
+    "alertTitle": "Message sent",
+    "alertBody": "We will reply to {email}, usually within two working days.",
+    "home": "Back to the home page"
+  },
+  "mail": {
+    "subject": "Contact form: {topic}",
+    "from": "From",
+    "topic": "Topic"
+  }
+}

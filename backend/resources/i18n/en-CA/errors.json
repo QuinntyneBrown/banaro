@@ -1,0 +1,35 @@
+{
+  "referenceId": "Reference ID",
+  "home": "Go to the home page",
+  "dashboard": "Go to your dashboard",
+  "notFound": {
+    "title": "Page not found · Banaro",
+    "heading": "We can't find that page",
+    "lead": "The link may be old, or the page may have moved. Search for a builder, or go back to where you were.",
+    "searchLabel": "Search builders",
+    "searchPlaceholder": "Name, skill or project",
+    "search": "Search",
+    "browse": "Browse builders"
+  },
+  "serverError": {
+    "title": "Something went wrong · Banaro",
+    "heading": "Something went wrong on our side",
+    "lead": "It isn't you. Try again in a moment; your profile and messages are safe.",
+    "retry": "Try again"
+  },
+  "maintenance": {
+    "title": "Down for maintenance · Banaro",
+    "heading": "Down for a short maintenance",
+    "leadAt": "We're tending to Banaro and expect to be back by {time} Eastern. Nothing is lost. Thank you for your patience.",
+    "lead": "We're tending to Banaro and expect to be back soon. Nothing is lost. Thank you for your patience.",
+    "checkAgain": "Check again",
+    "contact": "Contact us",
+    "supportEmail": "support@banaro.ca"
+  },
+  "offline": {
+    "title": "You're offline · Banaro",
+    "heading": "You're offline",
+    "lead": "Banaro can't reach the internet right now. Check your connection; we will reconnect on our own and keep what you were writing. Nothing is sent until you send it.",
+    "retry": "Try again"
+  }
+}

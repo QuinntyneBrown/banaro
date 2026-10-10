@@ -1,0 +1,63 @@
+# Local backend for Banaro (ADR-0002). Migrations never run on start: run them explicitly with
+#   docker compose run --rm api php artisan migrate --seed
+x-banaro-api: &banaro-api
+  build: ./backend
+  image: banaro-api:dev
+  volumes:
+    - ./backend:/app
+    - ./frontend:/frontend:ro
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+
+services:
+  api:
+    <<: *banaro-api
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    ports:
+      - '8100:8000'
+    healthcheck:
+      test: ['CMD', 'php', '-r', "exit(@file_get_contents('http://localhost:8000/health/live') ? 0 : 1);"]
+      interval: 3s
+      timeout: 10s
+      retries: 40
+
+  worker:
+    <<: *banaro-api
+    command: php artisan horizon
+
+  scheduler:
+    <<: *banaro-api
+    command: php artisan schedule:work
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: banaro
+      POSTGRES_PASSWORD: banaro
+      POSTGRES_DB: banaro
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./backend/docker/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U banaro']
+      interval: 2s
+      retries: 30
+
+  redis:
+    image: redis:7
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 2s
+      retries: 30
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - '8025:8025'
+      - '1025:1025'
+
+volumes:
+  postgres-data:

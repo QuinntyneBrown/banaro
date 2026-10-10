@@ -123,8 +123,8 @@ entered values.
 
 ### Open points
 
-- Route: `L2-007` names `/profile/edit`; the mock manifest gives `/me/edit`. The design uses
-  `/profile/edit`; confirmation: `<TO SUPPLY>`.
+- Route: `L2-007` and the mock manifest both use `/profile/edit` (the manifest previously said
+  `/me/edit`; resolved in gap-analysis iteration 1).
 - Bio limit: `L2-007` criterion 3 allows 500 characters; the mock counter and error say 400. The
   design follows the specification. The mock copy: `<TO SUPPLY>`.
 - Fields missing from the mock: `L2-007` criterion 2 lists experience entries, links and the product

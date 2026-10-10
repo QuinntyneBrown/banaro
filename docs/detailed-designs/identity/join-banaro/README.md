@@ -36,12 +36,16 @@ Banaro Worker sends the e-mail.
   `submitting` and `success`. It holds a typed reactive form with the fields `name`, `email`,
   `password` and `agree`.
   - On submit it runs client-side checks that mirror the server rules. Errors appear in the
-    `bn-form-layout` error summary ("Fix these before continuing") and under each field.
+    `bn-form-layout` error summary ("Fix these before continuing") and under each field. Focus moves
+    to the first invalid field, and the summary is announced as an alert (`L2-001` criterion 13).
+  - The consent label links to `/code-of-conduct` with `target="_blank"`, `rel="noopener"` and the
+    visually hidden text " (opens in a new tab)" (`L2-034` criterion 2).
   - While the request is in flight, the `bn-button` submit control is disabled, carries `aria-busy`
     and reads "Creating your account…". A second submission cannot start (`L2-001` criterion 4).
   - A 422 response maps each field error from the API to its field (`L2-001` criterion 2).
   - A 202 response shows the `success` state "Check your e-mail" with the submitted address. "Send
-    the link again" calls the resend operation that the `verify-email` feature defines.
+    the link again" calls the resend operation that the `verify-email` feature defines. "I have
+    confirmed my e-mail" goes to `/sign-in`, because joining starts no session (`L2-001` criterion 12).
   - The password value never leaves the form except in the request body. It is never echoed back.
 - **`bn-form-layout`**, **`bn-text-field`**, **`bn-checkbox`** and **`bn-button`** (`components`
   library) — the error summary, labelled inputs with inline errors, the consent checkbox and the busy
@@ -66,22 +70,25 @@ Banaro Worker sends the e-mail.
   `JoinBanaroRequest`, calls `JoinBanaro` and returns 202 Accepted with an empty body. The status
   and body are the same whether or not the address was new (`L2-001` criterion 3).
 - **`JoinBanaroRequest`** (`Requests/Identity/`) — form request with these rules:
-  - `name` — required string, length limit `<TO SUPPLY>`.
+  - `name` — required string, at most 100 characters (`L2-001` criterion 7).
   - `email` — required, RFC-valid e-mail, at most 254 characters.
-  - `password` — required string, validated by `PasswordPolicy::rules()`.
+  - `password` — required string of at most 128 characters, validated by `PasswordPolicy::rules()`.
   - `agreed_to_code_of_conduct` — required and accepted.
   - On failure it returns 422 with per-field errors, and no account is created (`L2-001` criterion 2).
 - **`PasswordPolicy`** (`Services/Identity/`) — owns the password rules shared with the
-  `recover-password` feature. `rules()` returns a minimum of 12 characters and the
+  `recover-password` feature. `rules()` returns a minimum of 12 characters, a maximum of 128 and the
   `NotCommonPassword` rule. `NotCommonPassword` reads the common-password list from
-  `resources/security/common-passwords.txt`.
+  `resources/security/common-passwords.txt`, a bundled file of the 10,000 most common passwords that
+  it compares case-insensitively (`L2-001` criterion 8).
 - **`JoinBanaro`** (`Actions/Identity/`) — `handle(JoinData)` applies the join rules:
   1. It canonicalizes the e-mail address.
-  2. It hashes the password through `Hash::make()` in every path, including the duplicate path. Both
-     paths therefore take similar time.
+  2. It hashes the password through `Hash::make()` in every path, including the duplicate path. The
+     password is first pre-hashed (SHA-256, base64) so bcrypt's 72-byte limit never truncates it
+     (`L2-001` criterion 7). Both paths therefore take similar time.
   3. When no account holds the canonical e-mail, it creates a `User` in one transaction. The `User`
      has `email_verified_at` set to null. It also stores the accepted code-of-conduct version and
-     the acceptance time (`L2-034` criterion 3).
+     the acceptance time (`L2-034` criterion 3). It creates no `Builder` profile; onboarding does
+     (`L2-001` criterion 11).
   4. It asks `EmailVerificationService` to issue a link and queues `VerifyEmailNotification`
      (`L2-001` criterion 1).
   5. When the address is taken, it creates nothing and queues `AccountAlreadyExistsNotification` to
@@ -101,27 +108,35 @@ Banaro Worker sends the e-mail.
 - **`VerifyEmailNotification`** and **`AccountAlreadyExistsNotification`** (`Notifications/`) — queued
   notifications on the `mail` channel only. They are security e-mail, so member e-mail preferences do
   not suppress them (`L2-029` criterion 2). The Worker sends them through the `Mailer` contract.
+  `AccountAlreadyExistsNotification` has the subject "You already have a Banaro account", says that
+  someone tried to join with the address, links to `/sign-in` and `/forgot-password`, and carries no
+  verification link (`L2-001` criterion 10).
 
 ### Failure handling
 
 A failed transaction rolls back, so no partial account remains. The page keeps the entered name and
 e-mail address and shows a danger `bn-alert` with a retry. A 429 response shows a "slow down" message
-in the error summary (`L2-046` criterion 2). Its copy is an open point.
+in the error summary (`L2-046` criterion 2).
 
-### Open points
+### Resolved decisions
 
-- Focus after a failed submit: `L2-001` criterion 2 moves focus to the first invalid field. The
-  `join` invalid mock and the forms pattern move it to the error summary. Choice: `<TO SUPPLY>`.
-- Code-of-conduct link: `L2-034` criterion 2 opens it in a new tab with an accessible name that says
-  so. The `join` mocks render a plain link with no new-tab behaviour. Choice: `<TO SUPPLY>`.
-- Error copy for a password found on the common-password list: `<TO SUPPLY>`; the mocks show only
-  the length error.
-- Copy for the 429 "slow down" message on `/join`: `<TO SUPPLY>`; no mock state shows it.
-- Source and size of the common-password list: `<TO SUPPLY>`.
-- Maximum length of the `name` field: `<TO SUPPLY>`.
-- Content of the already-registered e-mail (`AccountAlreadyExistsNotification`): `<TO SUPPLY>`.
-- Whether `JoinBanaro` creates an empty `Builder` profile or `complete-onboarding` creates it:
-  `<TO SUPPLY>`. The `accept-code-of-conduct` design owns the final shape of the stored acceptance.
+- Focus after a failed submit goes to the first invalid field, with the summary announced as an alert
+  (`L2-001` criterion 13; `join/invalid.html` note updated).
+- The code-of-conduct link opens in a new tab and its accessible name ends in "(opens in a new tab)"
+  (`L2-034` criterion 2; all three form states of `join` updated).
+- A common password shows "That password is too common. Choose something harder to guess." beside
+  the password field (`L2-001` criterion 8).
+- A 429 shows a danger `bn-alert`: "You're trying too fast. Wait N minutes, then try again." (`L2-001`
+  criterion 9). No mock state shows it; it uses the same alert as the failed-request state.
+- The common-password list is a bundled file of the 10,000 most common passwords, compared
+  case-insensitively (`L2-001` criterion 8).
+- `name` is at most 100 characters and `password` at most 128 (`L2-001` criterion 7).
+- The already-registered e-mail has the subject "You already have a Banaro account" and no
+  verification link (`L2-001` criterion 10).
+- `JoinBanaro` creates no `Builder` profile; `complete-onboarding` creates it (`L2-001` criterion 11).
+  The `accept-code-of-conduct` design owns the final shape of the stored acceptance.
+- "I have confirmed my e-mail" on the success state goes to `/sign-in` (`L2-001` criterion 12;
+  `join/success.html`).
 
 ## Requirements
 
@@ -129,7 +144,7 @@ in the error summary (`L2-046` criterion 2). Its copy is an open point.
 |-------|--------------|-------------|
 | `L2-001` | `L1-001` | A visitor shall be able to create an account with name, e-mail and password and shall agree to the code of conduct. Passwords shall be at least 12 characters and shall not be on a common-password list. The e-mail address shall be unique case-insensitively. |
 
-The design realizes all six acceptance criteria of `L2-001`. The Description cites each criterion
+The design realizes all thirteen acceptance criteria of `L2-001`. The Description cites each criterion
 where a component enforces it.
 
 ## Diagrams
