@@ -4,10 +4,12 @@ import Brand from './Brand';
 import Button from './Button';
 import ButtonBusy from './ButtonBusy';
 import DarkTheme from './DarkTheme';
+import ErrorPage from './ErrorPage';
 import Field from './Field';
 import Footer from './Footer';
 import FormSummary from './FormSummary';
 import PageHeader from './PageHeader';
+import SearchBox from './SearchBox';
 import SkipLink from './SkipLink';
 import Textarea from './Textarea';
 import TopBar from './TopBar';
@@ -19,10 +21,12 @@ export const scenarios: Record<string, Type<unknown>> = {
   Button,
   ButtonBusy,
   DarkTheme,
+  ErrorPage,
   Field,
   Footer,
   FormSummary,
   PageHeader,
+  SearchBox,
   SkipLink,
   Textarea,
   TopBar,

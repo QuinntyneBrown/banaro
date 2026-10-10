@@ -1,5 +1,5 @@
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideClientHydration, withHttpTransferCacheOptions } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import {
@@ -11,10 +11,12 @@ import {
   PUBLIC_SITE_API,
 } from 'api';
 import { routes } from './app.routes';
+import { AppErrorHandler } from './shared/app-error-handler';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    { provide: ErrorHandler, useClass: AppErrorHandler },
     provideRouter(routes),
     provideHttpClient(withFetch(), withInterceptors([csrfCookieInterceptor])),
     provideClientHydration(withHttpTransferCacheOptions({})),

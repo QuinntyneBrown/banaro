@@ -1,0 +1,20 @@
+{
+  "referenceId": "Reference ID",
+  "home": "Go to the home page",
+  "dashboard": "Go to your dashboard",
+  "notFound": {
+    "title": "Page not found · Banaro",
+    "heading": "We can't find that page",
+    "lead": "The link may be old, or the page may have moved. Search for a builder, or go back to where you were.",
+    "searchLabel": "Search builders",
+    "searchPlaceholder": "Name, skill or project",
+    "search": "Search",
+    "browse": "Browse builders"
+  },
+  "serverError": {
+    "title": "Something went wrong · Banaro",
+    "heading": "Something went wrong on our side",
+    "lead": "It isn't you. Try again in a moment; your profile and messages are safe.",
+    "retry": "Try again"
+  }
+}
