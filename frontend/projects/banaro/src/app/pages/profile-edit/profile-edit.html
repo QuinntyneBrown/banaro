@@ -1,0 +1,459 @@
+<div class="wrap">
+  <div class="narrow profile-edit">
+    <bn-page-header
+      [eyebrow]="'profiles.edit.eyebrow' | t"
+      [heading]="'profiles.edit.title' | t"
+      [sub]="state() === 'error' ? undefined : ('profiles.edit.sub' | t)"
+    />
+
+    @switch (state()) {
+      @case ('loading') {
+        <div class="profile-edit__body" aria-busy="true">
+          <p class="vh" role="status">{{ 'profiles.edit.loading' | t }}</p>
+          <div class="form">
+            <div class="field-row">
+              <div>
+                <span bn-skeleton width="6rem" height="var(--space-5)"></span>
+                <span bn-skeleton shape="none" height="var(--control-height-lg)" radius="md"></span>
+              </div>
+              <div>
+                <span bn-skeleton width="4rem" height="var(--space-5)"></span>
+                <span bn-skeleton shape="none" height="var(--control-height-lg)" radius="md"></span>
+              </div>
+            </div>
+            <span bn-skeleton shape="none" height="var(--control-height-lg)" radius="md"></span>
+            <span bn-skeleton shape="block"></span>
+            <span bn-skeleton shape="pill"></span>
+            <span bn-skeleton shape="block"></span>
+          </div>
+        </div>
+      }
+      @case ('error') {
+        <div class="profile-edit__body">
+          <bn-empty-state tone="error" [heading]="'profiles.edit.loadFailed.title' | t">
+            {{ 'profiles.edit.loadFailed.body' | t }}
+            <button slot="actions" bn-button variant="primary" type="button" (click)="load()">
+              {{ 'profiles.edit.tryAgain' | t }}
+            </button>
+            <a slot="actions" bn-button variant="quiet" [routerLink]="profileLink()">{{
+              'profiles.edit.backToProfile' | t
+            }}</a>
+          </bn-empty-state>
+        </div>
+      }
+      @default {
+        <div class="profile-edit__body">
+          <form
+            bn-form
+            novalidate
+            [busy]="saving()"
+            [attr.aria-label]="'profiles.edit.title' | t"
+            (ngSubmit)="save()"
+          >
+            @if (summaryErrors().length) {
+              <bn-form-summary
+                [heading]="'identity.errors.summary' | t"
+                [errors]="summaryErrors()"
+              />
+            }
+            @if (saved()) {
+              <div id="profile-saved" tabindex="-1">
+                <bn-alert variant="success" [heading]="'profiles.edit.saved.title' | t">
+                  {{ 'profiles.edit.saved.body' | t }}
+                  <a
+                    slot="actions"
+                    bn-button
+                    variant="quiet"
+                    size="sm"
+                    [routerLink]="profileLink()"
+                    >{{ 'profiles.edit.saved.view' | t }}</a
+                  >
+                </bn-alert>
+              </div>
+            }
+            @if (saveFailed()) {
+              <bn-alert variant="danger" [heading]="'profiles.edit.saveFailed.title' | t">
+                {{ 'profiles.edit.saveFailed.body' | t }}
+                <button
+                  slot="actions"
+                  bn-button
+                  variant="quiet"
+                  size="sm"
+                  type="button"
+                  (click)="save()"
+                >
+                  {{ 'profiles.edit.tryAgain' | t }}
+                </button>
+              </bn-alert>
+            }
+
+            <div bn-field-row>
+              <bn-field
+                [label]="'profiles.edit.name' | t"
+                controlId="name"
+                [error]="errors()['name']"
+              >
+                <input
+                  bn-input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autocomplete="name"
+                  maxlength="100"
+                  [ngModel]="name()"
+                  (ngModelChange)="name.set($event)"
+                  [readonly]="saving()"
+                  [invalid]="!!errors()['name']"
+                  [attr.aria-describedby]="describedBy('name', errors()['name'])"
+                />
+              </bn-field>
+              <bn-field
+                [label]="'profiles.edit.headline' | t"
+                controlId="headline"
+                [help]="'profiles.edit.headlineHelp' | t"
+                [error]="errors()['headline']"
+              >
+                <input
+                  bn-input
+                  id="headline"
+                  name="headline"
+                  type="text"
+                  maxlength="80"
+                  [ngModel]="headline()"
+                  (ngModelChange)="headline.set($event)"
+                  [readonly]="saving()"
+                  [invalid]="!!errors()['headline']"
+                  [attr.aria-describedby]="describedBy('headline', errors()['headline'], true)"
+                />
+              </bn-field>
+            </div>
+
+            <bn-field
+              [label]="'profiles.edit.neighbourhood' | t"
+              controlId="hood"
+              [help]="'profiles.edit.neighbourhoodHelp' | t"
+              [error]="errors()['hood']"
+            >
+              <select
+                bn-input
+                id="hood"
+                name="hood"
+                [ngModel]="neighbourhoodId()"
+                (ngModelChange)="neighbourhoodId.set($event)"
+                [disabled]="saving()"
+                [invalid]="!!errors()['hood']"
+                [attr.aria-describedby]="describedBy('hood', errors()['hood'], true)"
+              >
+                @for (n of profile()?.neighbourhoods ?? []; track n.id) {
+                  <option [ngValue]="n.id">{{ n.name }}</option>
+                }
+              </select>
+            </bn-field>
+
+            <bn-field
+              [label]="'profiles.edit.bio' | t"
+              controlId="bio"
+              [help]="'profiles.edit.bioHelp' | t"
+              [error]="errors()['bio']"
+              [counter]="bioCounter()"
+            >
+              <textarea
+                bn-textarea
+                id="bio"
+                name="bio"
+                rows="5"
+                [ngModel]="bio()"
+                (ngModelChange)="bio.set($event)"
+                [readonly]="saving()"
+                [invalid]="!!errors()['bio']"
+                [attr.aria-describedby]="bioDescribedBy()"
+              ></textarea>
+            </bn-field>
+
+            <bn-field
+              [label]="'profiles.edit.skills' | t"
+              controlId="skill-add"
+              [help]="'profiles.edit.skillsHelp' | t"
+              [error]="errors()['skill-add']"
+            >
+              @if (skills().length) {
+                <ul bn-chip-list [attr.aria-label]="'profiles.edit.yourSkills' | t">
+                  @for (skill of skills(); track skill.name; let i = $index) {
+                    <li>
+                      <button
+                        bn-chip
+                        kind="remove"
+                        [removeLabel]="'profiles.edit.removeSkill' | t: { name: skill.name }"
+                        [disabled]="saving()"
+                        (removed)="removeSkill(i)"
+                      >
+                        {{ skill.name }}
+                      </button>
+                    </li>
+                  }
+                </ul>
+              }
+              <bn-input-group>
+                <input
+                  bn-input
+                  id="skill-add"
+                  name="skill-add"
+                  type="text"
+                  maxlength="40"
+                  [placeholder]="'profiles.edit.skillPlaceholder' | t"
+                  [ngModel]="newSkill()"
+                  (ngModelChange)="newSkill.set($event)"
+                  (keydown.enter)="$event.preventDefault(); addSkill()"
+                  [readonly]="saving()"
+                  [invalid]="!!errors()['skill-add']"
+                  [attr.aria-describedby]="describedBy('skill-add', errors()['skill-add'], true)"
+                />
+                <button bn-button variant="quiet" type="button" (click)="addSkill()">
+                  {{ 'profiles.edit.add' | t }}
+                </button>
+              </bn-input-group>
+            </bn-field>
+
+            <fieldset
+              bn-form-section
+              level="question"
+              id="open-to"
+              tabindex="-1"
+              [legend]="'profiles.edit.openToLegend' | t"
+              [attr.aria-describedby]="errors()['open-to'] ? 'open-to-err' : null"
+            >
+              <bn-choices>
+                @for (choice of openToChoices; track choice) {
+                  <bn-choice
+                    [label]="openToLabel(choice, 'title')"
+                    [description]="openToLabel(choice, 'text')"
+                  >
+                    <input
+                      type="checkbox"
+                      name="open-to"
+                      [value]="choice"
+                      [checked]="openTo().has(choice)"
+                      [disabled]="saving()"
+                      (change)="toggleOpenTo(choice, $any($event.target).checked)"
+                    />
+                  </bn-choice>
+                }
+              </bn-choices>
+              @if (errors()['open-to']) {
+                <p class="field__error" id="open-to-err">{{ errors()['open-to'] }}</p>
+              }
+            </fieldset>
+
+            <bn-field
+              [label]="'profiles.edit.lookingFor' | t"
+              [optionalText]="'common.optional' | t"
+              controlId="looking"
+              [help]="'profiles.edit.lookingForHelp' | t"
+              [error]="errors()['looking']"
+            >
+              <textarea
+                bn-textarea
+                id="looking"
+                name="looking"
+                rows="3"
+                maxlength="400"
+                [ngModel]="lookingFor()"
+                (ngModelChange)="lookingFor.set($event)"
+                [readonly]="saving()"
+                [attr.aria-describedby]="describedBy('looking', errors()['looking'], true)"
+              ></textarea>
+            </bn-field>
+
+            <bn-field
+              [label]="'profiles.edit.building' | t"
+              [optionalText]="'common.optional' | t"
+              controlId="building"
+              [help]="'profiles.edit.buildingHelp' | t"
+              [error]="errors()['building']"
+            >
+              <textarea
+                bn-textarea
+                id="building"
+                name="building"
+                rows="3"
+                maxlength="280"
+                [ngModel]="building()"
+                (ngModelChange)="building.set($event)"
+                [readonly]="saving()"
+                [attr.aria-describedby]="describedBy('building', errors()['building'], true)"
+              ></textarea>
+            </bn-field>
+
+            <fieldset bn-form-section [legend]="'profiles.edit.experience.legend' | t">
+              @for (entry of experience(); track $index; let i = $index) {
+                <fieldset
+                  class="profile-edit__entry"
+                  [attr.aria-label]="'profiles.edit.experience.entry' | t: { n: i + 1 }"
+                >
+                  <div bn-field-row>
+                    <bn-field
+                      [label]="'profiles.edit.experience.title' | t"
+                      [controlId]="'experience-' + i + '-title'"
+                      [error]="errors()['experience-' + i + '-title']"
+                    >
+                      <input
+                        bn-input
+                        type="text"
+                        maxlength="100"
+                        [id]="'experience-' + i + '-title'"
+                        [name]="'experience-' + i + '-title'"
+                        [ngModel]="entry.title"
+                        (ngModelChange)="updateExperience(i, { title: $event })"
+                        [readonly]="saving()"
+                        [invalid]="!!errors()['experience-' + i + '-title']"
+                      />
+                    </bn-field>
+                    <bn-field
+                      [label]="'profiles.edit.experience.organization' | t"
+                      [controlId]="'experience-' + i + '-organization'"
+                    >
+                      <input
+                        bn-input
+                        type="text"
+                        maxlength="100"
+                        [id]="'experience-' + i + '-organization'"
+                        [name]="'experience-' + i + '-organization'"
+                        [ngModel]="entry.organization ?? ''"
+                        (ngModelChange)="updateExperience(i, { organization: $event })"
+                        [readonly]="saving()"
+                      />
+                    </bn-field>
+                  </div>
+                  <div bn-field-row>
+                    <bn-field
+                      [label]="'profiles.edit.experience.started' | t"
+                      [controlId]="'experience-' + i + '-started-on'"
+                      [error]="errors()['experience-' + i + '-started-on']"
+                    >
+                      <input
+                        bn-input
+                        type="date"
+                        [id]="'experience-' + i + '-started-on'"
+                        [name]="'experience-' + i + '-started-on'"
+                        [ngModel]="entry.startedOn"
+                        (ngModelChange)="updateExperience(i, { startedOn: $event })"
+                        [readonly]="saving()"
+                        [invalid]="!!errors()['experience-' + i + '-started-on']"
+                      />
+                    </bn-field>
+                    <bn-field
+                      [label]="'profiles.edit.experience.ended' | t"
+                      [optionalText]="'common.optional' | t"
+                      [controlId]="'experience-' + i + '-ended-on'"
+                      [error]="errors()['experience-' + i + '-ended-on']"
+                    >
+                      <input
+                        bn-input
+                        type="date"
+                        [id]="'experience-' + i + '-ended-on'"
+                        [name]="'experience-' + i + '-ended-on'"
+                        [ngModel]="entry.endedOn ?? ''"
+                        (ngModelChange)="updateExperience(i, { endedOn: $event })"
+                        [readonly]="saving()"
+                        [invalid]="!!errors()['experience-' + i + '-ended-on']"
+                      />
+                    </bn-field>
+                  </div>
+                  <button
+                    bn-button
+                    variant="text"
+                    size="sm"
+                    type="button"
+                    (click)="removeExperience(i)"
+                  >
+                    {{ 'profiles.edit.experience.remove' | t: { n: i + 1 } }}
+                  </button>
+                </fieldset>
+              }
+              <div>
+                <button bn-button variant="quiet" size="sm" type="button" (click)="addExperience()">
+                  {{ 'profiles.edit.experience.add' | t }}
+                </button>
+              </div>
+            </fieldset>
+
+            <fieldset bn-form-section [legend]="'profiles.edit.links.legend' | t">
+              @for (link of links(); track $index; let i = $index) {
+                <fieldset
+                  class="profile-edit__entry"
+                  [attr.aria-label]="'profiles.edit.links.entry' | t: { n: i + 1 }"
+                >
+                  <div bn-field-row>
+                    <bn-field
+                      [label]="'profiles.edit.links.label' | t"
+                      [controlId]="'link-' + i + '-label'"
+                      [error]="errors()['link-' + i + '-label']"
+                    >
+                      <input
+                        bn-input
+                        type="text"
+                        maxlength="60"
+                        [id]="'link-' + i + '-label'"
+                        [name]="'link-' + i + '-label'"
+                        [ngModel]="link.label"
+                        (ngModelChange)="updateLink(i, { label: $event })"
+                        [readonly]="saving()"
+                        [invalid]="!!errors()['link-' + i + '-label']"
+                      />
+                    </bn-field>
+                    <bn-field
+                      [label]="'profiles.edit.links.url' | t"
+                      [controlId]="'link-' + i + '-url'"
+                      [error]="errors()['link-' + i + '-url']"
+                    >
+                      <input
+                        bn-input
+                        type="url"
+                        maxlength="2048"
+                        [id]="'link-' + i + '-url'"
+                        [name]="'link-' + i + '-url'"
+                        [ngModel]="link.url"
+                        (ngModelChange)="updateLink(i, { url: $event })"
+                        [readonly]="saving()"
+                        [invalid]="!!errors()['link-' + i + '-url']"
+                      />
+                    </bn-field>
+                  </div>
+                  <button bn-button variant="text" size="sm" type="button" (click)="removeLink(i)">
+                    {{ 'profiles.edit.links.remove' | t: { n: i + 1 } }}
+                  </button>
+                </fieldset>
+              }
+              <div>
+                <button bn-button variant="quiet" size="sm" type="button" (click)="addLink()">
+                  {{ 'profiles.edit.links.add' | t }}
+                </button>
+              </div>
+            </fieldset>
+
+            <div bn-form-actions>
+              <button
+                bn-button
+                variant="primary"
+                type="submit"
+                [busy]="saving()"
+                [disabled]="saving()"
+              >
+                {{ (saving() ? 'profiles.edit.saving' : 'profiles.edit.save') | t }}
+              </button>
+              @if (saving()) {
+                <button bn-button variant="quiet" type="button" disabled>
+                  {{ 'profiles.edit.cancel' | t }}
+                </button>
+              } @else {
+                <a bn-button variant="quiet" [routerLink]="profileLink()">{{
+                  'profiles.edit.cancel' | t
+                }}</a>
+              }
+            </div>
+          </form>
+        </div>
+      }
+    }
+  </div>
+</div>

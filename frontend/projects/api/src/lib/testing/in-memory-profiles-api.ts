@@ -4,6 +4,8 @@ import {
   OnboardingGoals,
   OnboardingProgress,
   OnboardingStep,
+  OwnProfile,
+  ProfileUpdate,
   SkillEntry,
 } from '../models/profiles';
 import { ProfilesApi } from '../services/profiles-api';
@@ -23,6 +25,34 @@ export class InMemoryProfilesApi implements ProfilesApi {
     neighbourhoods: [{ id: 1, name: 'Leslieville', area: 'Downtown Toronto' }],
     skillCatalogue: [{ id: 1, name: 'Figma' }],
   };
+
+  ownProfile: OwnProfile = {
+    id: '01jb0000000000000000000000',
+    name: 'Amara Osei',
+    headline: null,
+    neighbourhoodId: 1,
+    bio: null,
+    photoUrl: null,
+    skills: [],
+    experience: [],
+    links: [],
+    openTo: ['co_founding'],
+    lookingFor: null,
+    building: null,
+    neighbourhoods: [{ id: 1, name: 'Leslieville', area: 'Downtown Toronto' }],
+  };
+
+  getOwnProfile(): Observable<OwnProfile> {
+    return of(this.ownProfile);
+  }
+
+  updateOwnProfile(update: ProfileUpdate): Observable<OwnProfile> {
+    const skills = update.skills.map((s, i) =>
+      'id' in s ? { id: s.id, name: '' } : { id: 2000 + i, name: s.name },
+    );
+    this.ownProfile = { ...this.ownProfile, ...update, skills };
+    return of(this.ownProfile);
+  }
 
   getOnboarding(): Observable<OnboardingProgress> {
     return of(this.progress);

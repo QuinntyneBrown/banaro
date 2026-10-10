@@ -39,3 +39,46 @@ export interface OnboardingProgress {
   neighbourhoods: Neighbourhood[];
   skillCatalogue: SkillRef[];
 }
+
+export interface ExperienceEntry {
+  title: string;
+  organization: string | null;
+  /** ISO date, YYYY-MM-DD. */
+  startedOn: string;
+  endedOn: string | null;
+}
+
+export interface ProfileLink {
+  label: string;
+  url: string;
+}
+
+/** The member's editable profile (L2-007). */
+export interface OwnProfile {
+  id: string;
+  name: string;
+  headline: string | null;
+  neighbourhoodId: number | null;
+  bio: string | null;
+  photoUrl: string | null;
+  skills: SkillRef[];
+  experience: ExperienceEntry[];
+  links: ProfileLink[];
+  openTo: OpenTo[];
+  lookingFor: string | null;
+  building: string | null;
+  neighbourhoods: Neighbourhood[];
+}
+
+export interface ProfileUpdate {
+  name: string;
+  headline: string | null;
+  neighbourhoodId: number | null;
+  bio: string | null;
+  skills: SkillEntry[];
+  experience: ExperienceEntry[];
+  links: ProfileLink[];
+  openTo: OpenTo[];
+  lookingFor: string | null;
+  building: string | null;
+}

@@ -108,5 +108,82 @@
     "designer": "Designer",
     "productManager": "Product manager",
     "other": "Other"
+  },
+  "edit": {
+    "meta": {
+      "title": "Edit profile · Banaro"
+    },
+    "eyebrow": "Your account",
+    "title": "Edit profile",
+    "sub": "This is what builders see when they open your profile.",
+    "loading": "Loading your details…",
+    "loadFailed": {
+      "title": "We couldn't load your profile",
+      "body": "Banaro had trouble reaching the server. Nothing was changed. Try again, or head back to your profile."
+    },
+    "saveFailed": {
+      "title": "We couldn't save your profile",
+      "body": "Banaro had trouble reaching the server. Everything you typed is still here."
+    },
+    "saved": {
+      "title": "Profile saved",
+      "body": "Your changes are live. Builders see them now.",
+      "view": "View your profile"
+    },
+    "tryAgain": "Try again",
+    "backToProfile": "Back to your profile",
+    "name": "Full name",
+    "headline": "Role",
+    "headlineHelp": "What you do, in a few words.",
+    "neighbourhood": "Neighbourhood",
+    "neighbourhoodHelp": "Shown to builders. We use it to work out distances; your address is never shared.",
+    "bio": "Bio",
+    "bioHelp": "Tell builders who you are and what you care about.",
+    "skills": "Skills",
+    "yourSkills": "Your skills",
+    "skillsHelp": "Up to 12 skills. Press Enter to add one.",
+    "skillPlaceholder": "Add a skill, such as Laravel",
+    "removeSkill": "Remove skill: {name}",
+    "add": "Add",
+    "openToLegend": "Open to",
+    "openTo": {
+      "coFounding": {
+        "title": "Co-founding",
+        "text": "Looking for someone to build a company with."
+      },
+      "advising": {
+        "title": "Advising",
+        "text": "Happy to give an hour of advice to early teams."
+      },
+      "contributing": {
+        "title": "Contributing",
+        "text": "Open to helping on a project part time."
+      }
+    },
+    "lookingFor": "What I am looking for",
+    "lookingForHelp": "Shown on your profile and used for your Monday matches.",
+    "building": "What are you building?",
+    "buildingHelp": "One or two sentences. It appears on your profile.",
+    "experience": {
+      "legend": "Experience",
+      "entry": "Role {n}",
+      "title": "Role title",
+      "organization": "Organisation",
+      "started": "Started",
+      "ended": "Ended",
+      "remove": "Remove role {n}",
+      "add": "Add a role"
+    },
+    "links": {
+      "legend": "Links",
+      "entry": "Link {n}",
+      "label": "Link name",
+      "url": "Web address",
+      "remove": "Remove link {n}",
+      "add": "Add a link"
+    },
+    "save": "Save changes",
+    "saving": "Saving…",
+    "cancel": "Cancel"
   }
 }
