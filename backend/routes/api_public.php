@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Identity\JoinController;
+use App\Http\Controllers\Api\V1\Identity\SessionController;
 use App\Http\Controllers\Api\V1\PublicSite\ContactMessageController;
 use App\Http\Controllers\Api\V1\UserExperience\CatalogueController;
 use Illuminate\Support\Facades\Route;
@@ -24,3 +25,7 @@ Route::post('join', [JoinController::class, 'store'])
 Route::post('contact-messages', [ContactMessageController::class, 'store'])
     ->middleware('throttle:contact')
     ->name('contact-messages.store');
+
+// L2-003: visitors read their (empty) session and sign in.
+Route::get('session', [SessionController::class, 'show'])->name('session.show');
+Route::post('session', [SessionController::class, 'store'])->name('session.store');

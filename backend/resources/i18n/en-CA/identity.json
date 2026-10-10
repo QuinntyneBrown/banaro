@@ -40,5 +40,11 @@
       "nothingTitle": "Nothing yet?",
       "nothingBody": "Look in your spam folder, or wait a minute. The link works for 24 hours."
     }
+  },
+  "signIn": {
+    "errors": {
+      "mismatch": "Those details don't match",
+      "tooMany": "Too many sign-in attempts. Try again in {minutes} minutes."
+    }
   }
 }
