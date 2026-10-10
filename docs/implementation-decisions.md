@@ -28,3 +28,5 @@ a different answer becomes a requirement or design change and then a code change
 | D-013 | about-and-contact | Message length error copy | "Use at least 10 characters" and "Use 2,000 characters or fewer" | 2 |
 | D-014 | about-and-contact | Team inbox | `BANARO_CONTACT_INBOX`, default `team@banaro.ca` | 3 |
 | D-015 | about-and-contact | Store contact messages in the database | Not stored; they live only in the queued job and the team inbox | 3 |
+| D-016 | handle-offline-and-maintenance | The maintenance page needs text, but the catalogue endpoint would answer 503 | `/api/v1/i18n/*` is exempt from maintenance mode, like `/health/*` | 3 |
+| D-017 | handle-offline-and-maintenance | Laravel 11 does not record when maintenance began | `expectedBackAt` is the response time plus `--retry`, the moment `Retry-After` names | 3 |

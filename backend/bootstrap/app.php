@@ -4,10 +4,12 @@ use App\Http\Controllers\Health\LivenessController;
 use App\Http\Controllers\Health\ReadinessController;
 use App\Http\Middleware\AssignRequestId;
 use App\Http\Middleware\LogRequest;
+use App\Http\Middleware\RespondDuringMaintenance;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
@@ -32,6 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         // LogRequest stays outermost so it logs the final status after exception handling.
         $middleware->prepend([LogRequest::class, AssignRequestId::class]);
+        $middleware->replace(PreventRequestsDuringMaintenance::class, RespondDuringMaintenance::class);
         $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions) {
