@@ -24,3 +24,8 @@
   fill: var(--color-warning-icon);
   stroke: none;
 }
+
+/* L2-049: the brand link is a full-height touch target. */
+:host {
+  min-height: var(--target-comfortable);
+}

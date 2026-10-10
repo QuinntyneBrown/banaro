@@ -164,3 +164,10 @@
     transform: none;
   }
 }
+
+/* L2-049: touch targets are at least 44 × 44 px below 576 px, including small buttons. */
+@media (max-width: 35.99rem) {
+  :host(.btn--sm) {
+    min-height: var(--target-comfortable);
+  }
+}

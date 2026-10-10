@@ -33,6 +33,14 @@ export class HomePage {
     return this.areas.allTextContents();
   }
 
+  /** Number of distinct columns the four area cards occupy. */
+  async areaColumns(): Promise<number> {
+    const lefts = await this.page.locator('.areas > li').evaluateAll((items) =>
+      items.map((item) => Math.round(item.getBoundingClientRect().left)),
+    );
+    return new Set(lefts).size;
+  }
+
   footerLink(name: string): Locator {
     return this.footer.getByRole('link', { name });
   }
