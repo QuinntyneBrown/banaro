@@ -23,12 +23,11 @@ class BuilderProfileResource extends PublicBuilderProfileResource
         $visibility = app(ProfileVisibilityService::class);
         $profile = parent::toArray($request);
 
-        // Say hello, report and block arrive with messaging (L2-026), reporting (L2-031) and blocking
-        // (L2-032); until then only "Edit profile" on the own profile is offered (D-048).
+        // Say hello and report arrive with messaging (L2-026) and reporting (L2-031) (D-048).
         $profile['actions'] = [
             'say_hello' => false,
             'report' => false,
-            'block' => false,
+            'block' => ! $view->isOwn,
             'edit' => $view->isOwn,
         ];
         if (! $view->isOwn) {

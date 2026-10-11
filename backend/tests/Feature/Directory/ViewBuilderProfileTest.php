@@ -117,7 +117,8 @@ class ViewBuilderProfileTest extends TestCase
         $this->assertSame(['co_founding', 'advising'], $profile['open_to']);
         $this->assertTrue($profile['online']);
         $this->assertSame('2026-03-14', $profile['member_since']);
-        $this->assertSame(['say_hello' => false, 'report' => false, 'block' => false, 'edit' => false], $profile['actions']);
+        // Blocking exists (L2-032); messaging and reporting come later (D-048).
+        $this->assertSame(['say_hello' => false, 'report' => false, 'block' => true, 'edit' => false], $profile['actions']);
         $this->assertArrayNotHasKey('email', $profile);
     }
 

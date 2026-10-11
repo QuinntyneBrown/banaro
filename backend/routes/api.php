@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Profiles\OnboardingController;
 use App\Http\Controllers\Api\V1\Profiles\OwnProfileController;
 use App\Http\Controllers\Api\V1\Profiles\ProfilePhotoController;
 use App\Http\Controllers\Api\V1\Settings\PrivacyController;
+use App\Http\Controllers\Api\V1\TrustAndSafety\BlockController;
 use App\Http\Middleware\RequireCompleteProfile;
 use App\Http\Middleware\RequireVerifiedEmail;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('me/onboarding/skills', [OnboardingController::class, 'updateSkills'])->name('onboarding.skills');
         Route::put('me/onboarding/goals', [OnboardingController::class, 'updateGoals'])->name('onboarding.goals');
         Route::post('me/onboarding/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');
+
+        // L2-032: the member's own blocks.
+        Route::get('blocks', [BlockController::class, 'index'])->name('blocks.index');
+        Route::put('blocks/{builder}', [BlockController::class, 'store'])->where('builder', '[0-9a-z]{26}')->name('blocks.store');
+        Route::delete('blocks/{builder}', [BlockController::class, 'destroy'])->where('builder', '[0-9a-z]{26}')->name('blocks.destroy');
 
         // L2-036: the member's own privacy settings.
         Route::get('settings/privacy', [PrivacyController::class, 'show'])->name('settings.privacy.show');

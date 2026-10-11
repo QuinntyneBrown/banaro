@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\Directory\DistanceService;
 use App\Services\Matching\MatchScoreService;
 use App\Services\Settings\ProfileVisibilityService;
+use App\Services\TrustAndSafety\BlockService;
 
 /**
  * One builder's profile as one viewer may see it (L2-011). A builder that does not exist, has not
@@ -20,6 +21,7 @@ class ViewBuilderProfile
         private readonly DistanceService $distances,
         private readonly MatchScoreService $scores,
         private readonly ProfileVisibilityService $visibility,
+        private readonly BlockService $blocks,
     ) {}
 
     public function handle(string $publicId, ?User $user): BuilderProfileView
@@ -36,6 +38,11 @@ class ViewBuilderProfile
         $isOwn = $viewer !== null && $viewer->id === $builder->id;
         // Visitors and unfinished accounts see only profiles open to everyone (L2-036 criterion 2).
         if ($viewer === null && $builder->privacy->profile_visibility !== ProfileAudience::Everyone) {
+            abort(404);
+        }
+
+        // A block either way answers the same 404 (L2-011 criterion 3, L2-032 criterion 4).
+        if ($viewer !== null && ! $isOwn && $this->blocks->isBlockedEitherWay($viewer->user_id, $builder->user_id)) {
             abort(404);
         }
 

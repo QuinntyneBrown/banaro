@@ -9,6 +9,7 @@ use App\Services\Directory\FacetCounter;
 use App\Services\Directory\SearchNormalizer;
 use App\Services\Matching\MatchScoreService;
 use App\Services\Settings\ProfileVisibilityService;
+use App\Services\TrustAndSafety\BlockService;
 use Illuminate\Database\Eloquent\Builder as Query;
 use Illuminate\Database\Query\JoinClause;
 
@@ -25,6 +26,7 @@ class SearchDirectory
         private readonly MatchScoreService $scores,
         private readonly FacetCounter $facets,
         private readonly ProfileVisibilityService $visibility,
+        private readonly BlockService $blocks,
     ) {}
 
     public function handle(
@@ -73,6 +75,8 @@ class SearchDirectory
         $this->visibility->applyScope($query, signedIn: $viewer !== null);
         if ($viewer !== null) {
             $query->where('builders.id', '!=', $viewer->id);
+            // Blocks hide both members from each other, in results and counts alike (L2-032).
+            $this->blocks->applyScope($query, $viewer->user_id, 'builders.user_id');
             $query->leftJoin('neighbourhood_distances as nd', function (JoinClause $join) use ($viewer) {
                 $join->on('nd.to_id', '=', 'builders.neighbourhood_id')
                     ->where('nd.from_id', '=', $viewer->neighbourhood_id);
