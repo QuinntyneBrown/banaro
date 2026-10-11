@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Directory\BuilderDirectoryController;
+use App\Http\Controllers\Api\V1\Directory\BuilderProfileController;
 use App\Http\Controllers\Api\V1\Identity\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Identity\JoinController;
 use App\Http\Controllers\Api\V1\Identity\PasswordResetController;
@@ -51,6 +52,10 @@ Route::post('reset-password', [PasswordResetController::class, 'store'])->name('
 // L2-009 criterion 6: visitors browse the directory with a reduced card; a signed-in member gets the
 // member card from the same route.
 Route::get('builders', [BuilderDirectoryController::class, 'index'])->name('builders.index');
+// L2-011, L2-036 criterion 2: a visitor may open a profile that is open to everyone.
+Route::get('builders/{builder}', [BuilderProfileController::class, 'show'])
+    ->where('builder', '[0-9a-z]{26}')
+    ->name('builders.show');
 
 // L2-008, L2-009 criterion 6: visitors see builders' photos in the directory. Only ready photos are
 // served.

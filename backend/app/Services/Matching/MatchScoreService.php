@@ -18,9 +18,13 @@ class MatchScoreService
 {
     public function __construct(private readonly DistanceService $distances) {}
 
-    public function scoreFor(Builder $viewer, Builder $candidate): MatchScore
+    /**
+     * `$shownKm` is the distance the viewer may see (rounded for "City only", L2-036); without it the
+     * exact distance between the neighbourhoods is used.
+     */
+    public function scoreFor(Builder $viewer, Builder $candidate, ?float $shownKm = null): MatchScore
     {
-        $km = $this->distances->between($viewer->neighbourhood_id, $candidate->neighbourhood_id);
+        $km = $shownKm ?? $this->distances->between($viewer->neighbourhood_id, $candidate->neighbourhood_id);
         $distance = $km === null ? 0.0 : max(0.0, 1 - $km / $this->maxKm());
         $activity = $this->activityFactor($candidate->last_active_at);
 

@@ -44,6 +44,12 @@ class ProfileVisibilityService
         return "(CASE WHEN ps.location_precision = '{$city}' THEN ROUND({$km} / 5.0) * 5 ELSE {$km} END)";
     }
 
+    /** The distance others see: exact, or rounded to the nearest 5 km for "City only". */
+    public function shownDistance(Builder $builder, float $km): float
+    {
+        return $this->isCityOnly($builder) ? round($km / 5) * 5.0 : $km;
+    }
+
     public function isCityOnly(Builder $builder): bool
     {
         return $builder->privacy->location_precision === LocationPrecision::CityOnly;
