@@ -41,11 +41,12 @@ test.describe('session expiry', () => {
     await expect(dialog.password).toBeFocused();
     await expect(dialog.email).toHaveValue(member.email);
     await expect(dialog.email).toHaveAttribute('readonly', '');
-    await expect(edit.headline).toHaveValue('Kept while signed out');
 
     await dialog.signInWith(member.password);
 
+    // The page sits behind the modal (aria-hidden) while it is open; the input is checked after.
     await expect(dialog.dialog).toBeHidden();
+    await expect(edit.headline).toHaveValue('Kept while signed out');
     await expect(edit.saved).toBeVisible();
     await page.reload();
     await expect(edit.headline).toHaveValue('Kept while signed out');

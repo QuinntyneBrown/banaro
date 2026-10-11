@@ -54,10 +54,11 @@ export class SessionExpiredDialog {
       next: () => this.ref.close('recovered'),
       error: (error: unknown) => {
         const failure = toApiError(error);
-        this.password.set('');
         if (failure.kind === 'rejected' && failure.code === 'invalid_credentials') {
+          this.password.set('');
           this.state.set('invalid');
         } else if (failure.kind === 'rate-limited') {
+          this.password.set('');
           this.alert.set({
             title: this.i18n.t('identity.signIn.errors.tooMany', {
               minutes: retryAfterMinutes(failure.retryAfterSeconds),
