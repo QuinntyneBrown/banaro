@@ -26,6 +26,24 @@ export class SettingsPage {
     this.tryAgain = main.getByRole('button', { name: 'Try again' });
   }
 
+  async openBlocked(): Promise<void> {
+    await this.page.goto('/settings/blocked');
+    await waitForApp(this.page);
+  }
+
+  /** The blocked list's rows. */
+  get blockedRows(): Locator {
+    return this.page.getByRole('main').getByRole('list', { name: 'Blocked builders' }).getByRole('listitem');
+  }
+
+  get noneBlocked(): Locator {
+    return this.page.getByRole('main').locator('.empty__title');
+  }
+
+  unblock(name: string): Locator {
+    return this.page.getByRole('main').getByRole('button', { name: `Unblock ${name}` });
+  }
+
   async openPrivacy(): Promise<void> {
     await this.page.goto('/settings/privacy');
     await waitForApp(this.page);

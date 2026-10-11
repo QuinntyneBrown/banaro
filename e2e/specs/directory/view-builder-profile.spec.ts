@@ -11,6 +11,7 @@
 import { expect, type Page, test } from '@playwright/test';
 import { resetRateLimits, sql } from '../../fixtures/backend';
 import { type BuilderMember, createBuilder } from '../../fixtures/builders';
+import { AccountMenu } from '../../pages/account-menu';
 import { BuilderProfilePage } from '../../pages/builder-profile.page';
 import { DirectoryPage } from '../../pages/directory.page';
 import { SignInPage } from '../../pages/sign-in.page';
@@ -121,5 +122,16 @@ test.describe('view a builder profile', () => {
     await expect(profile.editProfile).toHaveAttribute('href', '/profile/edit');
     await expect(profile.whoCanSee).toHaveAttribute('href', '/settings/privacy');
     await expect(profile.match).toHaveCount(0);
+  });
+
+  test('"View profile" in the account menu opens the own profile', async ({ page }) => {
+    const amara = createBuilder({ name: 'Amara Osei' });
+    await signedIn(page, amara);
+    const profile = new BuilderProfilePage(page);
+
+    await new AccountMenu(page).go('View profile');
+
+    await expect(page).toHaveURL(new RegExp(`/builders/${amara.builderId}$`));
+    await expect(profile.editProfile).toBeVisible();
   });
 });

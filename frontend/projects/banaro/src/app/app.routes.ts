@@ -53,6 +53,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/settings/privacy/privacy-settings').then((m) => m.PrivacySettingsSection),
       },
+      {
+        path: 'blocked',
+        loadComponent: () =>
+          import('./pages/settings/blocked/blocked-builders').then((m) => m.BlockedBuildersSection),
+      },
     ],
   },
   {

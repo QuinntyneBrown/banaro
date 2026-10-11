@@ -6,7 +6,8 @@
     "label": "Settings",
     "account": "Account",
     "privacy": "Privacy",
-    "email": "E-mail"
+    "email": "E-mail",
+    "blocked": "Blocked builders"
   },
   "loading": "Loading settings",
   "loadFailed": {
@@ -62,6 +63,22 @@
     "listInAttendees": {
       "title": "List me as going to events",
       "text": "Builders see your name on the attendee list of events you RSVP to."
+    }
+  },
+  "blocked": {
+    "meta": {
+      "title": "Blocked builders · Banaro"
+    },
+    "title": "Blocked builders",
+    "sub": "People you block can't see you or message you, and you won't see them.",
+    "since": "Blocked {date}",
+    "unblock": "Unblock",
+    "unblockNamed": "Unblock {name}",
+    "done": "You unblocked {name}",
+    "failed": "We couldn't unblock {name}",
+    "none": {
+      "title": "You haven't blocked anyone",
+      "body": "Builders you block appear here, and you can unblock them any time."
     }
   }
 }

@@ -21,6 +21,7 @@ export class BuilderProfilePage {
   readonly whoCanSee: Locator;
   readonly sayHello: Locator;
   readonly more: Locator;
+  readonly moreMenu: Locator;
   readonly notFoundTitle: Locator;
   readonly browseBuilders: Locator;
   readonly errorTitle: Locator;
@@ -47,6 +48,7 @@ export class BuilderProfilePage {
     this.whoCanSee = main.getByRole('link', { name: 'Who can see this' });
     this.sayHello = main.getByRole('button', { name: 'Say hello' }).or(main.getByRole('link', { name: 'Say hello' }));
     this.more = main.getByRole('button', { name: 'More' });
+    this.moreMenu = page.getByRole('menu', { name: 'More actions' });
     this.notFoundTitle = main.locator('.error-page__title');
     this.browseBuilders = main.getByRole('link', { name: 'Browse builders' });
     this.errorTitle = main.locator('.empty__title');
@@ -57,6 +59,12 @@ export class BuilderProfilePage {
   async open(id: string): Promise<void> {
     await this.page.goto(`/builders/${id}`);
     await waitForApp(this.page);
+  }
+
+  /** Opens "More" and chooses "Block {first name}". */
+  async block(firstName: string): Promise<void> {
+    await this.more.click();
+    await this.moreMenu.getByRole('menuitem', { name: `Block ${firstName}` }).click();
   }
 
   /** The value of one "At a glance" fact. */

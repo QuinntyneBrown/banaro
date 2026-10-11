@@ -134,6 +134,9 @@
       "title": "We couldn't load this profile",
       "body": "Banaro had trouble reaching the server. Try again, or go back to the directory.",
       "back": "Back to builders"
-    }
+    },
+    "more": "More",
+    "moreActions": "More actions",
+    "block": "Block {name}"
   }
 }

@@ -36,7 +36,7 @@
     @if (member(); as m) {
       <bn-menu-header [title]="m.name" />
     }
-    <a bn-menu-item routerLink="/welcome">
+    <a bn-menu-item [routerLink]="profileLink()">
       <svg slot="icon" class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="8.5" r="3.5" />
         <path d="M5 20c.8-4 3.6-6 7-6s6.2 2 7 6" />

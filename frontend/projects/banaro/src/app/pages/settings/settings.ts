@@ -43,5 +43,6 @@ export class SettingsPage {
 
   protected readonly sections = computed<NavItem[]>(() => [
     { label: this.i18n.t('settings.nav.privacy'), link: '/settings/privacy' },
+    { label: this.i18n.t('settings.nav.blocked'), link: '/settings/blocked' },
   ]);
 }

@@ -12,7 +12,8 @@ import {
   untracked,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { CdkMenuTrigger } from '@angular/cdk/menu';
+import { Router, RouterLink } from '@angular/router';
 import {
   BuilderProfile,
   DIRECTORY_API,
@@ -27,15 +28,21 @@ import {
   BreadcrumbItem,
   Button,
   DescriptionItem,
+  DialogService,
   DescriptionList,
   EmptyState,
   ErrorPage,
   initialsOf,
+  Menu,
+  MenuItem,
+  menuPositions,
   ProfileHeader,
   Skeleton,
   Tag,
+  ToastService,
 } from 'components';
 import { Subscription, timer } from 'rxjs';
+import { BlockBuilderData, BlockBuilderDialog } from '../../dialogs/block-builder/block-builder';
 import { SeoService } from '../../shared/seo.service';
 
 type State = 'loading' | 'ready' | 'not-found' | 'error';
@@ -54,10 +61,13 @@ function camel(value: string): string {
   imports: [
     Breadcrumb,
     Button,
+    CdkMenuTrigger,
     DescriptionItem,
     DescriptionList,
     EmptyState,
     ErrorPage,
+    Menu,
+    MenuItem,
     ProfileHeader,
     RouterLink,
     Skeleton,
@@ -75,6 +85,11 @@ export class BuilderProfilePage {
   private readonly session = inject(SessionStore);
   private readonly destroyRef = inject(DestroyRef);
   private readonly response = inject(RESPONSE_INIT, { optional: true });
+  private readonly dialogs = inject(DialogService);
+  private readonly toasts = inject(ToastService);
+  private readonly router = inject(Router);
+
+  protected readonly morePositions = menuPositions('end');
 
   /** The builder's public id, from the route. */
   readonly id = input.required<string>();
@@ -174,6 +189,29 @@ export class BuilderProfilePage {
       ? format.format(new Date(`${ended}T12:00:00`))
       : this.i18n.t('directory.profile.now');
     return `${from} – ${to}`;
+  }
+
+  /** Blocks from "More": on success the profile is gone for both, so the member returns to the directory (D-049). */
+  protected block(profile: BuilderProfile): void {
+    const firstName = this.firstName();
+    const ref = this.dialogs.open<BlockBuilderDialog, BlockBuilderData, boolean>(
+      BlockBuilderDialog,
+      {
+        data: { builderId: profile.id, name: profile.name, firstName },
+        size: 'sm',
+        described: true,
+        autoFocus: '.dialog__footer [variant=quiet]',
+      },
+    );
+    ref.closed.subscribe((blocked) => {
+      if (!blocked) return;
+      this.toasts.show({
+        variant: 'success',
+        title: this.i18n.t('trustAndSafety.block.done.title', { name: firstName }),
+        body: this.i18n.t('trustAndSafety.block.done.body'),
+      });
+      void this.router.navigateByUrl('/builders');
+    });
   }
 
   protected retry(): void {

@@ -73,7 +73,30 @@
               'directory.profile.whoCanSee' | t
             }}</a>
           }
+          @if (p.actions?.block) {
+            <button
+              slot="actions"
+              bn-button
+              variant="quiet"
+              type="button"
+              [cdkMenuTriggerFor]="more"
+              [cdkMenuPosition]="morePositions"
+            >
+              {{ 'directory.profile.more' | t }}
+            </button>
+          }
         </header>
+        <ng-template #more>
+          <bn-menu [label]="'directory.profile.moreActions' | t">
+            <button bn-menu-item danger (triggered)="block(p)">
+              <svg slot="icon" class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="8.5" />
+                <path d="m6 6 12 12" />
+              </svg>
+              {{ 'directory.profile.block' | t: { name: firstName() } }}
+            </button>
+          </bn-menu>
+        </ng-template>
 
         <div class="two-col">
           <div class="stack stack--lg">

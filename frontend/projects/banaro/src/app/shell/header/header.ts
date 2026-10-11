@@ -42,6 +42,11 @@ export class Header {
   protected readonly member = this.session.member;
   protected readonly initials = computed(() => initialsOf(this.member()?.name ?? ''));
   protected readonly firstName = computed(() => this.member()?.name.split(/\s+/)[0] ?? '');
+  /** The member's own profile, or onboarding while there is none yet (L2-011). */
+  protected readonly profileLink = computed(() => {
+    const id = this.member()?.builderId;
+    return id ? ['/builders', id] : ['/welcome'];
+  });
 
   protected readonly accountMenuPositions = menuPositions('end');
 
