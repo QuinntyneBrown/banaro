@@ -16,7 +16,8 @@
   "count": {
     "showing": "Showing",
     "of": "of",
-    "noun": "{count, plural, one {builder} other {builders}}"
+    "noun": "{count, plural, one {builder} other {builders}}",
+    "none": "builders match"
   },
   "sort": {
     "label": "Sort by",
@@ -57,5 +58,37 @@
     "body": "Banaro had trouble reaching the server. Nothing you've set up is lost. Try again, or open your matches while we sort it out.",
     "tryAgain": "Try again",
     "matches": "See your matches"
+  },
+  "filters": {
+    "title": "Filters",
+    "close": "Close filters",
+    "apply": "Apply",
+    "clearAll": "Clear all",
+    "active": "Active filters",
+    "remove": "Remove filter: {label}",
+    "role": {
+      "legend": "Role",
+      "founder": "Founders",
+      "engineer": "Engineers",
+      "designer": "Designers",
+      "productManager": "Product managers",
+      "other": "Other"
+    },
+    "openTo": "Open to",
+    "area": "Neighbourhood or city",
+    "distance": {
+      "legend": "Distance",
+      "km": "{km} km",
+      "any": "Anywhere in the GTA",
+      "within": "Within {km} km"
+    },
+    "skills": "Popular skills"
+  },
+  "noResults": {
+    "title": "No builders match those filters",
+    "body": "Clear a filter or two and more people will appear.",
+    "clear": "Clear all filters",
+    "within": "Search within {km} km",
+    "anywhere": "Search anywhere in the GTA"
   }
 }
