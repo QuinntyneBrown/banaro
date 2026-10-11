@@ -14,4 +14,7 @@ return [
     // Team inbox that receives contact messages (L2-040).
     'contact_inbox' => env('BANARO_CONTACT_INBOX', 'team@banaro.ca'),
 
+    // Media scanner adapter (ADR-0004). Only "fake" exists; readiness fails in production with it.
+    'media_scanner' => env('BANARO_MEDIA_SCANNER', 'fake'),
+
 ];

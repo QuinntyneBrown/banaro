@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\Identity\SessionController;
 use App\Http\Controllers\Api\V1\Profiles\OnboardingController;
 use App\Http\Controllers\Api\V1\Profiles\OwnProfileController;
+use App\Http\Controllers\Api\V1\Profiles\ProfilePhotoController;
 use App\Http\Middleware\RequireCompleteProfile;
 use App\Http\Middleware\RequireVerifiedEmail;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,13 @@ Route::middleware('auth:sanctum')->group(function () {
             // L2-007: the member's own profile.
             Route::get('me/profile', [OwnProfileController::class, 'show'])->name('profile.show');
             Route::put('me/profile', [OwnProfileController::class, 'update'])->name('profile.update');
+
+            // L2-008: the member's own photo.
+            Route::post('me/photo', [ProfilePhotoController::class, 'store'])
+                ->middleware('throttle:photo-upload')
+                ->name('photo.store');
+            Route::get('me/photo/{photo}', [ProfilePhotoController::class, 'show'])->whereUuid('photo')->name('photo.show');
+            Route::delete('me/photo', [ProfilePhotoController::class, 'destroy'])->name('photo.destroy');
         });
     });
 });

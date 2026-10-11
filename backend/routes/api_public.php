@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Identity\JoinController;
 use App\Http\Controllers\Api\V1\Identity\PasswordResetController;
 use App\Http\Controllers\Api\V1\Identity\SessionController;
 use App\Http\Controllers\Api\V1\Identity\VerificationNotificationController;
+use App\Http\Controllers\Api\V1\Profiles\ProfilePhotoController;
 use App\Http\Controllers\Api\V1\PublicSite\ContactMessageController;
 use App\Http\Controllers\Api\V1\UserExperience\CatalogueController;
 use Illuminate\Support\Facades\Route;
@@ -45,3 +46,7 @@ Route::post('forgot-password', [PasswordResetController::class, 'requestLink'])
     ->name('password-reset.request');
 Route::post('reset-password/check', [PasswordResetController::class, 'check'])->name('password-reset.check');
 Route::post('reset-password', [PasswordResetController::class, 'store'])->name('password-reset.store');
+
+// L2-008, L2-009 criterion 6: visitors see builders' photos in the directory. Only ready photos are
+// served.
+Route::get('photos/{photo}', [ProfilePhotoController::class, 'serve'])->whereUuid('photo')->name('photos.serve');

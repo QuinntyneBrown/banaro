@@ -64,6 +64,12 @@ class Builder extends Model
         return $this->hasMany(ProfileLink::class)->orderBy('position');
     }
 
+    /** The current, ready photo (L2-008). @return BelongsTo<ProfilePhoto, $this> */
+    public function photo(): BelongsTo
+    {
+        return $this->belongsTo(ProfilePhoto::class);
+    }
+
     public function isComplete(): bool
     {
         return $this->onboarding_completed_at !== null;

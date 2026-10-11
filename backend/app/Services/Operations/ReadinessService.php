@@ -11,9 +11,9 @@ class ReadinessService
     /** @var list<HealthCheck> */
     private array $checks;
 
-    public function __construct(DatabaseCheck $database, CacheCheck $cache, QueueCheck $queue)
+    public function __construct(DatabaseCheck $database, CacheCheck $cache, QueueCheck $queue, MediaScannerCheck $scanner)
     {
-        $this->checks = [$database, $cache, $queue];
+        $this->checks = [$database, $cache, $queue, $scanner];
     }
 
     /**

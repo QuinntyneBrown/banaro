@@ -22,7 +22,7 @@ class OwnProfileResource extends JsonResource
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
-        $builder = $this->resource->loadMissing(['skills', 'experience', 'links']);
+        $builder = $this->resource->loadMissing(['skills', 'experience', 'links', 'photo']);
 
         return [
             'id' => $builder->public_id,
@@ -30,7 +30,7 @@ class OwnProfileResource extends JsonResource
             'headline' => $builder->headline,
             'neighbourhood_id' => $builder->neighbourhood_id,
             'bio' => $builder->bio,
-            'photo_url' => null,
+            'photo_url' => $builder->photo?->url(),
             'skills' => $builder->skills->map(fn (Skill $s) => ['id' => $s->id, 'name' => $s->name])->values(),
             'experience' => $builder->experience->map(fn (ExperienceEntry $e) => [
                 'title' => $e->title,

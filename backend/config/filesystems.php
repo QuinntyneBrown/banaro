@@ -38,6 +38,14 @@ return [
             'report' => false,
         ],
 
+        // Private media storage (ADR-0004): random names, never under public/, streamed by the API.
+        'media' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/media'),
+            'throw' => true,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

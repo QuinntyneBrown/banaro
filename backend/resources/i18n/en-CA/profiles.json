@@ -18,7 +18,12 @@
     "linkUrl": "Enter a web address that starts with https://, for example https://harvest.example.ca",
     "openToRequired": "Choose at least one way you are open to working with others.",
     "lookingForMax": "Use 400 characters or fewer",
-    "nameRequired": "Enter your name so builders know who you are."
+    "nameRequired": "Enter your name so builders know who you are.",
+    "photoType": "Choose a JPEG, PNG or WebP image.",
+    "photoMismatch": "That file's name doesn't match what's inside it. Choose a JPEG, PNG or WebP image.",
+    "photoTooSmall": "Choose an image at least 480 × 480 pixels.",
+    "photoTooLarge": "Choose an image of 5 MB or less.",
+    "photoCrop": "Choose a square inside the image, at least 480 pixels wide."
   },
   "onboarding": {
     "errors": {
