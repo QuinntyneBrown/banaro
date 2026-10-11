@@ -67,6 +67,7 @@ class ReferenceDataSeeder extends Seeder
             ['slug'],
             ['name', 'area', 'latitude', 'longitude', 'updated_at'],
         );
+        $this->seedDistances();
 
         DB::table('skills')->upsert(
             array_map(fn (string $name, int $i) => [
@@ -81,5 +82,30 @@ class ReferenceDataSeeder extends Seeder
             ['normalized_name'],
             ['name', 'slug', 'is_catalogue', 'catalogue_position', 'updated_at'],
         );
+    }
+
+    /** Great-circle kilometres between every pair of centroids, both directions (L2-009). */
+    private function seedDistances(): void
+    {
+        $hoods = DB::table('neighbourhoods')->get(['id', 'latitude', 'longitude']);
+        $rows = [];
+        foreach ($hoods as $from) {
+            foreach ($hoods as $to) {
+                $rows[] = ['from_id' => $from->id, 'to_id' => $to->id, 'km' => round($this->km($from, $to), 2)];
+            }
+        }
+        DB::table('neighbourhood_distances')->upsert($rows, ['from_id', 'to_id'], ['km']);
+    }
+
+    private function km(object $a, object $b): float
+    {
+        $earth = 6371.0;
+        $lat1 = deg2rad((float) $a->latitude);
+        $lat2 = deg2rad((float) $b->latitude);
+        $dLat = $lat2 - $lat1;
+        $dLng = deg2rad((float) $b->longitude - (float) $a->longitude);
+        $h = sin($dLat / 2) ** 2 + cos($lat1) * cos($lat2) * sin($dLng / 2) ** 2;
+
+        return 2 * $earth * asin(min(1.0, sqrt($h)));
     }
 }

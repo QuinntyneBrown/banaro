@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Directory\BuilderDirectoryController;
 use App\Http\Controllers\Api\V1\Identity\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Identity\JoinController;
 use App\Http\Controllers\Api\V1\Identity\PasswordResetController;
@@ -46,6 +47,10 @@ Route::post('forgot-password', [PasswordResetController::class, 'requestLink'])
     ->name('password-reset.request');
 Route::post('reset-password/check', [PasswordResetController::class, 'check'])->name('password-reset.check');
 Route::post('reset-password', [PasswordResetController::class, 'store'])->name('password-reset.store');
+
+// L2-009 criterion 6: visitors browse the directory with a reduced card; a signed-in member gets the
+// member card from the same route.
+Route::get('builders', [BuilderDirectoryController::class, 'index'])->name('builders.index');
 
 // L2-008, L2-009 criterion 6: visitors see builders' photos in the directory. Only ready photos are
 // served.

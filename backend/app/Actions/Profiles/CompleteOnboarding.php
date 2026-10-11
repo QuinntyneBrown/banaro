@@ -2,6 +2,7 @@
 
 namespace App\Actions\Profiles;
 
+use App\Events\ProfileUpdated;
 use App\Models\Builder;
 use App\Models\User;
 use App\Services\Profiles\OnboardingService;
@@ -32,6 +33,8 @@ class CompleteOnboarding
 
         if (! $builder->isComplete()) {
             $builder->update(['onboarding_completed_at' => Carbon::now()]);
+            // The builder joins the directory, findable by name and skills (L2-009).
+            ProfileUpdated::dispatch($builder->id);
         }
 
         return $builder->load('skills');

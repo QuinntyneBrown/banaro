@@ -22,6 +22,7 @@ class Builder extends Model
             'open_to' => 'array',
             'onboarding_saved_steps' => 'array',
             'onboarding_completed_at' => 'datetime',
+            'last_active_at' => 'datetime',
         ];
     }
 
