@@ -1,0 +1,145 @@
+<form bn-form variant="card" novalidate [busy]="busy()" (ngSubmit)="submit()">
+  @if (summaryErrors().length) {
+    <bn-form-summary [heading]="'identity.errors.summary' | t" [errors]="summaryErrors()" />
+  }
+  <ng-content />
+
+  <fieldset bn-form-section [legend]="'projects.form.basics' | t">
+    <bn-field
+      [label]="'projects.form.name' | t"
+      controlId="project-name"
+      [help]="'projects.form.nameHelp' | t"
+      [error]="errors()['project-name']"
+    >
+      <input
+        bn-input
+        id="project-name"
+        name="project-name"
+        type="text"
+        maxlength="80"
+        [ngModel]="name()"
+        (ngModelChange)="name.set($event)"
+        [readonly]="busy()"
+        [invalid]="!!errors()['project-name']"
+        [attr.aria-describedby]="describedBy('project-name', errors()['project-name'], true)"
+      />
+    </bn-field>
+    <bn-field
+      [label]="'projects.form.summary' | t"
+      controlId="project-summary"
+      [help]="'projects.form.summaryHelp' | t"
+      [error]="errors()['project-summary']"
+    >
+      <input
+        bn-input
+        id="project-summary"
+        name="project-summary"
+        type="text"
+        maxlength="140"
+        [ngModel]="summary()"
+        (ngModelChange)="summary.set($event)"
+        [readonly]="busy()"
+        [invalid]="!!errors()['project-summary']"
+        [attr.aria-describedby]="describedBy('project-summary', errors()['project-summary'], true)"
+      />
+    </bn-field>
+    <bn-field
+      [label]="'projects.form.description' | t"
+      [optionalText]="'common.optional' | t"
+      controlId="project-description"
+      [help]="'projects.form.descriptionHelp' | t"
+      [error]="errors()['project-description']"
+    >
+      <textarea
+        bn-textarea
+        id="project-description"
+        name="project-description"
+        rows="6"
+        maxlength="2000"
+        [ngModel]="description()"
+        (ngModelChange)="description.set($event)"
+        [readonly]="busy()"
+        [attr.aria-describedby]="
+          describedBy('project-description', errors()['project-description'], true)
+        "
+      ></textarea>
+    </bn-field>
+  </fieldset>
+
+  <fieldset bn-form-section [legend]="'projects.form.where' | t">
+    <bn-field
+      [label]="'projects.form.stage' | t"
+      controlId="project-stage"
+      [error]="errors()['project-stage']"
+    >
+      <select
+        bn-input
+        id="project-stage"
+        name="project-stage"
+        [ngModel]="stage()"
+        (ngModelChange)="stage.set($event)"
+        [disabled]="busy()"
+      >
+        @for (s of stages; track s) {
+          <option [value]="s">{{ stageLabel(s) }}</option>
+        }
+      </select>
+    </bn-field>
+    <fieldset
+      bn-form-section
+      level="question"
+      id="project-looking-for"
+      [legend]="'projects.form.lookingFor' | t"
+    >
+      <p class="field__help">{{ 'projects.form.lookingForHelp' | t }}</p>
+      <ul class="check-grid">
+        @for (role of roles; track role) {
+          <li>
+            <bn-check>
+              <input
+                bn-checkbox
+                type="checkbox"
+                name="project-looking-for"
+                [value]="role"
+                [checked]="lookingFor().has(role)"
+                [disabled]="busy()"
+                (change)="toggle(role, $any($event.target).checked)"
+              />
+              {{ roleLabel(role) }}
+            </bn-check>
+          </li>
+        }
+      </ul>
+    </fieldset>
+  </fieldset>
+
+  <fieldset bn-form-section [legend]="'projects.form.links' | t">
+    <bn-field
+      [label]="'projects.form.link' | t"
+      [optionalText]="'common.optional' | t"
+      controlId="project-link"
+      [help]="'projects.form.linkHelp' | t"
+      [error]="errors()['project-link']"
+    >
+      <input
+        bn-input
+        id="project-link"
+        name="project-link"
+        type="url"
+        placeholder="https://"
+        [ngModel]="link()"
+        (ngModelChange)="link.set($event)"
+        [readonly]="busy()"
+        [invalid]="!!errors()['project-link']"
+        [attr.aria-describedby]="describedBy('project-link', errors()['project-link'], true)"
+      />
+    </bn-field>
+  </fieldset>
+
+  <div bn-form-actions align="end">
+    <a bn-button variant="quiet" [routerLink]="cancelLink()">{{ 'projects.form.cancel' | t }}</a>
+    <button bn-button variant="primary" type="submit" [busy]="busy()" [disabled]="busy()">
+      {{ busy() ? busyLabel() : submitLabel() }}
+    </button>
+  </div>
+</form>
