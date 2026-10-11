@@ -27,11 +27,13 @@ import Menu from './Menu';
 import PageHeader from './PageHeader';
 import Pagination from './Pagination';
 import SearchBox from './SearchBox';
+import SidebarNavigation from './SidebarNavigation';
 import Skeleton from './Skeleton';
 import SkillChips from './SkillChips';
 import SkipLink from './SkipLink';
 import Status from './Status';
 import Stepper from './Stepper';
+import Switch from './Switch';
 import Textarea from './Textarea';
 import Toast from './Toast';
 import ToastStack from './ToastStack';
@@ -67,11 +69,13 @@ export const scenarios: Record<string, Type<unknown>> = {
   PageHeader,
   Pagination,
   SearchBox,
+  SidebarNavigation,
   Skeleton,
   SkillChips,
   SkipLink,
   Status,
   Stepper,
+  Switch,
   Textarea,
   Toast,
   ToastStack,

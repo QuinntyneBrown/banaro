@@ -23,6 +23,7 @@ import {
   HttpIdentityApi,
   HttpDirectoryApi,
   HttpProfilesApi,
+  HttpSettingsApi,
   HttpPublicSiteApi,
   I18N_API,
   IDENTITY_API,
@@ -32,6 +33,7 @@ import {
   DIRECTORY_API,
   PROFILES_API,
   PUBLIC_SITE_API,
+  SETTINGS_API,
   SESSION_RECOVERY,
   sessionExpiryInterceptor,
   TranslationService,
@@ -86,6 +88,7 @@ export const appConfig: ApplicationConfig = {
     { provide: IDENTITY_API, useClass: HttpIdentityApi },
     { provide: PROFILES_API, useClass: HttpProfilesApi },
     { provide: DIRECTORY_API, useClass: HttpDirectoryApi },
+    { provide: SETTINGS_API, useClass: HttpSettingsApi },
     { provide: ERROR_PAGE_NAVIGATOR, useClass: RouterErrorPageNavigator },
     { provide: SESSION_RECOVERY, useClass: DialogSessionRecovery },
     {

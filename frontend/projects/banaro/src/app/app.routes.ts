@@ -37,6 +37,20 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/onboarding/onboarding').then((m) => m.OnboardingPage),
   },
   {
+    path: 'settings',
+    canMatch: [memberGuard],
+    loadComponent: () => import('./pages/settings/settings').then((m) => m.SettingsPage),
+    children: [
+      // Account comes with L2-035; until then Settings opens on Privacy (D-047).
+      { path: '', pathMatch: 'full', redirectTo: 'privacy' },
+      {
+        path: 'privacy',
+        loadComponent: () =>
+          import('./pages/settings/privacy/privacy-settings').then((m) => m.PrivacySettingsSection),
+      },
+    ],
+  },
+  {
     path: 'profile/edit',
     canMatch: [memberGuard],
     loadComponent: () => import('./pages/profile-edit/profile-edit').then((m) => m.ProfileEditPage),

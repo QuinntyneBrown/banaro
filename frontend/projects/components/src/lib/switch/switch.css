@@ -1,0 +1,60 @@
+:host(bn-switch) {
+  display: block;
+}
+
+/* Extracted from docs/design-system/assets/components.css: switch. */
+.switch {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-4);
+  align-items: center;
+  padding-block: var(--space-4);
+  border-bottom: var(--border-width-hairline) solid var(--color-border-default);
+}
+.switch--label-right {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+/* Label right: the text moves after the control, which is projected once. */
+.switch--label-right .switch__label {
+  order: 2;
+}
+.switch__title {
+  display: block;
+  font: var(--text-label);
+}
+.switch__text {
+  font: var(--text-body-sm);
+  color: var(--color-fg-muted);
+}
+:host(.switch__control) {
+  appearance: none;
+  margin: 0;
+  position: relative;
+  width: var(--size-switch-control-width-23);
+  height: var(--size-switch-control-height-24);
+  border-radius: var(--radius-full);
+  background: var(--color-border-strong);
+  cursor: pointer;
+}
+:host(.switch__control)::after {
+  content: '';
+  position: absolute;
+  top: var(--space-1);
+  left: var(--space-1);
+  width: var(--space-5);
+  height: var(--space-5);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-surface);
+}
+:host(.switch__control:checked) {
+  background: var(--color-accent);
+}
+:host(.switch__control:checked)::after {
+  left: auto;
+  right: var(--space-1);
+}
+@media (forced-colors: active) {
+  :host(.switch__control) {
+    border: var(--border-width-hairline) solid CanvasText;
+  }
+}

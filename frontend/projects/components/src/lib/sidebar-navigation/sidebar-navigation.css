@@ -1,0 +1,55 @@
+:host {
+  display: block;
+}
+
+/* Extracted from docs/design-system/assets/components.css: settings-nav, nav__link. */
+.settings-nav {
+  display: flex;
+  gap: var(--space-1);
+  overflow-x: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 64rem) {
+  .settings-nav {
+    flex-direction: column;
+  }
+}
+.nav__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: var(--target-comfortable);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+.nav__link:hover {
+  color: var(--color-fg-default);
+  background: var(--color-bg-subtle);
+}
+.nav__link[aria-current='page'] {
+  color: var(--color-fg-default);
+}
+.nav__link[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: var(--space-1);
+  width: var(--space-1);
+  height: var(--space-1);
+  translate: -50% 0;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .nav__link {
+    transition:
+      color var(--duration-fast) var(--ease-standard),
+      background-color var(--duration-base) var(--ease-standard);
+  }
+}

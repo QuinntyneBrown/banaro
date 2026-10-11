@@ -14,6 +14,7 @@ export const scenarioIterations = {
   FormLayout: 300,
   List: 350,
   Menu: 300,
+  SidebarNavigation: 270,
   SkillChips: 300,
   Status: 600,
   ToastStack: 400,

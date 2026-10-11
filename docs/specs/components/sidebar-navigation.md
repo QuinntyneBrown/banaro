@@ -4,7 +4,7 @@
 |---|---|
 | Selector | `bn-sidebar-navigation` |
 | Library path | `frontend/projects/components/src/lib/sidebar-navigation/` |
-| Status | planned |
+| Status | built |
 | Traces to | L2-035, L2-036, L2-037, L2-048, L2-049, L2-050, L2-051, L2-052 |
 | Design system | [`sidebar-navigation.html`](../../design-system/components/sidebar-navigation.html) |
 | Source mocks | [`pages/settings/default`](../../mocks/pages/settings/default.html), [`privacy`](../../mocks/pages/settings/privacy.html), [`email`](../../mocks/pages/settings/email.html), [`loading`](../../mocks/pages/settings/loading.html), [`invalid`](../../mocks/pages/settings/invalid.html), [`submitting`](../../mocks/pages/settings/submitting.html), [`success`](../../mocks/pages/settings/success.html), [`error`](../../mocks/pages/settings/error.html); behind every [`dialogs/delete-account`](../../mocks/dialogs/delete-account/default.html) state |
