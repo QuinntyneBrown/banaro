@@ -81,3 +81,40 @@ export interface DirectoryResultPage {
   facets: DirectoryFacets | null;
   distanceKm: number | null;
 }
+
+/** A reason behind a match score, with its parameters (D-048). */
+export type MatchReason = { code: 'nearby'; km: number } | { code: 'recently_active' };
+
+/**
+ * A builder's profile as the viewer may see it (L2-011). An absent field is hidden or empty; the page
+ * never shows a placeholder for it.
+ */
+export interface BuilderProfile {
+  id: string;
+  name: string;
+  role: BuilderRole | null;
+  headline: string | null;
+  photoUrl: string | null;
+  isOwn: boolean;
+  neighbourhood?: { name: string; area: string } | null;
+  skills?: string[];
+  actions?: { sayHello: boolean; report: boolean; block: boolean; edit: boolean };
+  distanceKm?: number | null;
+  /** The viewer's neighbourhood, where the distance is measured from. */
+  distanceFrom?: string | null;
+  match?: { score: number; reasons: MatchReason[] };
+  bio?: string;
+  experience?: {
+    title: string;
+    organization: string | null;
+    startedOn: string;
+    endedOn: string | null;
+  }[];
+  links?: { label: string; url: string }[];
+  building?: { summary: string };
+  openTo?: OpenTo[];
+  online?: boolean;
+  lastSeenAt?: string | null;
+  memberSince?: string;
+  email?: string;
+}

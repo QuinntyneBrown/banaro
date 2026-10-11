@@ -17,6 +17,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/directory/directory').then((m) => m.DirectoryPage),
   },
   {
+    path: 'builders/:id',
+    loadComponent: () =>
+      import('./pages/builder-profile/builder-profile').then((m) => m.BuilderProfilePage),
+  },
+  {
     path: 'sign-in',
     loadComponent: () => import('./pages/sign-in/sign-in').then((m) => m.SignInPage),
   },

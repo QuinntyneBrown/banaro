@@ -262,10 +262,12 @@ export class DirectoryPage {
   protected placeOf(card: BuilderCardSummary): string {
     const hood = card.neighbourhood?.name ?? '';
     if (card.distanceKm === undefined || card.distanceKm === null) return hood;
-    return this.i18n.t('directory.card.away', {
-      place: hood,
-      distance: formatDistance(card.distanceKm),
-    });
+    // A distance that rounds to nothing still says roughly how near (D-046).
+    const distance =
+      card.distanceKm < 0.05
+        ? this.i18n.t('directory.profile.under5')
+        : formatDistance(card.distanceKm);
+    return this.i18n.t('directory.card.away', { place: hood, distance });
   }
 
   protected openToOf(card: BuilderCardSummary): string {

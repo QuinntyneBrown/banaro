@@ -104,6 +104,7 @@ class ViewBuilderProfileTest extends TestCase
         $this->assertFalse($profile['is_own']);
         $this->assertSame(['name' => 'Riverdale', 'area' => 'Downtown Toronto'], $profile['neighbourhood']);
         $this->assertEqualsWithDelta(1.5, $profile['distance_km'], 0.1);
+        $this->assertSame('Leslieville', $profile['distance_from']);
         $this->assertIsInt($profile['match']['score']);
         $this->assertContains(['code' => 'nearby', 'km' => 1.5], $profile['match']['reasons']);
         $this->assertSame(['Laravel'], $profile['skills']);

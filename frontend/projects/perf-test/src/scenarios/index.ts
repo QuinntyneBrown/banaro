@@ -6,11 +6,13 @@ import Avatar from './Avatar';
 import Badge from './Badge';
 import Banner from './Banner';
 import Brand from './Brand';
+import Breadcrumb from './Breadcrumb';
 import Button from './Button';
 import ButtonBusy from './ButtonBusy';
 import Card from './Card';
 import Choice from './Choice';
 import DarkTheme from './DarkTheme';
+import DescriptionList from './DescriptionList';
 import Dialog from './Dialog';
 import DirectoryFilters from './DirectoryFilters';
 import DirectoryResults from './DirectoryResults';
@@ -26,6 +28,7 @@ import List from './List';
 import Menu from './Menu';
 import PageHeader from './PageHeader';
 import Pagination from './Pagination';
+import ProfileHeader from './ProfileHeader';
 import SearchBox from './SearchBox';
 import SidebarNavigation from './SidebarNavigation';
 import Skeleton from './Skeleton';
@@ -48,11 +51,13 @@ export const scenarios: Record<string, Type<unknown>> = {
   Badge,
   Banner,
   Brand,
+  Breadcrumb,
   Button,
   ButtonBusy,
   Card,
   Choice,
   DarkTheme,
+  DescriptionList,
   Dialog,
   DirectoryFilters,
   DirectoryResults,
@@ -68,6 +73,7 @@ export const scenarios: Record<string, Type<unknown>> = {
   Menu,
   PageHeader,
   Pagination,
+  ProfileHeader,
   SearchBox,
   SidebarNavigation,
   Skeleton,

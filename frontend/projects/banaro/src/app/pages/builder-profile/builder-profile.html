@@ -1,0 +1,192 @@
+<div class="wrap">
+  @switch (state()) {
+    @case ('not-found') {
+      <bn-error-page
+        code="404"
+        [heading]="'directory.profile.notFound.title' | t"
+        [lead]="'directory.profile.notFound.lead' | t"
+      >
+        <div class="cluster">
+          <a bn-button variant="primary" routerLink="/builders">{{
+            'directory.profile.notFound.browse' | t
+          }}</a>
+          @if (signedIn()) {
+            <a bn-button variant="quiet" routerLink="/dashboard">{{ 'errors.dashboard' | t }}</a>
+          }
+        </div>
+      </bn-error-page>
+    }
+    @case ('error') {
+      <bn-breadcrumb [label]="'directory.profile.breadcrumb' | t" [items]="crumbs()" />
+      <h1 class="vh">{{ 'directory.profile.builderProfile' | t }}</h1>
+      <div class="profile__error">
+        <bn-empty-state tone="error" [heading]="'directory.profile.error.title' | t">
+          {{ 'directory.profile.error.body' | t }}
+          <button slot="actions" bn-button variant="primary" type="button" (click)="retry()">
+            {{ 'directory.error.tryAgain' | t }}
+          </button>
+          <a slot="actions" bn-button variant="quiet" routerLink="/builders">{{
+            'directory.profile.error.back' | t
+          }}</a>
+        </bn-empty-state>
+      </div>
+    }
+    @case ('loading') {
+      @if (slow()) {
+        <bn-breadcrumb [label]="'directory.profile.breadcrumb' | t" [items]="crumbs()" />
+        <div aria-busy="true">
+          <p class="vh" role="status">{{ 'directory.profile.loading' | t }}</p>
+          <header bn-profile-header loading [name]="''"></header>
+          <div class="two-col">
+            <div class="stack">
+              <span bn-skeleton shape="block"></span>
+              <span bn-skeleton></span>
+              <span bn-skeleton short></span>
+            </div>
+            <span bn-skeleton shape="block"></span>
+          </div>
+        </div>
+      }
+    }
+    @default {
+      @if (profile(); as p) {
+        <bn-breadcrumb [label]="'directory.profile.breadcrumb' | t" [items]="crumbs()" />
+        <header
+          bn-profile-header
+          [name]="p.name"
+          [role]="role()"
+          [place]="place()"
+          [photo]="p.photoUrl"
+          [photoAlt]="'directory.profile.portrait' | t: { name: p.name }"
+          [initials]="initials(p.name)"
+          [initialsLabel]="'directory.profile.noPhoto' | t: { name: p.name }"
+          [tone]="tile()"
+          [presence]="presence()"
+        >
+          @if (p.actions?.edit) {
+            <a slot="actions" bn-button variant="primary" routerLink="/profile/edit">{{
+              'directory.profile.edit' | t
+            }}</a>
+          }
+          @if (p.isOwn) {
+            <a slot="actions" bn-button variant="quiet" routerLink="/settings/privacy">{{
+              'directory.profile.whoCanSee' | t
+            }}</a>
+          }
+        </header>
+
+        <div class="two-col">
+          <div class="stack stack--lg">
+            @if (p.bio) {
+              <section aria-labelledby="about-title">
+                <h2 class="section__title" id="about-title">{{ 'directory.profile.about' | t }}</h2>
+                <div class="prose">
+                  <p>{{ p.bio }}</p>
+                </div>
+              </section>
+            }
+            @if (p.skills?.length) {
+              <section aria-labelledby="skills-title">
+                <h2 class="section__title" id="skills-title">
+                  {{ 'directory.profile.skills' | t }}
+                </h2>
+                <ul class="tags" [attr.aria-label]="'directory.profile.skills' | t">
+                  @for (skill of p.skills; track $index) {
+                    <li bn-tag>{{ skill }}</li>
+                  }
+                </ul>
+              </section>
+            }
+            @if (p.experience?.length) {
+              <section aria-labelledby="experience-title">
+                <h2 class="section__title" id="experience-title">
+                  {{ 'directory.profile.experience' | t }}
+                </h2>
+                <ul class="rows">
+                  @for (role of p.experience; track $index) {
+                    <li>
+                      <div class="rows__main">
+                        <p class="rows__title">
+                          {{ role.title }}
+                          @if (role.organization) {
+                            · {{ role.organization }}
+                          }
+                        </p>
+                        <p class="rows__meta">{{ period(role.startedOn, role.endedOn) }}</p>
+                      </div>
+                    </li>
+                  }
+                </ul>
+              </section>
+            }
+            <section aria-labelledby="build-title">
+              <h2 class="section__title" id="build-title">
+                {{
+                  p.isOwn
+                    ? ('directory.profile.buildingOwn' | t)
+                    : ('directory.profile.building' | t: { name: firstName() })
+                }}
+              </h2>
+              @if (p.building) {
+                <div class="aside-card">
+                  <p>{{ p.building.summary }}</p>
+                </div>
+              } @else {
+                <p class="muted">
+                  {{
+                    p.isOwn
+                      ? ('directory.profile.noProjectOwn' | t)
+                      : ('directory.profile.noProject' | t: { name: firstName() })
+                  }}
+                </p>
+              }
+            </section>
+          </div>
+
+          <aside
+            class="stack"
+            [attr.aria-label]="'directory.profile.aside' | t: { name: firstName() }"
+          >
+            @if (p.match) {
+              <div class="aside-card">
+                <p class="eyebrow">{{ 'directory.profile.whyMatch' | t }}</p>
+                <p class="card__match">
+                  <strong>{{ p.match.score }}%</strong>{{ 'directory.card.match' | t }}
+                </p>
+                @if (reasons()) {
+                  <p class="muted match-reasons">{{ reasons() }}</p>
+                }
+              </div>
+            }
+            <div class="aside-card">
+              <h2 class="aside-card__title">{{ 'directory.profile.glance' | t }}</h2>
+              <dl bn-description-list>
+                @if (openTo()) {
+                  <div bn-description-item [term]="'directory.card.openTo' | t">{{ openTo() }}</div>
+                }
+                @if (p.neighbourhood) {
+                  <div bn-description-item [term]="'directory.profile.neighbourhood' | t">
+                    {{ p.neighbourhood.name }}
+                  </div>
+                }
+                @if (distance() && p.distanceFrom) {
+                  <div bn-description-item [term]="'directory.profile.distance' | t">
+                    {{
+                      'directory.profile.distanceFrom'
+                        | t: { distance: distance()!, from: p.distanceFrom }
+                    }}
+                  </div>
+                }
+                @if (memberSince()) {
+                  <div bn-description-item [term]="'directory.profile.memberSince' | t">
+                    {{ memberSince() }}
+                  </div>
+                }
+              </dl>
+            </div>
+          </aside>
+        </div>
+      }
+    }
+  }
+</div>

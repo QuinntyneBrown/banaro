@@ -1,10 +1,22 @@
-import { Observable, of } from 'rxjs';
-import { BuilderCardSummary, DirectoryQuery, DirectoryResultPage } from '../models/directory';
+import { Observable, of, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import {
+  BuilderCardSummary,
+  BuilderProfile,
+  DirectoryQuery,
+  DirectoryResultPage,
+} from '../models/directory';
 import { DirectoryApi } from '../services/directory-api';
 
 /** Fake of the contract for tests: pages a fixed list of cards, filtered by name. */
 export class InMemoryDirectoryApi implements DirectoryApi {
   cards: BuilderCardSummary[] = [];
+  profiles: BuilderProfile[] = [];
+
+  getBuilder(id: string): Observable<BuilderProfile> {
+    const profile = this.profiles.find((p) => p.id === id);
+    return profile ? of(profile) : throwError(() => new HttpErrorResponse({ status: 404 }));
+  }
 
   searchBuilders(query: DirectoryQuery): Observable<DirectoryResultPage> {
     const term = (query.q ?? '').toLowerCase();

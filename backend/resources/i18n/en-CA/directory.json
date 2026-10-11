@@ -90,5 +90,50 @@
     "clear": "Clear all filters",
     "within": "Search within {km} km",
     "anywhere": "Search anywhere in the GTA"
+  },
+  "profile": {
+    "meta": {
+      "title": "{name} · Banaro"
+    },
+    "crumb": "Builders",
+    "builder": "Builder",
+    "breadcrumb": "Breadcrumb",
+    "builderProfile": "Builder profile",
+    "loading": "Loading builder profile",
+    "portrait": "Portrait of {name}",
+    "noPhoto": "{name}, no photo",
+    "edit": "Edit profile",
+    "whoCanSee": "Who can see this",
+    "about": "About",
+    "skills": "Skills",
+    "experience": "Experience",
+    "building": "What {name} is building",
+    "buildingOwn": "What you are building",
+    "noProject": "No project listed yet. {name} is here to meet people first.",
+    "noProjectOwn": "No project listed yet. Add what you are building from Edit profile.",
+    "aside": "About {name}",
+    "whyMatch": "Why you match",
+    "glance": "At a glance",
+    "neighbourhood": "Neighbourhood",
+    "distance": "Distance",
+    "distanceFrom": "{distance} from {from}",
+    "memberSince": "Member since",
+    "now": "now",
+    "under5": "under 5 km",
+    "reasons": {
+      "nearby": "{name} is {distance} from {from}.",
+      "recentlyActive": "{name} has been active this week."
+    },
+    "notFound": {
+      "meta": "Builder not found · Banaro",
+      "title": "We can't find that builder",
+      "lead": "The profile may have been removed, or the link is mistyped. Builders who leave Banaro take their profile with them.",
+      "browse": "Browse builders"
+    },
+    "error": {
+      "title": "We couldn't load this profile",
+      "body": "Banaro had trouble reaching the server. Try again, or go back to the directory.",
+      "back": "Back to builders"
+    }
   }
 }

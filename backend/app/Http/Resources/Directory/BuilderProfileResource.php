@@ -33,6 +33,8 @@ class BuilderProfileResource extends PublicBuilderProfileResource
         ];
         if (! $view->isOwn) {
             $profile['distance_km'] = $view->distanceKm === null ? null : round($view->distanceKm, 1);
+            // Where the distance is measured from: the viewer's own neighbourhood.
+            $profile['distance_from'] = $view->viewer?->neighbourhood?->name;
             if ($view->match !== null) {
                 $profile['match'] = ['score' => $view->match->value, 'reasons' => $view->match->reasons];
             }
