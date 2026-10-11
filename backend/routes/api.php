@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\Identity\SessionController;
 use App\Http\Controllers\Api\V1\Profiles\OnboardingController;
 use App\Http\Controllers\Api\V1\Profiles\OwnProfileController;
 use App\Http\Controllers\Api\V1\Profiles\ProfilePhotoController;
+use App\Http\Controllers\Api\V1\Projects\ProjectController;
 use App\Http\Controllers\Api\V1\Settings\PrivacyController;
 use App\Http\Controllers\Api\V1\TrustAndSafety\BlockController;
 use App\Http\Middleware\RequireCompleteProfile;
@@ -41,6 +42,9 @@ Route::middleware('auth:sanctum')->group(function () {
             // L2-007: the member's own profile.
             Route::get('me/profile', [OwnProfileController::class, 'show'])->name('profile.show');
             Route::put('me/profile', [OwnProfileController::class, 'update'])->name('profile.update');
+
+            // L2-012: share a project.
+            Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
 
             // L2-008: the member's own photo.
             Route::post('me/photo', [ProfilePhotoController::class, 'store'])
