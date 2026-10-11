@@ -4,7 +4,7 @@
 |---|---|
 | Selector | `article[bn-card]` |
 | Library path | `frontend/projects/components/src/lib/card/` |
-| Status | planned |
+| Status | built |
 | Traces to | L2-007, L2-009, L2-010, L2-048, L2-049, L2-050, L2-051 |
 | Design system | [`card.html`](../../design-system/components/card.html) |
 | Source mocks | [`pages/directory/default`](../../mocks/pages/directory/default.html), [`pages/directory/edge`](../../mocks/pages/directory/edge.html), [`pages/directory/filtered`](../../mocks/pages/directory/filtered.html), [`dialogs/say-hello/default`](../../mocks/dialogs/say-hello/default.html), [`notifications/toast/success`](../../mocks/notifications/toast/success.html) |

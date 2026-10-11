@@ -4,7 +4,7 @@
 |---|---|
 | Selector | `bn-badge`, `bn-status` |
 | Library path | `frontend/projects/components/src/lib/badge/` |
-| Status | planned |
+| Status | built |
 | Traces to | L2-009, L2-019, L2-026, L2-027, L2-036, L2-048, L2-049, L2-050, L2-051 |
 | Design system | [`badge.html`](../../design-system/components/badge.html) |
 | Source mocks | [`pages/event-detail/going`](../../mocks/pages/event-detail/going.html), [`pages/event-detail/waitlist`](../../mocks/pages/event-detail/waitlist.html), [`pages/event-detail/cancelled`](../../mocks/pages/event-detail/cancelled.html), [`pages/event-detail/ended`](../../mocks/pages/event-detail/ended.html), [`pages/notifications/default`](../../mocks/pages/notifications/default.html), [`pages/messages/default`](../../mocks/pages/messages/default.html), [`pages/dashboard/default`](../../mocks/pages/dashboard/default.html), [`pages/directory/default`](../../mocks/pages/directory/default.html), [`pages/builder-profile/default`](../../mocks/pages/builder-profile/default.html) |

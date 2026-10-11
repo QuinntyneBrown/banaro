@@ -13,6 +13,10 @@ export const routes: Routes = [
   },
   { path: 'join', loadComponent: () => import('./pages/join/join').then((m) => m.JoinPage) },
   {
+    path: 'builders',
+    loadComponent: () => import('./pages/directory/directory').then((m) => m.DirectoryPage),
+  },
+  {
     path: 'sign-in',
     loadComponent: () => import('./pages/sign-in/sign-in').then((m) => m.SignInPage),
   },

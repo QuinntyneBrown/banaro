@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "title": "Builders near you · Banaro",
+    "description": "Find Christian founders, engineers, designers and product managers in Toronto and the GTA by skill, role and neighbourhood."
+  },
+  "eyebrow": "Builder directory",
+  "title": "Builders near you",
+  "sub": "{count, plural, one {# builder} other {# builders}} in Toronto and the GTA.",
+  "search": {
+    "label": "Search builders",
+    "placeholder": "Name, skill or project",
+    "button": "Search"
+  },
+  "resultsTitle": "Results",
+  "loading": "Loading builders",
+  "count": {
+    "showing": "Showing",
+    "of": "of",
+    "noun": "{count, plural, one {builder} other {builders}}"
+  },
+  "sort": {
+    "label": "Sort by",
+    "bestMatch": "Best match",
+    "nearest": "Nearest",
+    "recentlyActive": "Recently active",
+    "newest": "Newest"
+  },
+  "card": {
+    "match": "match",
+    "skills": "Skills",
+    "building": "Building",
+    "openTo": "Open to",
+    "noProject": "No project listed",
+    "away": "{place} · {distance} away"
+  },
+  "openTo": {
+    "coFounding": "Co-founding",
+    "advising": "Advising",
+    "contributing": "Contributing"
+  },
+  "presence": {
+    "online": "Online now",
+    "minutes": "Seen {count} min ago",
+    "hours": "Seen {count} h ago",
+    "yesterday": "Seen yesterday",
+    "days": "Seen {count} days ago",
+    "weeks": "{count, plural, one {Seen a week ago} other {Seen # weeks ago}}",
+    "longAgo": "Seen over a month ago"
+  },
+  "pager": {
+    "more": "{count, plural, one {Show # more builder} other {Show # more builders}}",
+    "busy": "Loading more builders…",
+    "status": "{shown} of {total} · page {page} of {pages}"
+  },
+  "error": {
+    "title": "We couldn't load the builders",
+    "body": "Banaro had trouble reaching the server. Nothing you've set up is lost. Try again, or open your matches while we sort it out.",
+    "tryAgain": "Try again",
+    "matches": "See your matches"
+  }
+}

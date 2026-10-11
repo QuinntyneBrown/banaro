@@ -8,6 +8,13 @@ export interface BuilderOptions extends MemberOptions {
   headline?: string;
   bio?: string;
   openTo?: string[];
+  /** Skill names in order; new ones join the skills table as custom skills. */
+  skills?: string[];
+  building?: string;
+  /** Minutes since the builder's last request; omitted means never active. */
+  activeMinutesAgo?: number;
+  /** Days since the builder joined. */
+  joinedDaysAgo?: number;
 }
 
 export interface BuilderMember extends Member {
@@ -25,16 +32,44 @@ export function createBuilder(options: BuilderOptions = {}): BuilderMember {
     headline = null,
     bio = null,
     openTo = ['co_founding'],
-  } = options as BuilderOptions & { headline?: string | null; bio?: string | null };
+    skills = [],
+    building = null,
+    activeMinutesAgo = null,
+    joinedDaysAgo = 0,
+  } = options as BuilderOptions & {
+    headline?: string | null;
+    bio?: string | null;
+    building?: string | null;
+    activeMinutesAgo?: number | null;
+  };
   // Crockford base32, lower case, as the API's ULIDs are.
   const builderId = Array.from(randomBytes(26), (b) => '0123456789abcdefghjkmnpqrstvwxyz'[b % 32]).join('');
+  const literal = (value: string | null) => (value === null ? 'NULL' : quote(value));
+  // The directory's search text, as the API's normaliser writes it (ASCII names in fixtures).
+  const searchText = [member.name, headline, building, ...skills]
+    .filter((part): part is string => !!part)
+    .join(' ')
+    .toLowerCase();
+  const lastActive = activeMinutesAgo === null ? 'NULL' : `${NOW} - interval '${activeMinutesAgo} minutes'`;
+  const joined = `${NOW} - interval '${joinedDaysAgo} days'`;
   sql(`
     INSERT INTO builders (user_id, public_id, name, role, headline, bio, neighbourhood_id, open_to,
+                          building_summary, search_text, last_active_at,
                           onboarding_saved_steps, onboarding_completed_at, created_at, updated_at)
     SELECT ${member.id}, ${quote(builderId)}, ${quote(member.name)}, ${quote(role)},
-           ${headline === null ? 'NULL' : quote(headline)}, ${bio === null ? 'NULL' : quote(bio)},
+           ${literal(headline)}, ${literal(bio)},
            (SELECT id FROM neighbourhoods WHERE slug = ${quote(neighbourhood)}),
-           ${quote(JSON.stringify(openTo))}::jsonb, '["about","skills","goals"]'::jsonb,
-           ${NOW}, ${NOW}, ${NOW}`);
+           ${quote(JSON.stringify(openTo))}::jsonb, ${literal(building)}, ${quote(searchText)}, ${lastActive},
+           '["about","skills","goals"]'::jsonb, ${NOW}, ${joined}, ${NOW}`);
+  skills.forEach((skill, i) => {
+    sql(`
+      INSERT INTO skills (name, slug, normalized_name, is_catalogue, created_at, updated_at)
+      VALUES (${quote(skill)}, ${quote(skill.toLowerCase().replace(/[^a-z0-9]+/g, '-'))},
+              ${quote(skill.toLowerCase())}, false, ${NOW}, ${NOW})
+      ON CONFLICT (normalized_name) DO NOTHING;
+      INSERT INTO builder_skill (builder_id, skill_id, position)
+      SELECT b.id, s.id, ${i + 1} FROM builders b, skills s
+      WHERE b.public_id = ${quote(builderId)} AND s.normalized_name = ${quote(skill.toLowerCase())}`);
+  });
   return { ...member, builderId };
 }

@@ -21,6 +21,7 @@ import {
   forwardRequestCookiesInterceptor,
   HttpI18nApi,
   HttpIdentityApi,
+  HttpDirectoryApi,
   HttpProfilesApi,
   HttpPublicSiteApi,
   I18N_API,
@@ -28,6 +29,7 @@ import {
   maintenanceInterceptor,
   provideI18n,
   provideSession,
+  DIRECTORY_API,
   PROFILES_API,
   PUBLIC_SITE_API,
   SESSION_RECOVERY,
@@ -83,6 +85,7 @@ export const appConfig: ApplicationConfig = {
     { provide: PUBLIC_SITE_API, useClass: HttpPublicSiteApi },
     { provide: IDENTITY_API, useClass: HttpIdentityApi },
     { provide: PROFILES_API, useClass: HttpProfilesApi },
+    { provide: DIRECTORY_API, useClass: HttpDirectoryApi },
     { provide: ERROR_PAGE_NAVIGATOR, useClass: RouterErrorPageNavigator },
     { provide: SESSION_RECOVERY, useClass: DialogSessionRecovery },
     {

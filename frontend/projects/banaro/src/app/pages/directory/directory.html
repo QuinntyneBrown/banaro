@@ -1,0 +1,129 @@
+<div class="wrap">
+  <bn-page-header
+    [eyebrow]="'directory.eyebrow' | t"
+    [heading]="'directory.title' | t"
+    [sub]="state() === 'ready' ? ('directory.sub' | t: { count: total() }) : undefined"
+  >
+    <bn-search-box
+      inputId="q"
+      [label]="'directory.search.label' | t"
+      [placeholder]="'directory.search.placeholder' | t"
+      [buttonLabel]="'directory.search.button' | t"
+      [value]="url().q"
+      (typed)="typed($event)"
+      (searched)="searched($event)"
+    />
+  </bn-page-header>
+
+  <div class="dir">
+    <section id="results" aria-labelledby="results-title">
+      <h2 class="vh" id="results-title">{{ 'directory.resultsTitle' | t }}</h2>
+      <div class="toolbar">
+        <p class="toolbar__count" aria-live="polite">
+          @if (state() === 'ready') {
+            {{ 'directory.count.showing' | t }} <strong>{{ range() }}</strong>
+            {{ 'directory.count.of' | t }} <strong>{{ totalText() }}</strong>
+            {{ 'directory.count.noun' | t: { count: total() } }}
+          }
+        </p>
+        <div class="toolbar__tools">
+          <label class="select">
+            <span>{{ 'directory.sort.label' | t }}</span>
+            <span class="select__wrap">
+              <select
+                class="select__control"
+                name="sort"
+                [value]="url().sort"
+                (change)="sortBy($any($event.target).value)"
+              >
+                @for (sort of sorts(); track sort) {
+                  <option [value]="sort" [selected]="sort === url().sort">
+                    {{ sortLabel(sort) }}
+                  </option>
+                }
+              </select>
+              <svg class="icon icon--sm select__chev" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m7 10 5 5 5-5" />
+              </svg>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      @switch (state()) {
+        @case ('error') {
+          <div role="alert">
+            <bn-empty-state tone="error" [heading]="'directory.error.title' | t">
+              {{ 'directory.error.body' | t }}
+              <button slot="actions" bn-button variant="primary" type="button" (click)="tryAgain()">
+                {{ 'directory.error.tryAgain' | t }}
+              </button>
+              <a slot="actions" bn-button variant="quiet" routerLink="/matching">{{
+                'directory.error.matches' | t
+              }}</a>
+            </bn-empty-state>
+          </div>
+        }
+        @case ('loading') {
+          @if (slow()) {
+            <div aria-busy="true">
+              <p class="vh" role="status">{{ 'directory.loading' | t }}</p>
+              <ul class="results">
+                @for (s of skeletons; track s) {
+                  <li><div bn-skeleton-card layout="media"></div></li>
+                }
+              </ul>
+            </div>
+          }
+        }
+        @default {
+          <ul class="results">
+            @for (card of items(); track card.id; let i = $index) {
+              <li>
+                <article
+                  bn-card
+                  [slug]="card.id"
+                  [name]="card.name"
+                  [link]="['/builders', card.id]"
+                  [role]="roleOf(card)"
+                  [photo]="card.photoUrl"
+                  [initials]="initialsOf(card.name)"
+                  [tile]="tileOf(card.id)"
+                  [lazy]="i >= 6"
+                  [variant]="member() ? 'member' : 'visitor'"
+                  [match]="card.matchScore ?? null"
+                  [matchLabel]="'directory.card.match' | t"
+                  [place]="placeOf(card)"
+                  [skills]="card.skills"
+                  [skillsLabel]="'directory.card.skills' | t"
+                  [building]="card.building ?? null"
+                  [openTo]="openToOf(card)"
+                  [buildingLabel]="'directory.card.building' | t"
+                  [openToLabel]="'directory.card.openTo' | t"
+                  [noProjectLabel]="'directory.card.noProject' | t"
+                >
+                  @if (presenceOf(card); as presence) {
+                    <bn-status slot="status" [online]="!!card.online">{{ presence }}</bn-status>
+                  }
+                </article>
+              </li>
+            }
+          </ul>
+          @if (total() > 0) {
+            <bn-pagination
+              [shown]="items().length"
+              [total]="total()"
+              [page]="loadedPage()"
+              [pageCount]="lastPage()"
+              [busy]="loadingMore()"
+              [moreLabel]="'directory.pager.more' | t: { count: nextCount() }"
+              [busyLabel]="'directory.pager.busy' | t"
+              [status]="pagerStatus()"
+              (more)="more()"
+            />
+          }
+        }
+      }
+    </section>
+  </div>
+</div>

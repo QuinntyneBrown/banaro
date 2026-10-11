@@ -2,13 +2,16 @@ import { Type } from '@angular/core';
 import Alert from './Alert';
 import AuthCard from './AuthCard';
 import Avatar from './Avatar';
+import Badge from './Badge';
 import Banner from './Banner';
 import Brand from './Brand';
 import Button from './Button';
 import ButtonBusy from './ButtonBusy';
+import Card from './Card';
 import Choice from './Choice';
 import DarkTheme from './DarkTheme';
 import Dialog from './Dialog';
+import DirectoryResults from './DirectoryResults';
 import EmptyState from './EmptyState';
 import ErrorPage from './ErrorPage';
 import Field from './Field';
@@ -19,10 +22,12 @@ import FormSummary from './FormSummary';
 import List from './List';
 import Menu from './Menu';
 import PageHeader from './PageHeader';
+import Pagination from './Pagination';
 import SearchBox from './SearchBox';
 import Skeleton from './Skeleton';
 import SkillChips from './SkillChips';
 import SkipLink from './SkipLink';
+import Status from './Status';
 import Stepper from './Stepper';
 import Textarea from './Textarea';
 import Toast from './Toast';
@@ -34,13 +39,16 @@ export const scenarios: Record<string, Type<unknown>> = {
   Alert,
   AuthCard,
   Avatar,
+  Badge,
   Banner,
   Brand,
   Button,
   ButtonBusy,
+  Card,
   Choice,
   DarkTheme,
   Dialog,
+  DirectoryResults,
   EmptyState,
   ErrorPage,
   Field,
@@ -51,10 +59,12 @@ export const scenarios: Record<string, Type<unknown>> = {
   List,
   Menu,
   PageHeader,
+  Pagination,
   SearchBox,
   Skeleton,
   SkillChips,
   SkipLink,
+  Status,
   Stepper,
   Textarea,
   Toast,

@@ -1,0 +1,71 @@
+<ng-template #nameLink
+  ><a [routerLink]="link()">{{ name() }}</a></ng-template
+>
+<div class="card__top">
+  @if (photo() && !photoFailed()) {
+    <img
+      class="card__photo"
+      [src]="photo()"
+      width="64"
+      height="64"
+      alt=""
+      [attr.loading]="lazy() ? 'lazy' : null"
+      (error)="photoFailed.set(true)"
+    />
+  } @else {
+    <span [class]="'card__initials tile--' + tile()" aria-hidden="true">{{ initials() }}</span>
+  }
+  <div>
+    @switch (headingLevel()) {
+      @case (2) {
+        <h2 class="card__name" [id]="nameId()"><ng-container [ngTemplateOutlet]="nameLink" /></h2>
+      }
+      @case (4) {
+        <h4 class="card__name" [id]="nameId()"><ng-container [ngTemplateOutlet]="nameLink" /></h4>
+      }
+      @default {
+        <h3 class="card__name" [id]="nameId()"><ng-container [ngTemplateOutlet]="nameLink" /></h3>
+      }
+    }
+    <p class="card__role">{{ role() }}</p>
+  </div>
+  @if (member() && match() !== null) {
+    <p class="card__match">
+      <strong>{{ match() }}%</strong>{{ matchLabel() }}
+    </p>
+  }
+</div>
+<p class="card__place">
+  <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" />
+    <circle cx="12" cy="10" r="2.3" />
+  </svg>
+  {{ place() }}
+</p>
+@if (skills().length) {
+  <ul class="tags" [attr.aria-label]="skillsLabel()">
+    @for (skill of skills(); track $index) {
+      <li bn-tag>{{ skill }}</li>
+    }
+  </ul>
+}
+@if (member()) {
+  <dl class="card__facts">
+    <div>
+      <dt>{{ buildingLabel() }}</dt>
+      @if (building(); as b) {
+        <dd>{{ b }}</dd>
+      } @else {
+        <dd class="is-empty">{{ noProjectLabel() }}</dd>
+      }
+    </div>
+    <div>
+      <dt>{{ openToLabel() }}</dt>
+      <dd>{{ openTo() }}</dd>
+    </div>
+  </dl>
+  <div class="card__foot">
+    <ng-content select="[slot=status]" />
+    <ng-content select="[slot=actions]" />
+  </div>
+}
