@@ -139,7 +139,14 @@ test.describe('browse the builder directory', () => {
 
   test('a visitor sees the reduced card and only the sorts that need no viewer', async ({ page }) => {
     const surname = uniqueSurname();
-    createBuilder({ name: `Ruth ${surname}`, building: 'Hidden fact', activeMinutesAgo: 1, skills: ['Python'] });
+    createBuilder({
+      name: `Ruth ${surname}`,
+      building: 'Hidden fact',
+      activeMinutesAgo: 1,
+      skills: ['Python'],
+      visibility: 'everyone',
+    });
+    createBuilder({ name: `Private ${surname}` });
     const directory = new DirectoryPage(page);
 
     await directory.open(`?q=${surname}`);
@@ -152,6 +159,8 @@ test.describe('browse the builder directory', () => {
     await expect(ruth.building).toHaveCount(0);
     await expect(ruth.status).toHaveCount(0);
     expect(await directory.sortOptions()).toEqual(['Recently active', 'Newest']);
+    // A members-only profile stays out of the signed-out directory (L2-036 criterion 2).
+    await expect(directory.card(`Private ${surname}`).root).toHaveCount(0);
   });
 
   test('loading shows 12 skeleton cards and a failure offers "Try again"', async ({ page }) => {

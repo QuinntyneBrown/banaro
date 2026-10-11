@@ -44,6 +44,12 @@ class User extends Authenticatable
         return $this->hasOne(Builder::class);
     }
 
+    /** Privacy choices; an account without a row reads the defaults (L2-036). @return HasOne<PrivacySettings, $this> */
+    public function privacy(): HasOne
+    {
+        return $this->hasOne(PrivacySettings::class)->withDefault(PrivacySettings::DEFAULTS);
+    }
+
     /** E-mail addresses are unique ignoring case and surrounding space (L2-001 criterion 3). */
     public static function canonicalEmail(string $email): string
     {

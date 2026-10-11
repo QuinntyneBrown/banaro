@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 /** A member's public profile; one per account (L2-006, L2-007). */
@@ -63,6 +64,12 @@ class Builder extends Model
     public function links(): HasMany
     {
         return $this->hasMany(ProfileLink::class)->orderBy('position');
+    }
+
+    /** The owner's privacy choices, read the default way when unset (L2-036). @return HasOne<PrivacySettings, $this> */
+    public function privacy(): HasOne
+    {
+        return $this->hasOne(PrivacySettings::class, 'user_id', 'user_id')->withDefault(PrivacySettings::DEFAULTS);
     }
 
     /** The current, ready photo (L2-008). @return BelongsTo<ProfilePhoto, $this> */

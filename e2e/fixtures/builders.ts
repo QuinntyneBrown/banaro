@@ -15,6 +15,8 @@ export interface BuilderOptions extends MemberOptions {
   activeMinutesAgo?: number;
   /** Days since the builder joined. */
   joinedDaysAgo?: number;
+  /** Who can see the profile; new accounts are members only (L2-036). */
+  visibility?: 'everyone' | 'members';
 }
 
 export interface BuilderMember extends Member {
@@ -36,6 +38,7 @@ export function createBuilder(options: BuilderOptions = {}): BuilderMember {
     building = null,
     activeMinutesAgo = null,
     joinedDaysAgo = 0,
+    visibility = 'members',
   } = options as BuilderOptions & {
     headline?: string | null;
     bio?: string | null;
@@ -71,5 +74,9 @@ export function createBuilder(options: BuilderOptions = {}): BuilderMember {
       SELECT b.id, s.id, ${i + 1} FROM builders b, skills s
       WHERE b.public_id = ${quote(builderId)} AND s.normalized_name = ${quote(skill.toLowerCase())}`);
   });
+  if (visibility !== 'members') {
+    sql(`INSERT INTO privacy_settings (user_id, profile_visibility, created_at, updated_at)
+         VALUES (${member.id}, ${quote(visibility)}, ${NOW}, ${NOW})`);
+  }
   return { ...member, builderId };
 }

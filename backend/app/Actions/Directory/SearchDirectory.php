@@ -8,6 +8,7 @@ use App\Services\Directory\DirectoryFilters;
 use App\Services\Directory\FacetCounter;
 use App\Services\Directory\SearchNormalizer;
 use App\Services\Matching\MatchScoreService;
+use App\Services\Settings\ProfileVisibilityService;
 use Illuminate\Database\Eloquent\Builder as Query;
 use Illuminate\Database\Query\JoinClause;
 
@@ -23,6 +24,7 @@ class SearchDirectory
         private readonly SearchNormalizer $normalizer,
         private readonly MatchScoreService $scores,
         private readonly FacetCounter $facets,
+        private readonly ProfileVisibilityService $visibility,
     ) {}
 
     public function handle(
@@ -39,11 +41,12 @@ class SearchDirectory
         $lastPage = max(1, (int) ceil($total / $perPage));
         $page = min($page, $lastPage);
 
-        $query->select('builders.*')->with(['neighbourhood', 'skills', 'photo']);
+        $query->select('builders.*')->with(['neighbourhood', 'skills', 'photo', 'privacy']);
         if ($viewer !== null) {
-            $query->addSelect('nd.km as distance_km');
+            $distance = $this->visibility->sqlDistance('nd.km');
+            $query->selectRaw("{$distance} as distance_km");
             $query->selectRaw(
-                $this->scores->sqlScore('nd.km', 'builders.last_active_at').' as match_score',
+                $this->scores->sqlScore($distance, 'builders.last_active_at').' as match_score',
                 $this->scores->sqlScoreBindings(),
             );
         }
@@ -65,6 +68,9 @@ class SearchDirectory
     private function filtered(?Builder $viewer, ?string $term, DirectoryFilters $filters): Query
     {
         $query = Builder::query()->whereNotNull('builders.onboarding_completed_at');
+        // Privacy: members-only profiles stay out of the signed-out directory (L2-036).
+        $this->visibility->joinSettings($query);
+        $this->visibility->applyScope($query, signedIn: $viewer !== null);
         if ($viewer !== null) {
             $query->where('builders.id', '!=', $viewer->id);
             $query->leftJoin('neighbourhood_distances as nd', function (JoinClause $join) use ($viewer) {
@@ -99,7 +105,7 @@ class SearchDirectory
                 ->whereIn('skills.slug', $filters->skills));
         }
         if ($viewer !== null && $filters->distanceKm !== null) {
-            $query->where('nd.km', '<=', $filters->distanceKm);
+            $query->whereRaw($this->visibility->sqlDistance('nd.km').' <= ?', [$filters->distanceKm]);
         }
 
         return $query;
@@ -111,7 +117,7 @@ class SearchDirectory
         match ($sort) {
             DirectorySort::BestMatch => $query->orderByRaw('match_score DESC')
                 ->orderByRaw('builders.last_active_at DESC NULLS LAST'),
-            DirectorySort::Nearest => $query->orderByRaw('nd.km ASC NULLS LAST'),
+            DirectorySort::Nearest => $query->orderByRaw($this->visibility->sqlDistance('nd.km').' ASC NULLS LAST'),
             DirectorySort::RecentlyActive => $query->orderByRaw('builders.last_active_at DESC NULLS LAST'),
             DirectorySort::Newest => $query->orderByDesc('builders.created_at'),
         };

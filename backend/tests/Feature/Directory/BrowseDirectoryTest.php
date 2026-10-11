@@ -16,6 +16,7 @@ namespace Tests\Feature\Directory;
 
 use App\Models\Builder;
 use App\Models\Neighbourhood;
+use App\Models\PrivacySettings;
 use App\Models\Skill;
 use App\Models\User;
 use App\Services\Directory\BuilderSearchText;
@@ -222,7 +223,9 @@ class BrowseDirectoryTest extends TestCase
 
     public function test_a_visitor_gets_the_reduced_card_and_only_sorts_that_need_no_viewer(): void
     {
-        $this->builder('Daniel Reyes', 'riverdale', ['Laravel'], activeMinutesAgo: 2, extra: ['building_summary' => 'Psalter']);
+        $daniel = $this->builder('Daniel Reyes', 'riverdale', ['Laravel'], activeMinutesAgo: 2, extra: ['building_summary' => 'Psalter']);
+        // Visitors see only profiles open to everyone (L2-036 criterion 2).
+        PrivacySettings::create(['user_id' => $daniel->user_id, 'profile_visibility' => 'everyone']);
 
         $response = $this->browse([], asMember: false);
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\Identity\SessionController;
 use App\Http\Controllers\Api\V1\Profiles\OnboardingController;
 use App\Http\Controllers\Api\V1\Profiles\OwnProfileController;
 use App\Http\Controllers\Api\V1\Profiles\ProfilePhotoController;
+use App\Http\Controllers\Api\V1\Settings\PrivacyController;
 use App\Http\Middleware\RequireCompleteProfile;
 use App\Http\Middleware\RequireVerifiedEmail;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('me/onboarding/skills', [OnboardingController::class, 'updateSkills'])->name('onboarding.skills');
         Route::put('me/onboarding/goals', [OnboardingController::class, 'updateGoals'])->name('onboarding.goals');
         Route::post('me/onboarding/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');
+
+        // L2-036: the member's own privacy settings.
+        Route::get('settings/privacy', [PrivacyController::class, 'show'])->name('settings.privacy.show');
+        Route::put('settings/privacy', [PrivacyController::class, 'update'])->name('settings.privacy.update');
 
         // Everything below works on a finished profile (L2-006 criterion 1).
         Route::middleware(RequireCompleteProfile::class)->group(function () {

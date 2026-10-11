@@ -174,8 +174,10 @@ test.describe('filter the builder directory', () => {
   });
 
   test('a visitor has no filters', async ({ page }) => {
+    const surname = uniqueSurname();
+    createBuilder({ name: `Open ${surname}`, visibility: 'everyone' });
     const directory = new DirectoryPage(page);
-    await directory.open();
+    await directory.open(`?q=${surname}`);
 
     await expect(directory.cards.first()).toBeVisible();
     await expect(directory.filters().groups).toHaveCount(0);

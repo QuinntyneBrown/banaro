@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Directory;
 
 use App\Services\Directory\PresenceService;
+use App\Services\Settings\ProfileVisibilityService;
 use Illuminate\Http\Request;
 
 /**
@@ -18,14 +19,20 @@ class BuilderCardResource extends PublicBuilderCardResource
         $card = parent::toArray($request);
         $photo = array_pop($card);
 
-        return $card + [
+        $card += [
             'distance_km' => $builder->distance_km === null ? null : round((float) $builder->distance_km, 1),
             'match_score' => $builder->match_score === null ? null : (int) $builder->match_score,
             'building' => $builder->building_summary,
             'open_to' => $builder->open_to ?? [],
-            'online' => app(PresenceService::class)->isOnline($builder->last_active_at),
-            'last_seen_at' => $builder->last_active_at?->toIso8601String(),
-            'photo_url' => $photo,
         ];
+        // Hidden online status is left out, not nulled (L2-036 criterion 1).
+        if (app(ProfileVisibilityService::class)->showsOnlineStatus($builder)) {
+            $card += [
+                'online' => app(PresenceService::class)->isOnline($builder->last_active_at),
+                'last_seen_at' => $builder->last_active_at?->toIso8601String(),
+            ];
+        }
+
+        return $card + ['photo_url' => $photo];
     }
 }
