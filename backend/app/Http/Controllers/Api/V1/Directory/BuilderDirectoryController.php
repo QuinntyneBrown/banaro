@@ -22,6 +22,7 @@ class BuilderDirectoryController extends Controller
             $request->sort(),
             (int) ($request->validated('page') ?? 1),
             (int) ($request->validated('per_page') ?? SearchDirectoryRequest::PER_PAGE),
+            $request->filters(),
         );
         $card = $member ? BuilderCardResource::class : PublicBuilderCardResource::class;
 
@@ -31,6 +32,11 @@ class BuilderDirectoryController extends Controller
             'page' => $result->page,
             'per_page' => $result->perPage,
             'last_page' => $result->lastPage,
+            // Members only: option counts and the distance limit in force (L2-010).
+            'meta' => [
+                'facets' => $result->facets,
+                'distance_km' => $result->distanceKm,
+            ],
         ]);
     }
 }
