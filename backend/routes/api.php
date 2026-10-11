@@ -45,6 +45,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
             // L2-012: share a project.
             Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
+            // L2-014: the owner edits or deletes it.
+            Route::put('projects/{project}', [ProjectController::class, 'update'])->where('project', '[0-9a-z]{26}')->name('projects.update');
+            Route::delete('projects/{project}', [ProjectController::class, 'destroy'])->where('project', '[0-9a-z]{26}')->name('projects.destroy');
 
             // L2-008: the member's own photo.
             Route::post('me/photo', [ProfilePhotoController::class, 'store'])
