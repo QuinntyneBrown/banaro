@@ -22,3 +22,44 @@
   font: var(--text-body-sm);
   color: var(--color-danger-fg);
 }
+/* Extracted from docs/design-system/assets/components.css: field, photo-edit. */
+.field {
+  display: grid;
+  gap: var(--space-2);
+}
+.field__label {
+  font: var(--text-label);
+  color: var(--color-fg-default);
+}
+.field__help {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--color-fg-muted);
+}
+.photo-edit {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+.photo-edit__img {
+  width: var(--space-24);
+  height: var(--space-24);
+  flex: none;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  background: var(--color-bg-subtle);
+}
+/* No photo: the initials tile at the photo's size (L2-008 criterion 5). */
+.photo-edit__initials {
+  display: grid;
+  place-items: center;
+  background: var(--color-accent-subtle);
+  color: var(--color-fg-accent);
+  font: var(--text-h2);
+}
+.photo-edit__text {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}

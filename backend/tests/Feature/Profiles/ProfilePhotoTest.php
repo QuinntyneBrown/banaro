@@ -141,6 +141,17 @@ class ProfilePhotoTest extends TestCase
         $this->assertSame([480, 480, IMAGETYPE_WEBP], [$size[0], $size[1], $size[2]]);
     }
 
+    public function test_the_session_names_the_photo_so_the_header_can_show_it(): void
+    {
+        Queue::fake();
+        $this->actingAs($this->member)->getJson('/api/v1/session')->assertJsonPath('member.photo_url', null);
+
+        $id = $this->upload($this->file('a.jpg', $this->image('jpeg', 480, 480)))->json('id');
+        $this->scanAll();
+
+        $this->actingAs($this->member)->getJson('/api/v1/session')->assertJsonPath('member.photo_url', "/api/v1/photos/{$id}");
+    }
+
     public function test_png_and_webp_are_accepted(): void
     {
         Queue::fake();

@@ -10,6 +10,9 @@ export class ProfileEditPage {
   readonly errorSummary: Locator;
   readonly saved: Locator;
   readonly alert: Locator;
+  readonly photo: Locator;
+  readonly initials: Locator;
+  readonly changePhoto: Locator;
   readonly name: Locator;
   readonly headline: Locator;
   readonly neighbourhood: Locator;
@@ -33,6 +36,9 @@ export class ProfileEditPage {
     this.errorSummary = main.locator('.form-summary');
     this.saved = main.locator('.alert--success');
     this.alert = main.locator('.alert--danger');
+    this.photo = main.getByRole('img', { name: 'Your current photo' });
+    this.initials = main.locator('.photo-edit__initials');
+    this.changePhoto = main.getByRole('button', { name: 'Change photo' });
     this.name = main.getByLabel('Full name');
     this.headline = main.getByLabel('Role', { exact: true });
     this.neighbourhood = main.getByLabel('Neighbourhood', { exact: true });

@@ -87,6 +87,40 @@
               </bn-alert>
             }
 
+            <div class="field">
+              <span class="field__label" id="photo-label">{{
+                'profiles.edit.photo.label' | t
+              }}</span>
+              <div class="photo-edit" role="group" aria-labelledby="photo-label">
+                @if (profile()?.photoUrl; as photoUrl) {
+                  <img
+                    class="photo-edit__img"
+                    [src]="photoUrl"
+                    width="96"
+                    height="96"
+                    [alt]="'profiles.edit.photo.current' | t"
+                  />
+                } @else {
+                  <span class="photo-edit__img photo-edit__initials" aria-hidden="true">{{
+                    initials()
+                  }}</span>
+                }
+                <div class="photo-edit__text">
+                  <button
+                    bn-button
+                    variant="quiet"
+                    size="sm"
+                    type="button"
+                    [disabled]="saving()"
+                    (click)="changePhoto()"
+                  >
+                    {{ 'profiles.edit.photo.change' | t }}
+                  </button>
+                  <p class="field__help">{{ 'profiles.edit.photo.help' | t }}</p>
+                </div>
+              </div>
+            </div>
+
             <div bn-field-row>
               <bn-field
                 [label]="'profiles.edit.name' | t"

@@ -59,6 +59,7 @@ class SessionTest extends TestCase
             'email_verified' => true,
             'onboarding_complete' => false,
             'builder_id' => null,
+            'photo_url' => null,
         ]]);
 
         $this->assertAuthenticatedAs($user, 'web');

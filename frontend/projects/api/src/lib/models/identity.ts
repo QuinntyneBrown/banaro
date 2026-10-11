@@ -20,6 +20,8 @@ export interface MemberSession {
   onboardingComplete: boolean;
   /** The public profile's id, once onboarding has started. */
   builderId: string | null;
+  /** The member's ready photo, or null for the initials tile (L2-008). */
+  photoUrl: string | null;
 }
 
 /** What opening a verification link did (L2-002). */

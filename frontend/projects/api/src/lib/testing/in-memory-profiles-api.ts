@@ -5,6 +5,9 @@ import {
   OnboardingProgress,
   OnboardingStep,
   OwnProfile,
+  PhotoCrop,
+  PhotoUploadEvent,
+  ProfilePhoto,
   ProfileUpdate,
   SkillEntry,
 } from '../models/profiles';
@@ -52,6 +55,27 @@ export class InMemoryProfilesApi implements ProfilesApi {
     );
     this.ownProfile = { ...this.ownProfile, ...update, skills };
     return of(this.ownProfile);
+  }
+
+  /** Uploads are accepted and become ready at once. */
+  uploadPhoto(file: File, crop: PhotoCrop): Observable<PhotoUploadEvent> {
+    void crop;
+    const photo: ProfilePhoto = {
+      id: `photo-${file.name}`,
+      status: 'ready',
+      url: `/photos/${file.name}`,
+    };
+    this.ownProfile = { ...this.ownProfile, photoUrl: photo.url };
+    return of<PhotoUploadEvent[]>({ kind: 'progress', percent: 100 }, { kind: 'accepted', photo });
+  }
+
+  getPhoto(id: string): Observable<ProfilePhoto> {
+    return of({ id, status: 'ready', url: this.ownProfile.photoUrl });
+  }
+
+  removePhoto(): Observable<void> {
+    this.ownProfile = { ...this.ownProfile, photoUrl: null };
+    return of(undefined);
   }
 
   getOnboarding(): Observable<OnboardingProgress> {

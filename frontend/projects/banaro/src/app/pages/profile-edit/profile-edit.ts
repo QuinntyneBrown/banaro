@@ -31,6 +31,7 @@ import {
   ChipList,
   Choice,
   Choices,
+  DialogService,
   EmptyState,
   Field,
   fieldDescriptionId,
@@ -41,12 +42,18 @@ import {
   FormSection,
   FormSummary,
   Input,
+  initialsOf,
   InputGroup,
   PageHeader,
   Skeleton,
   Textarea,
   ToastService,
 } from 'components';
+import {
+  ChangePhotoData,
+  ChangePhotoDialog,
+  ChangePhotoResult,
+} from '../../dialogs/change-photo/change-photo';
 import { SeoService } from '../../shared/seo.service';
 
 type State = 'loading' | 'error' | 'ready';
@@ -94,6 +101,7 @@ export class ProfileEditPage {
   private readonly session = inject(SessionStore);
   private readonly i18n = inject(TranslationService);
   private readonly toasts = inject(ToastService);
+  private readonly dialogs = inject(DialogService);
   private readonly injector = inject(Injector);
   private readonly document = inject(DOCUMENT);
 
@@ -124,6 +132,7 @@ export class ProfileEditPage {
     const id = this.profile()?.id ?? this.session.member()?.builderId;
     return id ? ['/builders', id] : ['/dashboard'];
   });
+  protected readonly initials = computed(() => initialsOf(this.profile()?.name ?? ''));
   protected readonly bioCounter = computed(
     () => `${formatNumber(this.bio().length)} / ${formatNumber(BIO_MAX)}`,
   );
@@ -141,6 +150,23 @@ export class ProfileEditPage {
       noindex: true,
     });
     this.load();
+  }
+
+  /** Opens the change-photo dialog; a new or removed photo shows here and in the header (L2-008). */
+  protected changePhoto(): void {
+    const ref = this.dialogs.open<ChangePhotoDialog, ChangePhotoData, ChangePhotoResult>(
+      ChangePhotoDialog,
+      {
+        data: { hasPhoto: !!this.profile()?.photoUrl },
+        described: true,
+        autoFocus: 'input[type=file]',
+      },
+    );
+    ref.closed.subscribe((result) => {
+      if (!result) return;
+      this.profile.update((profile) => profile && { ...profile, photoUrl: result.photoUrl });
+      this.session.member.update((member) => member && { ...member, photoUrl: result.photoUrl });
+    });
   }
 
   protected load(): void {

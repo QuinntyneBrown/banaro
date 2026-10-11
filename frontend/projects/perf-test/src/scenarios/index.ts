@@ -12,6 +12,7 @@ import Dialog from './Dialog';
 import EmptyState from './EmptyState';
 import ErrorPage from './ErrorPage';
 import Field from './Field';
+import FileUpload from './FileUpload';
 import Footer from './Footer';
 import FormLayout from './FormLayout';
 import FormSummary from './FormSummary';
@@ -43,6 +44,7 @@ export const scenarios: Record<string, Type<unknown>> = {
   EmptyState,
   ErrorPage,
   Field,
+  FileUpload,
   Footer,
   FormLayout,
   FormSummary,

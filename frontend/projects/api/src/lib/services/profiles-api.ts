@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEventType } from '@angular/common/http';
 import { inject, Injectable, InjectionToken } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { filter, map, Observable } from 'rxjs';
 import {
   BuilderRole,
   ExperienceEntry,
@@ -11,7 +11,10 @@ import {
   OnboardingStep,
   OpenTo,
   OwnProfile,
+  PhotoCrop,
+  PhotoUploadEvent,
   ProfileLink,
+  ProfilePhoto,
   ProfileUpdate,
   SkillEntry,
   SkillRef,
@@ -25,6 +28,10 @@ export interface ProfilesApi {
   completeOnboarding(): Observable<OnboardingProgress>;
   getOwnProfile(): Observable<OwnProfile>;
   updateOwnProfile(update: ProfileUpdate): Observable<OwnProfile>;
+  /** Sends the original file with the crop; the API crops, re-encodes and queues the scan. */
+  uploadPhoto(file: File, crop: PhotoCrop): Observable<PhotoUploadEvent>;
+  getPhoto(id: string): Observable<ProfilePhoto>;
+  removePhoto(): Observable<void>;
 }
 
 export const PROFILES_API = new InjectionToken<ProfilesApi>('PROFILES_API');
@@ -164,5 +171,37 @@ export class HttpProfilesApi implements ProfilesApi {
         building: update.building,
       })
       .pipe(map(toOwnProfile));
+  }
+
+  uploadPhoto(file: File, crop: PhotoCrop): Observable<PhotoUploadEvent> {
+    const body = new FormData();
+    body.append('photo', file, file.name);
+    body.append('crop[x]', String(crop.x));
+    body.append('crop[y]', String(crop.y));
+    body.append('crop[size]', String(crop.size));
+    return this.http
+      .post<ProfilePhoto>('/api/v1/me/photo', body, { observe: 'events', reportProgress: true })
+      .pipe(
+        filter(
+          (event) =>
+            event.type === HttpEventType.UploadProgress || event.type === HttpEventType.Response,
+        ),
+        map((event): PhotoUploadEvent => {
+          if (event.type === HttpEventType.Response) {
+            return { kind: 'accepted', photo: event.body as ProfilePhoto };
+          }
+          const total = event.type === HttpEventType.UploadProgress ? (event.total ?? 0) : 0;
+          const loaded = event.type === HttpEventType.UploadProgress ? event.loaded : 0;
+          return { kind: 'progress', percent: total ? Math.round((loaded / total) * 100) : 0 };
+        }),
+      );
+  }
+
+  getPhoto(id: string): Observable<ProfilePhoto> {
+    return this.http.get<ProfilePhoto>(`/api/v1/me/photo/${encodeURIComponent(id)}`);
+  }
+
+  removePhoto(): Observable<void> {
+    return this.http.delete<void>('/api/v1/me/photo');
   }
 }

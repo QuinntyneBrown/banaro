@@ -54,3 +54,10 @@ export class DistancePipe implements PipeTransform {
     return formatDistance(km);
   }
 }
+
+/** "13 KB" under 1 MB, "1.2 MB" from 1 MB, in binary units as upload limits are (L2-008). */
+export function formatFileSize(bytes: number): string {
+  const mb = bytes / (1024 * 1024);
+  if (mb < 1) return `${formatNumber(Math.max(1, Math.round(bytes / 1024)))} KB`;
+  return `${new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 1 }).format(mb)} MB`;
+}

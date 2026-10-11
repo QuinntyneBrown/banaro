@@ -82,3 +82,21 @@ export interface ProfileUpdate {
   lookingFor: string | null;
   building: string | null;
 }
+
+/** A square region of the original image, in its pixels, that becomes the photo (L2-008). */
+export interface PhotoCrop {
+  x: number;
+  y: number;
+  size: number;
+}
+
+/** An uploaded photo: pending while it waits for the scan, then ready (with a URL) or rejected. */
+export interface ProfilePhoto {
+  id: string;
+  status: 'pending' | 'ready' | 'rejected';
+  url: string | null;
+}
+
+/** What an upload reports: progress while the bytes go up, then the accepted photo. */
+export type PhotoUploadEvent =
+  { kind: 'progress'; percent: number } | { kind: 'accepted'; photo: ProfilePhoto };

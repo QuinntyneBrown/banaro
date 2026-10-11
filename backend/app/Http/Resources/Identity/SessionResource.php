@@ -19,7 +19,7 @@ class SessionResource extends JsonResource
     public function toArray(Request $request): array
     {
         $user = $this->resource;
-        $builder = $user?->builder()->first();
+        $builder = $user?->builder()->with('photo')->first();
 
         return ['member' => $user ? [
             'id' => $user->id,
@@ -29,6 +29,8 @@ class SessionResource extends JsonResource
             // Member pages wait for a finished onboarding (L2-006 criterion 1).
             'onboarding_complete' => (bool) $builder?->isComplete(),
             'builder_id' => $builder?->public_id,
+            // The header avatar shows the photo, or initials when there is none (L2-008).
+            'photo_url' => $builder?->photo?->url(),
         ] : null];
     }
 }

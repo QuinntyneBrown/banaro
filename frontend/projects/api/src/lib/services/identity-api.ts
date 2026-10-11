@@ -37,6 +37,7 @@ interface SessionBody {
     email_verified: boolean;
     onboarding_complete: boolean;
     builder_id: string | null;
+    photo_url: string | null;
   } | null;
 }
 
@@ -50,6 +51,7 @@ function toMember(body: SessionBody): MemberSession | null {
         emailVerified: m.email_verified,
         onboardingComplete: m.onboarding_complete,
         builderId: m.builder_id,
+        photoUrl: m.photo_url,
       }
     : null;
 }

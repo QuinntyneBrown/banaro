@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Selector | `a[bn-button]`, `button[bn-button]` |
+| Selector | `a[bn-button]`, `button[bn-button]`, `label[bn-button]` (the visible control of a hidden file input, see [file upload](file-upload.md)) |
 | Library path | `frontend/projects/components/src/lib/button/` |
 | Status | built |
 | Traces to | L2-001, L2-007, L2-008, L2-010, L2-014, L2-039, L2-048, L2-049, L2-050, L2-051, L2-052 |

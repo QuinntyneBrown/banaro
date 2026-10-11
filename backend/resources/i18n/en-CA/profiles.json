@@ -189,6 +189,46 @@
     },
     "save": "Save changes",
     "saving": "Saving…",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "photo": {
+      "label": "Photo",
+      "current": "Your current photo",
+      "change": "Change photo",
+      "help": "A clear, square photo works best. JPG, PNG or WebP, up to 5 MB."
+    }
+  },
+  "photo": {
+    "title": "Change your photo",
+    "description": "Builders see this on your profile and in the directory.",
+    "close": "Close dialog",
+    "newPhoto": "New photo",
+    "drop": "Drop a photo here",
+    "dropRest": "or choose one from your device.",
+    "choose": "Choose a photo",
+    "chooseAgain": "Choose a different photo",
+    "help": "JPG, PNG or WebP, up to 5 MB. Square photos look best.",
+    "previewAlt": "Preview of your new photo",
+    "uploading": "Uploading photo",
+    "save": "Save photo",
+    "saving": "Uploading…",
+    "tryAgain": "Try again",
+    "cancel": "Cancel",
+    "remove": "Remove photo",
+    "rejected": "We couldn't use that photo. Choose a different one.",
+    "failed": {
+      "title": "We couldn't upload your photo",
+      "body": "Your photo is still selected. Check your connection and try again."
+    },
+    "removeFailed": {
+      "title": "We couldn't remove your photo",
+      "body": "Your photo is still on your profile. Try again in a moment."
+    },
+    "errors": {
+      "type": "That file is a {type}. Choose a JPG, PNG or WebP image.",
+      "tooLarge": "That file is {size}. Choose an image of 5 MB or less.",
+      "typeAndSize": "That file is a {type} and {size}. Choose a JPG, PNG or WebP under 5 MB.",
+      "tooSmall": "That image is {width} × {height} pixels. Choose one at least 480 × 480.",
+      "unreadable": "We couldn't read that image. Choose a different photo."
+    }
   }
 }

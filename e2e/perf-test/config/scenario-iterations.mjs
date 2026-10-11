@@ -4,6 +4,7 @@ export const scenarioIterations = {
   DarkTheme: 80,
   Dialog: 300,
   ErrorPage: 300,
+  FileUpload: 400,
   Footer: 250,
   FormLayout: 300,
   List: 350,

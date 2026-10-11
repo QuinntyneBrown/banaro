@@ -15,7 +15,7 @@
       [cdkMenuPosition]="accountMenuPositions"
       [attr.aria-label]="'common.account.button' | t: { name: m.name }"
     >
-      <bn-avatar [name]="m.name" [initials]="initials()" decorative />
+      <bn-avatar [name]="m.name" [src]="m.photoUrl" [initials]="initials()" decorative />
       <span>{{ firstName() }}</span>
     </button>
   }

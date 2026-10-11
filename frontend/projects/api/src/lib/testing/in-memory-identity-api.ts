@@ -49,6 +49,7 @@ export class InMemoryIdentityApi implements IdentityApi {
       emailVerified: account.emailVerified,
       onboardingComplete: account.onboardingComplete,
       builderId: account.builderId,
+      photoUrl: null,
     };
     this.session = member;
     return of(member);

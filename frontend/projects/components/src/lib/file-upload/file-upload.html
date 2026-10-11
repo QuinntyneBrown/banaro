@@ -1,0 +1,87 @@
+<div class="field">
+  <span class="field__label" [id]="labelId()">{{ label() }}</span>
+  <div
+    class="dropzone"
+    role="group"
+    [class.dropzone--over]="over()"
+    [attr.aria-labelledby]="labelId()"
+    [attr.aria-invalid]="error() ? 'true' : null"
+    (dragover)="dragOver($event)"
+    (dragleave)="over.set(false)"
+    (drop)="dropped($event)"
+  >
+    @if (file(); as f) {
+      <div class="dropzone__file">
+        @if (error()) {
+          <span class="empty__icon empty__icon--error">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="8.5" />
+              <path d="M12 7.5v5M12 15.5h.01" />
+            </svg>
+          </span>
+        } @else if (f.previewUrl) {
+          <img [src]="f.previewUrl" width="64" height="64" [alt]="previewAlt()" />
+        }
+        <div>
+          <p class="rows__title">{{ f.name }}</p>
+          <p class="rows__meta">{{ f.size }}</p>
+        </div>
+      </div>
+    } @else {
+      <span class="empty__icon">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" />
+          <circle cx="9" cy="10" r="1.6" />
+          <path d="m4 18 5-5 4 4 3-3 4.5 4.5" />
+        </svg>
+      </span>
+      <p><ng-content /></p>
+    }
+    @if (!busy() && !chooseHidden()) {
+      <label bn-button variant="quiet" [attr.for]="controlId()">{{
+        error() ? chooseAgainLabel() : chooseLabel()
+      }}</label>
+      <input
+        #fileInput
+        class="vh"
+        type="file"
+        [id]="controlId()"
+        [name]="controlId()"
+        [accept]="accept()"
+        [attr.aria-invalid]="error() ? 'true' : null"
+        [attr.aria-describedby]="describedBy() || null"
+        (change)="picked($event)"
+      />
+      @if (removeLabel(); as remove) {
+        <button bn-button variant="quiet" type="button" (click)="removed.emit()">
+          {{ remove }}
+        </button>
+      }
+    }
+  </div>
+  @if (busy()) {
+    <div
+      class="progress"
+      role="progressbar"
+      [attr.aria-label]="progressLabel()"
+      [attr.aria-valuenow]="progress()"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      [attr.aria-busy]="progress() === null ? 'true' : null"
+    >
+      <div class="progress__bar" [style.width.%]="progress()"></div>
+    </div>
+  }
+  @if (help()) {
+    <p class="field__help" [id]="helpId()">{{ help() }}</p>
+  }
+  @if (error()) {
+    <p class="field__error" [id]="errorId()">
+      <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="8.5" />
+        <path d="M12 7.5v5M12 15.5h.01" />
+      </svg>
+      <span>{{ error() }}</span>
+    </p>
+  }
+</div>

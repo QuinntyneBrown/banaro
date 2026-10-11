@@ -10,11 +10,11 @@ export type ButtonVariant = 'default' | 'primary' | 'quiet' | 'text' | 'ghost' |
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 /**
- * Button styles on a native `<a>` or `<button>`, so the element keeps its own semantics and any
+ * Button styles on a native `<a>`, `<button>` or `<label>` (a file input's visible control), so the element keeps its own semantics and any
  * layout classes the consumer adds: `<a bn-button variant="primary" routerLink="/join">`.
  */
 @Component({
-  selector: 'a[bn-button], button[bn-button]',
+  selector: 'a[bn-button], button[bn-button], label[bn-button]',
   templateUrl: './button.html',
   styleUrl: './button.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

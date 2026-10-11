@@ -7,6 +7,8 @@ export class AccountMenu {
   readonly items: Locator;
   readonly signOut: Locator;
   readonly signInLink: Locator;
+  /** The photo in the account button, present only when the member has one. */
+  readonly photo: Locator;
 
   constructor(private readonly page: Page) {
     this.trigger = page.locator('header').getByRole('button', { name: /^Your account/ });
@@ -14,6 +16,7 @@ export class AccountMenu {
     this.items = this.menu.getByRole('menuitem');
     this.signOut = this.menu.getByRole('menuitem', { name: 'Sign out' });
     this.signInLink = page.locator('header').getByRole('link', { name: 'Sign in' });
+    this.photo = this.trigger.locator('img.avatar');
   }
 
   async open(): Promise<void> {
