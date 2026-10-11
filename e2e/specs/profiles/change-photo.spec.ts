@@ -153,6 +153,8 @@ test.describe('change profile photo', () => {
   });
 
   test('"Remove photo" brings the initials back', async ({ page }) => {
+    // Uploads, scans and removes a photo: three round trips through the API and the worker.
+    test.slow();
     const edit = await editingProfile(page, createBuilder({ name: 'Amara Osei' }));
     const dialog = new ChangePhotoDialog(page);
     const account = new AccountMenu(page);

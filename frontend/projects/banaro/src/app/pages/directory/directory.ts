@@ -11,20 +11,27 @@ import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
 import {
   BuilderCardSummary,
   DIRECTORY_API,
+  DirectoryFacets,
+  DirectoryFilters,
   DirectoryResultPage,
   DirectorySort,
+  DISTANCE_OPTIONS,
+  DistanceOption,
   formatDistance,
   formatNumber,
   lastSeen,
   MEMBER_SORTS,
+  NO_FILTERS,
   SessionStore,
   TranslatePipe,
   TranslationService,
   VISITOR_SORTS,
 } from 'api';
 import {
+  ActiveFilters,
   Button,
   Card,
+  DialogService,
   EmptyState,
   initialsOf,
   PageHeader,
@@ -47,7 +54,10 @@ import {
   timer,
   takeUntil,
 } from 'rxjs';
+import { decodeFilters, encodeFilters, hasFilters } from '../../shared/directory-query-codec';
 import { SeoService } from '../../shared/seo.service';
+import { distanceLabel, DirectoryFiltersForm } from './directory-filters';
+import { FilterSheet, FilterSheetData } from './filter-sheet';
 
 const PER_PAGE = 12;
 const TILES = ['sage', 'clay', 'fjord', 'oat'] as const;
@@ -61,17 +71,26 @@ interface DirectoryUrl {
   q: string;
   sort: DirectorySort;
   page: number;
+  filters: DirectoryFilters;
+}
+
+/** What makes a list: everything but the page, which "Show more" grows. */
+function listKey(url: DirectoryUrl): string {
+  return JSON.stringify([url.q, url.sort, encodeFilters(url.filters)]);
 }
 
 /**
- * `/builders`: the builder directory for members and visitors (L2-009). The query lives in the URL;
- * "Show more" appends the next page and records it there, so a reload shows the same list.
+ * `/builders`: the builder directory for members and visitors (L2-009), with facet filters for
+ * members (L2-010). The query and filters live in the URL; "Show more" appends the next page and
+ * records it there, so a reload shows the same list.
  */
 @Component({
   selector: 'bn-directory-page',
   imports: [
+    ActiveFilters,
     Button,
     Card,
+    DirectoryFiltersForm,
     EmptyState,
     PageHeader,
     Pagination,
@@ -92,6 +111,7 @@ export class DirectoryPage {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly dialogs = inject(DialogService);
 
   protected readonly member = computed(() => !!this.session.member()?.onboardingComplete);
   protected readonly sorts = computed(() => (this.member() ? MEMBER_SORTS : VISITOR_SORTS));
@@ -107,6 +127,16 @@ export class DirectoryPage {
   protected readonly loadedPage = signal(0);
   protected readonly lastPage = signal(1);
   protected readonly loadingMore = signal(false);
+  /** The last option counts; kept while a new page loads. */
+  protected readonly facets = signal<DirectoryFacets | null>(null);
+  protected readonly filtered = computed(() => hasFilters(this.url().filters));
+  protected readonly activeChips = computed(() => this.chipsFor(this.url().filters));
+  /** The next wider distance to suggest when nothing matches (D-044). */
+  protected readonly wider = computed<DistanceOption | null>(() => {
+    const current = this.url().filters.distance ?? 40;
+    const at = DISTANCE_OPTIONS.indexOf(current);
+    return at >= 0 && at < DISTANCE_OPTIONS.length - 1 ? DISTANCE_OPTIONS[at + 1] : null;
+  });
   protected readonly skeletons = Array.from({ length: PER_PAGE }, (_, i) => i);
 
   protected readonly range = computed(() => {
@@ -138,7 +168,7 @@ export class DirectoryPage {
     this.route.queryParamMap
       .pipe(
         map((params) => this.read(params)),
-        distinctUntilChanged((a, b) => a.q === b.q && a.sort === b.sort && a.page === b.page),
+        distinctUntilChanged((a, b) => listKey(a) === listKey(b) && a.page === b.page),
         takeUntilDestroyed(),
       )
       .subscribe((url) => this.reload(url, false));
@@ -156,16 +186,59 @@ export class DirectoryPage {
     this.navigate({ sort, page: null });
   }
 
+  protected setFilters(filters: DirectoryFilters): void {
+    this.navigate({ ...encodeFilters(filters), page: null });
+  }
+
+  protected clearFilters(): void {
+    this.setFilters(NO_FILTERS);
+  }
+
+  protected removeFilter(key: string): void {
+    const [group, value] = key.split(':') as [keyof DirectoryFilters, string];
+    const filters = this.url().filters;
+    if (group === 'distance') {
+      this.setFilters({ ...filters, distance: null });
+      return;
+    }
+    this.setFilters({
+      ...filters,
+      [group]: (filters[group] as string[]).filter((v) => v !== value),
+    });
+  }
+
+  protected widen(distance: DistanceOption): void {
+    this.setFilters({ ...this.url().filters, distance });
+  }
+
+  protected widenLabel(distance: DistanceOption): string {
+    return distance === 'any'
+      ? this.i18n.t('directory.noResults.anywhere')
+      : this.i18n.t('directory.noResults.within', { km: distance });
+  }
+
+  /** Below 992 px the filters open as a bottom sheet; they apply on "Apply" (L2-010 criterion 6). */
+  protected openFilters(): void {
+    const ref = this.dialogs.open<FilterSheet, FilterSheetData, DirectoryFilters>(FilterSheet, {
+      data: { facets: this.facets(), filters: this.url().filters },
+      sheetBelow: 'LG',
+      autoFocus: 'first-heading',
+    });
+    ref.closed.subscribe((filters) => {
+      if (filters) this.setFilters(filters);
+    });
+  }
+
   protected tryAgain(): void {
     this.retry.next();
   }
 
   protected more(): void {
-    const { q, sort } = this.url();
+    const { q, sort, filters } = this.url();
     const next = this.loadedPage() + 1;
     this.loadingMore.set(true);
     this.api
-      .searchBuilders({ q, sort, page: next, perPage: PER_PAGE })
+      .searchBuilders({ q, sort, page: next, perPage: PER_PAGE, filters })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
@@ -240,6 +313,8 @@ export class DirectoryPage {
       q: (params.get('q') ?? '').trim(),
       sort: sort && allowed.includes(sort) ? sort : allowed[0],
       page: Number.isInteger(page) && page > 0 ? page : 1,
+      // Filters are for members (D-044); a visitor's link ignores them.
+      filters: this.member() ? decodeFilters(params) : NO_FILTERS,
     };
   }
 
@@ -252,7 +327,7 @@ export class DirectoryPage {
     ) {
       return;
     }
-    this.listKey = `${url.q}|${url.sort}`;
+    this.listKey = listKey(url);
     this.state.set('loading');
     this.slow.set(false);
     const done = new Subject<void>();
@@ -284,12 +359,12 @@ export class DirectoryPage {
   private request?: { unsubscribe(): void };
 
   private sameList(url: DirectoryUrl): boolean {
-    return this.listKey === `${url.q}|${url.sort}`;
+    return this.listKey === listKey(url);
   }
 
   /** Loads the requested page and every page before it, as one list. */
   private loadThrough(url: DirectoryUrl): Observable<DirectoryResultPage> {
-    const query = { q: url.q, sort: url.sort, perPage: PER_PAGE };
+    const query = { q: url.q, sort: url.sort, perPage: PER_PAGE, filters: url.filters };
     return this.api.searchBuilders({ ...query, page: url.page }).pipe(
       switchMap((last) => {
         if (last.page <= 1) return of(last);
@@ -304,9 +379,45 @@ export class DirectoryPage {
   }
 
   private accept(result: DirectoryResultPage): void {
+    if (result.facets) this.facets.set(result.facets);
     this.total.set(result.total);
     this.loadedPage.set(result.page);
     this.lastPage.set(result.lastPage);
+  }
+
+  /** Removable chips for the filters in force, in group order. */
+  private chipsFor(
+    filters: DirectoryFilters,
+  ): { key: string; label: string; removeLabel: string }[] {
+    const facets = this.facets();
+    const chip = (key: string, label: string) => ({
+      key,
+      label,
+      removeLabel: this.i18n.t('directory.filters.remove', { label }),
+    });
+    const skillName = (slug: string) => facets?.skills.find((s) => s.slug === slug)?.name ?? slug;
+    const distance =
+      filters.distance === null
+        ? []
+        : [
+            chip(
+              'distance:',
+              filters.distance === 'any'
+                ? distanceLabel(this.i18n, 'any')
+                : this.i18n.t('directory.filters.distance.within', { km: filters.distance }),
+            ),
+          ];
+    return [
+      ...filters.role.map((r) =>
+        chip('role:' + r, this.i18n.t('directory.filters.role.' + camel(r))),
+      ),
+      ...filters.openTo.map((o) =>
+        chip('openTo:' + o, this.i18n.t('directory.openTo.' + camel(o))),
+      ),
+      ...filters.area.map((a) => chip('area:' + a, a)),
+      ...filters.skills.map((k) => chip('skills:' + k, skillName(k))),
+      ...distance,
+    ];
   }
 
   private navigate(params: Record<string, string | number | null>, replace = false): void {

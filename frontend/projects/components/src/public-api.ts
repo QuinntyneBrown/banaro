@@ -20,6 +20,7 @@ export * from './lib/empty-state/empty-state';
 export * from './lib/error-page/error-page';
 export * from './lib/field/field';
 export * from './lib/file-upload/file-upload';
+export * from './lib/filter-group/filter-group';
 export * from './lib/footer/footer';
 export * from './lib/form-layout/form-layout';
 export * from './lib/form-summary/form-summary';

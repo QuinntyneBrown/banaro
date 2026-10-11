@@ -12,7 +12,11 @@ export interface DialogOptions<D> {
   role?: 'dialog' | 'alertdialog';
   /** The dialog renders a description, so the panel names it in `aria-describedby`. */
   described?: boolean;
+  /** Width below which the dialog rises as a bottom sheet: 576 px (`SM`) or 992 px (`LG`). */
+  sheetBelow?: 'SM' | 'LG';
 }
+
+const SHEET_QUERIES = { SM: '(max-width: 35.99rem)', LG: '(max-width: 61.99rem)' } as const;
 
 let nextId = 0;
 
@@ -32,7 +36,8 @@ export class DialogService {
     options: DialogOptions<D> = {},
   ): DialogRef<R, C> {
     const id = `bn-dialog-${++nextId}`;
-    const sheet = !!this.document.defaultView?.matchMedia('(max-width: 35.99rem)').matches;
+    const query = SHEET_QUERIES[options.sheetBelow ?? 'SM'];
+    const sheet = !!this.document.defaultView?.matchMedia(query).matches;
     const position = this.overlay.position().global().centerHorizontally();
     return this.dialog.open<R, D, C>(component, {
       id,

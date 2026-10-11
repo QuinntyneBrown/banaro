@@ -57,8 +57,17 @@
   font-size: var(--font-size-lg);
 }
 .card__name a {
+  display: block;
   color: inherit;
   text-decoration: none;
+}
+/* Long names and roles end in an ellipsis on one line, so every card keeps its layout; the full
+   text stays in the link and the accessible name (L2-010 criterion 7, D-044). */
+.card__name a,
+.card__role {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .card__name a:hover {
   text-decoration: underline;
@@ -90,8 +99,6 @@
   font: var(--text-body-sm);
   color: var(--color-fg-muted);
 }
-.card__name,
-.card__role,
 .card__place,
 .card__facts dd {
   overflow-wrap: anywhere;

@@ -15,18 +15,56 @@
     />
   </bn-page-header>
 
-  <div class="dir">
+  <div class="dir" [class.dir--filters]="member()">
+    @if (member()) {
+      <aside class="filters" aria-labelledby="filters-title">
+        <div class="filters__head">
+          <h2 class="filters__title" id="filters-title">{{ 'directory.filters.title' | t }}</h2>
+          @if (filtered()) {
+            <button bn-button variant="text" size="sm" type="button" (click)="clearFilters()">
+              {{ 'directory.filters.clearAll' | t }}
+            </button>
+          }
+        </div>
+        <bn-directory-filters
+          [facets]="facets()"
+          [filters]="url().filters"
+          (filtersChange)="setFilters($event)"
+        />
+      </aside>
+    }
     <section id="results" aria-labelledby="results-title">
       <h2 class="vh" id="results-title">{{ 'directory.resultsTitle' | t }}</h2>
       <div class="toolbar">
         <p class="toolbar__count" aria-live="polite">
           @if (state() === 'ready') {
-            {{ 'directory.count.showing' | t }} <strong>{{ range() }}</strong>
-            {{ 'directory.count.of' | t }} <strong>{{ totalText() }}</strong>
-            {{ 'directory.count.noun' | t: { count: total() } }}
+            @if (total() === 0) {
+              <strong>0</strong> {{ 'directory.count.none' | t }}
+            } @else {
+              {{ 'directory.count.showing' | t }} <strong>{{ range() }}</strong>
+              {{ 'directory.count.of' | t }} <strong>{{ totalText() }}</strong>
+              {{ 'directory.count.noun' | t: { count: total() } }}
+            }
           }
         </p>
         <div class="toolbar__tools">
+          @if (member()) {
+            <button
+              bn-button
+              variant="quiet"
+              size="sm"
+              type="button"
+              class="filters-btn"
+              (click)="openFilters()"
+            >
+              <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7h9M17 7h3M4 17h3M11 17h9" />
+                <circle cx="15" cy="7" r="2" />
+                <circle cx="9" cy="17" r="2" />
+              </svg>
+              {{ 'directory.filters.title' | t }}
+            </button>
+          }
           <label class="select">
             <span>{{ 'directory.sort.label' | t }}</span>
             <span class="select__wrap">
@@ -49,6 +87,17 @@
           </label>
         </div>
       </div>
+
+      @if (activeChips().length) {
+        <bn-active-filters
+          class="active-filters"
+          [label]="'directory.filters.active' | t"
+          [chips]="activeChips()"
+          [clearLabel]="'directory.filters.clearAll' | t"
+          (removed)="removeFilter($event)"
+          (cleared)="clearFilters()"
+        />
+      }
 
       @switch (state()) {
         @case ('error') {
@@ -77,6 +126,33 @@
           }
         }
         @default {
+          @if (total() === 0) {
+            <bn-empty-state [heading]="'directory.noResults.title' | t">
+              {{ 'directory.noResults.body' | t }}
+              @if (filtered()) {
+                <button
+                  slot="actions"
+                  bn-button
+                  variant="primary"
+                  type="button"
+                  (click)="clearFilters()"
+                >
+                  {{ 'directory.noResults.clear' | t }}
+                </button>
+              }
+              @if (member() && wider(); as next) {
+                <button
+                  slot="actions"
+                  bn-button
+                  variant="quiet"
+                  type="button"
+                  (click)="widen(next)"
+                >
+                  {{ widenLabel(next) }}
+                </button>
+              }
+            </bn-empty-state>
+          }
           <ul class="results">
             @for (card of items(); track card.id; let i = $index) {
               <li>

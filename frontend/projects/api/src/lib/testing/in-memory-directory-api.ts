@@ -18,6 +18,8 @@ export class InMemoryDirectoryApi implements DirectoryApi {
       page,
       perPage,
       lastPage,
+      facets: null,
+      distanceKm: null,
     });
   }
 }

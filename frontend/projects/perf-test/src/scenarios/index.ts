@@ -1,4 +1,5 @@
 import { Type } from '@angular/core';
+import ActiveFilters from './ActiveFilters';
 import Alert from './Alert';
 import AuthCard from './AuthCard';
 import Avatar from './Avatar';
@@ -11,11 +12,13 @@ import Card from './Card';
 import Choice from './Choice';
 import DarkTheme from './DarkTheme';
 import Dialog from './Dialog';
+import DirectoryFilters from './DirectoryFilters';
 import DirectoryResults from './DirectoryResults';
 import EmptyState from './EmptyState';
 import ErrorPage from './ErrorPage';
 import Field from './Field';
 import FileUpload from './FileUpload';
+import FilterGroup from './FilterGroup';
 import Footer from './Footer';
 import FormLayout from './FormLayout';
 import FormSummary from './FormSummary';
@@ -36,6 +39,7 @@ import TopBar from './TopBar';
 
 /** Every scenario by name. Add a new component's scenario here in the same change. */
 export const scenarios: Record<string, Type<unknown>> = {
+  ActiveFilters,
   Alert,
   AuthCard,
   Avatar,
@@ -48,11 +52,13 @@ export const scenarios: Record<string, Type<unknown>> = {
   Choice,
   DarkTheme,
   Dialog,
+  DirectoryFilters,
   DirectoryResults,
   EmptyState,
   ErrorPage,
   Field,
   FileUpload,
+  FilterGroup,
   Footer,
   FormLayout,
   FormSummary,

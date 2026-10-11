@@ -57,6 +57,41 @@ export class DirectoryPage {
     this.tryAgain = main.getByRole('button', { name: 'Try again' });
   }
 
+  /** The filter panel: the sidebar at 992 px and wider, the bottom sheet below. */
+  filters(): DirectoryFilters {
+    return new DirectoryFilters(
+      this.page.getByRole('main').locator('aside.filters').or(this.page.getByRole('dialog', { name: 'Filters' })),
+    );
+  }
+
+  get filtersButton(): Locator {
+    return this.page.getByRole('main').getByRole('button', { name: 'Filters' });
+  }
+
+  get filterSheet(): Locator {
+    return this.page.getByRole('dialog', { name: 'Filters' });
+  }
+
+  get activeFilters(): Locator {
+    return this.page.getByRole('main').getByRole('list', { name: 'Active filters' }).getByRole('button');
+  }
+
+  get clearAll(): Locator {
+    return this.page.getByRole('main').locator('.cluster').getByRole('button', { name: 'Clear all' });
+  }
+
+  get noResults(): Locator {
+    return this.page.getByRole('main').locator('.empty__title');
+  }
+
+  get clearAllFilters(): Locator {
+    return this.page.getByRole('main').getByRole('button', { name: 'Clear all filters' });
+  }
+
+  get widen(): Locator {
+    return this.page.getByRole('main').getByRole('button', { name: /^Search (within \d+ km|anywhere in the GTA)$/ });
+  }
+
   async open(query = ''): Promise<void> {
     await this.page.goto(`/builders${query}`);
     await waitForApp(this.page);
@@ -95,5 +130,39 @@ export class DirectoryPage {
 
   async restoreResults(): Promise<void> {
     await this.page.unroute('**/api/v1/builders?**');
+  }
+}
+
+/** The filter groups, in the sidebar or the sheet. */
+export class DirectoryFilters {
+  readonly groups: Locator;
+  readonly apply: Locator;
+
+  constructor(readonly root: Locator) {
+    this.groups = root.locator('fieldset');
+    this.apply = root.getByRole('button', { name: /^Apply/ });
+  }
+
+  group(legend: 'Role' | 'Open to' | 'Neighbourhood or city' | 'Distance' | 'Popular skills'): Locator {
+    return this.root.getByRole('group', { name: legend });
+  }
+
+  /** A checkbox or radio option, named by its label and count ("Engineers 2"). */
+  option(
+    legend: 'Role' | 'Open to' | 'Neighbourhood or city' | 'Distance',
+    label: string,
+  ): Locator {
+    return this.group(legend).getByRole(legend === 'Distance' ? 'radio' : 'checkbox', {
+      name: new RegExp(`^${label}( \\d+)?$`),
+    });
+  }
+
+  skill(name: string): Locator {
+    return this.group('Popular skills').getByRole('button', { name: new RegExp(`^${name}`) });
+  }
+
+  /** The count beside an option, as text. */
+  count(legend: 'Role' | 'Open to' | 'Neighbourhood or city', label: string): Locator {
+    return this.group(legend).locator('.check', { hasText: label }).locator('.check__count');
   }
 }
