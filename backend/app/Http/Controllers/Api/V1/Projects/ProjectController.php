@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1\Projects;
 
+use App\Actions\Projects\BrowseProjects;
 use App\Actions\Projects\DeleteProject;
 use App\Actions\Projects\ShareProject;
 use App\Actions\Projects\UpdateProject;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Projects\BrowseProjectsRequest;
 use App\Http\Requests\Projects\ShareProjectRequest;
+use App\Http\Resources\Projects\ProjectCardResource;
 use App\Http\Resources\Projects\ProjectResource;
 use App\Models\Project;
 use App\Services\TrustAndSafety\BlockService;
@@ -18,6 +21,27 @@ use Illuminate\Support\Facades\Gate;
 /** Projects members share (L2-012, L2-013). The owner always comes from the session. */
 class ProjectController extends Controller
 {
+    /** Anyone may browse projects (L2-015). */
+    public function index(BrowseProjectsRequest $request, BrowseProjects $browse): JsonResponse
+    {
+        $result = $browse->handle(
+            $request->user(),
+            $request->validated('q'),
+            array_values(array_unique($request->validated('stage') ?? [])),
+            array_values(array_unique($request->validated('looking_for') ?? [])),
+            (int) ($request->validated('page') ?? 1),
+            BrowseProjectsRequest::PER_PAGE,
+        );
+
+        return response()->json([
+            'items' => ProjectCardResource::collection($result['items'])->resolve($request),
+            'total' => $result['total'],
+            'page' => $result['page'],
+            'per_page' => BrowseProjectsRequest::PER_PAGE,
+            'last_page' => $result['last_page'],
+        ]);
+    }
+
     /**
      * Anyone may read a project (D-051); one whose owner and the member have blocked each other
      * answers the same 404 as a missing one (D-052).

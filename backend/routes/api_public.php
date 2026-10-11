@@ -58,6 +58,8 @@ Route::get('builders/{builder}', [BuilderProfileController::class, 'show'])
     ->where('builder', '[0-9a-z]{26}')
     ->name('builders.show');
 
+// L2-015: visitors browse projects.
+Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
 // L2-013 criterion 6: visitors read projects.
 Route::get('projects/{project}', [ProjectController::class, 'show'])
     ->where('project', '[0-9a-z]{26}')
