@@ -1,6 +1,7 @@
 import { deps, type Deps } from '../container';
 import { assignRequestId } from './middleware/assign-request-id';
 import { logRequest } from './middleware/log-request';
+import { maintenance } from './middleware/maintenance';
 import { securityHeaders } from './middleware/security-headers';
 
 /** What every middleware and handler sees for one request. */
@@ -34,7 +35,10 @@ export class HttpError extends Error {
 
 export const notFound = () => new HttpError(404, { message: 'Not Found' });
 
-/** Innermost step: turns any error into a response, so outer middleware see the final status. */
+/**
+ * Turns any error from later middleware or the handler into a response, so the outer middleware
+ * see the final status.
+ */
 const errorBoundary: Middleware = async (ctx, next) => {
   try {
     return await next();
@@ -48,14 +52,18 @@ const errorBoundary: Middleware = async (ctx, next) => {
 };
 
 /** Request logging stays outermost so it logs the final status after error handling (L2-053). */
-export const globalStack: Middleware[] = [logRequest, assignRequestId, securityHeaders];
+export const globalStack: Middleware[] = [
+  logRequest,
+  assignRequestId,
+  securityHeaders,
+  errorBoundary,
+];
 
 /** Routes under /api/v1. Session, CSRF and rate limiting join this stack as they are ported. */
-export const apiStack: Middleware[] = [...globalStack];
+export const apiStack: Middleware[] = [...globalStack, maintenance];
 
 /** Wraps a route handler in its middleware stack. */
 export function handle(stack: Middleware[], handler: (ctx: Ctx) => Promise<Response>) {
-  const chain = [...stack, errorBoundary];
   return async (req: Request, context: RouteContext): Promise<Response> => {
     const params = (await context.params) ?? {};
     const ctx: Ctx = {
@@ -67,7 +75,7 @@ export function handle(stack: Middleware[], handler: (ctx: Ctx) => Promise<Respo
       deps: deps(),
     };
     const run = (i: number): Promise<Response> =>
-      i < chain.length ? chain[i](ctx, () => run(i + 1)) : handler(ctx);
+      i < stack.length ? stack[i](ctx, () => run(i + 1)) : handler(ctx);
     return run(0);
   };
 }

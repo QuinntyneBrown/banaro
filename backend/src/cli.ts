@@ -1,4 +1,5 @@
 import { checkI18nKeys } from './console/commands/i18n-check';
+import { maintenanceOff, maintenanceOn } from './console/commands/maintenance';
 import { migrate } from './console/commands/migrate';
 import { seed } from './console/commands/seed';
 import { deps } from './container';
@@ -10,6 +11,11 @@ const commands: Record<string, (args: string[]) => Promise<void>> = {
     if (args.includes('--seed')) await seed(deps().db);
   },
   seed: () => seed(deps().db),
+  'maintenance:on': async (args) => {
+    const retry = Number(args.find((arg) => arg.startsWith('--retry='))?.slice(8) ?? 600);
+    await maintenanceOn(deps().redis, retry);
+  },
+  'maintenance:off': () => maintenanceOff(deps().redis),
   'i18n:check': async (args) => {
     const option = args.find((arg) => arg.startsWith('--frontend='));
     process.exitCode = await checkI18nKeys({ frontend: option?.slice(11) ?? '../frontend' });
