@@ -1,7 +1,8 @@
 import { apiRequestsPerMinute } from '../../config/security';
 import { canonicalEmail } from '../../db/schema/users';
 import { clientHash, clientIp } from '../../services/security/client-fingerprint';
-import { HttpError, type Ctx, type Middleware } from '../pipeline';
+import { HttpError } from '../errors';
+import type { Ctx, Middleware } from '../pipeline';
 import { rateLimiter } from '../rate-limiter';
 
 interface Limit {

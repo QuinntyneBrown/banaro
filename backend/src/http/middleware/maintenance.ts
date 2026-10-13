@@ -1,5 +1,6 @@
 import { MAINTENANCE_KEY } from '../../console/commands/maintenance';
-import { HttpError, type Middleware } from '../pipeline';
+import { HttpError } from '../errors';
+import type { Middleware } from '../pipeline';
 
 /**
  * While maintenance mode is on, every API request answers 503 with Retry-After and a body the web

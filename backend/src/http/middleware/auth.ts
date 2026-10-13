@@ -1,5 +1,6 @@
 import { t } from '../../services/user-experience/catalogue-service';
-import { HttpError, type Middleware } from '../pipeline';
+import { HttpError } from '../errors';
+import type { Middleware } from '../pipeline';
 
 /** No session: the app opens the session-expired dialog on this code (L2-005 criterion 1). */
 export const auth: Middleware = async (ctx, next) => {

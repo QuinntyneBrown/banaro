@@ -3,7 +3,8 @@ import { nowStamp } from '../../clock';
 import { orm } from '../../db/orm';
 import { builders } from '../../db/schema/builders';
 import { t } from '../../services/user-experience/catalogue-service';
-import { HttpError, type Middleware } from '../pipeline';
+import { HttpError } from '../errors';
+import type { Middleware } from '../pipeline';
 
 /**
  * Member features need a verified address: an unverified account gets 403 `email_unverified`, and

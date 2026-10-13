@@ -1,4 +1,5 @@
-import { HttpError, type Middleware } from '../pipeline';
+import { HttpError } from '../errors';
+import type { Middleware } from '../pipeline';
 
 const SAFE = new Set(['GET', 'HEAD', 'OPTIONS']);
 

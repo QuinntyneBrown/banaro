@@ -1,5 +1,6 @@
 import type { User } from '../db/schema/users';
 import { deps, type Deps } from '../container';
+import { HttpError, notFound } from './errors';
 import type { Session } from './session';
 import { assignRequestId } from './middleware/assign-request-id';
 import { auth } from './middleware/auth';
@@ -36,18 +37,7 @@ interface RouteContext {
   params: Promise<Record<string, string> | undefined>;
 }
 
-/** An error with a known HTTP status and body. */
-export class HttpError extends Error {
-  constructor(
-    readonly status: number,
-    readonly body: Record<string, unknown>,
-    readonly headers: Record<string, string> = {},
-  ) {
-    super(`HTTP ${status}`);
-  }
-}
-
-export const notFound = () => new HttpError(404, { message: 'Not Found' });
+export { HttpError, notFound };
 
 /** Known errors become their response; anything else is a generic 500 carrying the request id. */
 function render(error: unknown, ctx: Ctx): Response {

@@ -1,6 +1,6 @@
 import { GET as csrfCookie } from '../../app/sanctum/csrf-cookie/route';
 
-type Handler = (
+export type Handler = (
   req: Request,
   context: { params: Promise<Record<string, string> | undefined> },
 ) => Promise<Response>;
