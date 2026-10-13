@@ -5,16 +5,21 @@ export interface MailContent {
   intro: string[];
   action?: { text: string; url: string };
   outro?: string[];
+  /** A trusted catalogue line after the others; a Markdown link in it becomes a link. */
+  footer?: string;
 }
 
+const MARKDOWN_LINK = /\[([^\]]+)\]\(([^)\s]+)\)/g;
+
 /** Plain text and HTML of a transactional e-mail: greeting, lines, one button, sign-off. */
-export function renderMail({ greeting, intro, action, outro = [] }: MailContent) {
+export function renderMail({ greeting, intro, action, outro = [], footer }: MailContent) {
   const signOff = ['Regards,', 'Banaro'];
   const text = [
     ...(greeting ? [greeting, ''] : []),
     ...intro.flatMap((line) => [line, '']),
     ...(action ? [`${action.text}: ${action.url}`, ''] : []),
     ...outro.flatMap((line) => [line, '']),
+    ...(footer ? [footer.replace(MARKDOWN_LINK, '$1: $2'), ''] : []),
     ...signOff,
   ].join('\n');
 
@@ -29,6 +34,9 @@ export function renderMail({ greeting, intro, action, outro = [] }: MailContent)
         ]
       : []),
     ...outro.map(paragraph),
+    ...(footer
+      ? [`<p>${escapeHtml(footer).replace(MARKDOWN_LINK, '<a href="$2">$1</a>')}</p>`]
+      : []),
     `<p>${signOff.map(escapeHtml).join('<br>')}</p>`,
     '</body></html>',
   ].join('\n');

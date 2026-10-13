@@ -1,3 +1,4 @@
+import { deps } from '../../src/container';
 import type { Mail, Mailer } from '../../src/contracts/mailer';
 import type { JobDefinition, JobQueue } from '../../src/contracts/queue';
 
@@ -20,5 +21,12 @@ export class FakeQueue implements JobQueue {
 
   payloads<P>(job: JobDefinition<P>): P[] {
     return this.pushed.filter((entry) => entry.job === job).map((entry) => entry.payload as P);
+  }
+}
+
+/** Runs each dispatched job at once, as Laravel's sync queue did in the PHP tests. */
+export class SyncQueue implements JobQueue {
+  async dispatch<P>(job: JobDefinition<P>, payload: P): Promise<void> {
+    await job.handle(payload, deps());
   }
 }
