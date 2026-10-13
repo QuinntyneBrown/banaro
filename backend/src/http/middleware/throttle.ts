@@ -12,6 +12,8 @@ interface Limit {
 const limiters: Record<string, (ctx: Ctx) => Limit[]> = {
   // Visitors write to the team at most 3 times an hour (L2-040 criterion 3).
   contact: (ctx) => [{ key: clientHash(`ip:${clientIp(ctx.req)}`), max: 3, windowSeconds: 3600 }],
+  // Join: 5 attempts per address in 10 minutes (L2-001 criterion 6).
+  join: (ctx) => [{ key: clientHash(`ip:${clientIp(ctx.req)}`), max: 5, windowSeconds: 600 }],
 };
 
 /**
