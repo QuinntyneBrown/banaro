@@ -4,6 +4,7 @@ import type pg from 'pg';
 import { nowStamp } from '../../clock';
 import { orm } from '../../db/orm';
 import { emailVerifications } from '../../db/schema/email-verifications';
+import { users, type User } from '../../db/schema/users';
 import { webUrl } from '../../mail/layout';
 
 const LIFETIME_HOURS = 24;
@@ -34,4 +35,40 @@ export async function issueVerificationLink(db: pg.Pool, userId: number): Promis
     });
   });
   return webUrl(`/verify-email?token=${token}`);
+}
+
+/**
+ * Verifies the account behind an unused, unexpired link and marks the link used, in one
+ * transaction; the row lock makes two openings of one link verify once (L2-002 criteria 1, 2).
+ * False for an unknown, used or expired link, which changes nothing.
+ */
+export async function consumeVerificationLink(db: pg.Pool, token: string): Promise<boolean> {
+  return orm(db).transaction(async (tx) => {
+    const [row] = await tx
+      .select()
+      .from(emailVerifications)
+      .where(eq(emailVerifications.tokenHash, hashToken(token)))
+      .for('update');
+    const now = nowStamp();
+    if (!row || row.usedAt !== null || row.expiresAt <= now) return false;
+    await tx
+      .update(emailVerifications)
+      .set({ usedAt: now })
+      .where(eq(emailVerifications.id, row.id));
+    await tx
+      .update(users)
+      .set({ emailVerifiedAt: now })
+      .where(and(eq(users.id, row.userId), isNull(users.emailVerifiedAt)));
+    return true;
+  });
+}
+
+/** The account a link was issued to, whether or not the link is still usable. */
+export async function userForVerificationLink(db: pg.Pool, token: string): Promise<User | null> {
+  const [row] = await orm(db)
+    .select({ user: users })
+    .from(emailVerifications)
+    .innerJoin(users, eq(users.id, emailVerifications.userId))
+    .where(eq(emailVerifications.tokenHash, hashToken(token)));
+  return row?.user ?? null;
 }
