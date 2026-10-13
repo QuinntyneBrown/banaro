@@ -2,7 +2,11 @@ import { Redis } from 'ioredis';
 import pg from 'pg';
 import type { Logger } from 'pino';
 import { env } from './config/env';
+import type { Mailer } from './contracts/mailer';
+import type { JobQueue } from './contracts/queue';
+import { SmtpMailer } from './integrations/smtp-mailer';
 import { createLogger } from './logging';
+import { BullQueue } from './queue/bull-queue';
 
 export interface Deps {
   db: pg.Pool;
@@ -11,6 +15,8 @@ export interface Deps {
   /** Cache entries and rate-limit counters. */
   cache: Redis;
   logger: Logger;
+  queue: JobQueue;
+  mailer: Mailer;
 }
 
 // Kept on globalThis so `next dev` reloads reuse one pool and one set of Redis connections.
@@ -33,6 +39,8 @@ export function deps(): Deps {
     redis: new Redis(env.redisUrl, { ...redisOptions, db: env.redisDb }),
     cache: new Redis(env.redisUrl, { ...redisOptions, db: env.redisCacheDb }),
     logger: createLogger(),
+    queue: new BullQueue(),
+    mailer: new SmtpMailer(),
   };
   return { ...store.banaroDeps, ...store.banaroOverrides };
 }

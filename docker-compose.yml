@@ -41,6 +41,10 @@ services:
       timeout: 10s
       retries: 60
 
+  worker:
+    <<: *banaro-api
+    command: npm run worker
+
   postgres:
     image: postgres:16
     environment:

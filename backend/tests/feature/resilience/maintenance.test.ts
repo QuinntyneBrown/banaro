@@ -1,14 +1,17 @@
 // Acceptance Test
 // Traces to: L2-043
 // Description: In maintenance mode the API answers 503 with Retry-After and the expected time back,
-// and health and the translation catalogue still answer.
+// health and the translation catalogue still answer, and the worker runs no queued jobs.
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { GET as live } from '@/app/health/live/route';
 import { GET as ready } from '@/app/health/ready/route';
 import { GET as catalogue } from '@/app/api/v1/i18n/[locale]/route';
 import { maintenanceOff, maintenanceOn } from '@/src/console/commands/maintenance';
-import { deps } from '@/src/container';
+import { deps, setDeps } from '@/src/container';
+import { deliverContactMessage } from '@/src/jobs/public-site/deliver-contact-message';
+import { work } from '@/src/queue/work';
+import { InMemoryMailer } from '../../support/fakes';
 import { apiStack, handle } from '@/src/http/pipeline';
 
 const anyApiRoute = handle(apiStack, async () => Response.json({ ok: true }));
@@ -53,5 +56,24 @@ describe('maintenance mode', () => {
     await maintenanceOff(deps().redis);
 
     expect((await call(anyApiRoute, '/api/v1/contact-messages')).status).toBe(200);
+  });
+
+  it('runs no queued jobs until maintenance ends', async () => {
+    const mailer = new InMemoryMailer();
+    setDeps({ mailer });
+    await maintenanceOn(deps().redis, 600);
+    await deps().queue.dispatch(deliverContactMessage, {
+      name: 'Amara Osei',
+      email: 'amara@harvest.example',
+      topic: 'general',
+      message: 'Hello from the tests.',
+    });
+
+    expect(await work(deps(), 'mail', { once: true })).toBe(0);
+    expect(mailer.sent).toHaveLength(0);
+
+    await maintenanceOff(deps().redis);
+    expect(await work(deps(), 'mail', { once: true })).toBe(1);
+    expect(mailer.sent).toHaveLength(1);
   });
 });

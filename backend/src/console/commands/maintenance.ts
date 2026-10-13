@@ -13,3 +13,7 @@ export async function maintenanceOn(redis: Redis, retry: number): Promise<void> 
 export async function maintenanceOff(redis: Redis): Promise<void> {
   await redis.del(MAINTENANCE_KEY);
 }
+
+export async function isInMaintenance(redis: Redis): Promise<boolean> {
+  return (await redis.exists(MAINTENANCE_KEY)) === 1;
+}
