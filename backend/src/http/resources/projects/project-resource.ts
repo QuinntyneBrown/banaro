@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import type pg from 'pg';
 import { isoStamp } from '../../../clock';
 import { orm } from '../../../db/orm';
@@ -58,4 +58,45 @@ export async function projectResource(db: pg.Pool, project: Project, viewer: Use
     created_at: project.createdAt ? isoStamp(project.createdAt) : null,
     last_activity_at: project.lastActivityAt ? isoStamp(project.lastActivityAt) : null,
   };
+}
+
+/** The projects of one listing page as cards, loaded in two queries (L2-015 criterion 1). */
+export async function projectCards(db: pg.Pool, rows: Project[]) {
+  if (rows.length === 0) return [];
+  const roles = await orm(db)
+    .select()
+    .from(projectLookingFor)
+    .where(
+      inArray(
+        projectLookingFor.projectId,
+        rows.map((row) => row.id),
+      ),
+    );
+  const owners = new Map(
+    (
+      await orm(db)
+        .select({ userId: users.id, userName: users.name, publicId: builders.publicId, name: builders.name })
+        .from(users)
+        .leftJoin(builders, eq(builders.userId, users.id))
+        .where(
+          inArray(
+            users.id,
+            rows.map((row) => row.ownerId),
+          ),
+        )
+    ).map((owner) => [owner.userId, owner]),
+  );
+  return rows.map((project) => {
+    const owner = owners.get(project.ownerId);
+    const own = new Set(roles.filter((row) => row.projectId === project.id).map((row) => row.role));
+    return {
+      id: project.publicId,
+      name: project.name,
+      summary: project.summary,
+      stage: project.stage,
+      looking_for: LOOKING_FOR_ROLES.filter((role) => own.has(role)),
+      feedback_count: project.feedbackCount,
+      owner: { id: owner?.publicId ?? null, name: owner?.name ?? owner?.userName ?? null },
+    };
+  });
 }

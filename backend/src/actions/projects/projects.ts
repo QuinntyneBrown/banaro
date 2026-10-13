@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { and, desc, eq, exists, inArray, sql, type SQL } from 'drizzle-orm';
 import type pg from 'pg';
 import { nowStamp } from '../../clock';
 import { orm } from '../../db/orm';
@@ -6,8 +6,8 @@ import { projectLookingFor, projects, type Project } from '../../db/schema/proje
 import type { User } from '../../db/schema/users';
 import { HttpError, notFound } from '../../http/pipeline';
 import type { ProjectInput } from '../../http/requests/projects/share-project-request';
-import { normalizeSearch } from '../../services/directory/builder-search-text';
-import { isBlockedEitherWay } from '../../services/trust-and-safety/block-service';
+import { normalizeSearch, prefixQuery } from '../../services/directory/builder-search-text';
+import { isBlockedEitherWay, sqlBlockScope } from '../../services/trust-and-safety/block-service';
 import { t } from '../../services/user-experience/catalogue-service';
 import { ulid } from '../../ulid';
 
@@ -110,4 +110,57 @@ export async function viewProject(
   const project = await findProject(db, publicId);
   if (viewer && (await isBlockedEitherWay(db, viewer.id, project.ownerId))) throw notFound();
   return project;
+}
+
+/** Projects a page of the listing shows (L2-015 criterion 1). */
+export const PROJECTS_PER_PAGE = 12;
+
+/**
+ * One page of projects, most recently active first (L2-015). Search matches name and summary by word
+ * prefix; stages and roles each match any of their values, and all filters apply together. Projects
+ * of a member blocked either way are left out (L2-032). A page past the end shows the last one.
+ */
+export async function browseProjects(
+  db: pg.Pool,
+  viewer: User | null,
+  filters: { term: string | null; stages: string[]; roles: string[]; page: number },
+) {
+  const conditions: SQL[] = [];
+  if (viewer) conditions.push(sqlBlockScope(viewer.id, sql`${projects.ownerId}`));
+  if (filters.term !== null && filters.term.trim() !== '') {
+    const tsQuery = prefixQuery(filters.term);
+    conditions.push(
+      tsQuery === null
+        ? sql`false`
+        : sql`to_tsvector('simple', ${projects.searchText}) @@ to_tsquery('simple', ${tsQuery})`,
+    );
+  }
+  if (filters.stages.length) conditions.push(inArray(projects.stage, filters.stages));
+  if (filters.roles.length) {
+    conditions.push(
+      exists(
+        orm(db)
+          .select({ one: sql`1` })
+          .from(projectLookingFor)
+          .where(
+            and(
+              eq(projectLookingFor.projectId, projects.id),
+              inArray(projectLookingFor.role, filters.roles),
+            ),
+          ),
+      ),
+    );
+  }
+  const where = and(...conditions);
+  const total = await orm(db).$count(projects, where);
+  const lastPage = Math.max(1, Math.ceil(total / PROJECTS_PER_PAGE));
+  const page = Math.min(filters.page, lastPage);
+  const rows = await orm(db)
+    .select()
+    .from(projects)
+    .where(where)
+    .orderBy(desc(projects.lastActivityAt), desc(projects.id))
+    .limit(PROJECTS_PER_PAGE)
+    .offset((page - 1) * PROJECTS_PER_PAGE);
+  return { rows, total, page, lastPage };
 }

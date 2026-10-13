@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { LOOKING_FOR_ROLES, PROJECT_STAGES } from '../../../enums/projects';
 import { t } from '../../../services/user-experience/catalogue-service';
-import { message } from '../../validation/rules';
+import { message, pageNumber } from '../../validation/rules';
 
 const webAddress = z
   .string(message('projects.errors.link'))
@@ -40,3 +40,11 @@ export const ShareProjectRequest = z.object({
 });
 
 export type ProjectInput = z.output<typeof ShareProjectRequest>;
+
+/** A project listing query (L2-015, L2-045): search, stages, roles and page. */
+export const BrowseProjectsRequest = z.object({
+  q: z.string().max(100).nullish(),
+  stage: z.array(z.enum(PROJECT_STAGES, message('projects.errors.stage'))).nullish(),
+  looking_for: z.array(z.enum(LOOKING_FOR_ROLES, message('projects.errors.lookingFor'))).nullish(),
+  page: pageNumber(),
+});
