@@ -1,10 +1,21 @@
-# Local backend for Banaro (ADR-0002). Migrations never run on start: run them explicitly with
-#   docker compose run --rm api php artisan migrate --seed
+# Local backend for Banaro (ADR-0002, ADR-0007). Install dependencies once, and run migrations
+# explicitly; they never run on start:
+#   docker compose run --rm api npm ci
 x-banaro-api: &banaro-api
-  build: ./backend
+  build:
+    context: ./backend
+    target: dev
   image: banaro-api:dev
+  env_file:
+    - path: ./backend/.env
+      required: false
+  environment:
+    DATABASE_URL: postgres://banaro:banaro@postgres:5432/banaro
+    REDIS_URL: redis://redis:6379
+    WATCHPACK_POLLING: 'true'
   volumes:
     - ./backend:/app
+    - banaro-api-node-modules:/app/node_modules
     - ./frontend:/frontend:ro
   depends_on:
     postgres:
@@ -15,22 +26,19 @@ x-banaro-api: &banaro-api
 services:
   api:
     <<: *banaro-api
-    command: php artisan serve --host=0.0.0.0 --port=8000
     ports:
       - '8100:8000'
     healthcheck:
-      test: ['CMD', 'php', '-r', "exit(@file_get_contents('http://localhost:8000/health/live') ? 0 : 1);"]
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://localhost:8000/health/live').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))",
+        ]
       interval: 3s
       timeout: 10s
-      retries: 40
-
-  worker:
-    <<: *banaro-api
-    command: php artisan horizon
-
-  scheduler:
-    <<: *banaro-api
-    command: php artisan schedule:work
+      retries: 60
 
   postgres:
     image: postgres:16
@@ -61,3 +69,4 @@ services:
 
 volumes:
   postgres-data:
+  banaro-api-node-modules:

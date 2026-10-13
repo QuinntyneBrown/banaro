@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Lint, audit, translation check and integration tests for the Banaro API.
+# Format, lint, types, dependency audit and integration tests for the Banaro API.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 run() { docker compose run --rm api "$@"; }
-run ./vendor/bin/pint --test
-# Accepted advisories are listed in composer.json audit.ignore (ADR-0005); any other fails.
-run composer audit
-run php artisan i18n:check --frontend=/frontend
-run php artisan test
+run npm run format:check
+run npm run lint
+run npm run typecheck
+run npm audit --audit-level=high
+run npm test

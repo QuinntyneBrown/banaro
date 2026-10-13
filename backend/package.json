@@ -1,0 +1,38 @@
+{
+  "name": "banaro-api",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "next dev --port 8000 --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "next start --port 8000",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "ioredis": "5.11.1",
+    "next": "16.3.8",
+    "pg": "8.23.1",
+    "pino": "10.4.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "22.20.5",
+    "@types/pg": "8.23.1",
+    "@types/react": "19.2.18",
+    "eslint": "10.12.0",
+    "eslint-config-prettier": "10.1.8",
+    "prettier": "3.8.1",
+    "typescript": "6.0.2",
+    "typescript-eslint": "8.69.0",
+    "vitest": "4.1.11"
+  }
+}

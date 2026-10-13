@@ -1,0 +1,7 @@
+.next/
+node_modules/
+dist/
+storage/
+next-env.d.ts
+*.tsbuildinfo
+.env

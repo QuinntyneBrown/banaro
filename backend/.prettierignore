@@ -1,0 +1,6 @@
+.next/
+node_modules/
+dist/
+storage/
+resources/
+next-env.d.ts
