@@ -45,10 +45,10 @@ Redis and the orchestrator.
   1. `build` — builds the `banaro-api` and `banaro-web` images and pushes them to the container
      registry, tagged with the commit.
   2. `migrate` — runs a one-off container of the new `banaro-api` image with
-     `node dist/cli.js migrate` (`L2-054` criterion 1). The command takes a Redis lock, so two
+     `npm run banaro -- migrate` (`L2-054` criterion 1). The command takes a PostgreSQL advisory lock, so two
      pipelines cannot migrate at the same time. A failed migration stops the release before
      any rollout.
-  3. `seed` — runs `node dist/cli.js seed` in the same way (`L2-054` criterion 3).
+  3. `seed` — runs `npm run banaro -- seed` in the same way (`L2-054` criterion 3).
   4. `rollout` — asks the orchestrator to replace the Banaro API, Banaro Worker and Banaro Web
      replicas with the new images (`L2-054` criterion 4).
 - **`schema-compat` step** — before `migrate` reaches production, the pipeline should migrate a
@@ -59,12 +59,12 @@ Redis and the orchestrator.
 
 - **`Dockerfile`** (`backend/`) — one multi-stage image on `node:22-bookworm-slim` with four start
   commands. The API command, `node server.js`, starts the Next.js standalone server only. The worker
-  command is `node dist/worker.js` and the scheduler command is `node dist/scheduler.js`. The CLI,
-  `node dist/cli.js`, runs one-off commands such as `migrate` and `seed`. No start command, module
+  command is `npm run worker`; a scheduler command joins it with the first scheduled job. The CLI,
+  `npm run banaro -- <command>`, runs one-off commands such as `migrate` and `seed`. No start command, module
   import or route handler calls `migrate` (`L2-054` criterion 1).
 - **Migrations** (`src/db/migrations/`, ADR-0008) — the port starts from one baseline migration that
   reproduces the Laravel-era schema (D-084). `banaro migrate` applies pending migrations inside a
-  Redis lock, so two pipelines cannot migrate at the same time. From the baseline on, each migration
+  PostgreSQL advisory lock, so two pipelines cannot migrate at the same time. From the baseline on, each migration
   follows expand–contract (`L2-054` criterion 2):
   - Expand release: add tables, add nullable or defaulted columns, add indexes. Code writes the old
     and the new shape.
@@ -175,7 +175,7 @@ that dispatches one job per due time.
 
 ### Behaviour — release a version
 
-The pipeline builds the images, migrates under a Redis lock, seeds, and rolls out. Each new
+The pipeline builds the images, migrates under a PostgreSQL advisory lock, seeds, and rolls out. Each new
 replica receives traffic only after `/health/ready` returns 200. Each old replica drains before it
 stops.
 

@@ -163,7 +163,8 @@ banaro/
 - User-owned data must remain scoped to the current user; resources belonging to other users should never be exposed.
 - Keep the HTTP contract the Angular `api` library depends on: the `banaro_session` and `XSRF-TOKEN`
   cookies, status 419, the 422 `errors` shape, `{code}` refusals and the paging envelope (ADR-0011).
-- Database and Redis clients are singletons; BullMQ workers are created only in `src/worker.ts`.
+- Database and Redis clients are singletons; BullMQ workers are created only by the queue runners in
+  `src/worker.ts` and `src/queue/work.ts`.
 
 ### Backend CLI
 
@@ -172,16 +173,18 @@ Every backend command runs in the `api` container (ADR-0002):
 ```bash
 docker compose run --rm api npm run banaro -- migrate --seed      # migrations, then reference data
 docker compose run --rm api npm run banaro -- i18n:check --frontend=/frontend
-docker compose run --rm api npm run banaro -- queue:work --queue=default --stop-when-empty
+docker compose run --rm api npm run banaro -- queue:work --queue=default   # until the queue is empty
 docker compose run --rm api npm run banaro -- maintenance:on --retry=600   # maintenance:off to end
+docker compose run --rm api npm run --silent banaro -- bcrypt <value>   # prints a bcrypt hash only
 docker compose run --rm api npm test                              # Vitest integration suite
 ```
 
 ### Tests
 
 Back end tests are Vitest integration tests against the API in `backend/tests/feature/`. They call the
-route handlers in-process through `tests/support/router.ts` against a real PostgreSQL `banaro_test`
-database and Redis, with the mailer, queue, clock and media scanner replaced through `setDeps()`.
+route handlers in-process through the `Browser` helper in `tests/support/browser.ts` against a real
+PostgreSQL `banaro_test` database and Redis, with the mailer, queue and media scanner replaced through
+`setDeps()` and time moved with Vitest fake timers.
 Follow the existing test patterns when adding coverage.
 
 ## Scope, Simplicity, and Zero-Waste Engineering (CRITICAL)

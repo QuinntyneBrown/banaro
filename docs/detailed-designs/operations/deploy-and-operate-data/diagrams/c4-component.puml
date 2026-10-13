@@ -6,23 +6,23 @@ title Components — Deploy and operate data
 System_Ext(pipeline, "CI pipeline", ".ci/ build, migrate, seed, rollout")
 System_Ext(orchestrator, "Container orchestrator", "Product <TO SUPPLY>")
 ContainerDb(db, "Banaro database", "PostgreSQL 16", "Schema and data")
-ContainerDb(redis, "Redis", "Redis", "Migration lock, job schedulers and queues")
+ContainerDb(redis, "Redis", "Redis", "Job schedulers and queues")
 
 Container_Boundary(image, "banaro-api image") {
   Component(apiCmd, "API start command", "node server.js", "Starts the Next.js server only; no migrate")
-  Component(cli, "CLI", "node dist/cli.js", "migrate and seed commands, run only by the pipeline")
+  Component(cli, "CLI", "npm run banaro", "migrate and seed commands, run only by the pipeline")
   Component(migrations, "src/db/migrations", "Drizzle migrations", "Baseline, then expand-contract")
   Component(seeder, "seed command", "Seeders", "ReferenceDataSeeder always; DemoDataSeeder local and testing")
   Component(ready, "health/ready route", "Route handler", "/health/ready gate")
-  Component(scheduler, "src/scheduler.ts", "node dist/scheduler.js", "Registers BullMQ job schedulers, America/Toronto")
-  Component(worker, "src/worker.ts", "node dist/worker.js", "BullMQ workers for default and mail")
+  Component(scheduler, "src/scheduler.ts", "Added with the first schedule", "Registers BullMQ job schedulers, America/Toronto")
+  Component(worker, "src/worker.ts", "npm run worker", "BullMQ workers for default and mail")
   Component(jobs, "Scheduled jobs", "BullMQ jobs", "Monday matching, event reminders, weekly digest")
 }
 
 Rel(pipeline, cli, "migrate; seed")
 Rel(cli, migrations, "Applies pending")
 Rel(cli, seeder, "Runs")
-Rel(cli, redis, "Takes migration lock", "Redis protocol")
+Rel(cli, db, "Takes advisory migration lock", "SQL")
 Rel(migrations, db, "Alters schema", "SQL")
 Rel(seeder, db, "Upserts by natural key", "SQL")
 Rel(orchestrator, apiCmd, "Starts and drains")

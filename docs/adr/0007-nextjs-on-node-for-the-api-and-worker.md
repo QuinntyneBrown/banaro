@@ -29,8 +29,9 @@ frontend.
 - The request pipeline is a `handle()` wrapper composed in every route handler. Next.js middleware is
   not used: it runs in a restricted runtime, cannot share the database and Redis clients, and cannot
   be called in-process by the integration tests.
-- One `banaro-api` image runs the API (`node server.js`), the worker (`node dist/worker.js`), the
-  scheduler (`node dist/scheduler.js`) and the CLI (`node dist/cli.js`).
+- One `banaro-api` image runs the API (`node server.js`), the worker (`npm run worker`) and the CLI
+  (`npm run banaro -- <command>`). The worker and the CLI run their TypeScript through tsx. A
+  scheduler process joins them with the first scheduled job (ADR-0009).
 - The HTTP contract does not change. That includes the Sanctum-era cookie names, the
   `/sanctum/csrf-cookie` path and status 419 (ADR-0011), the error and pagination shapes, and every
   table and column name.

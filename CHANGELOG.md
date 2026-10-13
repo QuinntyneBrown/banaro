@@ -8,6 +8,15 @@ from its first release.
 
 ## [Unreleased]
 
+### Changed
+
+- The backend is a Next.js API and BullMQ worker on Node 22 with Drizzle on PostgreSQL,
+  replacing Laravel. The HTTP contract, the database schema and the Redis layout are
+  unchanged, so Banaro Web and the e2e fixtures work as before (ADR-0007 to ADR-0011).
+- Backend commands run as `npm run banaro -- <command>` in the `api` container:
+  `migrate`, `seed`, `i18n:check`, `queue:work`, `maintenance:on`, `maintenance:off` and
+  `bcrypt`.
+
 ### Added
 
 - Agent guidance in `AGENTS.md` and the skills in `.claude/skills/` and

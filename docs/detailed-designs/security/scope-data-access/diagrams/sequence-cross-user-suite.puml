@@ -24,7 +24,7 @@ box "Backend — tests/feature/security" #ECFDF3
   participant "RouteOwnershipFixture" as fixture
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "tests/support/router.ts and route handlers" as kernel
+  participant "tests/support/routes.ts and route handlers" as kernel
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5
   database "Test database" as db

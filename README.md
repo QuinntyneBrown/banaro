@@ -29,7 +29,7 @@ deliberately small and local, built for the Toronto community of Christian build
 
 Banaro is **in development**. The requirements, detailed designs, mocks and design
 system are written, and features land one thin vertical slice at a time. The backend
-is being moved from Laravel to Next.js on Node (ADR-0007).
+is a Next.js API on Node (ADR-0007).
 
 | Artifact | Location | Status |
 |---|---|---|
@@ -38,7 +38,7 @@ is being moved from Laravel to Next.js on Node (ADR-0007).
 | Detailed designs (C4, class and sequence diagrams) | `docs/detailed-designs/` | Written |
 | HTML mocks for every page, dialog and state | `docs/mocks/` | Written |
 | Design system (tokens, components, patterns) | `docs/design-system/` | Written |
-| Next.js API, worker and scheduler | `backend/` | In progress: port from Laravel |
+| Next.js API and worker | `backend/` | In progress |
 | Angular web app | [`frontend/`](frontend/README.md) | In progress |
 | Playwright end-to-end suite | `e2e/` | In progress |
 
