@@ -14,8 +14,10 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import {
+  FeedbackItem,
   formatLongDate,
   formatNumber,
+  formatRelative,
   Project,
   PROJECTS_API,
   SessionStore,
@@ -28,12 +30,15 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   Button,
+  Comment,
+  DialogService,
   EmptyState,
   ErrorPage,
   initialsOf,
   Skeleton,
 } from 'components';
 import { Subscription, timer } from 'rxjs';
+import { GiveFeedbackData, GiveFeedbackDialog } from '../../dialogs/give-feedback/give-feedback';
 import { SeoService } from '../../shared/seo.service';
 
 type State = 'loading' | 'ready' | 'not-found' | 'error';
@@ -55,6 +60,7 @@ function camel(value: string): string {
     Avatar,
     Breadcrumb,
     Button,
+    Comment,
     EmptyState,
     ErrorPage,
     RouterLink,
@@ -72,6 +78,7 @@ export class ProjectDetailPage {
   private readonly session = inject(SessionStore);
   private readonly destroyRef = inject(DestroyRef);
   private readonly response = inject(RESPONSE_INIT, { optional: true });
+  private readonly dialogs = inject(DialogService);
 
   /** The project's public id, from the route. */
   readonly id = input.required<string>();
@@ -80,6 +87,18 @@ export class ProjectDetailPage {
   protected readonly slow = signal(false);
   protected readonly project = signal<Project | null>(null);
   protected readonly signedIn = computed(() => !!this.session.member());
+  /** A member who is not the owner can give feedback; a visitor is sent to sign in first. */
+  protected readonly canGiveFeedback = computed(
+    () => this.signedIn() && this.project()?.isOwn === false,
+  );
+
+  protected readonly feedback = signal<FeedbackItem[]>([]);
+  protected readonly feedbackTotal = signal(0);
+  protected readonly feedbackPage = signal(0);
+  protected readonly feedbackState = signal<'idle' | 'loading' | 'error'>('idle');
+  protected readonly earlier = computed(() =>
+    Math.max(0, this.feedbackTotal() - this.feedback().length),
+  );
 
   protected readonly crumbs = computed<BreadcrumbItem[]>(() => [
     { label: this.i18n.t('projects.crumb'), link: '/projects' },
@@ -143,6 +162,55 @@ export class ProjectDetailPage {
     this.load(this.id());
   }
 
+  protected when(item: FeedbackItem): string {
+    return formatRelative(item.createdAt, this.i18n.t('projects.detail.justNow'));
+  }
+
+  /** Opens the dialog; the new item heads the list and the count rises (L2-016 criterion 1). */
+  protected giveFeedback(): void {
+    const project = this.project();
+    if (!project) return;
+    const ref = this.dialogs.open<GiveFeedbackDialog, GiveFeedbackData, FeedbackItem | undefined>(
+      GiveFeedbackDialog,
+      {
+        data: {
+          projectId: project.id,
+          projectName: project.name,
+          ownerName: project.owner.name,
+          commentCount: project.feedbackCount,
+        },
+        size: 'sm',
+        described: true,
+        autoFocus: 'textarea',
+      },
+    );
+    ref.closed.subscribe((item) => {
+      if (!item) return;
+      this.feedback.update((items) => [item, ...items]);
+      this.feedbackTotal.update((total) => total + 1);
+      this.project.update((p) => (p ? { ...p, feedbackCount: p.feedbackCount + 1 } : p));
+    });
+  }
+
+  /** Loads the next page of earlier comments and adds it below the ones on screen. */
+  protected loadFeedback(): void {
+    const project = this.project();
+    if (!project || this.feedbackState() === 'loading') return;
+    this.feedbackState.set('loading');
+    this.api
+      .feedback(project.id, this.feedbackPage() + 1)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (page) => {
+          this.feedback.update((items) => [...items, ...page.items]);
+          this.feedbackTotal.set(page.total);
+          this.feedbackPage.set(page.page);
+          this.feedbackState.set('idle');
+        },
+        error: () => this.feedbackState.set('error'),
+      });
+  }
+
   private toneOf(id: string): (typeof TONES)[number] {
     let hash = 0;
     for (const char of id) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
@@ -164,6 +232,11 @@ export class ProjectDetailPage {
           skeletons.unsubscribe();
           this.project.set(project);
           this.state.set('ready');
+          this.feedback.set([]);
+          this.feedbackTotal.set(project.feedbackCount);
+          this.feedbackPage.set(0);
+          this.feedbackState.set('idle');
+          if (project.feedbackCount > 0) this.loadFeedback();
           this.seo.set({
             title: this.i18n.t('projects.detail.meta.title', { name: project.name }),
             description: project.summary,

@@ -59,6 +59,29 @@ export interface ProjectCard {
   owner: ProjectOwner;
 }
 
+/** Who wrote a piece of feedback, linked by their profile id. */
+export interface FeedbackAuthor {
+  id: string | null;
+  name: string;
+  photoUrl: string | null;
+}
+
+/** One piece of feedback on a project (L2-016). */
+export interface FeedbackItem {
+  id: string;
+  body: string;
+  createdAt: string;
+  author: FeedbackAuthor;
+}
+
+export interface FeedbackPage {
+  items: FeedbackItem[];
+  total: number;
+  page: number;
+  perPage: number;
+  lastPage: number;
+}
+
 export interface ProjectQuery {
   q?: string;
   stage?: ProjectStage[];

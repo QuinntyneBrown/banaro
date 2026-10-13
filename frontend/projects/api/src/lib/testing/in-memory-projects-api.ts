@@ -1,11 +1,20 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { Project, ProjectInput, ProjectPage, ProjectQuery } from '../models/projects';
+import {
+  FeedbackItem,
+  FeedbackPage,
+  Project,
+  ProjectInput,
+  ProjectPage,
+  ProjectQuery,
+} from '../models/projects';
 import { ProjectsApi } from '../services/projects-api';
 
 /** Fake of the contract for tests: one member's projects in memory. */
 export class InMemoryProjectsApi implements ProjectsApi {
   projects: Project[] = [];
+  /** Feedback by project id, newest first. */
+  feedbackByProject: Record<string, FeedbackItem[]> = {};
   private nextId = 1;
 
   browse(query: ProjectQuery): Observable<ProjectPage> {
@@ -51,5 +60,28 @@ export class InMemoryProjectsApi implements ProjectsApi {
   delete(id: string): Observable<void> {
     this.projects = this.projects.filter((p) => p.id !== id);
     return of(undefined);
+  }
+
+  feedback(id: string, page: number): Observable<FeedbackPage> {
+    const all = this.feedbackByProject[id] ?? [];
+    const perPage = 5;
+    return of({
+      items: all.slice((page - 1) * perPage, page * perPage),
+      total: all.length,
+      page,
+      perPage,
+      lastPage: Math.max(1, Math.ceil(all.length / perPage)),
+    });
+  }
+
+  giveFeedback(id: string, body: string): Observable<FeedbackItem> {
+    const item: FeedbackItem = {
+      id: String(this.nextId++),
+      body,
+      createdAt: new Date().toISOString(),
+      author: { id: 'me', name: 'Me', photoUrl: null },
+    };
+    this.feedbackByProject[id] = [item, ...(this.feedbackByProject[id] ?? [])];
+    return of(item);
   }
 }

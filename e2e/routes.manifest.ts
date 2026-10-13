@@ -2,9 +2,11 @@ import { type Page } from '@playwright/test';
 import { type BuilderMember, createBuilder } from './fixtures/builders';
 import { createMember, type Member } from './fixtures/members';
 import { resetLink } from './fixtures/password-reset';
+import { createFeedback } from './fixtures/feedback';
 import { createProject } from './fixtures/projects';
 import { BuilderProfilePage } from './pages/builder-profile.page';
 import { DeleteProjectDialog } from './pages/delete-project.dialog';
+import { GiveFeedbackDialog } from './pages/give-feedback.dialog';
 import { DirectoryPage } from './pages/directory.page';
 import { ProjectFormPage } from './pages/project-form.page';
 import { ProjectPage } from './pages/project.page';
@@ -188,8 +190,13 @@ export const routes: RouteEntry[] = [
         stage: 'beta',
         lookingFor: ['contributor'],
         link: 'https://psalter.example.ca',
-        feedbackCount: 41,
       });
+      for (const [i, name] of ['Hannah Kowalski', 'Noah Fischer', 'Grace Liu', 'Marcus Bennett', 'Amara Osei', 'Ruth Alvarez'].entries()) {
+        createFeedback(c.params['project'], createBuilder({ name }), {
+          body: `A comment from ${name} about the project, number ${i + 1}.`,
+          daysAgo: i + 1,
+        });
+      }
     },
   }),
   page('project-detail', 'empty', (c) => `/projects/${c.params['project']}`, {
@@ -236,6 +243,36 @@ export const routes: RouteEntry[] = [
   }),
 
   // Dialogs and menus, over the page they open from.
+  ...(['default', 'busy', 'invalid', 'failed'] as const).map(
+    (state): RouteEntry => ({
+      ...page('give-feedback', state, (c) => `/projects/${c.params['project']}`, {
+        ...asMember,
+        seed: (c) => {
+          c.params['project'] = createProject(createBuilder({ name: 'Daniel Reyes' }), { name: 'Psalter' });
+        },
+        reach: async (p) => {
+          const dialog = new GiveFeedbackDialog(p);
+          await new ProjectPage(p).giveFeedback.click();
+          await dialog.dialog.waitFor();
+          const text = 'I use Psalter every morning on the streetcar. Could the Sunday reminder arrive later?';
+          if (state === 'invalid') await dialog.post.click();
+          if (state === 'busy') {
+            await dialog.holdPost();
+            await dialog.comment.fill(text);
+            await dialog.post.click();
+            await dialog.post.filter({ hasText: 'Posting…' }).waitFor();
+          }
+          if (state === 'failed') {
+            await dialog.comment.fill(text);
+            await dialog.failNextPost(500);
+            await dialog.post.click();
+            await dialog.alert.waitFor();
+          }
+        },
+      }),
+      kind: 'dialog',
+    }),
+  ),
   ...(['default', 'invalid', 'failed'] as const).map(
     (state): RouteEntry => ({
       ...page('delete-project', state, (c) => `/projects/${c.params['project']}/edit`, {

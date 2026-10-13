@@ -68,6 +68,13 @@
               </p>
             </div>
           </div>
+          @if (canGiveFeedback()) {
+            <div class="proj-head__actions">
+              <button bn-button variant="primary" type="button" (click)="giveFeedback()">
+                {{ 'projects.detail.actions.feedback' | t }}
+              </button>
+            </div>
+          }
           @if (!p.isOwn && !signedIn()) {
             <div class="proj-head__actions">
               <a
@@ -102,19 +109,42 @@
               </section>
             }
             <section aria-labelledby="fb-title">
-              <h2 class="section__title" id="fb-title">
-                {{ 'projects.detail.feedback' | t }}
-                <span class="muted"
-                  >· {{ 'projects.detail.comments' | t: { count: p.feedbackCount } }}</span
-                >
-              </h2>
+              <div class="cluster cluster--between">
+                <h2 class="section__title" id="fb-title">
+                  {{ 'projects.detail.feedback' | t }}
+                  <span class="muted"
+                    >· {{ 'projects.detail.comments' | t: { count: p.feedbackCount } }}</span
+                  >
+                </h2>
+                @if (canGiveFeedback() && p.feedbackCount > 0) {
+                  <button
+                    bn-button
+                    variant="quiet"
+                    size="sm"
+                    type="button"
+                    (click)="giveFeedback()"
+                  >
+                    {{ 'projects.detail.actions.feedback' | t }}
+                  </button>
+                }
+              </div>
               @if (p.feedbackCount === 0) {
                 @if (p.isOwn) {
                   <p class="muted">{{ 'projects.detail.emptyOwn' | t }}</p>
                 } @else {
                   <bn-empty-state [heading]="'projects.detail.empty.title' | t">
                     {{ 'projects.detail.empty.body' | t: { name: p.name, owner: p.owner.name } }}
-                    @if (!signedIn()) {
+                    @if (canGiveFeedback()) {
+                      <button
+                        slot="actions"
+                        bn-button
+                        variant="primary"
+                        type="button"
+                        (click)="giveFeedback()"
+                      >
+                        {{ 'projects.detail.empty.cta' | t }}
+                      </button>
+                    } @else if (!signedIn()) {
                       <a
                         slot="actions"
                         bn-button
@@ -125,6 +155,49 @@
                       >
                     }
                   </bn-empty-state>
+                }
+              } @else {
+                <ol class="comments">
+                  @for (item of feedback(); track item.id) {
+                    <li
+                      bn-comment
+                      [authorName]="item.author.name"
+                      [authorHref]="item.author.id ? ['/builders', item.author.id] : null"
+                      [photo]="item.author.photoUrl"
+                      [initials]="initials(item.author.name)"
+                      [tone]="tileOf(item.author.id ?? item.id)"
+                      [datetime]="item.createdAt"
+                      [when]="when(item)"
+                      [body]="item.body"
+                    ></li>
+                  }
+                </ol>
+                @if (feedbackState() === 'error') {
+                  <p class="muted">
+                    {{ 'projects.detail.listFailed.title' | t }}
+                    <button
+                      bn-button
+                      variant="text"
+                      size="sm"
+                      type="button"
+                      (click)="loadFeedback()"
+                    >
+                      {{ 'projects.detail.listFailed.retry' | t }}
+                    </button>
+                  </p>
+                }
+                @if (earlier() > 0) {
+                  <div class="cluster">
+                    <button
+                      bn-button
+                      variant="quiet"
+                      type="button"
+                      [busy]="feedbackState() === 'loading'"
+                      (click)="loadFeedback()"
+                    >
+                      {{ 'projects.detail.earlier' | t: { count: earlier() } }}
+                    </button>
+                  </div>
                 }
               }
             </section>

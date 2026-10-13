@@ -2,6 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import {
+  FeedbackItem,
+  FeedbackPage,
   LookingForRole,
   Project,
   ProjectInput,
@@ -16,6 +18,9 @@ export interface ProjectsApi {
   share(input: ProjectInput): Observable<Project>;
   update(id: string, input: ProjectInput): Observable<Project>;
   delete(id: string): Observable<void>;
+  /** A page of a project's feedback, newest first, five at a time (L2-016). */
+  feedback(id: string, page: number): Observable<FeedbackPage>;
+  giveFeedback(id: string, body: string): Observable<FeedbackItem>;
 }
 
 export const PROJECTS_API = new InjectionToken<ProjectsApi>('PROJECTS_API');
@@ -49,6 +54,30 @@ interface CardBody {
   looking_for: LookingForRole[];
   feedback_count: number;
   owner: OwnerBody;
+}
+
+interface FeedbackBody {
+  id: string;
+  body: string;
+  created_at: string;
+  author: { id: string | null; name: string; photo_url: string | null };
+}
+
+interface FeedbackPageBody {
+  items: FeedbackBody[];
+  total: number;
+  page: number;
+  per_page: number;
+  last_page: number;
+}
+
+function toFeedback(body: FeedbackBody): FeedbackItem {
+  return {
+    id: body.id,
+    body: body.body,
+    createdAt: body.created_at,
+    author: { id: body.author.id, name: body.author.name, photoUrl: body.author.photo_url },
+  };
 }
 
 interface PageBody {
@@ -134,5 +163,23 @@ export class HttpProjectsApi implements ProjectsApi {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(path(id));
+  }
+
+  feedback(id: string, page: number): Observable<FeedbackPage> {
+    return this.http
+      .get<FeedbackPageBody>(path(id) + '/feedback', { params: new HttpParams().set('page', page) })
+      .pipe(
+        map((body) => ({
+          items: body.items.map(toFeedback),
+          total: body.total,
+          page: body.page,
+          perPage: body.per_page,
+          lastPage: body.last_page,
+        })),
+      );
+  }
+
+  giveFeedback(id: string, body: string): Observable<FeedbackItem> {
+    return this.http.post<FeedbackBody>(path(id) + '/feedback', { body }).pipe(map(toFeedback));
   }
 }

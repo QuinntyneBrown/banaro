@@ -27,6 +27,29 @@ export function formatLongDate(isoDate: string): string {
   return `${part('day')} ${part('month')} ${part('year')}`;
 }
 
+/**
+ * How long ago something happened, in words: "5 minutes ago", "yesterday", "2 days ago". Anything
+ * under a minute reads as `justNow`, which the caller takes from the catalogue.
+ */
+export function formatRelative(iso: string, justNow: string, now: Date = new Date()): string {
+  const seconds = Math.round((new Date(iso).getTime() - now.getTime()) / 1000);
+  const age = Math.abs(seconds);
+  if (age < 60) return justNow;
+  const steps: [Intl.RelativeTimeFormatUnit, number][] = [
+    ['year', 31_536_000],
+    ['month', 2_592_000],
+    ['week', 604_800],
+    ['day', 86_400],
+    ['hour', 3600],
+    ['minute', 60],
+  ];
+  const [unit, size] = steps.find(([, size]) => age >= size) ?? steps[steps.length - 1];
+  return new Intl.RelativeTimeFormat(LOCALE, { numeric: 'auto' }).format(
+    Math.trunc(seconds / size),
+    unit,
+  );
+}
+
 /** "10:30 am" in Toronto time, lower case without dots (L2-052 criterion 2). */
 export function formatTime(iso: string | Date): string {
   const parts = new Intl.DateTimeFormat(LOCALE, {

@@ -4,6 +4,8 @@ export const scenarioIterations = {
   ActiveFilters: 380,
   Breadcrumb: 280,
   Card: 220,
+  Comment: 400,
+  CommentList: 100,
   DarkTheme: 80,
   Dialog: 300,
   DirectoryFilters: 70,

@@ -23,6 +23,9 @@ export class ProjectPage {
   readonly tryAgain: Locator;
   readonly backToProjects: Locator;
   readonly loading: Locator;
+  readonly comments: Locator;
+  readonly showEarlier: Locator;
+  readonly feedbackActions: Locator;
 
   constructor(private readonly page: Page) {
     const main = page.getByRole('main');
@@ -30,7 +33,11 @@ export class ProjectPage {
     this.title = main.getByRole('heading', { level: 1 });
     this.by = main.locator('.proj-head__by');
     this.ownerLink = this.by.getByRole('link');
-    this.giveFeedback = main.locator('.proj-head__actions').getByRole('link', { name: 'Give feedback' });
+    const actions = main.locator('.proj-head__actions');
+    // A visitor's action is a link to sign in; a member's opens the dialog.
+    this.giveFeedback = actions
+      .getByRole('link', { name: 'Give feedback' })
+      .or(actions.getByRole('button', { name: 'Give feedback' }));
     this.offerToHelp = main.locator('.proj-head__actions').getByRole('link', { name: 'Offer to help' });
     this.aboutTitle = main.getByRole('heading', { level: 2, name: /^About / });
     this.about = main.locator('.prose p');
@@ -46,6 +53,9 @@ export class ProjectPage {
     this.tryAgain = main.getByRole('button', { name: 'Try again' });
     this.backToProjects = main.getByRole('link', { name: 'Back to projects' });
     this.loading = main.locator('[aria-busy="true"]');
+    this.comments = main.locator('ol.comments > li');
+    this.showEarlier = main.getByRole('button', { name: /^Show \d+ earlier comments?$/ });
+    this.feedbackActions = main.locator('#fb-title').locator('xpath=..').getByRole('button', { name: 'Give feedback' });
   }
 
   /** The value of one "At a glance" fact. */
@@ -54,6 +64,12 @@ export class ProjectPage {
       .locator('.facts > div')
       .filter({ has: this.page.locator('dt', { hasText: term }) })
       .locator('dd');
+  }
+
+  /** One comment's parts. */
+  comment(index: number): { name: Locator; body: Locator; meta: Locator } {
+    const row = this.comments.nth(index);
+    return { name: row.locator('.comment__name'), body: row.locator('.comment__body'), meta: row.locator('.comment__meta') };
   }
 
   async open(id: string): Promise<void> {

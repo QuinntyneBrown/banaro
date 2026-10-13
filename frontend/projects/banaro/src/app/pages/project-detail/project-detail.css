@@ -89,3 +89,9 @@
 .error {
   padding-block: var(--space-10);
 }
+.comments {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
