@@ -35,6 +35,16 @@ export const newPassword = () =>
 export const accepted = (key: string) =>
   z.union([z.literal(true), z.literal(1), z.enum(['1', 'true', 'yes', 'on'])], message(key));
 
+/** A whole number from a query string, or nothing. */
+const queryInt = (schema: z.ZodNumber) =>
+  z.preprocess((value) => (value == null ? undefined : Number(value)), schema.int().optional());
+
+/** A page number: 1 or more. */
+export const pageNumber = () => queryInt(z.number().min(1));
+
+/** A page size: 1 to 50 (L2-047 criterion 4). */
+export const pageSize = () => queryInt(z.number().min(1).max(50));
+
 /** true or false, as Laravel's `boolean` rule took them. */
 export const booleanField = () =>
   z

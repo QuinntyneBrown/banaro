@@ -24,6 +24,19 @@ export function nowStamp(offsetSeconds = 0): string {
   return toStamp(new Date(Date.now() + offsetSeconds * 1000));
 }
 
+/** A stamp as ISO 8601 with the Toronto offset, such as `2026-10-11T11:58:00-04:00`. */
+export function isoStamp(stamp: string): string {
+  const moment = fromStamp(stamp);
+  const offsetMinutes = Math.round(
+    (new Date(`${stamp.replace(' ', 'T')}Z`).getTime() - moment.getTime()) / 60000,
+  );
+  const sign = offsetMinutes < 0 ? '-' : '+';
+  const abs = Math.abs(offsetMinutes);
+  const hh = String(Math.floor(abs / 60)).padStart(2, '0');
+  const mm = String(abs % 60).padStart(2, '0');
+  return `${stamp.replace(' ', 'T')}${sign}${hh}:${mm}`;
+}
+
 /** The moment a stamp names. */
 export function fromStamp(stamp: string): Date {
   const asUtc = new Date(`${stamp.replace(' ', 'T')}Z`);

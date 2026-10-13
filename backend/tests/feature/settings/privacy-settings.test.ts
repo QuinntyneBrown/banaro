@@ -9,9 +9,11 @@
 // and hidden online status is absent from the card. Invalid values are refused.
 
 import { beforeEach, describe, expect, it } from 'vitest';
+import { GET as directory } from '@/app/api/v1/builders/route';
 import { GET, PUT } from '@/app/api/v1/settings/privacy/route';
 import type { User } from '@/src/db/schema/users';
 import { Browser } from '../../support/browser';
+import { createBuilder, userOf } from '../../support/directory';
 import { actingAs, createMember } from '../../support/members';
 
 let viewer: User;
@@ -27,6 +29,24 @@ const settings = (overrides: Record<string, unknown> = {}) => ({
 
 const save = async (user: User, body: Record<string, unknown>) =>
   (await actingAs(user)).put(PUT, '/api/v1/settings/privacy', { json: body });
+
+interface Card {
+  name: string;
+  neighbourhood: { name: string; area: string };
+  distance_km: number;
+  online?: boolean;
+  last_seen_at?: string;
+}
+
+/** The card a member, or a visitor, finds for a name. */
+const cardFor = async (name: string, as?: User): Promise<Card | undefined> => {
+  // Members look anywhere, so distance never hides the builder; visitors cannot filter.
+  const query = `q=${encodeURIComponent(name)}${as ? '&distance=any' : ''}`;
+  const browser = as ? await actingAs(as) : new Browser();
+  const response = await browser.get(directory, `/api/v1/builders?${query}`);
+  expect(response.status).toBe(200);
+  return ((await response.json()) as { items: Card[] }).items.find((card) => card.name === name);
+};
 
 const errorKeys = async (response: Response) =>
   Object.keys(((await response.json()) as { errors: object }).errors);
@@ -95,5 +115,42 @@ describe('privacy settings', () => {
     expect((await visitor.put(PUT, '/api/v1/settings/privacy', { json: settings() })).status).toBe(
       401,
     );
+  });
+
+  it('leaves a members-only profile out of the signed-out directory', async () => {
+    const open = await createBuilder('Open Builder', 'riverdale', { activeMinutesAgo: 0 });
+    await createBuilder('Private Builder', 'riverdale', { activeMinutesAgo: 0 });
+    expect(
+      (await save(await userOf(open), settings({ profile_visibility: 'everyone' }))).status,
+    ).toBe(200);
+
+    expect(await cardFor('Open Builder')).toBeDefined();
+    expect(await cardFor('Private Builder')).toBeUndefined();
+    expect(await cardFor('Private Builder', viewer)).toBeDefined();
+  });
+
+  it('shows only the city and a distance rounded to 5 km for "City only"', async () => {
+    const annex = await createBuilder('Annex Builder', 'the-annex', { activeMinutesAgo: 0 });
+    expect((await save(await userOf(annex), settings({ location_precision: 'city' }))).status).toBe(
+      200,
+    );
+
+    const card = (await cardFor('Annex Builder', viewer))!;
+
+    expect(card.neighbourhood).toEqual({ name: 'Downtown Toronto', area: 'Downtown Toronto' });
+    expect(card.distance_km).toBe(5);
+    expect(JSON.stringify(card.neighbourhood)).not.toContain('Annex');
+  });
+
+  it('leaves hidden online status off the card', async () => {
+    const quiet = await createBuilder('Quiet Builder', 'riverdale', { activeMinutesAgo: 0 });
+    expect((await save(await userOf(quiet), settings({ show_online_status: false }))).status).toBe(
+      200,
+    );
+
+    const card = (await cardFor('Quiet Builder', viewer))!;
+
+    expect(card).not.toHaveProperty('online');
+    expect(card).not.toHaveProperty('last_seen_at');
   });
 });
