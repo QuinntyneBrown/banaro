@@ -7,7 +7,7 @@ Person(owner, "Owner", "Member who shared the project")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "project-edit page, delete-project dialog, toasts")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Ownership checks, update and delete rules")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Ownership checks, update and delete rules")
   ContainerDb(db, "Banaro database", "Relational database", "Projects, looking-for roles, feedback, help offers")
   ContainerQueue(redis, "Redis", "Redis", "Sessions")
 }

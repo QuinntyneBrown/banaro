@@ -21,7 +21,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "DateFormatter" as fmt
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "EventController" as controller
+  participant "EventRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "ListEvents" as action
@@ -34,7 +34,7 @@ actor -> page : Open /events
 page --> actor : loading state with skeleton rows (L2-018 criterion 4)
 page -> client : listEvents({ when: upcoming, page: 1 })
 client -> controller : GET /api/v1/events?when=upcoming&page=1
-controller -> controller : Anonymous route in api_public.php; validate ListEventsRequest (L2-045)
+controller -> controller : Anonymous route in src/http/public-routes.ts; validate ListEventsRequest (L2-045)
 controller -> action : handle(upcoming, perPage = 12) (L2-047 criterion 4)
 action -> db : SELECT events WHERE ends_at > now ORDER BY starts_at, id
 db --> action : Page of events with going_count

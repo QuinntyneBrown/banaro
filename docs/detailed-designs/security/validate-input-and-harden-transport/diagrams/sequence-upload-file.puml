@@ -20,14 +20,14 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpProfilesApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "ProfilePhotoController" as controller
+  participant "ProfilePhotoRoutes" as controller
   participant "ChangePhotoRequest" as request
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "ChangeProfilePhoto" as action
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5
-  database "Media storage (media disk)" as media
+  database "Media storage (MEDIA_PATH)" as media
   database "Banaro database" as db
   queue "Redis queue" as queue
 end box
@@ -35,17 +35,17 @@ end box
 actor -> dialog : Choose a photo and confirm the crop
 dialog -> client : uploadPhoto(file, crop)
 client -> controller : POST /api/v1/profile/photo (multipart, CSRF and origin checked)
-controller -> request : Validate
-request -> request : file, max 5 MB, mimes jpg/png/webp
-request -> request : MIME type from content, min 480 x 480 px (L2-045 criterion 6)
+controller -> request : validate(ChangePhotoRequest, ctx)
+request -> request : photo file, at most 5 MB, crop fields
+request -> request : Type from magic bytes, extension agrees, min 480 x 480 px (L2-045 criterion 6)
 alt any rule fails
   request --> client : 422 with the failing field error
   client --> dialog : ValidationErrors
   dialog --> actor : invalid state names the problem (L2-008 criterion 2)
 else valid
-  request --> controller : toData()
+  request --> controller : Parsed data
   controller -> action : handle(member, data)
-  action -> media : Write to private media disk as {uuid}.{ext}, outside the web root (L2-045 criterion 6)
+  action -> media : Write to private media storage as {uuid}.webp, never served statically (L2-045 criterion 6)
   media --> action : Stored path
   action -> db : Record pending photo with storage key
   action -> queue : Queue scan and metadata strip (L2-008 criterion 4)

@@ -8,7 +8,7 @@ System_Ext(map, "Map service", "Public map site")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Event detail page, attendee cluster, map link")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Event detail, attendee filtering, viewer RSVP")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Event detail, attendee filtering, viewer RSVP")
   ContainerDb(db, "Banaro database", "Relational database", "Events, RSVPs, builders, privacy settings, blocks")
   ContainerQueue(redis, "Redis", "Redis", "Sessions")
 }

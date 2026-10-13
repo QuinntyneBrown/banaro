@@ -8,7 +8,7 @@ System_Ext(crawler, "Search engine", "Crawls public pages")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Server-renders HomePage, hydrates it in the browser")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Anonymous /home endpoints: statistics and feed sections")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Anonymous /home endpoints: statistics and feed sections")
   ContainerDb(db, "Banaro database", "Relational database", "Builders, projects, match suggestions, events")
   ContainerDb(redis, "Redis", "Redis", "Statistics cache entry, rate-limit counters")
 }

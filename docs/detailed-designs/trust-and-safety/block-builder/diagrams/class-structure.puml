@@ -40,10 +40,10 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class BlockController {
-    +index(request: Request): ResourceCollection
-    +store(request: BlockBuilderRequest, builder: User): Response
-    +destroy(request: UnblockBuilderRequest, builder: User): Response
+  class BlockRoutes {
+    +GET(request: Request): Page
+    +POST(request: BlockBuilderRequest, builder: User): Response
+    +DELETE(request: UnblockBuilderRequest, builder: User): Response
   }
   class BlockBuilder {
     +handle(blocker: User, blocked: User): Block
@@ -52,22 +52,22 @@ package "Backend — Banaro API" {
     +handle(blocker: User, blocked: User): void
   }
   class BlockService {
-    +isBlockedEitherWay(a: User, b: User): bool
+    +isBlockedEitherWay(a: User, b: User): boolean
     +applyScope(query: Builder, viewer: User, userColumn: string): Builder
-    +blockedByMember(blocker: User): Collection
+    +blockedByMember(blocker: User): unknown[]
   }
-  class ExcludesBlockedUsers <<trait>> {
+  class ExcludesBlockedUsers <<mixin>> {
     +scopeWithoutBlockedFor(query: Builder, viewer: User): Builder
   }
   class Block {
-    +int id
-    +int blocker_id
-    +int blocked_id
-    +Carbon created_at
+    +id: number
+    +blocker_id: number
+    +blocked_id: number
+    +created_at: Timestamp
   }
   class User {
-    +int id
-    +string name
+    +id: number
+    +name: string
   }
   class BlockedBuilderResource
 }
@@ -76,12 +76,12 @@ BlockBuilderDialog ..> TrustAndSafetyApi : uses
 BlockedBuildersSection ..> TrustAndSafetyApi : uses
 HttpTrustAndSafetyApi ..|> TrustAndSafetyApi
 TrustAndSafetyApi ..> BlockedBuilder : returns
-HttpTrustAndSafetyApi ..> BlockController : HTTPS
+HttpTrustAndSafetyApi ..> BlockRoutes : HTTPS
 
-BlockController ..> BlockBuilder : calls
-BlockController ..> UnblockBuilder : calls
-BlockController ..> BlockedBuilderResource : returns
-BlockController ..> BlockService : lists via
+BlockRoutes ..> BlockBuilder : calls
+BlockRoutes ..> UnblockBuilder : calls
+BlockRoutes ..> BlockedBuilderResource : returns
+BlockRoutes ..> BlockService : lists via
 BlockBuilder ..> BlockService : checks reverse block
 BlockBuilder --> Block : creates
 UnblockBuilder --> Block : deletes

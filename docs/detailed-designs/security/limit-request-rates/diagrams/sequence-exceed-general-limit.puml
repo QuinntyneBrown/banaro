@@ -21,9 +21,9 @@ box "Frontend — banaro application" #E0F2FE
   participant "ToastService" as toast
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "auth:sanctum" as auth
+  participant "auth" as auth
   participant "ThrottleRequestsWithLogging (api)" as throttle
-  participant "BuilderController" as controller
+  participant "BuilderRoutes" as controller
   participant "Exception rendering" as render
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3

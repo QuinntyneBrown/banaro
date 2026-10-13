@@ -45,24 +45,24 @@ package "Frontend — api library (lib/i18n)" {
 }
 
 package "Backend — Banaro API" {
-  class CatalogueController {
-    +show(request: ShowCatalogueRequest, locale: string): JsonResponse
+  class CatalogueRoutes {
+    +GET(request: ShowCatalogueRequest, locale: string): Response
   }
   class CatalogueService {
     +catalogue(locale: string): Catalogue
     +hash(locale: string): string
   }
-  interface "Loader (Laravel)" as Loader {
-    +load(locale, group, namespace): array
+  interface "Loader (Node)" as Loader {
+    +load(locale, group, namespace): string[]
   }
   class CatalogueTranslationLoader
   class DateTimeFormatter {
-    +eventRange(start: CarbonImmutable, end: CarbonImmutable): string
+    +eventRange(start: Timestamp, end: Timestamp): string
   }
   class CheckI18nKeys <<i18n:check>> {
-    +handle(): int
-    -usedKeys(): array
-    -catalogueKeys(locale: string): array
+    +handle(): number
+    -usedKeys(): string[]
+    -catalogueKeys(locale: string): string[]
   }
 }
 
@@ -72,8 +72,8 @@ I18nApi ..> Catalogue
 TranslationService ..> I18nApi : loads via
 TranslatePipe ..> TranslationService
 Formatters ..> TranslationService : relative texts
-HttpI18nApi ..> CatalogueController : HTTPS
-CatalogueController ..> CatalogueService
+HttpI18nApi ..> CatalogueRoutes : HTTPS
+CatalogueRoutes ..> CatalogueService
 CatalogueTranslationLoader ..|> Loader
 CatalogueTranslationLoader ..> CatalogueService : same files
 CheckI18nKeys ..> CatalogueService : reads keys

@@ -54,8 +54,8 @@ package "Frontend — banaro application, components and api libraries" {
 }
 
 package "Backend — Banaro API" {
-  class MatchingOverviewController {
-    +show(request: ShowMatchingOverviewRequest): MatchingOverviewResource
+  class MatchingOverviewRoutes {
+    +GET(request: ShowMatchingOverviewRequest): MatchingOverviewResource
   }
   class BuildMatchingOverview {
     +handle(member: User): MatchingOverview
@@ -67,23 +67,23 @@ package "Backend — Banaro API" {
     +handle(sender: User, recipient: User): ?MatchSuggestion
   }
   class MatchSuggestionPolicy {
-    +view(member: User, suggestion: MatchSuggestion): bool
+    +view(member: User, suggestion: MatchSuggestion): boolean
   }
   class BlockService <<trust-and-safety>> {
-    +isBlockedEitherWay(a: User, b: User): bool
+    +isBlockedEitherWay(a: User, b: User): boolean
   }
   class MatchingScheduleService {
-    +isoWeekOf(instant: CarbonImmutable): string
-    +nextRunDate(now: CarbonImmutable): CarbonImmutable
+    +isoWeekOf(instant: Timestamp): string
+    +nextRunDate(now: Timestamp): Timestamp
   }
   class MatchSuggestion {
-    +int user_id
-    +int candidate_user_id
-    +string iso_week
-    +int score
-    +array reasons
-    +MatchSuggestionStatus status
-    +?Carbon acted_at
+    +user_id: number
+    +candidate_user_id: number
+    +iso_week: string
+    +score: number
+    +reasons: string[]
+    +status: MatchSuggestionStatus
+    +acted_at: Timestamp | null
   }
   class MatchingOverviewResource
   class MatchSuggestionResource
@@ -95,10 +95,10 @@ MatchingPage ..> SayHelloDialog : opens
 HttpMatchingApi ..|> MatchingApi
 MatchingApi ..> MatchingOverview : returns
 MatchingOverview *-- "*" MatchSuggestionCard
-HttpMatchingApi ..> MatchingOverviewController : HTTPS
+HttpMatchingApi ..> MatchingOverviewRoutes : HTTPS
 
-MatchingOverviewController ..> BuildMatchingOverview : calls
-MatchingOverviewController ..> MatchingOverviewResource : returns
+MatchingOverviewRoutes ..> BuildMatchingOverview : calls
+MatchingOverviewRoutes ..> MatchingOverviewResource : returns
 MatchingOverviewResource *-- MatchSuggestionResource
 BuildMatchingOverview ..> MatchingScheduleService : week, next run
 BuildMatchingOverview ..> BlockService : filters

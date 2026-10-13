@@ -23,7 +23,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "SignInPage" as page
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "SessionController" as controller
+  participant "SessionRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "SignOut" as action
@@ -41,8 +41,8 @@ store -> client : signOut()
 client -> controller : DELETE /api/v1/session
 controller -> controller : Authenticate the session, check the CSRF token
 controller -> action : handle(request)
-action -> redis : Auth logout; session()->invalidate() destroys the server session
-action -> action : session()->regenerateToken()
+action -> redis : session.signOut() deletes the Redis session
+action -> action : Rotate the CSRF token
 action --> controller : Done
 controller --> client : 204; session cookie expired (L2-003 criterion 5)
 alt success

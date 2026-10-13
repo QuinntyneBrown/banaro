@@ -7,7 +7,7 @@ Person(member, "Member", "Signed-in, verified builder")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Block-builder dialog, settings blocked list, toasts")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Block rules and the block scope for every listing")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Block rules and the block scope for every listing")
   ContainerDb(db, "Banaro database", "Relational database", "Blocks, builders, conversations, attendees")
   ContainerDb(redis, "Redis", "Redis", "Sessions")
 }

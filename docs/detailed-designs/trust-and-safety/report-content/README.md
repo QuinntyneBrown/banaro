@@ -55,23 +55,23 @@ No e-mail leaves Banaro for a report, so the Banaro Worker takes no part.
 
 ### Backend — Banaro API
 
-- **`ReportController`** (`Controllers/Api/V1/TrustAndSafety/`) — `store()` handles
-  `POST /reports`. The route is in `routes/api.php`, so it requires a verified member. It calls
+- **`ReportRoutes`** (`app/api/v1/`) — `store()` handles
+  `POST /reports`. The route is on the authenticated stack (`src/http/pipeline.ts`), so it requires a verified member. It calls
   `SubmitReport` and returns a `ReportReceiptResource` with status 201.
-- **`SubmitReportRequest`** (`Requests/TrustAndSafety/`) — validates the body:
+- **`SubmitReportRequest`** (`src/http/requests/trust-and-safety/`) — validates the body:
   - `subject_type` is a `ReportSubjectType` value and `subject_id` is an integer.
   - `reason` is required and is a `ReportReason` value; a missing reason returns 422 with a field
     error, and nothing is stored (`L2-031` criterion 2).
   - `details` is optional text of at most 1,000 characters (`L2-031` criterion 1).
   - The reporter always comes from the session; a `reporter_id` field in the body is ignored
     (`L2-044` criterion 4).
-- **`SubmitReport`** (`Actions/TrustAndSafety/`) — applies the report rules in one database
+- **`SubmitReport`** (`src/actions/trust-and-safety/`) — applies the report rules in one database
   transaction:
   1. It resolves the subject through `ReportSubjectResolver`. A subject that does not exist, or that the
      reporter cannot see, returns 404.
   2. It rejects a report on the reporter's own builder profile or own content with 422 and code
      `cannot_report_self`.
-  3. It locks the reporter's `users` row with `lockForUpdate()`, so two submissions from one member run
+  3. It locks the reporter's `users` row with `SELECT … FOR UPDATE`, so two submissions from one member run
      one after another.
   4. It looks for a report by the same reporter on the same subject created within the last 24 hours.
      When one exists, it adds a `ReportSubmission` to that report and touches `last_submitted_at`
@@ -79,20 +79,20 @@ No e-mail leaves Banaro for a report, so the Banaro Worker takes no part.
   5. Otherwise it creates a `Report` with status `Open` and its first `ReportSubmission`
      (`L2-031` criterion 1).
   6. It sends no notification to the reported party (`L2-031` criterion 4).
-- **`ReportSubjectResolver`** (`Services/TrustAndSafety/`) — maps a `ReportSubjectType` and id to the
-  Eloquent model and its owner. It applies `BlockService` and the visibility rules of
+- **`ReportSubjectResolver`** (`src/services/trust-and-safety/`) — maps a `ReportSubjectType` and id to the
+  Drizzle table and its owner. It applies `BlockService` and the visibility rules of
   `control-privacy`, so a member can report only what the API would show them.
-- **`Report`** (`Models/`) — holds `reporter_id`, `subject_type`, `subject_id`, `reported_user_id`,
+- **`Report`** (`src/db/schema/`) — holds `reporter_id`, `subject_type`, `subject_id`, `reported_user_id`,
   `status` (`ReportStatus`), `last_submitted_at` and timestamps. An index on (`reporter_id`,
   `subject_type`, `subject_id`, `created_at`) serves the 24-hour merge lookup.
-- **`ReportSubmission`** (`Models/`) — holds `report_id`, `reason` (`ReportReason`), `details` and
+- **`ReportSubmission`** (`src/db/schema/`) — holds `report_id`, `reason` (`ReportReason`), `details` and
   `created_at`. Keeping each submission means a merge loses no detail.
-- **`ReportReason`** (`Enums/`) — `Harassment`, `Spam`, `Impersonation`, `UnsafeContent`,
+- **`ReportReason`** (`src/enums/`) — `Harassment`, `Spam`, `Impersonation`, `UnsafeContent`,
   `CodeOfConductBreach` and `Other`, matching `L2-031` criterion 1.
-- **`ReportSubjectType`** (`Enums/`) — `Builder`, `Project`, `Feedback` and `Message`.
-- **`ReportStatus`** (`Enums/`) — `Open`, `Actioned` and `Dismissed`. This feature only creates
+- **`ReportSubjectType`** (`src/enums/`) — `Builder`, `Project`, `Feedback` and `Message`.
+- **`ReportStatus`** (`src/enums/`) — `Open`, `Actioned` and `Dismissed`. This feature only creates
   `Open` reports; `moderate-reports` changes the status.
-- **`ReportReceiptResource`** (`Resources/TrustAndSafety/`) — serializes `reportId` and
+- **`ReportReceiptResource`** (`src/http/resources/trust-and-safety/`) — serializes `reportId` and
   `receivedAt`. A new report and a merged submission produce the same shape.
 
 ### Confidentiality of the reporter
@@ -146,7 +146,7 @@ to the Banaro database; no queue or e-mail is involved.
 
 ### Components
 
-Inside the Banaro API, `ReportController` validates with `SubmitReportRequest` and calls
+Inside the Banaro API, `ReportRoutes` validates with `SubmitReportRequest` and calls
 `SubmitReport`. The action resolves the subject through `ReportSubjectResolver`, which applies
 `BlockService`.
 

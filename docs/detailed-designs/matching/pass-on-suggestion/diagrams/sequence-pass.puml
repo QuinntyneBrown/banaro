@@ -21,7 +21,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpMatchingApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "MatchSuggestionPassController" as controller
+  participant "MatchSuggestionPassRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "PassOnSuggestion" as action

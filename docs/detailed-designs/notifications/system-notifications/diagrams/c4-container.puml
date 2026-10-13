@@ -8,7 +8,7 @@ Person(admin, "Administrator", "Uses the admin application")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Toast region, banner stack, banner sources; admin application under /admin")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Session user; current and admin site announcements")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Session user; current and admin site announcements")
   ContainerDb(db, "Banaro database", "Relational database", "Site announcements, audit entries")
   ContainerQueue(redis, "Redis", "Redis", "Sessions, cached current announcement")
 }

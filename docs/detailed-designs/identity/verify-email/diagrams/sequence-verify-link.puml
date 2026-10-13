@@ -21,7 +21,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpIdentityApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "EmailVerificationController" as controller
+  participant "EmailVerificationRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "VerifyEmail" as action

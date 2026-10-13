@@ -79,25 +79,25 @@ anonymous endpoints of the Banaro API to the Banaro database and the Redis cache
 
 ### Backend — Banaro API
 
-- **Routes** — the four `GET /home/*` routes are in `routes/api_public.php`, so they accept anonymous
+- **Routes** — the four `GET /home/*` routes are in `src/http/public-routes.ts`, so they accept anonymous
   requests. They fall under the general rate limit (`L2-046`).
-- **`HomeController`** (`Controllers/Api/V1/PublicSite/`) — `statistics()`, `builders()`,
+- **`HomeRoutes`** (`app/api/v1/`) — `statistics()`, `builders()`,
   `projects()` and `events()`. Each method calls one action and returns a resource. No method reads a
   request body.
-- **`GetPlatformStatistics`** (`Actions/PublicSite/`) — returns the statistics from
+- **`GetPlatformStatistics`** (`src/actions/public-site/`) — returns the statistics from
   `PlatformStatisticsService`.
-- **`PlatformStatisticsService`** (`Services/PublicSite/`) — `current()` wraps the four count queries
-  in `Cache::remember('public-site:statistics', 600, ...)` on the Redis cache store. The time to live
+- **`PlatformStatisticsService`** (`src/services/public-site/`) — `current()` wraps the four count queries
+  in `cache.remember('public-site:statistics', 600, …)`, a helper over the Redis cache. The time to live
   of 600 seconds bounds staleness at 10 minutes (`L2-039` criterion 5). The counts come from the
   `Builder`, `Project`, `MatchSuggestion` and `Event` tables, never from constants. Their exact
   definitions are open; see Open points.
 - **`ListFeaturedBuilders`**, **`ListFeaturedProjects`**, **`ListUpcomingEvents`**
-  (`Actions/PublicSite/`) — each returns a short list for its section. Each excludes profiles marked
+  (`src/actions/public-site/`) — each returns a short list for its section. Each excludes profiles marked
   "Members only" (`L2-036` criterion 2), suspended or deleted accounts, and moderated content.
   `ListUpcomingEvents` returns the next scheduled events by `starts_at`. The selection rule for
   featured builders and projects is open.
 - **`PlatformStatisticsResource`**, **`FeaturedBuilderResource`**, **`FeaturedProjectResource`**,
-  **`UpcomingEventResource`** (`Resources/PublicSite/`) — visitor-safe JSON shapes. A builder carries
+  **`UpcomingEventResource`** (`src/http/resources/public-site/`) — visitor-safe JSON shapes. A builder carries
   name, role, neighbourhood, skills and photo URL only, matching the signed-out directory card
   (`L2-009` criterion 6). No resource carries a match score, an exact distance or an online status.
 
@@ -158,7 +158,7 @@ API reads counts and feed data from the Banaro database and caches the statistic
 
 ### Components
 
-Inside the Banaro API, `HomeController` calls one action per endpoint. `GetPlatformStatistics` reads
+Inside the Banaro API, `HomeRoutes` calls one action per endpoint. `GetPlatformStatistics` reads
 through `PlatformStatisticsService`, which holds the 10-minute cache.
 
 ![C4 component view for viewing the home page](diagrams/c4-component.png)

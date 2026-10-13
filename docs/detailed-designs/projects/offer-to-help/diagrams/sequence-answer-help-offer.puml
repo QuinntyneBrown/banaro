@@ -20,7 +20,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpProjectsApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "HelpOfferDecisionController" as controller
+  participant "HelpOfferDecisionRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "HelpOfferPolicy" as policy

@@ -53,12 +53,12 @@ package "Backend — Banaro API" {
   class EnsureAdministrator {
     +handle(request: Request, next: Closure): Response
   }
-  class AdminReportController {
-    +index(request: Request): ResourceCollection
-    +show(report: Report): AdminReportDetailResource
+  class AdminReportRoutes {
+    +GET(request: Request): Page
+    +GET(report: Report): AdminReportDetailResource
   }
-  class ReportActionController {
-    +store(request: ActOnReportRequest, report: Report): AdminReportDetailResource
+  class ReportActionRoutes {
+    +POST(request: ActOnReportRequest, report: Report): AdminReportDetailResource
   }
   class ActOnReport {
     +handle(admin: User, report: Report, type: ModerationActionType, note: string): Report
@@ -75,32 +75,32 @@ package "Backend — Banaro API" {
     +revokeAll(user: User): void
   }
   class Report {
-    +int id
-    +ReportStatus status
-    +int reported_user_id
+    +id: number
+    +status: ReportStatus
+    +reported_user_id: number
   }
   class ModerationAction {
-    +int id
-    +int report_id
-    +int administrator_id
-    +ModerationActionType type
-    +string note
-    +Carbon created_at
+    +id: number
+    +report_id: number
+    +administrator_id: number
+    +type: ModerationActionType
+    +note: string
+    +created_at: Timestamp
   }
   class AuditEntry <<immutable>> {
-    +int id
-    +int administrator_id
-    +string action
-    +string target_type
-    +int target_id
-    +string note
-    +array context
-    +Carbon created_at
+    +id: number
+    +administrator_id: number
+    +action: string
+    +target_type: string
+    +target_id: number
+    +note: string
+    +context: Record<string, unknown>
+    +created_at: Timestamp
   }
   class User {
-    +int id
-    +Role role
-    +?Carbon suspended_at
+    +id: number
+    +role: Role
+    +suspended_at: Timestamp | null
   }
   enum ModerationActionType {
     Warn
@@ -121,12 +121,12 @@ ModerationActionDialog ..> ModerationApi : uses
 HttpModerationApi ..|> ModerationApi
 ModerationApi ..> AdminReportSummary : returns
 ModerationApi ..> ModerationActionRequest : sends
-HttpModerationApi ..> ReportActionController : HTTPS
+HttpModerationApi ..> ReportActionRoutes : HTTPS
 
 EnsureAdministrator ..> User : checks role
-ReportActionController ..> ActOnReport : calls
-ReportActionController ..> AdminReportDetailResource : returns
-AdminReportController ..> AdminReportDetailResource : returns
+ReportActionRoutes ..> ActOnReport : calls
+ReportActionRoutes ..> AdminReportDetailResource : returns
+AdminReportRoutes ..> AdminReportDetailResource : returns
 ActOnReport ..> ModerationService : applies effect
 ActOnReport ..> AuditLogger : records
 ActOnReport ..> SessionRegistry : revokes after commit

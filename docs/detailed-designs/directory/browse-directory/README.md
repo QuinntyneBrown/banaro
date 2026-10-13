@@ -83,17 +83,17 @@ Redis caches match scores. No external system takes part.
 
 ### Backend — Banaro API
 
-- **Route** — `GET /builders` is in `routes/api_public.php`, because visitors may browse (`L2-009`
+- **Route** — `GET /builders` is in `src/http/public-routes.ts`, because visitors may browse (`L2-009`
   criterion 6). The route still resolves the session when one exists, so a member gets the member
   view.
-- **`BuilderDirectoryController`** (`Controllers/Api/V1/Directory/`) — `index()` calls
+- **`BuilderDirectoryRoutes`** (`app/api/v1/`) — `index()` calls
   `SearchDirectory`. It returns `BuilderCardResource` items for a member and `PublicBuilderCardResource`
   items for a visitor, inside a `DirectoryPageResource`.
-- **`SearchDirectoryRequest`** (`Requests/Directory/`) — validates `q` (string), `sort` (a
+- **`SearchDirectoryRequest`** (`src/http/requests/directory/`) — validates `q` (string), `sort` (a
   `DirectorySort` case), `page` (integer of at least 1) and `per_page` (default 12, at most 50,
   `L2-047` criterion 4). A visitor's `sort` may only be `recently_active` or `newest`. The
   `filter-directory` feature adds the filter keys.
-- **`SearchDirectory`** (`Actions/Directory/`) — builds the result in five steps:
+- **`SearchDirectory`** (`src/actions/directory/`) — builds the result in five steps:
   1. **Base scope.** It starts from builders with complete profiles and leaves out the viewer.
   2. **Privacy and blocks.** It applies the `ProfileVisibility` filter owned by the `settings`
      subsystem, which drops "Members only" profiles for visitors (`L2-036` criterion 2). It applies
@@ -104,36 +104,36 @@ Redis caches match scores. No external system takes part.
   4. **Sort.** It orders by the chosen `DirectorySort` through `DirectorySorter`.
   5. **Page.** It counts the results, clamps the page to the last page and loads that page (`L2-009`
      criterion 5).
-- **`DirectorySorter`** (`Services/Directory/`) — applies one sort, always ending with `builders.id`
+- **`DirectorySorter`** (`src/services/directory/`) — applies one sort, always ending with `builders.id`
   so pages are stable:
   - `BestMatch` asks `MatchScoreService` for the viewer's scores of the candidates. It orders by score
     descending, then by `last_active_at` descending (`L2-009` criterion 2).
   - `Nearest` orders by distance from `DistanceService`.
   - `RecentlyActive` orders by `last_active_at` descending.
   - `Newest` orders by `created_at` descending.
-- **`MatchScoreService`** (`Services/Matching/`, owned by the `matching` subsystem) — returns the
+- **`MatchScoreService`** (`src/services/matching/`, owned by the `matching` subsystem) — returns the
   viewer's score for each candidate builder. This design reads scores and does not define their
   weights (`L2-022` criterion 4). Scores are cached in Redis per viewer.
-- **`DistanceService`** (`Services/Directory/`) — returns kilometres between two neighbourhood
+- **`DistanceService`** (`src/services/directory/`) — returns kilometres between two neighbourhood
   centroids. It reads a precomputed `neighbourhood_distances` table, so SQL can join, sort and limit by
   distance with an index. For a builder whose privacy setting is "City only", it returns the distance
   rounded to the nearest 5 km (`L2-036` criterion 3).
-- **`PresenceService`** (`Services/Directory/`) — turns `last_active_at` into an online status. It
+- **`PresenceService`** (`src/services/directory/`) — turns `last_active_at` into an online status. It
   returns nothing when the builder has turned online status off (`L2-036` criterion 1).
-- **`RecordActivity`** (`Http/Middleware/`) — sets the member's `last_active_at` on authenticated
+- **`RecordActivity`** (`src/http/middleware/`) — sets the member's `last_active_at` on authenticated
   requests, at most once per interval.
-- **`SearchNormalizer`** (`Services/Directory/`) — lower-cases text and removes accents, so "José" and
+- **`SearchNormalizer`** (`src/services/directory/`) — lower-cases text and removes accents, so "José" and
   "jose" match (`L2-009` criterion 4).
-- **`RefreshBuilderSearchText`** (`Listeners/`) — listens for `ProfileUpdated` from the `profiles`
+- **`RefreshBuilderSearchText`** (`src/events/`) — listens for `ProfileUpdated` from the `profiles`
   subsystem and for project changes. It rewrites `builders.search_text` from the name, skills and
   project names.
-- **`BuilderCardResource`** and **`PublicBuilderCardResource`** (`Resources/Directory/`) — the member
+- **`BuilderCardResource`** and **`PublicBuilderCardResource`** (`src/http/resources/directory/`) — the member
   card and the visitor card. The visitor card holds only name, role, neighbourhood, skills and photo,
   with no match score, exact distance, online status or messaging action (`L2-009` criterion 6). Hidden
   fields are absent, not null.
-- **`DirectoryPageResource`** (`Resources/Directory/`) — wraps the items with `total`, `page`,
+- **`DirectoryPageResource`** (`src/http/resources/directory/`) — wraps the items with `total`, `page`,
   `perPage`, `lastPage` and `meta` (`lookingFor`, and the facets that `filter-directory` adds).
-- **`DirectorySort`** (`Enums/`) — `BestMatch`, `Nearest`, `RecentlyActive`, `Newest`.
+- **`DirectorySort`** (`src/enums/`) — `BestMatch`, `Nearest`, `RecentlyActive`, `Newest`.
 - **Indexes** — `builders(last_active_at)`, `builders(created_at)`, `builders(neighbourhood_id)` and a
   search index on `search_text` keep the query within budget at 10,000 builders (`L2-047`
   criteria 1 and 3). The search index type depends on the database engine, which is `<TO SUPPLY>`.
@@ -193,7 +193,7 @@ and reads cached match scores from Redis.
 
 ### Components
 
-Inside the Banaro API, `BuilderDirectoryController` calls `SearchDirectory`. The action scopes the
+Inside the Banaro API, `BuilderDirectoryRoutes` calls `SearchDirectory`. The action scopes the
 query by privacy and blocks, then relies on `DirectorySorter`, `MatchScoreService`, `DistanceService`
 and `PresenceService` to order and describe the results.
 

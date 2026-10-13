@@ -7,12 +7,12 @@ Container(web, "Banaro Web", "Angular", "ProfileEditPage, BuilderProfilePage, Ht
 ContainerDb(db, "Banaro database", "Relational database", "builders, builder_skill, experience_entries, profile_links")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "OwnProfileController", "Laravel controller", "GET and PUT /me/profile")
-  Component(req, "UpdateOwnProfileRequest", "Form request", "Bio up to 500, skills up to 12, link URLs, neighbourhood list")
+  Component(ctrl, "OwnProfileRoutes", "Route handler", "GET and PUT /me/profile")
+  Component(req, "UpdateOwnProfileRequest", "Request schema", "Bio up to 500, skills up to 12, link URLs, neighbourhood list")
   Component(get, "GetOwnProfile", "Action", "Loads the editable profile and option lists")
   Component(update, "UpdateOwnProfile", "Action", "Writes the whole profile in one transaction")
   Component(catalogue, "SkillCatalogue", "Domain service", "Resolves catalogue and custom skills")
-  Component(models, "Builder / ExperienceEntry / ProfileLink / Skill", "Eloquent models", "Profile content")
+  Component(models, "Builder / ExperienceEntry / ProfileLink / Skill", "Drizzle tables", "Profile content")
   Component(resource, "OwnProfileResource", "API resource", "OwnProfile JSON shape")
   Component(event, "ProfileUpdated", "Domain event", "Lets the directory refresh search text")
 }

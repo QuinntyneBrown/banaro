@@ -9,7 +9,7 @@ System_Ext(ci, "CI pipeline", "Runs backend integration tests")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "banaro and admin applications; guards and interceptors")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Authentication, policies, ownership and visibility scopes")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Authentication, policies, ownership and visibility scopes")
   ContainerDb(db, "Banaro database", "Relational database", "Owned, participant and listing records; blocks")
   ContainerQueue(redis, "Redis", "Redis", "Sessions and cached block lists")
 }

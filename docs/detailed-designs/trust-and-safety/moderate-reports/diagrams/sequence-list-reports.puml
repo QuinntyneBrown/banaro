@@ -22,7 +22,7 @@ box "Frontend — admin application" #E0F2FE
 end box
 box "Backend — Banaro API application" #D1FADF
   participant "EnsureAdministrator" as mw
-  participant "AdminReportController" as controller
+  participant "AdminReportRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "Report" as report

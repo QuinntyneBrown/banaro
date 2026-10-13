@@ -19,22 +19,22 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpProjectsApi or a crafted request" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "Scoped route binding" as binding
-  participant "ProjectController" as controller
+  participant "Bindings middleware" as binding
+  participant "ProjectRoutes" as controller
   participant "UpdateProjectRequest" as request
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "ProjectPolicy" as policy
   participant "UpdateProject" as action
-  participant "Project" as model
+  participant "projects (Drizzle)" as model
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5
   database "Banaro database" as db
 end box
 
 actor -> client : Send body with name, owner_id, role, verified_at
-client -> binding : PATCH /api/v1/projects/{id}
-binding -> model : ownedBy(member)->find(id)
+client -> binding : PUT /api/v1/projects/{id}
+binding -> model : select where id and ownedBy(member)
 model -> db : SELECT ... WHERE id = ? AND owner_id = ?
 alt project of another member
   db --> model : No row
@@ -43,12 +43,12 @@ else own project
   db --> model : Project row
   binding -> policy : update(member, project)
   policy --> binding : allow()
-  binding -> controller : update(request, project)
-  controller -> request : validate()
-  request -> request : Rules list name, description, stage only
-  request --> controller : validated() without owner_id, role, verified_at (L2-044 criterion 4)
-  controller -> action : handle(project, validated data)
-  action -> model : fill(validated data); $fillable excludes owner_id
+  binding -> controller : PUT(ctx with project)
+  controller -> request : validate(UpdateProjectRequest, ctx)
+  request -> request : zod object lists name, description, stage only; strips unknown keys
+  request --> controller : Parsed data without owner_id, role, verified_at (L2-044 criterion 4)
+  controller -> action : handle(project, parsed data)
+  action -> model : update(projects).set({ name, description, stage })
   action -> db : UPDATE projects SET name = ? ... WHERE id = ?
   db --> action : Saved
   action --> controller : Project

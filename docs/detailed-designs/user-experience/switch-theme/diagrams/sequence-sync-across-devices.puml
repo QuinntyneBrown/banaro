@@ -22,7 +22,7 @@ box "Frontend — banaro application (new device)" #E0F2FE
   participant "HttpIdentityApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "MeController" as me
+  participant "MeRoutes" as me
   participant "MeResource" as resource
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5

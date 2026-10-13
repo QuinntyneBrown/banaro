@@ -9,14 +9,14 @@ System_Ext(orchestrator, "Container orchestrator", "Platform <TO SUPPLY>")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Connection banner, offline and maintenance pages, drafts")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "503 + Retry-After in maintenance, except health routes")
-  Container(worker, "Banaro Worker", "Laravel Horizon", "Pauses job processing during maintenance")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "503 + Retry-After in maintenance, except health routes")
+  Container(worker, "Banaro Worker", "BullMQ worker", "Pauses job processing during maintenance")
   ContainerDb(redis, "Redis", "Redis", "Shared maintenance flag, queues")
 }
 
 Rel(member, web, "Uses", "HTTPS")
 Rel(web, api, "Calls /api/v1; probes /health/live while offline", "JSON/HTTPS")
-Rel(maintainer, api, "php artisan down ~-~-retry / up")
+Rel(maintainer, api, "banaro maintenance:on ~-~-retry / maintenance:off")
 Rel(api, redis, "Reads and writes maintenance flag", "Redis protocol")
 Rel(worker, redis, "Reads maintenance flag, takes jobs", "Redis protocol")
 Rel(orchestrator, api, "GET /health/live", "HTTP")

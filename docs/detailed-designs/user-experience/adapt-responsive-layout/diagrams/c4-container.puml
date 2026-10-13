@@ -10,7 +10,7 @@ System_Ext(mocks, "Design reference", "docs/mocks HTML files")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular SSR", "Breakpoints, layout tokens, page grids, BnDialog")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Same data at every width; seeded mock cast in test runs")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Same data at every width; seeded mock cast in test runs")
 }
 
 Rel(member, web, "Uses", "HTTPS")

@@ -38,25 +38,25 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class MatchSuggestionPassController {
-    +store(request: PassSuggestionRequest, suggestion: MatchSuggestion): MatchSuggestionResource
+  class MatchSuggestionPassRoutes {
+    +POST(request: PassSuggestionRequest, suggestion: MatchSuggestion): MatchSuggestionResource
   }
   class PassSuggestionRequest {
-    +rules(): array
+    +schema: ZodObject
   }
   class MatchSuggestionPolicy {
-    +pass(member: User, suggestion: MatchSuggestion): bool
+    +pass(member: User, suggestion: MatchSuggestion): boolean
   }
   class PassOnSuggestion {
-    +handle(member: User, suggestion: MatchSuggestion, reason: ?PassReason): MatchSuggestion
+    +handle(member: User, suggestion: MatchSuggestion, reason: PassReason | null): MatchSuggestion
   }
   class MatchSuggestion {
-    +int id
-    +int user_id
-    +int candidate_user_id
-    +MatchSuggestionStatus status
-    +?PassReason pass_reason
-    +?Carbon acted_at
+    +id: number
+    +user_id: number
+    +candidate_user_id: number
+    +status: MatchSuggestionStatus
+    +pass_reason: PassReason | null
+    +acted_at: Timestamp | null
   }
   enum PassReason {
     NotRightSkills
@@ -79,12 +79,12 @@ MatchingPage ..> PassSuggestionDialog : opens
 PassSuggestionDialog ..> MatchingApi : uses
 HttpMatchingApi ..|> MatchingApi
 MatchingApi ..> FePassReason
-HttpMatchingApi ..> MatchSuggestionPassController : HTTPS
+HttpMatchingApi ..> MatchSuggestionPassRoutes : HTTPS
 
-MatchSuggestionPassController ..> PassSuggestionRequest : validates with
-MatchSuggestionPassController ..> MatchSuggestionPolicy : authorizes
-MatchSuggestionPassController ..> PassOnSuggestion : calls
-MatchSuggestionPassController ..> MatchSuggestionResource : returns
+MatchSuggestionPassRoutes ..> PassSuggestionRequest : validates with
+MatchSuggestionPassRoutes ..> MatchSuggestionPolicy : authorizes
+MatchSuggestionPassRoutes ..> PassOnSuggestion : calls
+MatchSuggestionPassRoutes ..> MatchSuggestionResource : returns
 PassOnSuggestion --> MatchSuggestion : locks and updates
 MatchSuggestion --> MatchSuggestionStatus : has
 MatchSuggestion --> PassReason : pass_reason

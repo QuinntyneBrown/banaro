@@ -10,7 +10,7 @@ Container_Ext(chromium, "Chromium", "Playwright and Lighthouse", "Runs measureme
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular SSR, banaro-web image", "Server-rendered shell, lazy routes, skeletons, sized images")
   Container(perf, "perf-test application", "Angular, build-time only", "Renders component scenarios under the profiler")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Page data and photo variants")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Page data and photo variants")
   ContainerDb(media, "Media storage", "Private file storage", "WebP variants at displayed sizes")
 }
 

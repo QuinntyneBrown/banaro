@@ -7,14 +7,14 @@ Container(web, "Banaro Web", "Angular", "ProjectDetailPage, FeedbackItem, HttpPr
 ContainerDb(db, "Banaro database", "Relational database", "projects, project_looking_for, feedback, builders, blocks")
 
 Container_Boundary(api, "Banaro API") {
-  Component(pctrl, "ProjectController", "Laravel controller", "show(): GET /projects/{project}, api_public.php")
-  Component(fctrl, "FeedbackController", "Laravel controller", "index(): GET /projects/{project}/feedback, api_public.php")
-  Component(req, "ShowProjectRequest / ListFeedbackRequest", "Form requests", "Route key, page, per_page cap")
+  Component(pctrl, "ProjectRoutes", "Route handler", "show(): GET /projects/{project}, src/http/public-routes.ts")
+  Component(fctrl, "FeedbackRoutes", "Route handler", "index(): GET /projects/{project}/feedback, src/http/public-routes.ts")
+  Component(req, "ShowProjectRequest / ListFeedbackRequest", "Request schemas", "Route key, page, per_page cap")
   Component(view, "ViewProject", "Action", "Loads project, owner profile, roles")
   Component(list, "ListProjectFeedback", "Action", "Newest first, visibleTo(viewer)")
   Component(policy, "ProjectPolicy", "Policy", "edit, delete, giveFeedback, offerHelp, viewHelpOffers")
   Component(block, "BlockService", "Domain service (TrustAndSafety)", "Block relationships of the viewer")
-  Component(models, "Project / Feedback", "Eloquent models", "Project fields, feedback items")
+  Component(models, "Project / Feedback", "Drizzle tables", "Project fields, feedback items")
   Component(res, "ProjectResource / FeedbackResource", "API resources", "ProjectDetail and FeedbackView shapes")
 }
 

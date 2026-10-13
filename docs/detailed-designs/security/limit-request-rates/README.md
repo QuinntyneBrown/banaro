@@ -11,7 +11,7 @@ API route passes through it, and six slices add their own tighter limits.
 Terms used in this design:
 
 - **rate limit** — maximum number of requests that one client may make in one time window
-- **limiter** — named Laravel rate-limiter definition that returns one or more limits for a request
+- **limiter** — named rate-limiter definition in `src/http/rate-limit/limiters.ts` that returns one or more limits for a request
 - **limiter key** — string that identifies the client a limit counts against, such as a member id or a hashed IP address
 - **failure-counted limit** — limit that counts only failed attempts, such as wrong passwords, rather than every request
 - **hashed client identifier** — keyed HMAC-SHA-256 digest of a member id or IP address, used in limiter keys and logs instead of the raw value
@@ -29,14 +29,14 @@ The representative request is a member posting an eleventh piece of feedback wit
 
 ### Backend — limiter definitions
 
-- **`RateLimitServiceProvider`** (`app/Providers/`) — registers each limiter with
-  `RateLimiter::for()` in `boot()`. Limits and windows live in `config/security.php` under
-  `rate_limits`.
+- **`limiters.ts`** (`src/http/rate-limit/`) — defines each named limiter as a function from the
+  request context to one or more limits. Limits and windows live in `src/config/security.ts` under
+  `rateLimits`.
 
 | Limiter | Applies to | Limit | Key | Source |
 |---------|-----------|-------|-----|--------|
-| `api` | Every route in `routes/api.php` | 120 per minute | Member id | `L2-046` criterion 1 |
-| `api-anonymous` | Every route in `routes/api_public.php` | `<TO SUPPLY>` | Hashed IP | — |
+| `api` | Every route on the authenticated stack (`src/http/pipeline.ts`) | 120 per minute | Member id | `L2-046` criterion 1 |
+| `api-anonymous` | Every route in `src/http/public-routes.ts` | `<TO SUPPLY>` | Hashed IP | — |
 | `join` | `POST /api/v1/auth/join` | 5 per 10 minutes | Hashed IP | `L2-001` criterion 6 |
 | `verification-resend` | `POST /api/v1/auth/verification/resend` | 3 per hour | Member id | `L2-002` criterion 3 |
 | `sign-in` | `POST /api/v1/auth/sign-in` | 5 failures per 15 minutes per account; 20 failures per 15 minutes per IP | Hashed e-mail; hashed IP | `L2-003` criterion 3 |
@@ -47,41 +47,40 @@ The representative request is a member posting an eleventh piece of feedback wit
 
 - **Route paths** — the paths in the table are the ones this design expects. The designs of the
   owning features are authoritative for each path.
-- **Route attachment** — `bootstrap/app.php` calls `$middleware->throttleWithRedis()` and
-  `$middleware->throttleApi()`. The `api` limiter then applies to the API group. Sensitive routes add
-  `throttle:{limiter}` in their route files. `L2-046` criterion 2 lists the endpoints of `L2-001`,
+- **Route attachment** — the `api` stack in `src/http/pipeline.ts` includes `throttle('api')`, so the
+  `api` limiter applies to every API route. Sensitive routes add `throttle('{limiter}')` to the stack
+  their `route.ts` exports. `L2-046` criterion 2 lists the endpoints of `L2-001`,
   `L2-003`, `L2-004`, `L2-016`, `L2-026` and `L2-040`. `verification-resend` follows the same pattern
   for `L2-002`.
-- **Storage** — `config/cache.php` sets the `limiter` store to `redis`. All API replicas therefore
-  share one set of counters.
-- **Key order** — the `api` limiter keys by member id, so it runs after Sanctum has resolved the
+- **Storage** — `RedisRateLimiter` (`src/http/rate-limit/`) counts in Redis database 1 with an atomic
+  increment and expiry per window. All API replicas therefore share one set of counters.
+- **Key order** — the `api` limiter keys by member id, so it runs after the session middleware has resolved the
   session. The anonymous limiter keys by hashed IP address.
 
 ### Backend — failure-counted sign-in limit
 
-- **`AttemptLimiter`** (`app/Services/Security/`) — wraps `RateLimiter` for limits that count
-  failures. `tooManyFailures(array $keys)` checks every key. `recordFailure(array $keys, int
-  $decaySeconds)` calls `RateLimiter::hit()` on each. `clear(string $key)` resets the account key
+- **`AttemptLimiter`** (`src/services/security/`) — wraps `RedisRateLimiter` for limits that count
+  failures. `tooManyFailures(keys: string[])` checks every key. `recordFailure(keys: string[],
+  decaySeconds: number)` calls `hit()` on each. `clear(key: string)` resets the account key
   after a successful sign-in.
-- **`SignIn`** (`app/Actions/Identity/`) — checks `AttemptLimiter` before it verifies the password.
+- **`SignIn`** (`src/actions/identity/`) — checks `AttemptLimiter` before it verifies the password.
   It records a failure for the account key and the IP key after a wrong password. When either key is
-  exhausted, it throws `ThrottleRequestsException` with the remaining seconds. The response then
+  exhausted, it throws `TooManyRequestsError` with the remaining seconds. The response then
   carries `Retry-After`, from which the form shows "try again in N minutes" (`L2-003` criterion 3).
 
 ### Backend — 429 response and logging
 
-- **`ThrottleRequestsWithLogging`** (`app/Http/Middleware/`) — extends Laravel's
-  `ThrottleRequestsWithRedis` and replaces the `throttle` alias. Its `buildException()` override
-  writes one structured log line at `warning` level with event `rate_limit.exceeded`, the route name,
+- **`throttle`** (`src/http/middleware/throttle.ts`) — evaluates the named limiter against
+  `RedisRateLimiter`. When a limit is exhausted it writes one structured log line at `warning` level with event `rate_limit.exceeded`, the route name,
   the limiter name and the hashed client identifier. It never logs the raw IP address or e-mail
   (`L2-046` criterion 3).
-- **`ClientFingerprint`** (`app/Services/Security/`) — `forRequest(Request $request): string`
+- **`ClientFingerprint`** (`src/services/security/`) — `forRequest(ctx: Ctx): string`
   returns the HMAC-SHA-256 of the member id, or of the client IP address when no member is signed
-  in. `forEmail(string $email)` hashes a lower-cased e-mail address. The key is `security.client_hash_key`,
-  separate from `APP_KEY`. Limiter keys use the same digests, so Redis holds no raw IP address either.
-- **Exception rendering** (`bootstrap/app.php`) — renders `ThrottleRequestsException` as 429 with
+  in. `forEmail(email: string)` hashes a lower-cased e-mail address. The key is `security.clientHashKey`,
+  derived separately from `APP_KEY`. Limiter keys use the same digests, so Redis holds no raw IP address either.
+- **Error rendering** (`src/http/pipeline.ts`) — renders `TooManyRequestsError` as 429 with
   body `{ "message", "code": "rate_limited", "limiter": "<name>", "retry_after": <seconds> }`. It
-  keeps the exception's `Retry-After`, `X-RateLimit-Limit` and `X-RateLimit-Remaining` headers
+  sets `Retry-After`, `X-RateLimit-Limit` and `X-RateLimit-Remaining` headers
   (`L2-046` criteria 1 and 2).
 - **Request log** — the request-logging middleware sits outside exception handling, as `AGENTS.md`
   requires, so the request log line also records status 429 (`L2-053` criterion 5).
@@ -120,7 +119,7 @@ Each form shows the message in its existing `failed` or `error` slot, announced 
   for the rate limit and a normal-looking success only for a filled honeypot. Confirmation is
   `<TO SUPPLY>`.
 - Limit for anonymous routes other than the named limiters: `<TO SUPPLY>`.
-- Rotation procedure for `security.client_hash_key`: `<TO SUPPLY>`.
+- Rotation procedure for `security.clientHashKey`: `<TO SUPPLY>`.
 - Whether repeated limit hits raise an alert to operators: `<TO SUPPLY>`.
 
 ## Requirements
@@ -151,15 +150,15 @@ responses into toasts and form messages.
 
 ### Components
 
-Inside the Banaro API, `ThrottleRequestsWithLogging` evaluates the limiters that
-`RateLimitServiceProvider` registered. `SignIn` uses `AttemptLimiter` for the failure-counted limit.
+Inside the Banaro API, the `throttle` middleware evaluates the limiters that `limiters.ts`
+defines. `SignIn` uses `AttemptLimiter` for the failure-counted limit.
 `ClientFingerprint` supplies the hashed identifiers.
 
 ![C4 component view for limiting request rates](diagrams/c4-component.png)
 
 ### Class structure
 
-The throttle middleware extends Laravel's Redis throttle. On the frontend, the interceptor raises
+The throttle middleware uses the Redis rate limiter. On the frontend, the interceptor raises
 `RateLimitedError`, which pages and dialogs map to their specific messages.
 
 ![Class diagram for limiting request rates](diagrams/class-structure.png)

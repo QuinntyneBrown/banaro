@@ -7,12 +7,12 @@ Container(web, "Banaro Web", "Angular", "MatchingSetupPage, matchingSetUpGuard, 
 ContainerDb(db, "Banaro database", "Relational database", "matching_preferences, email_preferences")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "MatchingPreferenceController", "Laravel controller", "GET and PUT /matching/preferences")
-  Component(req, "SaveMatchingPreferencesRequest", "Form request", "Validates roles, skills, distance; ignores protected fields")
+  Component(ctrl, "MatchingPreferenceRoutes", "Route handler", "GET and PUT /matching/preferences")
+  Component(req, "SaveMatchingPreferencesRequest", "Request schema", "Validates roles, skills, distance; ignores protected fields")
   Component(action, "SaveMatchingPreferences", "Action", "Upserts the preference, keeps the status")
   Component(schedule, "MatchingScheduleService", "Domain service", "Next Monday 06:00 America/Toronto, ISO week keys")
   Component(emailprefs, "EmailPreferenceService", "Domain service (settings)", "Stores the Matches e-mail category")
-  Component(model, "MatchingPreference", "Eloquent model", "One row per member")
+  Component(model, "MatchingPreference", "Drizzle table", "One row per member")
   Component(resource, "MatchingPreferenceResource", "API resource", "MatchingPreferences JSON shape")
 }
 

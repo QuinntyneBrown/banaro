@@ -20,7 +20,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpEventsApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "EventController" as controller
+  participant "EventRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "ViewEvent" as action

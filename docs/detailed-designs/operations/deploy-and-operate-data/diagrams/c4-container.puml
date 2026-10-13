@@ -7,12 +7,12 @@ System_Ext(pipeline, "CI pipeline", "Product <TO SUPPLY>")
 System_Ext(orchestrator, "Container orchestrator", "Product <TO SUPPLY>")
 
 System_Boundary(banaro, "Banaro") {
-  Container(migrator, "One-off migrate and seed task", "banaro-api image", "artisan migrate ~-~-force ~-~-isolated; artisan db:seed ~-~-force")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3, banaro-api image", "Serves /api/v1; never migrates on boot")
-  Container(worker, "Banaro Worker", "Horizon + scheduler, banaro-api image", "Jobs and scheduled work, once across replicas")
+  Container(migrator, "One-off migrate and seed task", "banaro-api image", "node dist/cli.js migrate; seed")
+  Container(api, "Banaro API", "Next.js 16, Node 22, banaro-api image", "Serves /api/v1; never migrates on boot")
+  Container(worker, "Banaro Worker", "BullMQ worker and scheduler, banaro-api image", "Jobs and scheduled work, once across replicas")
   Container(web, "Banaro Web", "Angular SSR, banaro-web image", "Drains open SSR responses on SIGTERM")
-  ContainerDb(db, "Banaro database", "Relational database; engine <TO SUPPLY>", "Schema and data")
-  ContainerDb(redis, "Redis", "Redis", "Migration lock, schedule locks, queues")
+  ContainerDb(db, "Banaro database", "PostgreSQL 16", "Schema and data")
+  ContainerDb(redis, "Redis", "Redis", "Migration lock, job schedulers, queues")
 }
 
 Rel(pipeline, migrator, "Runs before rollout")
@@ -23,6 +23,6 @@ Rel(orchestrator, api, "Probes /health/ready before traffic; SIGTERM to drain", 
 Rel(orchestrator, worker, "Replaces replicas; SIGTERM to drain")
 Rel(orchestrator, web, "Replaces replicas; SIGTERM to drain")
 Rel(api, db, "Reads and writes", "SQL")
-Rel(worker, redis, "Takes jobs, takes onOneServer locks", "Redis protocol")
+Rel(worker, redis, "Registers schedules, takes jobs", "Redis protocol")
 Rel(worker, db, "Reads and writes", "SQL")
 @enduml

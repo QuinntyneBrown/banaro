@@ -17,8 +17,8 @@ Container_Boundary(web, "Banaro Web — banaro application and api library") {
 
 Container_Boundary(api, "Banaro API") {
   Component(absolute, "EnforceAbsoluteSessionLifetime", "Middleware", "Ends sessions 90 days after sign-in")
-  Component(auth, "auth:sanctum", "Middleware", "401 unauthenticated without a session")
-  Component(ctrl, "SessionController / SignIn", "Controller and action", "Sign-in from sign-in-and-sign-out")
+  Component(auth, "auth", "Middleware", "401 unauthenticated without a session")
+  Component(ctrl, "SessionRoutes / SignIn", "Controller and action", "Sign-in from sign-in-and-sign-out")
 }
 
 Rel(member, page, "Works in")

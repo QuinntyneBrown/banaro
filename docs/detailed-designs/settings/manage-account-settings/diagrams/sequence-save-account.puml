@@ -21,8 +21,8 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpSettingsApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "SettingsController" as settings
-  participant "AccountController" as controller
+  participant "SettingsRoutes" as settings
+  participant "AccountRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "UpdateAccount" as action

@@ -53,8 +53,8 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class DashboardController {
-    +show(request: ViewDashboardRequest): DashboardResource
+  class DashboardRoutes {
+    +GET(request: ViewDashboardRequest): DashboardResource
     +section(request: ViewDashboardSectionRequest, section: DashboardSectionName): DashboardSectionResource
   }
   class BuildDashboard {
@@ -69,7 +69,7 @@ package "Backend — Banaro API" {
   }
   interface DashboardSectionProvider {
     +name(): DashboardSectionName
-    +load(member: User): array
+    +load(member: User): string[]
   }
   class MatchesSection
   class EventsSection
@@ -77,9 +77,9 @@ package "Backend — Banaro API" {
   class ProjectsSection
   class ProfileSection
   class SectionResult {
-    +DashboardSectionName name
-    +string status
-    +?array data
+    +name: DashboardSectionName
+    +status: string
+    +data: Record<string, unknown> | null
   }
   enum DashboardSectionName {
     Matches
@@ -99,12 +99,12 @@ InMemoryDashboardApi ..|> DashboardApi
 DashboardApi ..> Dashboard : returns
 Dashboard *-- "5" DashboardSection
 DashboardSection --> SectionName
-HttpDashboardApi ..> DashboardController : HTTPS
+HttpDashboardApi ..> DashboardRoutes : HTTPS
 
-DashboardController ..> BuildDashboard : calls
-DashboardController ..> BuildDashboardSection : calls
-DashboardController ..> DashboardResource : returns
-DashboardController ..> DashboardSectionResource : returns
+DashboardRoutes ..> BuildDashboard : calls
+DashboardRoutes ..> BuildDashboardSection : calls
+DashboardRoutes ..> DashboardResource : returns
+DashboardRoutes ..> DashboardSectionResource : returns
 BuildDashboard ..> DashboardAssembler : uses
 BuildDashboardSection ..> DashboardAssembler : uses
 DashboardAssembler o-- "5" DashboardSectionProvider : providers

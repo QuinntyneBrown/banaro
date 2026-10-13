@@ -22,7 +22,7 @@ box "Frontend — banaro application (server and browser)" #E0F2FE
   participant "HttpI18nApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "CatalogueController" as controller
+  participant "CatalogueRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "CatalogueService" as service

@@ -38,7 +38,7 @@ alt incoming X-Request-Id matches the pattern
 else absent or invalid
   reqid -> reqid : Generate UUID
 end
-reqid -> reqid : Context::add('request_id', id)
+reqid -> reqid : Context.add('request_id', id)
 reqid -> controller : Pass on
 controller -> action : handle()
 alt action succeeds

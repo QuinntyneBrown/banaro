@@ -48,45 +48,45 @@ package "Frontend — banaro application, components and api libraries" {
 }
 
 package "Backend — Banaro API" {
-  class ConversationController {
-    +store(request: StartConversationRequest): ConversationResource
+  class ConversationRoutes {
+    +POST(request: StartConversationRequest): ConversationResource
   }
   class StartConversationRequest {
-    +rules(): array
+    +schema: ZodObject
   }
   class StartConversation {
     +handle(sender: User, recipient: User, body: string, clientMessageId: string): StartConversationResult
   }
   class StartConversationResult {
-    +Conversation conversation
-    +Message message
-    +bool created
+    +conversation: Conversation
+    +message: Message
+    +created: boolean
   }
   class FirstMessageLimiter {
-    +attempt(sender: User): bool
-    +availableIn(sender: User): int
+    +attempt(sender: User): boolean
+    +availableIn(sender: User): number
   }
   class BlockService <<TrustAndSafety>> {
-    +isBlockedEitherWay(a: User, b: User): bool
+    +isBlockedEitherWay(a: User, b: User): boolean
   }
   class Conversation {
-    +int id
-    +string pair_key
-    +?int last_message_id
-    +?Carbon last_message_at
+    +id: number
+    +pair_key: string
+    +last_message_id: number | null
+    +last_message_at: Timestamp | null
   }
   class ConversationParticipant {
-    +int conversation_id
-    +int user_id
-    +?int last_read_message_id
+    +conversation_id: number
+    +user_id: number
+    +last_read_message_id: number | null
   }
   class Message {
-    +int id
-    +int conversation_id
-    +int sender_id
-    +string body
-    +string client_message_id
-    +Carbon created_at
+    +id: number
+    +conversation_id: number
+    +sender_id: number
+    +body: string
+    +client_message_id: string
+    +created_at: Timestamp
   }
   class ConversationResource
   class ConversationStarted <<event>>
@@ -100,11 +100,11 @@ HttpMessagingApi ..|> MessagingApi
 InMemoryMessagingApi ..|> MessagingApi
 MessagingApi ..> StartConversationInput : takes
 MessagingApi ..> ConversationRef : returns
-HttpMessagingApi ..> ConversationController : HTTPS
+HttpMessagingApi ..> ConversationRoutes : HTTPS
 
-ConversationController ..> StartConversationRequest : validates with
-ConversationController ..> StartConversation : calls
-ConversationController ..> ConversationResource : returns
+ConversationRoutes ..> StartConversationRequest : validates with
+ConversationRoutes ..> StartConversation : calls
+ConversationRoutes ..> ConversationResource : returns
 StartConversation ..> BlockService : checks
 StartConversation ..> FirstMessageLimiter : limits with
 StartConversation ..> StartConversationResult : returns

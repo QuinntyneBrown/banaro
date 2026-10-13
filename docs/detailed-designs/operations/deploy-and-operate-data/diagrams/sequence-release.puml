@@ -34,9 +34,9 @@ maintainer -> ci : Merge to main
 ci -> ci : Lint, tests, scans, budgets, perf test, contract
 ci -> ci : build: banaro-api and banaro-web images, push to registry
 opt schema-compat step
-  ci -> ci : Migrate a disposable database with the new release, run previous release's feature tests (L2-054 criterion 2)
+  ci -> ci : Migrate a disposable database with the new release, run previous release's integration tests (L2-054 criterion 2)
 end
-ci -> task : php artisan migrate ~-~-force ~-~-isolated (L2-054 criterion 1)
+ci -> task : node dist/cli.js migrate (L2-054 criterion 1)
 task -> redis : Take migration lock
 task -> db : Apply pending expand migrations
 alt migration fails
@@ -46,7 +46,7 @@ alt migration fails
 else migrations applied
   task -> redis : Release lock
   task --> ci : Exit 0
-  ci -> task : php artisan db:seed ~-~-force (L2-054 criterion 3)
+  ci -> task : node dist/cli.js seed (L2-054 criterion 3)
   task -> db : Upsert reference data by natural key
   task --> ci : Exit 0
   ci -> orch : Roll out API, Worker and Web images
@@ -67,7 +67,7 @@ else migrations applied
     end
   end
   orch -> oldweb : Same gate and drain; server.close() finishes SSR responses
-  orch -> orch : Worker replicas: SIGTERM, Horizon finishes current jobs
+  orch -> orch : Worker replicas: SIGTERM, Worker.close() finishes current jobs
   orch --> ci : Rollout complete
   ci --> maintainer : Release done
 end

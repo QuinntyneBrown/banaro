@@ -14,24 +14,24 @@ skinparam class {
 title Class structure — Observe health
 
 package "Backend — Banaro API: health" {
-  class LivenessController {
-    +__invoke(): JsonResponse
+  class LivenessRoutes {
+    +__invoke(): Response
   }
-  class ReadinessController {
+  class ReadinessRoutes {
     -service: ReadinessService
-    +__invoke(): JsonResponse
+    +__invoke(): Response
   }
   class ReadinessService {
     -checks: HealthCheck[]
     +check(): ReadinessResult
   }
   class ReadinessResult {
-    +bool ready
-    +?string failedCheck
+    +ready: boolean
+    +failedCheck: string | null
   }
   interface HealthCheck {
     +name(): string
-    +passes(): bool
+    +passes(): boolean
   }
   class DatabaseCheck
   class CacheCheck
@@ -50,25 +50,25 @@ package "Backend — Banaro API: request logging" {
     -routeOf(request: Request): string
   }
   class RequestLogLine <<log record>> {
-    +string request_id
-    +string method
-    +string route
-    +int status
-    +int duration_ms
-    +?int member_id
+    +request_id: string
+    +method: string
+    +route: string
+    +status: number
+    +duration_ms: number
+    +member_id: number | null
   }
-  class ExceptionHandling <<bootstrap/app.php withExceptions>> {
-    +context(): array
+  class ExceptionHandling <<src/http/pipeline.ts withExceptions>> {
+    +context(): string[]
     +report(e: Throwable): void
-    +render(e: Throwable, request: Request): JsonResponse
+    +render(e: Throwable, request: Request): Response
   }
   class Context <<Laravel facade>> {
     +add(key: string, value: mixed): void
-    +get(key: string): mixed
+    +get(key: string): unknown
   }
 }
 
-ReadinessController --> ReadinessService : calls
+ReadinessRoutes --> ReadinessService : calls
 ReadinessService ..> ReadinessResult : returns
 ReadinessService o-- "3" HealthCheck
 DatabaseCheck ..|> HealthCheck

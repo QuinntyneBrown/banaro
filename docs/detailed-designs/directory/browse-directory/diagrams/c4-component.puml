@@ -8,8 +8,8 @@ ContainerDb(db, "Banaro database", "Relational database", "builders, builder_ski
 ContainerDb(redis, "Redis", "Redis", "Cached match scores")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "BuilderDirectoryController", "Laravel controller", "GET /builders (api_public.php)")
-  Component(req, "SearchDirectoryRequest", "Form request", "q, sort, page, per_page up to 50")
+  Component(ctrl, "BuilderDirectoryRoutes", "Route handler", "GET /builders (src/http/public-routes.ts)")
+  Component(req, "SearchDirectoryRequest", "Request schema", "q, sort, page, per_page up to 50")
   Component(action, "SearchDirectory", "Action", "Scopes, searches, sorts and pages")
   Component(visibility, "ProfileVisibility", "Settings filter (L2-036)", "Drops or trims profiles by privacy settings")
   Component(blocks, "Block scope", "Trust-and-safety scope (L2-032)", "Drops builders blocked in either direction")

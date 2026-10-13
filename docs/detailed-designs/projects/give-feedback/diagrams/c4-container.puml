@@ -9,10 +9,10 @@ System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "give-feedback and reply dialogs, project page")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Rate limit, block check, feedback rules")
-  Container(worker, "Banaro Worker", "Laravel Horizon", "Sends queued notifications")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Rate limit, block check, feedback rules")
+  Container(worker, "Banaro Worker", "BullMQ worker", "Sends queued notifications")
   ContainerDb(db, "Banaro database", "Relational database", "Projects, feedback, blocks, notifications")
-  ContainerQueue(redis, "Redis", "Redis", "Sessions, rate-limit counters, Horizon queues")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions, rate-limit counters, BullMQ queues")
 }
 
 Rel(member, web, "Uses", "HTTPS")

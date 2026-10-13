@@ -62,44 +62,44 @@ package "Frontend — banaro application, components and api libraries" {
 }
 
 package "Backend — Banaro API" {
-  class BuilderProfileController {
-    +show(request: ShowBuilderProfileRequest, builder: Builder): JsonResource
+  class BuilderProfileRoutes {
+    +GET(request: ShowBuilderProfileRequest, builder: Builder): JsonResource
   }
   class ViewBuilderProfile {
-    +handle(viewer: ?User, builder: Builder): BuilderProfileView
+    +handle(viewer: User | null, builder: Builder): BuilderProfileView
   }
   class BuilderProfileView {
-    +Builder builder
-    +array visibleFields
-    +?MatchScore match
-    +?float distanceKm
-    +?OnlineStatus onlineStatus
-    +bool isOwn
-    +array actions
+    +builder: Builder
+    +visibleFields: string[]
+    +match: MatchScore | null
+    +distanceKm: number | null
+    +onlineStatus: OnlineStatus | null
+    +isOwn: boolean
+    +actions: string[]
   }
   class ProfileVisibility <<settings>> {
-    +canView(builder: Builder, viewer: ?User): bool
-    +visibleFields(builder: Builder, viewer: ?User): array
+    +canView(builder: Builder, viewer: User | null): boolean
+    +visibleFields(builder: Builder, viewer: User | null): string[]
   }
   class MatchScoreService <<matching>> {
     +scoreFor(viewer: User, builder: Builder): MatchScore
   }
   class MatchScore <<matching>> {
-    +int score
-    +array reasons
+    +score: number
+    +reasons: string[]
   }
   class DistanceService {
-    +between(from: Neighbourhood, to: Neighbourhood): float
-    +approximate(km: float): int
+    +between(from: Neighbourhood, to: Neighbourhood): number
+    +approximate(km: float): number
   }
   class PresenceService {
     +statusFor(builder: Builder): ?OnlineStatus
   }
   class Builder {
-    +int id
-    +string public_id
-    +string name
-    +?Carbon deleted_at
+    +id: number
+    +public_id: string
+    +name: string
+    +deleted_at: Timestamp | null
   }
   class BuilderProfileResource
   class PublicBuilderProfileResource
@@ -113,11 +113,11 @@ BuilderProfilePage ..> BlockBuilderDialog : opens
 HttpDirectoryApi ..|> DirectoryApi
 DirectoryApi ..> BuilderProfile : returns
 BuilderProfile *-- ProfileActions
-HttpDirectoryApi ..> BuilderProfileController : HTTPS
+HttpDirectoryApi ..> BuilderProfileRoutes : HTTPS
 
-BuilderProfileController ..> ViewBuilderProfile : calls
-BuilderProfileController ..> BuilderProfileResource : members
-BuilderProfileController ..> PublicBuilderProfileResource : visitors
+BuilderProfileRoutes ..> ViewBuilderProfile : calls
+BuilderProfileRoutes ..> BuilderProfileResource : members
+BuilderProfileRoutes ..> PublicBuilderProfileResource : visitors
 ViewBuilderProfile ..> ProfileVisibility : asks
 ViewBuilderProfile ..> MatchScoreService : scores
 ViewBuilderProfile ..> DistanceService : distance

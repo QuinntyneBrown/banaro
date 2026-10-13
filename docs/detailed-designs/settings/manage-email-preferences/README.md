@@ -50,33 +50,33 @@ Banaro database. The Banaro Worker reads the preferences when it sends e-mail.
 
 ### Backend — Banaro API
 
-- **`EmailPreferenceController`** (`Controllers/Api/V1/Settings/`) — `update()` handles
-  `PUT /settings/email-preferences/{category}` in `routes/api.php`. It acts on the session user only.
-- **`SetEmailPreferenceRequest`** (`Requests/Settings/`) — validates `{category}` as an
+- **`EmailPreferenceRoutes`** (`app/api/v1/`) — `update()` handles
+  `PUT /settings/email-preferences/{category}` on the authenticated stack (`src/http/pipeline.ts`). It acts on the session user only.
+- **`SetEmailPreferenceRequest`** (`src/http/requests/settings/`) — validates `{category}` as an
   `EmailCategory` value and requires a boolean `enabled`.
-- **`SetEmailPreference`** (`Actions/Settings/`) — upserts the one `EmailPreference` row for the member
+- **`SetEmailPreference`** (`src/actions/settings/`) — upserts the one `EmailPreference` row for the member
   and category, so each category saves on its own (`L2-037` criterion 1). It returns all five values.
-- **`UnsubscribeController`** (`Controllers/Api/V1/Settings/`) — `store()` handles
-  `POST /email-preferences/unsubscribe` in `routes/api_public.php`, so it needs no session
+- **`UnsubscribeRoutes`** (`app/api/v1/`) — `store()` handles
+  `POST /email-preferences/unsubscribe` in `src/http/public-routes.ts`, so it needs no session
   (`L2-037` criterion 2). The route is exempt from CSRF, because the signed token is the credential
   and mail clients may post to it directly for one-click unsubscribe (`L2-029` criterion 3).
-- **`UnsubscribeRequest`** (`Requests/Settings/`) — requires `token`.
-- **`Unsubscribe`** (`Actions/Settings/`) — asks `UnsubscribeTokenService` to verify the token. A
+- **`UnsubscribeRequest`** (`src/http/requests/settings/`) — requires `token`.
+- **`Unsubscribe`** (`src/actions/settings/`) — asks `UnsubscribeTokenService` to verify the token. A
   failed check returns 422 with code `invalid_unsubscribe_link` and changes nothing
   (`L2-037` criterion 3). A valid token turns the named category off for the named member through
   `SetEmailPreference` and returns the category. A repeated request returns the same result.
-- **`UnsubscribeTokenService`** (`Services/Settings/`) — `issue(User, EmailCategory)` returns
+- **`UnsubscribeTokenService`** (`src/services/settings/`) — `issue(User, EmailCategory)` returns
   `base64url(user id, category)` followed by an HMAC-SHA256 signature under a dedicated key from
-  `config/security.php`. `verify(string)` recomputes the signature and compares it with
+  `src/config/security.ts`. `verify(string)` recomputes the signature and compares it with
   `hash_equals()`.
-- **`EmailPreferenceService`** (`Services/Settings/`) — `allows(User, EmailCategory): bool`. The
+- **`EmailPreferenceService`** (`src/services/settings/`) — `allows(User, EmailCategory): boolean`. The
   notifications of `email-notifications` call it from `via()` and drop the `mail` channel when it is
   false (`L2-029` criterion 2). Security e-mail never calls it.
-- **`EmailPreference`** (`Models/`) — one row per member and category: `user_id`, `category` and
+- **`EmailPreference`** (`src/db/schema/`) — one row per member and category: `user_id`, `category` and
   `enabled`, with a unique index on (`user_id`, `category`).
-- **`EmailCategory`** (`Enums/`) — `Matches`, `Messages`, `Events`, `ProjectActivity` and
+- **`EmailCategory`** (`src/enums/`) — `Matches`, `Messages`, `src/events/`, `ProjectActivity` and
   `WeeklyDigest`.
-- **`EmailPreferencesResource`** (`Resources/Settings/`) — the `EmailPreferences` shape.
+- **`EmailPreferencesResource`** (`src/http/resources/settings/`) — the `EmailPreferences` shape.
 
 ### Open points
 
@@ -117,7 +117,7 @@ stored preferences before it sends e-mail.
 
 ### Components
 
-Inside the Banaro API, `EmailPreferenceController` and `UnsubscribeController` both end in
+Inside the Banaro API, `EmailPreferenceRoutes` and `UnsubscribeRoutes` both end in
 `SetEmailPreference`. `UnsubscribeTokenService` signs and verifies tokens; `EmailPreferenceService`
 answers the notifications.
 

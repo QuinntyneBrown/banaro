@@ -22,8 +22,8 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpSettingsApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "AccountController" as controller
-  participant "EmailChangeController" as confirmCtrl
+  participant "AccountRoutes" as controller
+  participant "EmailChangeRoutes" as confirmCtrl
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "RequestEmailChange" as request
@@ -34,7 +34,7 @@ box "Backend — Banaro Infrastructure" #FFF4E5
   queue "Redis" as redis
 end box
 box "Backend — Banaro Worker" #ECFDF3
-  participant "Horizon worker" as worker
+  participant "BullMQ worker" as worker
 end box
 
 actor -> section : Enter new e-mail, select "Save changes"
@@ -60,7 +60,7 @@ worker -> worker : Send both e-mails through the Mailer contract
 
 actor -> confirmPage : Follow confirmation link from the new inbox
 confirmPage -> client : confirmEmailChange(token)
-client -> confirmCtrl : POST /api/v1/settings/email-change/confirm (api_public.php)
+client -> confirmCtrl : POST /api/v1/settings/email-change/confirm (src/http/public-routes.ts)
 confirmCtrl -> confirm : handle(token)
 confirm -> db : Find pending change by token hash
 alt token unknown, used or expired

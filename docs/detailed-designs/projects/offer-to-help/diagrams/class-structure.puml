@@ -49,22 +49,22 @@ package "Frontend — banaro application, components and api libraries" {
 }
 
 package "Backend — Banaro API" {
-  class HelpOfferController {
-    +store(request: OfferToHelpRequest, project: Project): HelpOfferResource
-    +index(request: ListHelpOffersRequest, project: Project): ResourceCollection
+  class HelpOfferRoutes {
+    +POST(request: OfferToHelpRequest, project: Project): HelpOfferResource
+    +GET(request: ListHelpOffersRequest, project: Project): Page
   }
-  class HelpOfferDecisionController {
-    +update(request: AnswerHelpOfferRequest, project: Project, offer: HelpOffer): HelpOfferResource
+  class HelpOfferDecisionRoutes {
+    +PUT(request: AnswerHelpOfferRequest, project: Project, offer: HelpOffer): HelpOfferResource
   }
   class ProjectPolicy {
-    +offerHelp(user: ?User, project: Project): bool
+    +offerHelp(user: User | null, project: Project): boolean
     +viewHelpOffers(user: User, project: Project): Response
   }
   class HelpOfferPolicy {
-    +answer(user: User, offer: HelpOffer): bool
+    +answer(user: User, offer: HelpOffer): boolean
   }
   class BlockService {
-    +isBlockedEitherWay(a: User, b: User): bool
+    +isBlockedEitherWay(a: User, b: User): boolean
   }
   class OfferToHelp {
     +handle(offerer: User, project: Project, role: LookingForRole, message: string): HelpOffer
@@ -73,7 +73,7 @@ package "Backend — Banaro API" {
     +handle(owner: User, offer: HelpOffer, decision: HelpOfferStatus): HelpOffer
   }
   class ListHelpOffers {
-    +handle(project: Project): LengthAwarePaginator
+    +handle(project: Project): Page
   }
   class StartConversation {
     Actions/Messaging
@@ -84,18 +84,18 @@ package "Backend — Banaro API" {
     +status: 409
   }
   class Project {
-    +int id
-    +int owner_id
+    +id: number
+    +owner_id: number
   }
   class HelpOffer {
-    +int id
-    +int project_id
-    +int offerer_id
-    +LookingForRole role
-    +string message
-    +HelpOfferStatus status
-    +?Carbon answered_at
-    +?int conversation_id
+    +id: number
+    +project_id: number
+    +offerer_id: number
+    +role: LookingForRole
+    +message: string
+    +status: HelpOfferStatus
+    +answered_at: Timestamp | null
+    +conversation_id: number | null
   }
   enum HelpOfferStatus {
     Pending
@@ -113,19 +113,19 @@ ProjectDetailPage ..> HelpOfferItem : renders
 ProjectDetailPage ..> ProjectsApi : uses
 HttpProjectsApi ..|> ProjectsApi
 ProjectsApi ..> HelpOfferView : returns
-HttpProjectsApi ..> HelpOfferController : HTTPS
+HttpProjectsApi ..> HelpOfferRoutes : HTTPS
 
-HelpOfferController ..> ProjectPolicy : authorize
-HelpOfferController ..> OfferToHelp : calls
-HelpOfferController ..> ListHelpOffers : calls
-HelpOfferDecisionController ..> HelpOfferPolicy : authorize
-HelpOfferDecisionController ..> AnswerHelpOffer : calls
+HelpOfferRoutes ..> ProjectPolicy : authorize
+HelpOfferRoutes ..> OfferToHelp : calls
+HelpOfferRoutes ..> ListHelpOffers : calls
+HelpOfferDecisionRoutes ..> HelpOfferPolicy : authorize
+HelpOfferDecisionRoutes ..> AnswerHelpOffer : calls
 ProjectPolicy ..> BlockService : blocked pair check
 OfferToHelp ..> HelpOfferPending : throws
 OfferToHelp ..> HelpOfferedNotification : queues
 AnswerHelpOffer ..> StartConversation : calls on accept
 AnswerHelpOffer ..> HelpOfferAnsweredNotification : queues
-HelpOfferController ..> HelpOfferResource : returns
+HelpOfferRoutes ..> HelpOfferResource : returns
 Project "1" *-- "*" HelpOffer : helpOffers
 HelpOffer --> HelpOfferStatus : has
 @enduml

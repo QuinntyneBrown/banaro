@@ -7,12 +7,12 @@ Container(web, "Banaro Web", "Angular", "ReportDialog, HttpTrustAndSafetyApi")
 ContainerDb(db, "Banaro database", "Relational database", "reports, report_submissions, blocks")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "ReportController", "Laravel controller", "POST /reports")
-  Component(req, "SubmitReportRequest", "Form request", "Requires a reason, limits details to 1,000 characters")
+  Component(ctrl, "ReportRoutes", "Route handler", "POST /reports")
+  Component(req, "SubmitReportRequest", "Request schema", "Requires a reason, limits details to 1,000 characters")
   Component(action, "SubmitReport", "Action", "Locks the reporter, merges within 24 hours or creates a report")
   Component(resolver, "ReportSubjectResolver", "Domain service", "Maps subject type and id to a visible model and its owner")
   Component(block, "BlockService", "Domain service", "isBlockedEitherWay(a, b)")
-  Component(models, "Report / ReportSubmission", "Eloquent models", "Report status, reason and details")
+  Component(models, "Report / ReportSubmission", "Drizzle tables", "Report status, reason and details")
   Component(resource, "ReportReceiptResource", "API resource", "ReportReceipt JSON shape")
 }
 

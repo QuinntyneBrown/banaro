@@ -7,12 +7,12 @@ Container(web, "Banaro Web", "Angular", "BlockBuilderDialog, BlockedBuildersSect
 ContainerDb(db, "Banaro database", "Relational database", "blocks")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "BlockController", "Laravel controller", "GET /blocks, PUT and DELETE /blocks/{builder}")
-  Component(req, "BlockBuilderRequest / UnblockBuilderRequest", "Form requests", "Authorize the member, reject body fields")
+  Component(ctrl, "BlockRoutes", "Route handler", "GET /blocks, PUT and DELETE /blocks/{builder}")
+  Component(req, "BlockBuilderRequest / UnblockBuilderRequest", "Request schemas", "Authorize the member, reject body fields")
   Component(blockAction, "BlockBuilder", "Action", "Rejects self-blocks, inserts the block idempotently")
   Component(unblockAction, "UnblockBuilder", "Action", "Deletes the member's own block")
   Component(service, "BlockService", "Domain service", "isBlockedEitherWay(a, b), applyScope(query, viewer)")
-  Component(model, "Block", "Eloquent model", "blocker_id, blocked_id")
+  Component(model, "Block", "Drizzle table", "blocker_id, blocked_id")
   Component(resource, "BlockedBuilderResource", "API resource", "Blocked list row")
   Component(consumers, "Directory, matching, projects, events, messaging and search", "Queries and policies", "Apply withoutBlockedFor(viewer) or isBlockedEitherWay")
 }

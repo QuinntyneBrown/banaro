@@ -9,7 +9,7 @@ System_Ext(logs, "Log collector", "Product <TO SUPPLY>")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Reads X-Request-Id for the server-error page")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Health routes, request ID, JSON request log")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Health routes, request ID, JSON request log")
   ContainerDb(db, "Banaro database", "Relational database", "Checked with SELECT 1")
   ContainerDb(redis, "Redis", "Redis", "Cache and queue connections checked with PING")
 }

@@ -9,7 +9,7 @@ System_Ext(ci, "CI pipeline", "dependency-scan stage")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular SSR on Express", "server.ts: HTTPS redirect, security headers, CSP nonce")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Origin and CSRF checks, form requests, security headers")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Origin and CSRF checks, request schemas, security headers")
   ContainerDb(db, "Banaro database", "Relational database", "Plain-text user content")
   ContainerQueue(redis, "Redis", "Redis", "Sessions and CSRF tokens")
   ContainerDb(media, "Media storage", "Private file storage; provider <TO SUPPLY>", "Photos under random names, outside the web root")
@@ -22,6 +22,6 @@ Rel(web, api, "Calls during SSR", "JSON/HTTPS")
 Rel(api, redis, "Reads session and CSRF token", "Redis protocol")
 Rel(api, db, "Queries with bound parameters", "SQL")
 Rel(api, media, "Writes uploads", "Storage API")
-Rel(ci, api, "Audits composer.lock", "composer audit")
+Rel(ci, api, "Audits backend/package-lock.json", "npm audit")
 Rel(ci, web, "Audits package-lock.json", "npm audit")
 @enduml

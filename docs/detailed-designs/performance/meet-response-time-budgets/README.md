@@ -37,14 +37,14 @@ The representative request is a member opening the builder directory at `/builde
 
 ### Backend — paging
 
-- **`PaginatesResults`** (`app/Http/Requests/Concerns/`) — trait used by every list form request. It
+- **`PaginatesResults`** (`src/http/requests/concerns/`) — trait used by every list request schema. It
   adds the rules `page: integer|min:1` and `per_page: integer|min:1`. Its `perPage()` method returns
-  `min($this->validated('per_page') ?? 12, 50)` (`L2-047` criterion 4). A larger value is lowered
+  `Math.min(perPage ?? 12, 50)` in the `page()` helper (`L2-047` criterion 4). A larger value is lowered
   to 50, not rejected.
-- **`config/banaro.php`** — holds `pagination.default` (12) and `pagination.max` (50). The trait reads
+- **`src/config/banaro.ts`** — holds `pagination.default` (12) and `pagination.max` (50). The trait reads
   them, so the two numbers live in one place. The default also matches the directory's 12 cards per
   page (`L2-009`).
-- **`PaginatedResource`** (`app/Http/Resources/`) — wraps a page of items with `meta.page`,
+- **`PaginatedResource`** (`src/http/resources/`) — wraps a page of items with `meta.page`,
   `meta.per_page`, `meta.total` and `meta.last_page`. A page beyond the last returns the last page
   (`L2-009` criterion 5).
 - **Frontend** — each list method in the `api` library accepts a `PageRequest` (`page`, optional
@@ -52,7 +52,7 @@ The representative request is a member opening the builder directory at `/builde
 
 ### Backend — the directory query and its indexes
 
-- **`DirectoryQuery`** (`app/Services/Directory/`) — builds the directory query from the validated
+- **`DirectoryQuery`** (`src/services/directory/`) — builds the directory query from the validated
   filters. It applies the visibility scope from the `scope-data-access` feature, the facet filters
   (`L2-010`), the sort and the page. It selects only the columns `BuilderCardResource` needs and
   eager-loads skills in one extra query.
@@ -62,7 +62,7 @@ The representative request is a member opening the builder directory at `/builde
   - `builder_skill (skill_id, builder_id)` and `builder_open_to (open_to, builder_id)` for facets
   - `match_scores (viewer_id, score)` for the "Best match" sort (`L2-009` criterion 2)
   - `neighbourhood_distances (from_id, km, to_id)` for the distance filter. Distances between GTA
-    neighbourhoods are precomputed by `DistanceService` (`app/Services/Directory/`), so the query
+    neighbourhoods are precomputed by `DistanceService` (`src/services/directory/`), so the query
     compares stored values and computes no geometry per row.
   - a normalized, accent-folded `search_text` column with an index suited to the database engine for
     the search box (`L2-009` criterion 4); the index type is `<TO SUPPLY>` until the engine is chosen
@@ -70,8 +70,8 @@ The representative request is a member opening the builder directory at `/builde
   factories, runs the query for each sort and a representative filter set, and reads the engine's
   `EXPLAIN` output. It asserts that no step scans the whole `builders` table (`L2-047` criterion 3).
   It carries the acceptance-test header naming `L2-047`.
-- **Lazy-loading guard** — `AppServiceProvider` calls `Model::preventLazyLoading(!
-  app()->isProduction())`. A query that loads relations one row at a time fails in tests.
+- **Lazy-loading guard** — `AppServiceProvider` calls `Model.preventLazyLoading(!
+  app().isProduction())`. A query that loads relations one row at a time fails in tests.
 
 ### Backend — keeping writes short
 
@@ -162,7 +162,7 @@ test sit beside the API.
 
 ### Class structure
 
-List form requests use `PaginatesResults`, and list responses use `PaginatedResource`. The load
+List request schemas use `PaginatesResults`, and list responses use `PaginatedResource`. The load
 scenarios share one threshold definition per endpoint class.
 
 ![Class diagram for meeting response-time budgets](diagrams/class-structure.png)

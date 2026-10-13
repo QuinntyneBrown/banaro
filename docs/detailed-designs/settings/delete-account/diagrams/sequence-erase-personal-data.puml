@@ -14,7 +14,7 @@ skinparam package {
   FontColor #101828
   BackgroundColor #F9FAFB
 }
-participant "Laravel scheduler" as scheduler
+participant "BullMQ scheduler" as scheduler
 box "Backend — Banaro Worker" #ECFDF3
   participant "EraseDeletedAccounts" as sweep
   participant "ErasePersonalData" as job
@@ -48,7 +48,7 @@ opt job fails
 end
 
 == Daily sweep ==
-scheduler -> sweep : Run daily (routes/console.php)
+scheduler -> sweep : Run daily (src/scheduler.ts)
 sweep -> db : Users with deleted_at set and erased_at empty
 loop each unfinished erasure
   sweep -> redis : Re-dispatch ErasePersonalData(user)

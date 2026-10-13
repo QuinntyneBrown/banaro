@@ -12,5 +12,5 @@ System_Ext(ci, "CI pipeline", "Runs i18n:check; platform <TO SUPPLY>")
 Rel(member, banaro, "Reads en-CA text, Toronto times, km distances", "HTTPS")
 Rel(visitor, banaro, "Reads en-CA text", "HTTPS")
 Rel(banaro, mail, "Sends e-mail written from the same catalogue via", "Mailer contract")
-Rel(ci, banaro, "Checks catalogue keys of", "php artisan i18n:check")
+Rel(ci, banaro, "Checks catalogue keys of", "banaro i18n:check")
 @enduml

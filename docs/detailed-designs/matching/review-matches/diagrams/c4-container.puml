@@ -7,7 +7,7 @@ Person(member, "Member", "Active matching member")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Matching page, match cards, say-hello dialog")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Matching overview, contacted marking, say hello (messaging)")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Matching overview, contacted marking, say hello (messaging)")
   ContainerDb(db, "Banaro database", "Relational database", "Suggestions, preferences, blocks, conversations")
   ContainerQueue(redis, "Redis", "Redis", "Sessions")
 }

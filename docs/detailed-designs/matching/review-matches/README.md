@@ -68,36 +68,36 @@ say-hello step crosses into the `messaging` subsystem.
 
 ### Backend — Banaro API
 
-- **`MatchingOverviewController`** (`Controllers/Api/V1/Matching/`) — `show()` handles
+- **`MatchingOverviewRoutes`** (`app/api/v1/`) — `show()` handles
   `GET /matching`, calls `BuildMatchingOverview` and returns a `MatchingOverviewResource`. The route is
-  in `routes/api.php`.
-- **`ShowMatchingOverviewRequest`** (`Requests/Matching/`) — authorizes the verified member and
+  on the authenticated stack (`src/http/pipeline.ts`).
+- **`ShowMatchingOverviewRequest`** (`src/http/requests/matching/`) — authorizes the verified member and
   accepts no parameters (`L2-045` criterion 1).
-- **`BuildMatchingOverview`** (`Actions/Matching/`) — assembles the overview for the session member:
+- **`BuildMatchingOverview`** (`src/actions/matching/`) — assembles the overview for the session member:
   1. It returns status `not_set_up` when the member has no `MatchingPreference` (`L2-021`
      criterion 4).
   2. It reads the member's suggestions for the current ISO week from `MatchingScheduleService`.
   3. It drops any suggestion whose builder is now blocked in either direction, through
-     `BlockService::isBlockedEitherWay()` (`L2-032` criterion 1, `L2-044` criterion 5).
+     `BlockService.isBlockedEitherWay()` (`L2-032` criterion 1, `L2-044` criterion 5).
   4. It counts the suggestions with status `suggested` as `unreviewedCount` (`L2-022` criterion 5).
-  5. It adds `nextRunOn` from `MatchingScheduleService::nextRunDate()`.
-- **`MatchingOverviewResource`** and **`MatchSuggestionResource`** (`Resources/Matching/`) —
+  5. It adds `nextRunOn` from `MatchingScheduleService.nextRunDate()`.
+- **`MatchingOverviewResource`** and **`MatchSuggestionResource`** (`src/http/resources/matching/`) —
   serialize the overview and each suggestion. `MatchSuggestionResource` applies the builder's
   neighbourhood-precision setting. For "City only" it shows the city and the distance rounded to the
   nearest 5 km (`L2-036` criterion 3).
-- **`MatchSuggestionPolicy`** (`Policies/`) — allows a member to view or act on a suggestion only when
+- **`MatchSuggestionPolicy`** (`src/policies/`) — allows a member to view or act on a suggestion only when
   its `user_id` is theirs. Lookups go through the member's own relation, so another member's
   suggestion id yields 404 (`L2-044` criterion 1).
-- **`MarkSuggestionContactedOnConversationStarted`** (`Listeners/`) — synchronous listener for
+- **`MarkSuggestionContactedOnConversationStarted`** (`src/events/`) — synchronous listener for
   `ConversationStarted`. The messaging action `StartConversation` dispatches that event after commit
   when it creates a new conversation. The listener calls `MarkSuggestionContacted` with the sender and
   the recipient. It logs its own failure and does not fail the say-hello request, which has already
   committed.
-- **`MarkSuggestionContacted`** (`Actions/Matching/`) — sets the sender's current-week suggestion for
+- **`MarkSuggestionContacted`** (`src/actions/matching/`) — sets the sender's current-week suggestion for
   that recipient from `suggested` to `contacted` and stamps `acted_at` (`L2-023` criterion 5). It
   changes nothing when no such suggestion exists. The listener runs within the say-hello request, so
   the next overview read already shows the new status.
-- **`MatchSuggestion`** (`Models/`) — defined by `generate-weekly-suggestions`.
+- **`MatchSuggestion`** (`src/db/schema/`) — defined by `generate-weekly-suggestions`.
 
 ### Failure handling
 
@@ -146,7 +146,7 @@ dialog, for the first message. The API reads and updates suggestions in the Bana
 
 ### Components
 
-Inside the Banaro API, `MatchingOverviewController` calls `BuildMatchingOverview`. A listener on the
+Inside the Banaro API, `MatchingOverviewRoutes` calls `BuildMatchingOverview`. A listener on the
 messaging subsystem's `ConversationStarted` event calls `MarkSuggestionContacted`.
 
 ![C4 component view for reviewing matches](diagrams/c4-component.png)

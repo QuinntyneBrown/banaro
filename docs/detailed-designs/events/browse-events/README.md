@@ -59,13 +59,13 @@ reads only; it changes no data and sends no e-mail.
 
 ### Backend — Banaro API
 
-- **`EventController`** (`Controllers/Api/V1/Events/`) — `index()` handles `GET /events`. The route is
-  in `routes/api_public.php`, because visitors may browse events (`L2-018`, `L2-044` criterion 3). It
+- **`EventRoutes`** (`app/api/v1/`) — `index()` handles `GET /events`. The route is
+  in `src/http/public-routes.ts`, because visitors may browse events (`L2-018`, `L2-044` criterion 3). It
   calls `ListEvents` and returns an `EventSummaryResource` collection with paging metadata.
-- **`ListEventsRequest`** (`Requests/Events/`) — validates `when` as one of `upcoming` and `past`
+- **`ListEventsRequest`** (`src/http/requests/events/`) — validates `when` as one of `upcoming` and `past`
   (default `upcoming`), `page` as a positive integer and `per_page` as an integer from 1 to 50,
   default 12 (`L2-045` criterion 1, `L2-047` criterion 4). It ignores every other parameter.
-- **`ListEvents`** (`Actions/Events/`) — builds the query:
+- **`ListEvents`** (`src/actions/events/`) — builds the query:
   1. For `upcoming`, it selects events with `ends_at` later than now, ordered by `starts_at` then `id`
      ascending (`L2-018` criterion 1).
   2. For `past`, it selects events with `ends_at` at or before now, ordered by `starts_at` then `id`
@@ -73,10 +73,10 @@ reads only; it changes no data and sends no e-mail.
   3. It reads `going_count` from the event row, so the list makes no per-event count query.
   4. It paginates with the validated page size. An index on `events (ends_at, starts_at)` keeps the
      query within the read budget (`L2-047` criterion 1).
-- **`Event`** (`Models/`) — the model shared with `rsvp-to-event`. This feature reads `title`,
+- **`Event`** (`src/db/schema/`) — the model shared with `rsvp-to-event`. This feature reads `title`,
   `starts_at`, `ends_at`, `venue_name`, `venue_address`, `capacity`, `going_count` and `status`, and
   calls `spotsLeft()`. Times are stored in UTC.
-- **`EventSummaryResource`** (`Resources/Events/`) — serializes an `Event` into the `EventSummary`
+- **`EventSummaryResource`** (`src/http/resources/events/`) — serializes an `Event` into the `EventSummary`
   shape. It emits times in ISO 8601 with offset and leaves time-zone formatting to the frontend.
 
 ### Failure handling
@@ -130,7 +130,7 @@ endpoint of the Banaro API, which reads the Banaro database.
 
 ### Components
 
-Inside the Banaro API, `EventController` validates the query with `ListEventsRequest`, calls
+Inside the Banaro API, `EventRoutes` validates the query with `ListEventsRequest`, calls
 `ListEvents` and returns `EventSummaryResource` items.
 
 ![C4 component view for browsing events](diagrams/c4-component.png)

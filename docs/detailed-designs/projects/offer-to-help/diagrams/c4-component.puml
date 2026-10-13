@@ -5,18 +5,18 @@ title Components — Offer to help with a project
 
 Container(web, "Banaro Web", "Angular", "OfferToHelpDialog, ProjectDetailPage, HelpOfferItem, HttpProjectsApi")
 ContainerDb(db, "Banaro database", "Relational database", "projects, help_offers, conversations, blocks")
-ContainerQueue(redis, "Redis", "Redis", "Horizon queues")
+ContainerQueue(redis, "Redis", "Redis", "BullMQ queues")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "HelpOfferController / HelpOfferDecisionController", "Laravel controllers", "POST and GET /help-offers, PUT /decision")
-  Component(req, "OfferToHelpRequest / AnswerHelpOfferRequest", "Form requests", "Role in looking-for list, message 10-1,000, decision")
+  Component(ctrl, "HelpOfferRoutes / HelpOfferDecisionRoutes", "Route handlers", "POST and GET /help-offers, PUT /decision")
+  Component(req, "OfferToHelpRequest / AnswerHelpOfferRequest", "Request schemas", "Role in looking-for list, message 10-1,000, decision")
   Component(policy, "ProjectPolicy / HelpOfferPolicy", "Policies", "Not owner and not blocked; owner only")
   Component(block, "BlockService", "Domain service (TrustAndSafety)", "isBlockedEitherWay()")
   Component(offer, "OfferToHelp", "Action", "Locks project, one open offer per member")
   Component(answer, "AnswerHelpOffer", "Action", "Accepts or declines an open offer")
   Component(list, "ListHelpOffers", "Action", "Owner's offer list")
   Component(start, "StartConversation", "Action (Messaging)", "Opens a conversation between two members")
-  Component(models, "Project / HelpOffer", "Eloquent models", "Offer status, role, conversation link")
+  Component(models, "Project / HelpOffer", "Drizzle tables", "Offer status, role, conversation link")
   Component(resource, "HelpOfferResource", "API resource", "HelpOfferView JSON shape")
   Component(notify, "HelpOfferedNotification / HelpOfferAnsweredNotification", "Queued notifications", "To owner; to offerer")
 }

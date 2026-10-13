@@ -35,36 +35,36 @@ The slice lives in the Banaro API. The orchestrator and the log collector sit ou
 ### Backend — health routes
 
 - **Health routes** — `GET /health/live` and `GET /health/ready` are registered in
-  `bootstrap/app.php` through the `withRouting(then: …)` callback. They sit outside `/api/v1` and
+  `src/http/pipeline.ts` through the `withRouting(then: …)` callback. They sit outside `/api/v1` and
   outside the `api` middleware group: no session, no CSRF, no authentication and no rate limit. They
   are exempt from maintenance mode (`L2-043` criterion 3).
-- **`LivenessController`** (`Http/Controllers/Health/`) — invokable controller that returns 200 with
+- **`LivenessRoutes`** (`app/health/`) — invokable controller that returns 200 with
   `{ "status": "ok" }`. It touches no database, cache or queue (`L2-053` criterion 1).
-- **`ReadinessController`** (`Http/Controllers/Health/`) — invokable controller that calls
-  `ReadinessService::check()`. It returns 200 with `{ "status": "ready" }` when every check passes. It
+- **`ReadinessRoutes`** (`app/health/`) — invokable controller that calls
+  `ReadinessService.check()`. It returns 200 with `{ "status": "ready" }` when every check passes. It
   returns 503 with `{ "status": "unavailable" }` otherwise. The body never names the failed dependency
   or the error (`L2-053` criterion 2).
-- **`ReadinessService`** (`Services/Operations/`) — runs the checks in sequence, each with a short
+- **`ReadinessService`** (`src/services/operations/`) — runs the checks in sequence, each with a short
   timeout, and stops at the first failure. It logs a failed check, with its name and error, at
   `warning` level; the log carries the detail that the body omits.
-- **`HealthCheck`** (`Contracts/`) — interface with `name(): string` and `passes(): bool`. Three
-  implementations live in `Services/Operations/`:
+- **`HealthCheck`** (`src/contracts/`) — interface with `name(): string` and `passes(): boolean`. Three
+  implementations live in `src/services/operations/`:
   - `DatabaseCheck` — runs `SELECT 1` on the default connection.
   - `CacheCheck` — sends `PING` to the Redis cache connection.
-  - `QueueCheck` — sends `PING` to the Redis queue connection that Horizon uses.
+  - `QueueCheck` — sends `PING` to the Redis queue connection that the BullMQ worker uses.
 
 ### Backend — request ID and request log
 
-- **Global middleware order** (`bootstrap/app.php`) — `LogRequest` is prepended first, then
+- **Global middleware order** (`src/http/pipeline.ts`) — `LogRequest` is prepended first, then
   `AssignRequestId`, then the remaining global middleware such as `RespondDuringMaintenance`. Laravel
   renders an exception into a response inside the pipeline, before that response passes back out
   through the outer middleware. `LogRequest` therefore sees the final response, never the exception.
-- **`AssignRequestId`** (`Http/Middleware/`) — takes the incoming `X-Request-Id` when it matches
+- **`AssignRequestId`** (`src/http/middleware/`) — takes the incoming `X-Request-Id` when it matches
   `^[A-Za-z0-9-]{8,64}$`, so the Banaro Web SSR server can pass its ID on. Otherwise it generates a
-  UUID. It stores the ID with `Context::add('request_id', …)`. Laravel then adds it to every log
+  UUID. It stores the ID with `Context.add('request_id', …)`. Laravel then adds it to every log
   entry of the request and carries it into queued jobs. It sets the same `X-Request-Id` on the
   response (`L2-053` criterion 3).
-- **`LogRequest`** (`Http/Middleware/`) — terminable middleware. `handle()` records a monotonic start
+- **`LogRequest`** (`src/http/middleware/`) — terminable middleware. `handle()` records a monotonic start
   time. `terminate()` runs after the response is sent and writes one line through the `requests` log
   channel (`L2-053` criteria 3 and 5). The line holds:
   - `request_id`
@@ -75,9 +75,9 @@ The slice lives in the Banaro API. The orchestrator and the log collector sit ou
   - `duration_ms`
   - `member_id` — the authenticated user's ID, or `null`
   It never logs an e-mail address, a request body, a response body, cookies or the raw client IP.
-- **Log channels** (`config/logging.php`) — the `requests` and default channels write to `stderr`
+- **Log channels** (`src/config/env.ts`) — the `requests` and default channels write to `stderr`
   through Monolog's `JsonFormatter`, one JSON object per line. The orchestrator collects `stderr`.
-- **Exception handling** (`bootstrap/app.php`, `withExceptions`) — `context()` adds the request ID to
+- **Exception handling** (`src/http/pipeline.ts`, `withExceptions`) — `context()` adds the request ID to
   each report. `report()` writes the exception class, message and stack trace at `error` level. For an
   exception that is not an HTTP exception, `render()` returns 500 with
   `{ "message": "Server Error", "requestId": "…" }` and nothing else (`L2-053` criterion 4).
@@ -121,7 +121,7 @@ The API writes JSON log lines to `stderr`, which the log collector gathers.
 ### Components
 
 Inside the Banaro API, `LogRequest` wraps every request, then `AssignRequestId`. The health
-controllers sit outside `/api/v1`. `ReadinessController` runs the three `HealthCheck` implementations
+controllers sit outside `/api/v1`. `ReadinessRoutes` runs the three `HealthCheck` implementations
 through `ReadinessService`.
 
 ![C4 component view for observing health](diagrams/c4-component.png)

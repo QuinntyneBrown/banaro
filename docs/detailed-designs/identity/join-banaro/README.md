@@ -61,28 +61,28 @@ Banaro Worker sends the e-mail.
 
 ### Backend — Banaro API
 
-- **Route** — `POST /api/v1/join` in `routes/api_public.php`, the deliberate anonymous exception. The
+- **Route** — `POST /api/v1/join` in `src/http/public-routes.ts`, the deliberate anonymous exception. The
   route carries the `throttle:join` middleware.
-- **`join` rate limiter** — defined in `AppServiceProvider::boot()`. It allows 5 attempts per IP
+- **`join` rate limiter** — defined in `src/http/rate-limit/limiters.ts`. It allows 5 attempts per IP
   address in 10 minutes. The next attempt receives 429 with a `Retry-After` header (`L2-001`
   criterion 6). Logging of limited requests follows the `limit-request-rates` feature (`L2-046`).
-- **`JoinController`** (`Controllers/Api/V1/Identity/`) — `store()` validates through
+- **`JoinRoutes`** (`app/api/v1/`) — `store()` validates through
   `JoinBanaroRequest`, calls `JoinBanaro` and returns 202 Accepted with an empty body. The status
   and body are the same whether or not the address was new (`L2-001` criterion 3).
-- **`JoinBanaroRequest`** (`Requests/Identity/`) — form request with these rules:
+- **`JoinBanaroRequest`** (`src/http/requests/identity/`) — request schema with these rules:
   - `name` — required string, at most 100 characters (`L2-001` criterion 7).
   - `email` — required, RFC-valid e-mail, at most 254 characters.
-  - `password` — required string of at most 128 characters, validated by `PasswordPolicy::rules()`.
+  - `password` — required string of at most 128 characters, validated by `PasswordPolicy::schema`.
   - `agreed_to_code_of_conduct` — required and accepted.
   - On failure it returns 422 with per-field errors, and no account is created (`L2-001` criterion 2).
-- **`PasswordPolicy`** (`Services/Identity/`) — owns the password rules shared with the
-  `recover-password` feature. `rules()` returns a minimum of 12 characters, a maximum of 128 and the
+- **`PasswordPolicy`** (`src/services/identity/`) — owns the password rules shared with the
+  `recover-password` feature. `schema` returns a minimum of 12 characters, a maximum of 128 and the
   `NotCommonPassword` rule. `NotCommonPassword` reads the common-password list from
   `resources/security/common-passwords.txt`, a bundled file of the 10,000 most common passwords that
   it compares case-insensitively (`L2-001` criterion 8).
-- **`JoinBanaro`** (`Actions/Identity/`) — `handle(JoinData)` applies the join rules:
+- **`JoinBanaro`** (`src/actions/identity/`) — `handle(JoinData)` applies the join rules:
   1. It canonicalizes the e-mail address.
-  2. It hashes the password through `Hash::make()` in every path, including the duplicate path. The
+  2. It hashes the password through `PasswordPolicy.hash()` in every path, including the duplicate path. The
      password is first pre-hashed (SHA-256, base64) so bcrypt's 72-byte limit never truncates it
      (`L2-001` criterion 7). Both paths therefore take similar time.
   3. When no account holds the canonical e-mail, it creates a `User` in one transaction. The `User`
@@ -93,19 +93,19 @@ Banaro Worker sends the e-mail.
      (`L2-001` criterion 1).
   5. When the address is taken, it creates nothing and queues `AccountAlreadyExistsNotification` to
      that address (`L2-001` criterion 3).
-- **`User`** (`Models/`) — the account. The unique index on `email` holds the canonical form, so
+- **`User`** (`src/db/schema/`) — the account. The unique index on `email` holds the canonical form, so
   `Amara@Example.com` and `amara@example.com` collide. A unique-index violation from a concurrent join
-  is caught and handled as the duplicate path. `password` and `remember_token` are in `$hidden`, so no
+  is caught and handled as the duplicate path. `UserResource` never lists `password` or `remember_token`, so no
   resource returns them (`L2-001` criterion 5).
-- **Password hashing** — `config/hashing.php` selects `bcrypt` with `rounds` of at least 12, a salted
+- **Password hashing** — `src/config/security.ts` selects `bcrypt` with `rounds` of at least 12, a salted
   adaptive algorithm (`L2-001` criterion 5). `password` and `password_confirmation` are in the
   exception handler's `dontFlash` list. The request logger redacts both, so no log holds a password.
-- **`EmailVerificationService`** (`Services/Identity/`) — issues the signed, single-use verification
+- **`EmailVerificationService`** (`src/services/identity/`) — issues the signed, single-use verification
   link. The `verify-email` feature describes it in full.
 
 ### Backend — Banaro Worker
 
-- **`VerifyEmailNotification`** and **`AccountAlreadyExistsNotification`** (`Notifications/`) — queued
+- **`VerifyEmailNotification`** and **`AccountAlreadyExistsNotification`** (`src/notifications/`) — queued
   notifications on the `mail` channel only. They are security e-mail, so member e-mail preferences do
   not suppress them (`L2-029` criterion 2). The Worker sends them through the `Mailer` contract.
   `AccountAlreadyExistsNotification` has the subject "You already have a Banaro account", says that
@@ -165,7 +165,7 @@ and queues the e-mail on Redis, and the Banaro Worker sends it.
 
 ### Components
 
-Inside the Banaro API, `JoinController` validates through `JoinBanaroRequest` and `PasswordPolicy`,
+Inside the Banaro API, `JoinRoutes` validates through `JoinBanaroRequest` and `PasswordPolicy`,
 then calls `JoinBanaro`. `JoinBanaro` creates the `User` and asks `EmailVerificationService` for a
 link.
 

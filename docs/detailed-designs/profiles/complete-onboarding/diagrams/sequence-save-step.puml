@@ -20,7 +20,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpProfilesApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "OnboardingController" as controller
+  participant "OnboardingRoutes" as controller
   participant "SaveOnboarding{Step}Request" as request
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3

@@ -5,14 +5,14 @@ title Components — Pause and resume matching
 
 Container(web, "Banaro Web", "Angular", "MatchingPage, PauseMatchingDialog, HttpMatchingApi")
 ContainerDb(db, "Banaro database", "Relational database", "matching_preferences")
-Container(worker, "Banaro Worker", "Laravel", "GenerateSuggestionsForMember, MatchCandidateService")
+Container(worker, "Banaro Worker", "BullMQ worker, Node 22", "GenerateSuggestionsForMember, MatchCandidateService")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "MatchingPauseController", "Laravel controller", "PUT and DELETE /matching/pause")
-  Component(req, "PauseMatchingRequest / ResumeMatchingRequest", "Form requests", "Authorize the member, reject body fields")
+  Component(ctrl, "MatchingPauseRoutes", "Route handler", "PUT and DELETE /matching/pause")
+  Component(req, "PauseMatchingRequest / ResumeMatchingRequest", "Request schemas", "Authorize the member, reject body fields")
   Component(pause, "PauseMatching", "Action", "Locks, sets paused and paused_at")
   Component(resume, "ResumeMatching", "Action", "Locks, sets active, clears paused_at")
-  Component(model, "MatchingPreference", "Eloquent model", "status, paused_at")
+  Component(model, "MatchingPreference", "Drizzle table", "status, paused_at")
   Component(resource, "MatchingPreferenceResource", "API resource", "MatchingPreferences JSON shape")
 }
 

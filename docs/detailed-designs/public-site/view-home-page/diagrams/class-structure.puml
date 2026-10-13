@@ -68,23 +68,23 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class HomeController {
+  class HomeRoutes {
     +statistics(): PlatformStatisticsResource
-    +builders(): AnonymousResourceCollection
-    +projects(): AnonymousResourceCollection
-    +events(): AnonymousResourceCollection
+    +builders(): Page
+    +projects(): Page
+    +events(): Page
   }
   class GetPlatformStatistics {
     +handle(): PlatformStatistics
   }
   class ListFeaturedBuilders {
-    +handle(): Collection<Builder>
+    +handle(): unknown[]<Builder>
   }
   class ListFeaturedProjects {
-    +handle(): Collection<Project>
+    +handle(): unknown[]<Project>
   }
   class ListUpcomingEvents {
-    +handle(): Collection<Event>
+    +handle(): unknown[]<Event>
   }
   class PlatformStatisticsService {
     -ttlSeconds: int = 600
@@ -92,12 +92,12 @@ package "Backend — Banaro API" {
     -count(): PlatformStatistics
   }
   class "PlatformStatistics" as PlatformStatisticsDto <<value object>> {
-    +int builders
-    +int projects
-    +int coFounderMatches
-    +int eventsThisYear
-    +int year
-    +CarbonImmutable computedAt
+    +builders: number
+    +projects: number
+    +coFounderMatches: number
+    +eventsThisYear: number
+    +year: number
+    +computedAt: Timestamp
   }
   class Builder
   class Project
@@ -119,16 +119,16 @@ PublicSiteApi ..> PlatformStatistics : returns
 PublicSiteApi ..> FeaturedBuilder : returns
 PublicSiteApi ..> FeaturedProject : returns
 PublicSiteApi ..> UpcomingEvent : returns
-HttpPublicSiteApi ..> HomeController : HTTPS
+HttpPublicSiteApi ..> HomeRoutes : HTTPS
 
-HomeController ..> GetPlatformStatistics : calls
-HomeController ..> ListFeaturedBuilders : calls
-HomeController ..> ListFeaturedProjects : calls
-HomeController ..> ListUpcomingEvents : calls
-HomeController ..> PlatformStatisticsResource : returns
-HomeController ..> FeaturedBuilderResource : returns
-HomeController ..> FeaturedProjectResource : returns
-HomeController ..> UpcomingEventResource : returns
+HomeRoutes ..> GetPlatformStatistics : calls
+HomeRoutes ..> ListFeaturedBuilders : calls
+HomeRoutes ..> ListFeaturedProjects : calls
+HomeRoutes ..> ListUpcomingEvents : calls
+HomeRoutes ..> PlatformStatisticsResource : returns
+HomeRoutes ..> FeaturedBuilderResource : returns
+HomeRoutes ..> FeaturedProjectResource : returns
+HomeRoutes ..> UpcomingEventResource : returns
 GetPlatformStatistics ..> PlatformStatisticsService : calls
 PlatformStatisticsService ..> PlatformStatisticsDto : creates
 PlatformStatisticsService ..> Builder : counts

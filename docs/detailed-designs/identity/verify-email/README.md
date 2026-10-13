@@ -63,29 +63,29 @@ The Banaro Worker sends each new link.
 ### Backend — Banaro API
 
 - **Routes** — `POST /api/v1/email/verify` and `POST /api/v1/email/verification-notification` in
-  `routes/api_public.php`. Both are deliberate anonymous exceptions, because the person opening a
+  `src/http/public-routes.ts`. Both are deliberate anonymous exceptions, because the person opening a
   link is not always signed in.
-- **`EmailVerificationController`** (`Controllers/Api/V1/Identity/`) — `store()` validates through
+- **`EmailVerificationRoutes`** (`app/api/v1/`) — `store()` validates through
   `VerifyEmailRequest`, calls `VerifyEmail` and returns 204. A rejected link returns 422 with code
   `verification_link_invalid`. One code covers expiry, a bad signature and reuse, so the response does
   not explain which check failed.
-- **`VerificationNotificationController`** (`Controllers/Api/V1/Identity/`) — `store()` validates
+- **`VerificationNotificationRoutes`** (`app/api/v1/`) — `store()` validates
   through `ResendVerificationEmailRequest`, calls `ResendVerificationEmail` and returns 202 with an
   empty body in every accepted case.
-- **`VerifyEmailRequest`** and **`ResendVerificationEmailRequest`** (`Requests/Identity/`) — form
+- **`VerifyEmailRequest`** and **`ResendVerificationEmailRequest`** (`src/http/requests/identity/`) — form
   requests. The first requires `token`, `expires` and `signature` with fixed formats. The second
   accepts an optional `token` or an optional `email`, and no other fields.
-- **`EmailVerificationService`** (`Services/Identity/`) — owns verification links.
+- **`EmailVerificationService`** (`src/services/identity/`) — owns verification links.
   - `issue(User)` deletes the account's earlier tokens, so earlier links stop working (`L2-002`
     criterion 3). It creates a 32-byte random token and stores its hash with `expires_at` set
     24 hours ahead. It returns the signed `/verify-email` URL on the Banaro Web origin.
   - `consume(token, expires, signature)` checks the signature with `hash_equals()`, then the expiry.
-    It loads the token row with `lockForUpdate()` and rejects a used or expired row. It sets
+    It loads the token row with `SELECT … FOR UPDATE` and rejects a used or expired row. It sets
     `email_verified_at` on the account and `used_at` on the token in one transaction (`L2-002`
     criteria 1 and 2). The row lock makes two concurrent openings of one link verify once.
-- **`VerifyEmail`** (`Actions/Identity/`) — `handle(VerificationLinkData)` calls `consume()`. An
+- **`VerifyEmail`** (`src/actions/identity/`) — `handle(VerificationLinkData)` calls `consume()`. An
   already verified account opening a fresh, unused link stays verified and the token is marked used.
-- **`ResendVerificationEmail`** (`Actions/Identity/`) — `handle(ResendData, ?User)` resolves the
+- **`ResendVerificationEmail`** (`src/actions/identity/`) — `handle(ResendData, ?User)` resolves the
   account from the session, then from the token row (even when expired or used), then from the
   canonical e-mail.
   - It applies a limit of 3 requests per hour. The key is the account identifier when an account
@@ -94,17 +94,17 @@ The Banaro Worker sends each new link.
     not reveal registration.
   - For an unverified account it calls `issue()` and queues `VerifyEmailNotification`. For a verified
     or unknown account it sends nothing.
-- **`RequireVerifiedEmail`** (`Http/Middleware/`) — middleware on the member route group in
-  `routes/api.php`. It returns 403 with code `email_unverified` for a signed-in account without
+- **`RequireVerifiedEmail`** (`src/http/middleware/`) — middleware on the member route group in
+  the authenticated stack (`src/http/pipeline.ts`). It returns 403 with code `email_unverified` for a signed-in account without
   `email_verified_at` (`L2-002` criterion 4). Session routes that an unverified member still needs,
   such as sign-out, sit in a group without it.
-- **`EmailVerificationToken`** (`Models/`) — `user_id`, `token_hash` (unique), `expires_at` and
+- **`EmailVerificationToken`** (`src/db/schema/`) — `user_id`, `token_hash` (unique), `expires_at` and
   `used_at`.
-- **`User`** (`Models/`) — `email_verified_at` and `hasVerifiedEmail()`.
+- **`User`** (`src/db/schema/`) — `email_verified_at` and `hasVerifiedEmail()`.
 
 ### Backend — Banaro Worker
 
-- **`VerifyEmailNotification`** (`Notifications/`) — queued notification on the `mail` channel with
+- **`VerifyEmailNotification`** (`src/notifications/`) — queued notification on the `mail` channel with
   the signed link. It is security e-mail, so preferences do not suppress it (`L2-029` criterion 2).
 
 ### Failure handling
@@ -158,7 +158,7 @@ Worker.
 
 ### Components
 
-`EmailVerificationController` and `VerificationNotificationController` each call one action. Both
+`EmailVerificationRoutes` and `VerificationNotificationRoutes` each call one action. Both
 actions rely on `EmailVerificationService`. `RequireVerifiedEmail` guards every member route.
 
 ![C4 component view for verifying an e-mail address](diagrams/c4-component.png)

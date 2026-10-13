@@ -94,19 +94,19 @@ instance.
 
 ### Backend — Banaro API
 
-- **`RespondDuringMaintenance`** (`Http/Middleware/`) — extends Laravel's
-  `PreventRequestsDuringMaintenance` and replaces it in `bootstrap/app.php`. Its `$except` list holds
+- **`RespondDuringMaintenance`** (`src/http/middleware/`) — extends Laravel's
+  `PreventRequestsDuringMaintenance` and replaces it in `src/http/pipeline.ts`. Its `except` list holds
   `health/*`, so `/health/live` and `/health/ready` answer normally (`L2-043` criterion 3). Any other
   request receives 503 with a `Retry-After` header and the JSON body
   `{ "code": "maintenance", "expectedBackAt": "…" }` (`L2-043` criterion 2). It runs after
   `LogRequest` and `AssignRequestId`, so a 503 still carries a request ID and a log line (`L2-053`).
 - **Shared maintenance flag** — `APP_MAINTENANCE_DRIVER=cache` with `APP_MAINTENANCE_STORE=redis`
-  stores the flag in Redis. A maintainer runs `php artisan down --retry={seconds}` once, from the
-  release pipeline, and every API instance enters maintenance mode. `php artisan up` ends it. The
+  stores the flag in Redis. A maintainer runs `banaro maintenance:on --retry={seconds}` once, from the
+  release pipeline, and every API instance enters maintenance mode. `banaro maintenance:off` ends it. The
   admin application has no maintenance control (`L2-043` criterion 8). `expectedBackAt` is the time the flag
   was set plus the `retry` value.
-- **Banaro Worker** — Horizon supervisors keep `force` set to `false`, so the worker processes no
-  jobs, e-mail included, while the flag is set. Jobs wait in Redis until `php artisan up`, and
+- **Banaro Worker** — the BullMQ worker supervisors keep `force` set to `false`, so the worker processes no
+  jobs, e-mail included, while the flag is set. Jobs wait in Redis until `banaro maintenance:off`, and
   e-mail is sent after it (`L2-043` criterion 9).
 
 ### Resolved decisions
@@ -125,9 +125,9 @@ instance.
   (`L2-043` criterion 6).
 - During maintenance "Contact us" is a `mailto:` link, because the contact form needs the API
   (`L2-043` criterion 7; mock `pages/maintenance/default.html`).
-- A maintainer switches maintenance mode with `php artisan down` and `up` from the release
+- A maintainer switches maintenance mode with `banaro maintenance:on` and `up` from the release
   pipeline (`L2-043` criterion 8).
-- The worker sends no e-mail during maintenance; queued e-mail goes out after `php artisan up`
+- The worker sends no e-mail during maintenance; queued e-mail goes out after `banaro maintenance:off`
   (`L2-043` criterion 9).
 
 ## Requirements
@@ -165,7 +165,7 @@ binds `ConnectionBanner`, and `DraftStore` keeps form text. Inside the Banaro AP
 ### Class structure
 
 `ConnectivityService` owns the connection status that the banner, the offline page and the forms
-read. `RespondDuringMaintenance` extends Laravel's maintenance middleware with the health exemption
+read. `RespondDuringMaintenance` extends the maintenance middleware with the health exemption
 and the JSON body.
 
 ![Class diagram for handling offline and maintenance](diagrams/class-structure.png)

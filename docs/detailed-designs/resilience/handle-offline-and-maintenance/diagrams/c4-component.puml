@@ -18,7 +18,7 @@ Container_Boundary(web, "Banaro Web — banaro application and libraries") {
 
 Container_Boundary(api, "Banaro API") {
   Component(mw, "RespondDuringMaintenance", "Middleware", "503 + Retry-After; except health/*")
-  Component(health, "LivenessController", "Health controller", "200 while the process runs")
+  Component(health, "LivenessRoutes", "Health controller", "200 while the process runs")
 }
 
 Rel(connInt, conn, "Reports reachability")

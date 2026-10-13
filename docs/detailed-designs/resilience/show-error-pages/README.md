@@ -98,9 +98,9 @@ the generic 500 body.
 - **Status codes** — a record that does not exist, or belongs to another member, returns 404
   (`L2-044` criterion 1). A role-restricted action, such as an administrator endpoint, returns 403
   through its policy. An unknown `/api/v1` route returns a JSON 404.
-- **`AssignRequestId`** (`Http/Middleware/`) — gives each request a request ID and returns it in
+- **`AssignRequestId`** (`src/http/middleware/`) — gives each request a request ID and returns it in
   `X-Request-Id`. The `observe-health` feature owns it.
-- **Exception rendering** (`bootstrap/app.php`, `withExceptions`) — renders any unhandled exception as
+- **Exception rendering** (`src/http/pipeline.ts`, `withExceptions`) — renders any unhandled exception as
   500 with the body `{ "message": "Server Error", "requestId": "…" }` and nothing else (`L2-053`
   criterion 4). The log entry for the same request carries the same request ID, so the reference ID
   on the page is also in the server log (`L2-042` criterion 3).

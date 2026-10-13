@@ -63,19 +63,19 @@ package "Frontend — banaro application" {
 }
 
 package "Backend — Banaro API" {
-  class PreventRequestsDuringMaintenance <<Laravel>> {
+  class PreventRequestsDuringMaintenance <<framework>> {
     #except: array
     +handle(request: Request, next: Closure): Response
   }
   class RespondDuringMaintenance {
     #except = ['health/*']
     +handle(request: Request, next: Closure): Response
-    -body(data: array): JsonResponse
+    -body(data: array): Response
   }
   class MaintenancePayload {
-    +int time
-    +int retry
-    +expectedBackAt(): CarbonImmutable
+    +time: number
+    +retry: number
+    +expectedBackAt(): Timestamp
   }
 }
 

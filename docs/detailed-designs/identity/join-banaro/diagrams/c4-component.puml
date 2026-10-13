@@ -5,16 +5,16 @@ title Components — Join Banaro
 
 Container(web, "Banaro Web", "Angular", "JoinPage, HttpIdentityApi")
 ContainerDb(db, "Banaro database", "Relational database", "users, email_verification_tokens")
-ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters, Horizon queues")
+ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters, BullMQ queues")
 
 Container_Boundary(api, "Banaro API") {
-  Component(limiter, "join rate limiter", "Laravel RateLimiter", "5 attempts per IP in 10 minutes")
-  Component(ctrl, "JoinController", "Laravel controller", "POST /join; returns 202 in every accepted case")
-  Component(req, "JoinBanaroRequest", "Form request", "Name, e-mail, password, code-of-conduct consent")
+  Component(limiter, "join rate limiter", "Redis rate limiter", "5 attempts per IP in 10 minutes")
+  Component(ctrl, "JoinRoutes", "Route handler", "POST /join; returns 202 in every accepted case")
+  Component(req, "JoinBanaroRequest", "Request schema", "Name, e-mail, password, code-of-conduct consent")
   Component(policy, "PasswordPolicy", "Domain service", "12-character minimum, common-password list")
   Component(action, "JoinBanaro", "Action", "Creates the unverified account or handles a taken address")
   Component(verify, "EmailVerificationService", "Domain service", "Issues the signed, single-use link")
-  Component(user, "User", "Eloquent model", "Canonical e-mail, password hash, verification state")
+  Component(user, "User", "Drizzle table", "Canonical e-mail, password hash, verification state")
   Component(notify, "VerifyEmailNotification / AccountAlreadyExistsNotification", "Queued notifications", "mail channel")
 }
 

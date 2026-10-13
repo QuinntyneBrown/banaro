@@ -30,53 +30,59 @@ package "Frontend — Banaro Web server and api library" {
 }
 
 package "Backend — Banaro API" {
-  abstract class FormRequest
-  abstract class ApiRequest {
-    +authorize(): bool
-    +{abstract} rules(): array
-    #prepareForValidation(): void
-    #failedValidation(validator: Validator): void
-    +toData(): object
+  interface RequestSchema {
+    +schema: ZodObject
+    +authorize(ctx: Ctx): Promise<PolicyResult>
+  }
+  class "validate()" as Validate <<src/http/validation>> {
+    +validate(request: RequestSchema, ctx: Ctx): Promise<Parsed>
+    -normalize(input: unknown): unknown
+  }
+  class ValidationError {
+    +errors: Record<string, string[]>
+    +status: 422
   }
   class GiveFeedbackRequest {
-    +rules(): array
+    +schema: ZodObject
   }
   class ChangePhotoRequest {
-    +rules(): array
+    +schema: ZodObject
   }
-  class VerifyRequestOrigin {
-    +handle(request: Request, next: Closure): Response
-    -originOf(request: Request): ?string
+  class verifyRequestOrigin <<middleware>> {
+    +run(ctx: Ctx, next: Next): Promise<Response>
+    -originOf(req: Request): string | null
   }
-  class SecurityHeaders {
-    +handle(request: Request, next: Closure): Response
+  class securityHeaders <<middleware>> {
+    +run(ctx: Ctx, next: Next): Promise<Response>
   }
-  class RedirectToHttps {
-    +handle(request: Request, next: Closure): Response
+  class redirectToHttps <<middleware>> {
+    +run(ctx: Ctx, next: Next): Promise<Response>
   }
-  class SecurityConfig <<config/security.php>> {
-    +array allowed_origins
-    +int hsts_max_age
-    +string permissions_policy
-    +string api_csp
+  class SecurityConfig <<src/config/security.ts>> {
+    +allowedOrigins: string[]
+    +hstsMaxAge: number
+    +permissionsPolicy: string
+    +apiCsp: string
   }
   class GiveFeedbackData {
-    +int projectId
-    +string body
+    +projectId: number
+    +body: string
   }
   class GiveFeedback {
-    +handle(member: User, data: GiveFeedbackData): Feedback
+    +handle(member: User, data: GiveFeedbackData): Promise<Feedback>
   }
 }
 
-ApiRequest --|> FormRequest
-GiveFeedbackRequest --|> ApiRequest
-ChangePhotoRequest --|> ApiRequest
-GiveFeedbackRequest ..> GiveFeedbackData : toData()
+
+GiveFeedbackRequest ..|> RequestSchema
+ChangePhotoRequest ..|> RequestSchema
+Validate ..> RequestSchema : authorize, then schema.safeParse
+Validate ..> ValidationError : throws
+GiveFeedbackRequest ..> GiveFeedbackData : parses to
 GiveFeedback ..> GiveFeedbackData : receives
-VerifyRequestOrigin ..> SecurityConfig : reads
-SecurityHeaders ..> SecurityConfig : reads
-RedirectToHttps ..> SecurityConfig : reads
-csrfRecoveryInterceptor ..> VerifyRequestOrigin : retries only csrf_token_mismatch
-ValidationErrors ..> ApiRequest : maps 422 errors from
+verifyRequestOrigin ..> SecurityConfig : reads
+securityHeaders ..> SecurityConfig : reads
+redirectToHttps ..> SecurityConfig : reads
+csrfRecoveryInterceptor ..> verifyRequestOrigin : retries only csrf_token_mismatch
+ValidationErrors ..> ValidationError : maps 422 errors from
 @enduml

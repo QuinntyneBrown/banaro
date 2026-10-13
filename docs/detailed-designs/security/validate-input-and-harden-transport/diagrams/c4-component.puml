@@ -10,13 +10,13 @@ ContainerDb(media, "Media storage", "Private file storage", "media disk")
 
 Container_Boundary(api, "Banaro API") {
   Component(headers, "SecurityHeaders", "Global middleware", "HSTS, nosniff, Referrer-Policy, Permissions-Policy, CSP")
-  Component(https, "TrustProxies and RedirectToHttps", "Global middleware", "308 to HTTPS in production")
-  Component(origin, "VerifyRequestOrigin", "Middleware, api group", "419 origin_not_allowed")
-  Component(csrf, "EnsureFrontendRequestsAreStateful and ValidateCsrfToken", "Sanctum middleware", "419 csrf_token_mismatch")
-  Component(request, "ApiRequest and {Verb}{Noun}Request", "Form requests", "Type, length, format and enum rules; 422 field errors")
-  Component(ctrl, "Controllers/Api/V1/{Subsystem}", "Controllers", "Type-hint the form request; call one action")
-  Component(action, "Actions/{Subsystem}", "Actions", "Receive typed data from validated() only")
-  Component(config, "config/security.php", "Configuration", "Allowed origins, header values")
+  Component(https, "Trusted proxies and redirectToHttps", "Global middleware", "308 to HTTPS in production")
+  Component(origin, "verifyRequestOrigin", "Middleware, api stack", "419 origin_not_allowed")
+  Component(csrf, "session and csrf", "Session and CSRF middleware (ADR-0011)", "419 csrf_token_mismatch")
+  Component(request, "validate() and {Verb}{Noun}Request", "Request schemas (zod)", "Type, length, format and enum rules; 422 field errors")
+  Component(ctrl, "app/api/v1/**/route.ts", "Route handlers", "validate() with the request schema; call one action")
+  Component(action, "src/actions/{subsystem}", "Actions", "Receive parsed, typed data only")
+  Component(config, "src/config/security.ts", "Configuration", "Allowed origins, header values")
 }
 
 Rel(web, headers, "Calls", "JSON/HTTPS")

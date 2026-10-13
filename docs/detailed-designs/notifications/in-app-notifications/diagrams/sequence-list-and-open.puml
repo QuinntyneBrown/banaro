@@ -22,7 +22,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "Router" as router
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "NotificationController" as controller
+  participant "NotificationRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "ListNotifications" as list

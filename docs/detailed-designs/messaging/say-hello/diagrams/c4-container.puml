@@ -8,10 +8,10 @@ System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "say-hello dialog, success toast")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Block, limit and idempotence rules; stores the conversation")
-  Container(worker, "Banaro Worker", "Laravel Horizon", "Sends queued notifications")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Block, limit and idempotence rules; stores the conversation")
+  Container(worker, "Banaro Worker", "BullMQ worker", "Sends queued notifications")
   ContainerDb(db, "Banaro database", "Relational database", "Conversations, participants, messages, blocks, notifications")
-  ContainerQueue(redis, "Redis", "Redis", "Sessions, first-message counters, Horizon queues")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions, first-message counters, BullMQ queues")
 }
 
 Rel(member, web, "Uses", "HTTPS")

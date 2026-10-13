@@ -9,7 +9,7 @@ Container_Ext(e2e, "e2e test harness", "Playwright, @axe-core/playwright, Chromi
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular SSR", "Shell landmarks, skip link, titles, CDK dialogs, live regions, tokens")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Catalogue text for titles, labels and announcements")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Catalogue text for titles, labels and announcements")
 }
 
 Rel(member, web, "Uses", "HTTPS")

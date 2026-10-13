@@ -36,7 +36,7 @@ The representative flow is a member opening the `give-feedback` dialog on a 360 
 ### Frontend — breakpoints and layout tokens (`components` library)
 
 - **`styles/_breakpoints.scss`** (`components/src/styles/`) — one Sass map of the breakpoint classes
-  and a `media-up($class)` mixin. CSS custom properties cannot appear in media queries, so component
+  and a `media-up(class)` mixin. CSS custom properties cannot appear in media queries, so component
   styles use the mixin rather than a token.
 - **`BREAKPOINTS`** (`components/src/lib/layout/breakpoints.ts`) — the same widths as CDK
   `BreakpointObserver` queries, such as `XS: '(max-width: 575.98px)'`. The Sass map and this constant

@@ -8,10 +8,10 @@ System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Verify-email page; resolver checks the link during SSR")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Link checks, resend limit, verified-member gate")
-  Container(worker, "Banaro Worker", "Laravel Horizon", "Sends queued e-mail")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Link checks, resend limit, verified-member gate")
+  Container(worker, "Banaro Worker", "BullMQ worker", "Sends queued e-mail")
   ContainerDb(db, "Banaro database", "Relational database", "users, email_verification_tokens")
-  ContainerQueue(redis, "Redis", "Redis", "Sessions, rate-limit counters, Horizon queues")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions, rate-limit counters, BullMQ queues")
 }
 
 Rel(visitor, web, "Uses", "HTTPS")

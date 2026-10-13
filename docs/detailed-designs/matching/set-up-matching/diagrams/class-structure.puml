@@ -46,37 +46,37 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class MatchingPreferenceController {
-    +show(request: Request): MatchingPreferenceResource
-    +update(request: SaveMatchingPreferencesRequest): MatchingPreferenceResource
+  class MatchingPreferenceRoutes {
+    +GET(request: Request): MatchingPreferenceResource
+    +PUT(request: SaveMatchingPreferencesRequest): MatchingPreferenceResource
   }
   class "SaveMatchingPreferencesRequest " as SaveReq {
-    +rules(): array
+    +schema: ZodObject
   }
   class SaveMatchingPreferences {
     +handle(member: User, data: array): MatchingPreference
   }
   class MatchingScheduleService {
-    +nextRunDate(now: CarbonImmutable): CarbonImmutable
-    +isoWeekOf(instant: CarbonImmutable): string
+    +nextRunDate(now: Timestamp): Timestamp
+    +isoWeekOf(instant: Timestamp): string
   }
   class EmailPreferenceService {
     +set(member: User, category: EmailCategory, enabled: bool): void
   }
   class User {
-    +int id
+    +id: number
   }
   class MatchingPreference {
-    +int id
-    +int user_id
-    +string building_summary
-    +array looking_for
-    +array skills
-    +?VentureStage venture_stage
-    +?Availability availability
-    +int max_distance_km
-    +MatchingStatus status
-    +?Carbon paused_at
+    +id: number
+    +user_id: number
+    +building_summary: string
+    +looking_for: string[]
+    +skills: string[]
+    +venture_stage: VentureStage | null
+    +availability: Availability | null
+    +max_distance_km: number
+    +status: MatchingStatus
+    +paused_at: Timestamp | null
   }
   enum MatchRole {
     CoFounder
@@ -96,11 +96,11 @@ HttpMatchingApi ..|> MatchingApi
 MatchingApi ..> SaveMatchingPreferencesRequest : sends
 MatchingApi ..> MatchingPreferences : returns
 MatchingPreferences --|> SaveMatchingPreferencesRequest
-HttpMatchingApi ..> MatchingPreferenceController : HTTPS
+HttpMatchingApi ..> MatchingPreferenceRoutes : HTTPS
 
-MatchingPreferenceController ..> SaveReq : validates with
-MatchingPreferenceController ..> SaveMatchingPreferences : calls
-MatchingPreferenceController ..> MatchingPreferenceResource : returns
+MatchingPreferenceRoutes ..> SaveReq : validates with
+MatchingPreferenceRoutes ..> SaveMatchingPreferences : calls
+MatchingPreferenceRoutes ..> MatchingPreferenceResource : returns
 SaveMatchingPreferences ..> MatchingScheduleService : next run
 SaveMatchingPreferences ..> EmailPreferenceService : Matches category
 SaveMatchingPreferences --> MatchingPreference : upserts

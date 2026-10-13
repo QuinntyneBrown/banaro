@@ -41,25 +41,25 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class CodeOfConductController {
-    +store(request: AcceptCodeOfConductRequest): ConductAcceptanceResource
+  class CodeOfConductRoutes {
+    +POST(request: AcceptCodeOfConductRequest): ConductAcceptanceResource
   }
   class AcceptCodeOfConduct {
     +handle(member: User, version: string): ConductAcceptance
   }
   class CodeOfConductService {
     +currentVersion(): string
-    +publishedOn(): CarbonImmutable
-    +requiresAcceptance(member: User): bool
+    +publishedOn(): Timestamp
+    +requiresAcceptance(member: User): boolean
   }
   class ConductAcceptance {
-    +int id
-    +int user_id
-    +string version
-    +Carbon accepted_at
+    +id: number
+    +user_id: number
+    +version: string
+    +accepted_at: Timestamp
   }
   class User {
-    +int id
+    +id: number
   }
   class ConductAcceptanceResource
 }
@@ -69,10 +69,10 @@ AcceptCodeOfConductDialog ..> TrustAndSafetyApi : uses
 HttpTrustAndSafetyApi ..|> TrustAndSafetyApi
 TrustAndSafetyApi ..> ConductAcceptanceSummary : returns
 JoinPage ..> CodeOfConductPage : links in new tab
-HttpTrustAndSafetyApi ..> CodeOfConductController : HTTPS
+HttpTrustAndSafetyApi ..> CodeOfConductRoutes : HTTPS
 
-CodeOfConductController ..> AcceptCodeOfConduct : calls
-CodeOfConductController ..> ConductAcceptanceResource : returns
+CodeOfConductRoutes ..> AcceptCodeOfConduct : calls
+CodeOfConductRoutes ..> ConductAcceptanceResource : returns
 AcceptCodeOfConduct ..> CodeOfConductService : checks version
 AcceptCodeOfConduct --> ConductAcceptance : inserts
 CodeOfConductService ..> ConductAcceptance : queries

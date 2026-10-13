@@ -21,7 +21,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "ToastService" as toast
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "OwnProfileController" as controller
+  participant "OwnProfileRoutes" as controller
   participant "UpdateOwnProfileRequest" as request
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3

@@ -21,7 +21,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpTrustAndSafetyApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "BlockController" as controller
+  participant "BlockRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "BlockBuilder" as action

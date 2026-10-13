@@ -38,26 +38,26 @@ Its only outbound effects are the stored suggestions and one notification per me
 
 ### Scheduling — Banaro Worker
 
-- **`routes/console.php`** — registers the run:
-  `Schedule::command('matching:generate-weekly')->weeklyOn(1, '06:00')->timezone('America/Toronto')`.
-  The entry adds `onOneServer()` and `withoutOverlapping()`. Both take a lock in Redis, so the run
+- **`src/scheduler.ts`** — registers the run:
+  `upsertJobScheduler('matching:generate-weekly', { pattern: '0 6 * * 1', tz: 'America/Toronto' })`.
+  The entry adds `a Redis lock` and `a Redis lock`. Both take a lock in Redis, so the run
   starts exactly once across Worker replicas (`L2-054` criterion 5). The `timezone()` call keeps
   06:00 local across daylight-saving changes (`L2-022` criterion 1).
-- **`GenerateWeeklySuggestionsCommand`** (`Console/Commands/`, signature `matching:generate-weekly`)
-  — computes the ISO week key once through `MatchingScheduleService::isoWeekOf()`. It then walks the
+- **`GenerateWeeklySuggestionsCommand`** (`src/console/commands/`, signature `matching:generate-weekly`)
+  — computes the ISO week key once through `MatchingScheduleService.isoWeekOf()`. It then walks the
   active `MatchingPreference` rows with `chunkById()` and dispatches one `GenerateMatchSuggestions`
   job per member with that key. An operator may re-run the command for the same week; the key makes
   the re-run safe (`L2-022` criterion 3).
-- **`GenerateMatchSuggestions`** (`Jobs/Matching/`) — queued job for one member and one ISO week. It
-  implements `ShouldBeUnique` with the unique id `{user_id}:{iso_week}`, so a duplicate dispatch is
+- **`GenerateMatchSuggestions`** (`src/jobs/matching/`) — queued job for one member and one ISO week. It
+  implements `unique job id` with the unique id `{user_id}:{iso_week}`, so a duplicate dispatch is
   dropped while the first job is queued. Its `handle()` calls `GenerateSuggestionsForMember`. Its
   retry count and back-off are `<TO SUPPLY>`.
 
 ### Backend — application and domain
 
-- **`GenerateSuggestionsForMember`** (`Actions/Matching/`) — creates one member's suggestions in one
+- **`GenerateSuggestionsForMember`** (`src/actions/matching/`) — creates one member's suggestions in one
   database transaction:
-  1. It locks the member's `MatchingPreference` row with `lockForUpdate()`.
+  1. It locks the member's `MatchingPreference` row with `SELECT … FOR UPDATE`.
   2. It returns without changes when the status is `paused`, since the member may have paused after
      dispatch (`L2-025` criterion 1).
   3. It returns without changes when a `MatchingRun` row exists for the member and the ISO week. The
@@ -72,20 +72,20 @@ Its only outbound effects are the stored suggestions and one notification per me
   8. It inserts the `MatchingRun` row with the number created, and commits.
   9. After commit, when at least one suggestion exists, it sends `MatchSuggestionsReadyNotification`
      (`L2-022` criterion 5).
-- **`MatchCandidateService`** (`Services/Matching/`) — `eligibleFor(member, preference)` applies the
+- **`MatchCandidateService`** (`src/services/matching/`) — `eligibleFor(member, preference)` applies the
   five eligibility rules. A database query narrows the candidates by open-to role, self, paused status
   and the 90-day history of `match_suggestions`. `DistanceService` and `BlockService` then filter the
   remainder.
-- **`DistanceService`** (`Services/Directory/`) — `between(from, to)` returns the distance in
+- **`DistanceService`** (`src/services/directory/`) — `between(from, to)` returns the distance in
   kilometres between two neighbourhood centroids. The `directory` subsystem owns it. The action stores the computed distance
   on the suggestion for display and tie-breaks.
-- **`BlockService`** (`Services/TrustAndSafety/`) — `isBlockedEitherWay(a, b)` is true when either
+- **`BlockService`** (`src/services/trust-and-safety/`) — `isBlockedEitherWay(a, b)` is true when either
   builder has blocked the other (`L2-032` criterion 1). The `trust-and-safety` subsystem owns it.
-- **`MatchScoreService`** (`Services/Matching/`) — `scoreFor(viewer, builder)` returns a `MatchScore`
+- **`MatchScoreService`** (`src/services/matching/`) — `scoreFor(viewer, builder)` returns a `MatchScore`
   with an integer value and the reasons for the match (`L2-022` criterion 4). It reads the viewer's
   `MatchingPreference` itself. The `directory` designs call the same method for "Best match" and on
   profiles. See the next section.
-- **`MatchingScheduleService`** (`Services/Matching/`) — `isoWeekOf(instant)` and `nextRunDate(now)`,
+- **`MatchingScheduleService`** (`src/services/matching/`) — `isoWeekOf(instant)` and `nextRunDate(now)`,
   shared with `set-up-matching`.
 
 ### Match score
@@ -100,7 +100,7 @@ Its only outbound effects are the stored suggestions and one notification per me
 | Recent activity | 1 for activity within `<TO SUPPLY>` days, falling to 0 at `<TO SUPPLY>` days | `recent_activity` | `<TO SUPPLY>` |
 
 The score is the weighted mean of the four factors, multiplied by 100, rounded to the nearest integer
-and clamped to 0–100. The weights live in `config/banaro.php` under `matching.score_weights`. This
+and clamped to 0–100. The weights live in `src/config/banaro.ts` under `matching.score_weights`. This
 table is their documentation (`L2-022` criterion 4). Service tests in
 `backend/tests/Feature/Matching/` cover the factors and the weights.
 
@@ -113,15 +113,15 @@ translation catalogue (`L2-052`).
 
 ### Models and notification
 
-- **`MatchSuggestion`** (`Models/`) — one row per member, candidate and ISO week, enforced by a unique
+- **`MatchSuggestion`** (`src/db/schema/`) — one row per member, candidate and ISO week, enforced by a unique
   index on (`user_id`, `candidate_user_id`, `iso_week`). It holds `score`, `reasons` (JSON),
   `distance_km`, `status` (`MatchSuggestionStatus`), `pass_reason` (nullable `PassReason`),
   `created_at` and `acted_at`. An index on (`user_id`, `candidate_user_id`, `created_at`) serves the
   90-day check.
-- **`MatchSuggestionStatus`** (`Enums/`) — `Suggested`, `Contacted` and `Passed`.
-- **`MatchingRun`** (`Models/`) — one row per member and ISO week, with `suggestions_created` and
+- **`MatchSuggestionStatus`** (`src/enums/`) — `Suggested`, `Contacted` and `Passed`.
+- **`MatchingRun`** (`src/db/schema/`) — one row per member and ISO week, with `suggestions_created` and
   `ran_at`. It makes a run with zero suggestions as final as a run with three.
-- **`MatchSuggestionsReadyNotification`** (`Notifications/`) — queued notification on the `database`
+- **`MatchSuggestionsReadyNotification`** (`src/notifications/`) — queued notification on the `database`
   and `mail` channels. The database entry feeds `/notifications` and the header count (`L2-027`). The
   e-mail belongs to the Matches category and follows the delivery rules of the
   `email-notifications` feature (`L2-029`).
@@ -131,7 +131,7 @@ translation catalogue (`L2-052`).
 ### Failure handling
 
 A failed job rolls back its transaction, so no partial set of suggestions and no `MatchingRun` row
-remains. Horizon retries the job. The retry recomputes the set from the same data and ISO week key.
+remains. the BullMQ worker retries the job. The retry recomputes the set from the same data and ISO week key.
 When a retry finds a `MatchingRun` row, it ends without changes.
 
 ### Open points

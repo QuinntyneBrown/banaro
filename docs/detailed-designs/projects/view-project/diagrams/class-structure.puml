@@ -62,42 +62,42 @@ package "Frontend — banaro application, components and api libraries" {
 }
 
 package "Backend — Banaro API" {
-  class ProjectController {
-    +show(request: ShowProjectRequest, project: Project): ProjectResource
+  class ProjectRoutes {
+    +GET(request: ShowProjectRequest, project: Project): ProjectResource
   }
-  class FeedbackController {
-    +index(request: ListFeedbackRequest, project: Project): ResourceCollection
+  class FeedbackRoutes {
+    +GET(request: ListFeedbackRequest, project: Project): Page
   }
   class ViewProject {
     +handle(project: Project): Project
   }
   class ListProjectFeedback {
-    +handle(project: Project, viewer: ?User, page: int, perPage: int): LengthAwarePaginator
+    +handle(project: Project, viewer: User | null, page: int, perPage: int): Page
   }
   class ProjectPolicy {
-    +update(user: User, project: Project): bool
-    +delete(user: User, project: Project): bool
-    +giveFeedback(user: ?User, project: Project): bool
-    +offerHelp(user: ?User, project: Project): bool
-    +viewHelpOffers(user: User, project: Project): bool
+    +update(user: User, project: Project): boolean
+    +delete(user: User, project: Project): boolean
+    +giveFeedback(user: User | null, project: Project): boolean
+    +offerHelp(user: User | null, project: Project): boolean
+    +viewHelpOffers(user: User, project: Project): boolean
   }
   class BlockService {
     +applyScope(query, viewer: User, column: string): Builder
   }
   class Project {
-    +int id
-    +int owner_id
-    +int feedback_count
+    +id: number
+    +owner_id: number
+    +feedback_count: number
   }
   class Feedback {
-    +int id
-    +int project_id
-    +int author_id
-    +string body
-    +?string reply_body
-    +?Carbon replied_at
-    +?Carbon hidden_at
-    +scopeVisibleTo(query, viewer: ?User): Builder
+    +id: number
+    +project_id: number
+    +author_id: number
+    +body: string
+    +reply_body: string | null
+    +replied_at: Timestamp | null
+    +hidden_at: Timestamp | null
+    +scopeVisibleTo(query, viewer: User | null): Builder
   }
   class ProjectResource
   class FeedbackResource
@@ -109,13 +109,13 @@ HttpProjectsApi ..|> ProjectsApi
 ProjectsApi ..> ProjectDetail : returns
 ProjectsApi ..> FeedbackView : returns
 ProjectDetail *-- ProjectPermissions
-HttpProjectsApi ..> ProjectController : HTTPS
-HttpProjectsApi ..> FeedbackController : HTTPS
+HttpProjectsApi ..> ProjectRoutes : HTTPS
+HttpProjectsApi ..> FeedbackRoutes : HTTPS
 
-ProjectController ..> ViewProject : calls
-ProjectController ..> ProjectResource : returns
-FeedbackController ..> ListProjectFeedback : calls
-FeedbackController ..> FeedbackResource : returns
+ProjectRoutes ..> ViewProject : calls
+ProjectRoutes ..> ProjectResource : returns
+FeedbackRoutes ..> ListProjectFeedback : calls
+FeedbackRoutes ..> FeedbackResource : returns
 ProjectResource ..> ProjectPolicy : evaluates
 ListProjectFeedback ..> BlockService : excludes blocked authors
 ListProjectFeedback --> Feedback : queries

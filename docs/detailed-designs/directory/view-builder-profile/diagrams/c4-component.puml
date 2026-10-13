@@ -8,15 +8,15 @@ ContainerDb(db, "Banaro database", "Relational database", "builders, skills, exp
 ContainerDb(redis, "Redis", "Redis", "Cached match scores")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "BuilderProfileController", "Laravel controller", "GET /builders/{builder} (api_public.php)")
-  Component(req, "ShowBuilderProfileRequest", "Form request", "Public id shape, viewer")
+  Component(ctrl, "BuilderProfileRoutes", "Route handler", "GET /builders/{builder} (src/http/public-routes.ts)")
+  Component(req, "ShowBuilderProfileRequest", "Request schema", "Public id shape, viewer")
   Component(action, "ViewBuilderProfile", "Action", "Resolves, hides, enriches, sets actions")
   Component(visibility, "ProfileVisibility", "Settings filter (L2-036)", "canView, visibleFields")
   Component(blocks, "Block scope", "Trust-and-safety scope (L2-032)", "Blocks in either direction")
   Component(match, "MatchScoreService", "Matching domain service (L2-022)", "Score and reasons")
   Component(distance, "DistanceService", "Domain service", "Centroid distance, 5 km rounding for City only")
   Component(presence, "PresenceService", "Domain service", "Online status")
-  Component(models, "Builder / Skill / ExperienceEntry / Project", "Eloquent models", "Profile content")
+  Component(models, "Builder / Skill / ExperienceEntry / Project", "Drizzle tables", "Profile content")
   Component(resources, "BuilderProfileResource / PublicBuilderProfileResource", "API resources", "Visible fields only")
 }
 

@@ -54,21 +54,21 @@ API to the Banaro database. The Banaro Worker honours the status on each Monday 
 
 ### Backend — Banaro API
 
-- **`MatchingPauseController`** (`Controllers/Api/V1/Matching/`) — `store()` handles
+- **`MatchingPauseRoutes`** (`app/api/v1/`) — `store()` handles
   `PUT /matching/pause` and calls `PauseMatching`. `destroy()` handles `DELETE /matching/pause` and
   calls `ResumeMatching`. Both return a `MatchingPreferenceResource`. Both routes are in
-  `routes/api.php`. Neither carries an identifier, so a member can change only their own status
+  the authenticated stack (`src/http/pipeline.ts`). Neither carries an identifier, so a member can change only their own status
   (`L2-044` criterion 1).
-- **`PauseMatchingRequest`** and **`ResumeMatchingRequest`** (`Requests/Matching/`) — authorize the
+- **`PauseMatchingRequest`** and **`ResumeMatchingRequest`** (`src/http/requests/matching/`) — authorize the
   verified member and reject any body field.
-- **`PauseMatching`** (`Actions/Matching/`) — in one transaction:
-  1. It locks the member's `MatchingPreference` row with `lockForUpdate()`, and returns 404 when the
+- **`PauseMatching`** (`src/actions/matching/`) — in one transaction:
+  1. It locks the member's `MatchingPreference` row with `SELECT … FOR UPDATE`, and returns 404 when the
      member is not set up.
   2. It returns the preference unchanged when it is already paused, so a retry is idempotent.
   3. Otherwise it sets `status` to `paused` and `paused_at` to now.
-- **`ResumeMatching`** (`Actions/Matching/`) — locks the same row, sets `status` to `active` and
+- **`ResumeMatching`** (`src/actions/matching/`) — locks the same row, sets `status` to `active` and
   clears `paused_at`. It creates no suggestions; the next Monday run does (`L2-025` criterion 2).
-- **`MatchingPreference`** (`Models/`) — defined by `set-up-matching`; this feature writes `status` and
+- **`MatchingPreference`** (`src/db/schema/`) — defined by `set-up-matching`; this feature writes `status` and
   `paused_at`.
 
 ### Effects on the Monday run
@@ -116,7 +116,7 @@ status in the Banaro database. The Banaro Worker reads the status on each Monday
 
 ### Components
 
-Inside the Banaro API, `MatchingPauseController` calls `PauseMatching` or `ResumeMatching`. Both lock
+Inside the Banaro API, `MatchingPauseRoutes` calls `PauseMatching` or `ResumeMatching`. Both lock
 the member's `MatchingPreference` row.
 
 ![C4 component view for pausing and resuming matching](diagrams/c4-component.png)

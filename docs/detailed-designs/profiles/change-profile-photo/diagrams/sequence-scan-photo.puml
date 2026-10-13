@@ -20,7 +20,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpProfilesApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "ProfilePhotoController" as controller
+  participant "ProfilePhotoRoutes" as controller
 end box
 box "Backend — Banaro Worker" #ECFDF3
   participant "ScanProfilePhoto" as job

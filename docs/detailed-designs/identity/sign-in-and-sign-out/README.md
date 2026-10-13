@@ -79,43 +79,43 @@ Redis, which holds sessions and rate-limit counters, and to the Banaro database.
 
 ### Backend — Banaro API
 
-- **Routes** — `GET /api/v1/session` and `POST /api/v1/session` in `routes/api_public.php`, because a
+- **Routes** — `GET /api/v1/session` and `POST /api/v1/session` in `src/http/public-routes.ts`, because a
   visitor calls them. `GET` answers 200 with `member: null` for a visitor. `DELETE /api/v1/session` is
-  in `routes/api.php`, in the authenticated group without `RequireVerifiedEmail`, so an unverified
+  on the authenticated stack (`src/http/pipeline.ts`), in the authenticated group without `RequireVerifiedEmail`, so an unverified
   member can also sign out.
-- **`SessionController`** (`Controllers/Api/V1/Identity/`) — `show()` returns the current
+- **`SessionRoutes`** (`app/api/v1/`) — `show()` returns the current
   `SessionResource`. `store()` validates through `SignInRequest`, calls `SignIn` and returns
   `SessionResource`. `destroy()` calls `SignOut` and returns 204.
-- **`SignInRequest`** (`Requests/Identity/`) — `email` is required, RFC-valid and at most
+- **`SignInRequest`** (`src/http/requests/identity/`) — `email` is required, RFC-valid and at most
   254 characters. `password` is a required string. A password longer than 128 characters is counted
   as a failed attempt and answered with the same generic message (`L2-003` criterion 9).
-- **`SignInThrottleService`** (`Services/Identity/`) — counts failed attempts in Redis under two keys.
+- **`SignInThrottleService`** (`src/services/identity/`) — counts failed attempts in Redis under two keys.
   The account key is the SHA-256 of the canonical e-mail; the IP key is the SHA-256 of the client
   address. The limits are 5 failures per account key and 20 per IP key in a 15-minute window. Unknown
   e-mail addresses are counted the same way, so a 429 reveals nothing about registration. `check()`
   rejects with 429 and `Retry-After` once a limit is reached (`L2-003` criterion 3). A successful
   sign-in clears the account key.
-- **`SignIn`** (`Actions/Identity/`) — `handle(SignInData, Request)`:
-  1. It calls `SignInThrottleService::check()`.
-  2. It loads the account by canonical e-mail. With no account, it runs `Hash::check()` against a
+- **`SignIn`** (`src/actions/identity/`) — `handle(SignInData, Request)`:
+  1. It calls `SignInThrottleService.check()`.
+  2. It loads the account by canonical e-mail. With no account, it runs `PasswordPolicy.verify()` against a
      fixed dummy hash of equal cost, so unknown and known addresses take the same time (`L2-003`
      criterion 2).
   3. On a mismatch it records a failure and throws 422 with code `invalid_credentials` and no field
      errors. 401 stays reserved for a missing or expired session (`L2-005`).
-  4. On a match it calls `Auth::guard('web')->login()` and `session()->regenerate()`, which issues a
+  4. On a match it calls `session.signIn(user)`, which issues a
      new session identifier (`L2-003` criterion 1). It records `authenticated_at` in the session for
      the absolute lifetime check (`L2-005` criterion 5). It rehashes the password when
-     `Hash::needsRehash()` is true. Passwords are pre-hashed (SHA-256, base64) before `Hash::check()`,
+     `PasswordPolicy.needsRehash()` is true. Passwords are pre-hashed (SHA-256, base64) before `PasswordPolicy.verify()`,
      as in `join-banaro`.
   5. It compares the browser and IP network with those of the account's sessions in the last 90 days.
      For a first sight on a non-first sign-in it queues `NewSignInNotification`, a security e-mail
      with the time, approximate city and browser (`L2-003` criterion 10, `L2-029` criterion 2).
-- **`SignOut`** (`Actions/Identity/`) — calls `Auth::guard('web')->logout()`,
-  `session()->invalidate()` and `session()->regenerateToken()`. The response expires the session
+- **`SignOut`** (`src/actions/identity/`) — calls `session.signOut()`, which deletes the
+  Redis session and rotates the CSRF token. The response expires the session
   cookie (`L2-003` criterion 5).
-- **`SessionResource`** (`Resources/Identity/`) — `member` with `id`, `name`, `email` and
+- **`SessionResource`** (`src/http/resources/identity/`) — `member` with `id`, `name`, `email` and
   `email_verified`, or `null`.
-- **Session cookie** — `config/session.php` sets `driver` to `redis`, `http_only` to true, `secure` to
+- **Session cookie** — `src/config/security.ts` sets `driver` to `redis`, `http_only` to true, `secure` to
   true and `same_site` to `lax` (`L2-003` criterion 7).
 - **Code-of-conduct prompt** — the `accept-code-of-conduct` feature owns the prompt that follows
   sign-in when the code of conduct has changed (`L2-034` criterion 3).
@@ -166,8 +166,8 @@ session and the failed-attempt counters in Redis.
 
 ### Components
 
-`SessionController` calls `SignIn` or `SignOut`. `SignIn` relies on `SignInThrottleService` for the
-attempt limits and on the Laravel session guard for the new session identifier.
+`SessionRoutes` calls `SignIn` or `SignOut`. `SignIn` relies on `SignInThrottleService` for the
+attempt limits and on the session middleware for the new session identifier.
 
 ![C4 component view for signing in and out](diagrams/c4-component.png)
 

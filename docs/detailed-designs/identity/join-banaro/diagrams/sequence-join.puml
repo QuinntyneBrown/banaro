@@ -20,7 +20,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpIdentityApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "JoinController" as controller
+  participant "JoinRoutes" as controller
   participant "JoinBanaroRequest" as request
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
@@ -54,7 +54,7 @@ else checks pass
       page --> actor : invalid state; each error next to its field
     else valid
       controller -> action : handle(JoinData)
-      action -> action : Canonicalize e-mail; Hash::make(password), bcrypt cost >= 12 (L2-001 criterion 5)
+      action -> action : Canonicalize e-mail; PasswordPolicy.hash(password), bcrypt cost >= 12 (L2-001 criterion 5)
       action -> db : Find user by canonical e-mail
       alt address not registered
         action -> db : BEGIN; INSERT user (email_verified_at null, code-of-conduct version and time)

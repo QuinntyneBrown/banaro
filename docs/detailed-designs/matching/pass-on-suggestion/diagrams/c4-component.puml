@@ -5,14 +5,14 @@ title Components — Pass on a suggestion
 
 Container(web, "Banaro Web", "Angular", "MatchingPage, PassSuggestionDialog, HttpMatchingApi")
 ContainerDb(db, "Banaro database", "Relational database", "match_suggestions")
-Container(worker, "Banaro Worker", "Laravel", "MatchCandidateService, MatchScoreService")
+Container(worker, "Banaro Worker", "BullMQ worker, Node 22", "MatchCandidateService, MatchScoreService")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "MatchSuggestionPassController", "Laravel controller", "POST /matching/suggestions/{suggestion}/pass")
-  Component(req, "PassSuggestionRequest", "Form request", "Optional PassReason, ignores other fields")
+  Component(ctrl, "MatchSuggestionPassRoutes", "Route handler", "POST /matching/suggestions/{suggestion}/pass")
+  Component(req, "PassSuggestionRequest", "Request schema", "Optional PassReason, ignores other fields")
   Component(policy, "MatchSuggestionPolicy", "Policy", "Owner only")
   Component(action, "PassOnSuggestion", "Action", "Locks, sets passed, reason and acted_at")
-  Component(model, "MatchSuggestion", "Eloquent model", "Status, pass reason")
+  Component(model, "MatchSuggestion", "Drizzle table", "Status, pass reason")
   Component(resource, "MatchSuggestionResource", "API resource", "MatchSuggestionCard JSON shape")
 }
 

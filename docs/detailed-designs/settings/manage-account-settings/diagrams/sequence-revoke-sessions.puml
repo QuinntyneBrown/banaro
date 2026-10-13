@@ -21,8 +21,8 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpSettingsApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "PasswordController" as pwCtrl
-  participant "SessionController" as sessCtrl
+  participant "PasswordRoutes" as pwCtrl
+  participant "SessionRoutes" as sessCtrl
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "ChangePassword" as change

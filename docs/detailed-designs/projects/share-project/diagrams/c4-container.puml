@@ -7,7 +7,7 @@ Person(member, "Member", "Signed-in, verified builder")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "project-new page and its states")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Validation, project limit, ownership")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Validation, project limit, ownership")
   ContainerDb(db, "Banaro database", "Relational database", "Projects and their looking-for roles")
   ContainerQueue(redis, "Redis", "Redis", "Sessions")
 }

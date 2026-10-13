@@ -81,13 +81,13 @@ external system takes part.
 ### Backend — Banaro API
 
 - **Routes** — `GET /me/onboarding`, `PUT /me/onboarding/about`, `PUT /me/onboarding/skills`,
-  `PUT /me/onboarding/goals` and `POST /me/onboarding/complete` are in `routes/api.php`. They require a
+  `PUT /me/onboarding/goals` and `POST /me/onboarding/complete` are on the authenticated stack (`src/http/pipeline.ts`). They require a
   signed-in member with a verified e-mail address (`L2-002` criterion 4). No route takes a builder id;
   the builder is always the session's own.
-- **`OnboardingController`** (`Controllers/Api/V1/Profiles/`) — `show()` calls `GetOnboardingProgress`.
+- **`OnboardingRoutes`** (`app/api/v1/`) — `show()` calls `GetOnboardingProgress`.
   `updateAbout()`, `updateSkills()` and `updateGoals()` each call `SaveOnboardingStep` with their step.
   `complete()` calls `CompleteOnboarding`. Every method returns an `OnboardingResource`.
-- **Form requests** (`Requests/Profiles/`) — they run before any action, so an invalid step saves
+- **Request schemas** (`src/http/requests/profiles/`) — they run before any action, so an invalid step saves
   nothing (`L2-006` criterion 4, `L2-045` criterion 1). Each request passes only its validated keys on;
   fields such as `user_id` or `onboarding_completed_at` in the body are ignored (`L2-044` criterion 4).
   - `SaveOnboardingAboutRequest` requires `name`, `neighbourhood_id` (an existing `Neighbourhood`) and
@@ -98,36 +98,36 @@ external system takes part.
     criterion 2).
   - `SaveOnboardingGoalsRequest` accepts `open_to`, an array of `OpenTo` cases, and an optional
     `building` text.
-- **`GetOnboardingProgress`** (`Actions/Profiles/`) — loads the member's builder with skills and asks
+- **`GetOnboardingProgress`** (`src/actions/profiles/`) — loads the member's builder with skills and asks
   `OnboardingService` for the first unfinished step.
-- **`SaveOnboardingStep`** (`Actions/Profiles/`) — saves one step in one database transaction:
+- **`SaveOnboardingStep`** (`src/actions/profiles/`) — saves one step in one database transaction:
   1. The about step writes `name`, `neighbourhood_id` and `role` on the builder.
-  2. The skills step resolves entries through `SkillCatalogue::resolve()`. It then syncs the
+  2. The skills step resolves entries through `SkillCatalogue.resolve()`. It then syncs the
      `builder_skill` pivot with a `position` per skill, so the order is kept (`L2-006` criterion 2).
   3. The goals step writes `open_to` and `building_summary` (`L2-006` criterion 3).
-  4. It calls `OnboardingService::markSaved()` for the step. A saved step stays saved when the member
+  4. It calls `OnboardingService.markSaved()` for the step. A saved step stays saved when the member
      leaves (`L2-006` criterion 6).
-- **`CompleteOnboarding`** (`Actions/Profiles/`) — asks `OnboardingService::isReady()` whether every
+- **`CompleteOnboarding`** (`src/actions/profiles/`) — asks `OnboardingService.isReady()` whether every
   step is saved and role and neighbourhood are present. If not, it returns 422 with code
   `onboarding_incomplete` and the first unfinished step. Otherwise it stamps `onboarding_completed_at`
   (`L2-006` criterion 5). Repeating the call on a complete profile returns the profile unchanged.
-- **`OnboardingService`** (`Services/Profiles/`) — `nextStep(Builder)` returns the first step not in
+- **`OnboardingService`** (`src/services/profiles/`) — `nextStep(Builder)` returns the first step not in
   `onboarding_saved_steps`, or `finish`. `markSaved(Builder, OnboardingStep)` adds a step to that set.
   `isReady(Builder)` checks the conditions for completion.
-- **`SkillCatalogue`** (`Services/Profiles/`) — `catalogue()` returns the catalogue skills offered on
+- **`SkillCatalogue`** (`src/services/profiles/`) — `catalogue()` returns the catalogue skills offered on
   the skills step. `resolve(entries)` returns catalogue skills by id and finds or creates custom skills
   by a normalised name (lower case, accents removed). The `edit-own-profile` feature reuses it.
-- **`Builder`** (`Models/`) — the public profile, one per `User`. This slice uses `name`, `role`,
+- **`Builder`** (`src/db/schema/`) — the public profile, one per `User`. This slice uses `name`, `role`,
   `neighbourhood_id`, `open_to`, `building_summary`, `onboarding_saved_steps` and
   `onboarding_completed_at`. `isComplete()` is true once `onboarding_completed_at` is set.
-- **`Skill`** (`Models/`) — `name`, `slug`, `normalized_name` and `is_catalogue`. The `builder_skill`
+- **`Skill`** (`src/db/schema/`) — `name`, `slug`, `normalized_name` and `is_catalogue`. The `builder_skill`
   pivot holds `position`.
-- **`Neighbourhood`** (`Models/`) — GTA neighbourhood or city with `name`, `area` and a centroid
+- **`Neighbourhood`** (`src/db/schema/`) — GTA neighbourhood or city with `name`, `area` and a centroid
   (`latitude`, `longitude`). The `DistanceService` in the `directory` subsystem reads the centroid.
-- **Enums** (`Enums/`) — `OnboardingStep` (`About`, `Skills`, `Goals`), `BuilderRole` (`Founder`,
+- **Enums** (`src/enums/`) — `OnboardingStep` (`About`, `Skills`, `Goals`), `BuilderRole` (`Founder`,
   `Engineer`, `Designer`, `ProductManager`, `Other`) and `OpenTo` (`CoFounding`, `Advising`,
   `Contributing`).
-- **`OnboardingResource`** (`Resources/Profiles/`) — serializes the builder, the next step, the
+- **`OnboardingResource`** (`src/http/resources/profiles/`) — serializes the builder, the next step, the
   neighbourhood list and the skill catalogue into the `OnboardingProgress` shape.
 
 ### Failure handling
@@ -185,7 +185,7 @@ the Banaro database. Redis holds the session that identifies the member.
 
 ### Components
 
-Inside the Banaro API, `OnboardingController` validates each step with its form request and calls
+Inside the Banaro API, `OnboardingRoutes` validates each step with its request schema and calls
 `SaveOnboardingStep` or `CompleteOnboarding`. Both actions rely on `OnboardingService` to track saved
 steps.
 

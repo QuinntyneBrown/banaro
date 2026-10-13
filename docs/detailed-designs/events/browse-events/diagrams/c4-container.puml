@@ -8,7 +8,7 @@ Person(member, "Member", "Signed-in, verified builder")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Events page, month groups, Toronto time formatting")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Public events listing")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Public events listing")
   ContainerDb(db, "Banaro database", "Relational database", "Events")
 }
 

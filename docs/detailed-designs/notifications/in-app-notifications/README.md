@@ -72,38 +72,38 @@ to the Banaro database.
 
 ### Backend — Banaro API
 
-- **`NotificationController`** (`Controllers/Api/V1/Notifications/`) — four methods, each calling one
-  action and returning a resource. All four routes are in `routes/api.php`.
+- **`NotificationRoutes`** (`app/api/v1/`) — four methods, each calling one
+  action and returning a resource. All four routes are on the authenticated stack (`src/http/pipeline.ts`).
   - `index()` — `GET /notifications`, calls `ListNotifications`
   - `unreadCount()` — `GET /notifications/unread-count`, calls `CountUnreadNotifications`
   - `markRead()` — `POST /notifications/{notification}/read`, calls `MarkNotificationRead`
   - `markAllRead()` — `POST /notifications/read-all`, calls `MarkAllNotificationsRead`
 - **`ListNotificationsRequest`**, **`MarkNotificationReadRequest`** and
-  **`MarkAllNotificationsReadRequest`** (`Requests/Notifications/`) — `ListNotificationsRequest`
+  **`MarkAllNotificationsReadRequest`** (`src/http/requests/notifications/`) — `ListNotificationsRequest`
   accepts `page` and `per_page`. `per_page` defaults to 12 and is capped at 50 (`L2-047`
   criterion 4). The other two accept no body fields.
-- **`ListNotifications`** (`Actions/Notifications/`) — reads `$member->notifications()` ordered by
+- **`ListNotifications`** (`src/actions/notifications/`) — reads the member's `notifications` rows ordered by
   `created_at` descending, then `id` descending (`L2-027` criterion 1). It drops items whose actor is
-  blocked in either direction, through `BlockService::isBlockedEitherWay()` (`L2-044` criterion 5).
-- **`CountUnreadNotifications`** (`Actions/Notifications/`) — counts the member's rows with an empty
+  blocked in either direction, through `BlockService.isBlockedEitherWay()` (`L2-044` criterion 5).
+- **`CountUnreadNotifications`** (`src/actions/notifications/`) — counts the member's rows with an empty
   `read_at`.
-- **`MarkNotificationRead`** (`Actions/Notifications/`) — sets `read_at` to now when it is empty. A
+- **`MarkNotificationRead`** (`src/actions/notifications/`) — sets `read_at` to now when it is empty. A
   repeated call changes nothing.
-- **`MarkAllNotificationsRead`** (`Actions/Notifications/`) — sets `read_at` on every unread row of the
+- **`MarkAllNotificationsRead`** (`src/actions/notifications/`) — sets `read_at` on every unread row of the
   member in one `UPDATE` (`L2-027` criterion 3).
-- **Scoping** — every query starts from `$request->user()->notifications()`. The
+- **Scoping** — every query starts from `request.user().notifications()`. The
   `{notification}` binding resolves through the same relation, so another member's id yields 404
   (`L2-027` criterion 5, `L2-044` criterion 1).
-- **`DatabaseNotification`** (Laravel model, table `notifications`) — `id` (UUID), `type`,
+- **`DatabaseNotification`** (Drizzle table, table `notifications`) — `id` (UUID), `type`,
   `notifiable_type`, `notifiable_id`, `data` (JSON), `read_at` and `created_at`. An index on
   (`notifiable_id`, `read_at`, `created_at`) serves the list and the count.
-- **`NotificationKind`** (`Enums/`) — `MatchesReady`, `NewMessage`, `RsvpConfirmed`,
+- **`NotificationKind`** (`src/enums/`) — `MatchesReady`, `NewMessage`, `RsvpConfirmed`,
   `WaitlistPromoted`, `EventReminder`, `FeedbackReceived`, `HelpOffered` and `HelpOfferAnswered`. The
   list follows the triggers of `L1-009`, `L2-017` and `L2-029`.
-- **`InAppPayload`** (`Notifications/Concerns/`) — trait that each notification class uses for
+- **`InAppPayload`** (`src/notifications/concerns/`) — trait that each notification class uses for
   `toDatabase()`. It writes `kind`, `subject`, `actor_user_id` and `params`. The payload holds only the
   values the text needs, such as a first name or a short excerpt.
-- **`NotificationResource`** (`Resources/Notifications/`) — serializes a row into the
+- **`NotificationResource`** (`src/http/resources/notifications/`) — serializes a row into the
   `AppNotification` shape. **`UnreadCountResource`** returns `{ "count": n }`.
 
 ### Failure handling
@@ -154,7 +154,7 @@ Worker write notification rows to the Banaro database; the API reads and marks t
 
 ### Components
 
-Inside the Banaro API, `NotificationController` calls one of four actions. Each action queries the
+Inside the Banaro API, `NotificationRoutes` calls one of four actions. Each action queries the
 member's own `notifications` relation.
 
 ![C4 component view for in-app notifications](diagrams/c4-component.png)

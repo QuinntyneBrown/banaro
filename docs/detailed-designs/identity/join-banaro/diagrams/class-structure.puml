@@ -40,20 +40,20 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class JoinController {
-    +store(request: JoinBanaroRequest): Response
+  class JoinRoutes {
+    +POST(request: JoinBanaroRequest): Response
   }
   class JoinBanaroRequest {
-    +rules(): array
+    +schema: ZodObject
     +toData(): JoinData
   }
   class JoinData {
-    +string name
-    +string email
-    +string password
+    +name: string
+    +email: string
+    +password: string
   }
   class PasswordPolicy {
-    +rules(): array
+    +schema: ZodObject
   }
   class NotCommonPassword {
     +validate(attribute: string, value: mixed, fail: Closure): void
@@ -65,21 +65,21 @@ package "Backend — Banaro API" {
     +issue(user: User): string
   }
   class User {
-    +int id
-    +string name
-    +string email
-    +string password
-    +?Carbon email_verified_at
-    +string code_of_conduct_version
-    +Carbon code_of_conduct_accepted_at
-    +hasVerifiedEmail(): bool
+    +id: number
+    +name: string
+    +email: string
+    +password: string
+    +email_verified_at: Timestamp | null
+    +code_of_conduct_version: string
+    +code_of_conduct_accepted_at: Timestamp
+    +hasVerifiedEmail(): boolean
   }
   class VerifyEmailNotification {
-    +string link
-    +via(): array
+    +link: string
+    +via(): string[]
   }
   class AccountAlreadyExistsNotification {
-    +via(): array
+    +via(): string[]
   }
 }
 
@@ -87,10 +87,10 @@ JoinPage ..> IdentityApi : uses
 HttpIdentityApi ..|> IdentityApi
 IdentityApi ..> JoinRequest : sends
 IdentityApi ..> ApiProblem : fails with
-HttpIdentityApi ..> JoinController : HTTPS
+HttpIdentityApi ..> JoinRoutes : HTTPS
 
-JoinController ..> JoinBanaroRequest : validates with
-JoinController ..> JoinBanaro : calls
+JoinRoutes ..> JoinBanaroRequest : validates with
+JoinRoutes ..> JoinBanaro : calls
 JoinBanaroRequest ..> PasswordPolicy : password rules
 PasswordPolicy *-- NotCommonPassword
 JoinBanaroRequest ..> JoinData : builds

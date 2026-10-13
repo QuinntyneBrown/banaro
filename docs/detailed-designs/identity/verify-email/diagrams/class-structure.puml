@@ -48,17 +48,17 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class EmailVerificationController {
-    +store(request: VerifyEmailRequest): Response
+  class EmailVerificationRoutes {
+    +POST(request: VerifyEmailRequest): Response
   }
-  class VerificationNotificationController {
-    +store(request: ResendVerificationEmailRequest): Response
+  class VerificationNotificationRoutes {
+    +POST(request: ResendVerificationEmailRequest): Response
   }
   class VerifyEmail {
     +handle(link: VerificationLinkData): User
   }
   class ResendVerificationEmail {
-    +handle(data: ResendData, sessionUser: ?User): void
+    +handle(data: ResendData, sessionUser: User | null): void
   }
   class EmailVerificationService {
     +issue(user: User): string
@@ -69,23 +69,23 @@ package "Backend — Banaro API" {
     +handle(request: Request, next: Closure): Response
   }
   class User {
-    +int id
-    +string email
-    +?Carbon email_verified_at
-    +hasVerifiedEmail(): bool
+    +id: number
+    +email: string
+    +email_verified_at: Timestamp | null
+    +hasVerifiedEmail(): boolean
     +markEmailAsVerified(): void
   }
   class EmailVerificationToken {
-    +int id
-    +int user_id
-    +string token_hash
-    +Carbon expires_at
-    +?Carbon used_at
-    +isUsable(): bool
+    +id: number
+    +user_id: number
+    +token_hash: string
+    +expires_at: Timestamp
+    +used_at: Timestamp | null
+    +isUsable(): boolean
   }
   class VerifyEmailNotification {
-    +string link
-    +via(): array
+    +link: string
+    +via(): string[]
   }
 }
 
@@ -96,11 +96,11 @@ memberGuard ..> SessionStore : reads
 HttpIdentityApi ..|> IdentityApi
 IdentityApi ..> VerificationLink : sends
 IdentityApi ..> ResendVerificationRequest : sends
-HttpIdentityApi ..> EmailVerificationController : HTTPS
-HttpIdentityApi ..> VerificationNotificationController : HTTPS
+HttpIdentityApi ..> EmailVerificationRoutes : HTTPS
+HttpIdentityApi ..> VerificationNotificationRoutes : HTTPS
 
-EmailVerificationController ..> VerifyEmail : calls
-VerificationNotificationController ..> ResendVerificationEmail : calls
+EmailVerificationRoutes ..> VerifyEmail : calls
+VerificationNotificationRoutes ..> ResendVerificationEmail : calls
 VerifyEmail ..> EmailVerificationService : consume()
 ResendVerificationEmail ..> EmailVerificationService : issue()
 ResendVerificationEmail ..> VerifyEmailNotification : queues

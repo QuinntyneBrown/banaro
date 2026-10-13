@@ -77,17 +77,17 @@ on another device.
 
 ### Backend — Banaro API
 
-- **`ThemePreference`** (`app/Enums/`) — `Light`, `Dark` and `System`.
+- **`ThemePreference`** (`src/enums/`) — `Light`, `Dark` and `System`.
 - **`users.theme_preference`** — column with default `system`, added by an expand-only migration
   (`L2-054` criterion 2).
-- **`ThemePreferenceController`** (`Controllers/Api/V1/Settings/`) — `update()` handles
-  `PUT /api/v1/settings/theme` in `routes/api.php`.
-- **`UpdateThemePreferenceRequest`** (`Requests/Settings/`) — requires `theme` in
-  `Rule::enum(ThemePreference::class)`.
-- **`UpdateThemePreference`** (`Actions/Settings/`) — stores the preference for the session member
+- **`ThemePreferenceRoutes`** (`app/api/v1/`) — `update()` handles
+  `PUT /api/v1/settings/theme` on the authenticated stack (`src/http/pipeline.ts`).
+- **`UpdateThemePreferenceRequest`** (`src/http/requests/settings/`) — requires `theme` in
+  `z.enum(ThemePreference)`.
+- **`UpdateThemePreference`** (`src/actions/settings/`) — stores the preference for the session member
   only.
-- **`MeResource`** (`Resources/Identity/`) — includes `theme` in the current-member payload that
-  `MeController` (`Controllers/Api/V1/Identity/`) returns for `GET /api/v1/me`.
+- **`MeResource`** (`src/http/resources/identity/`) — includes `theme` in the current-member payload that
+  `MeRoutes` (`app/api/v1/`) returns for `GET /api/v1/me`.
 
 ### Frontend — tokens-only colour
 
@@ -147,7 +147,7 @@ the member's preference in the Banaro database.
 ### Components
 
 `ThemeService` reads the cookie on the server and the media query in the browser. `ThemeSwitch` and
-`ThemeShortcut` call it, and `THEME_SYNC` sends the choice to `ThemePreferenceController`.
+`ThemeShortcut` call it, and `THEME_SYNC` sends the choice to `ThemePreferenceRoutes`.
 
 ![C4 component view for switching theme](diagrams/c4-component.png)
 

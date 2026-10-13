@@ -7,17 +7,17 @@ Container(web, "Banaro Web", "Angular", "MatchingPage, MatchCard, SayHelloDialog
 ContainerDb(db, "Banaro database", "Relational database", "match_suggestions, matching_preferences, blocks")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "MatchingOverviewController", "Laravel controller", "GET /matching")
-  Component(req, "ShowMatchingOverviewRequest", "Form request", "Authorizes the verified member")
+  Component(ctrl, "MatchingOverviewRoutes", "Route handler", "GET /matching")
+  Component(req, "ShowMatchingOverviewRequest", "Request schema", "Authorizes the verified member")
   Component(build, "BuildMatchingOverview", "Action", "Status, this week's suggestions, unreviewed count, next run")
   Component(cal, "MatchingScheduleService", "Domain service", "Current ISO week, next run date")
   Component(block, "BlockService", "Domain service (trust and safety)", "isBlockedEitherWay()")
   Component(resource, "MatchingOverviewResource / MatchSuggestionResource", "API resources", "Overview JSON, privacy-aware distance")
   Component(policy, "MatchSuggestionPolicy", "Policy", "Owner-only access")
-  Component(sayhello, "ConversationController / StartConversation", "Controller and action (messaging)", "POST /conversations; dispatches ConversationStarted after commit")
+  Component(sayhello, "ConversationRoutes / StartConversation", "Controller and action (messaging)", "POST /conversations; dispatches ConversationStarted after commit")
   Component(listener, "MarkSuggestionContactedOnConversationStarted", "Listener", "Synchronous")
   Component(mark, "MarkSuggestionContacted", "Action", "suggested to contacted")
-  Component(model, "MatchSuggestion", "Eloquent model", "Weekly suggestions")
+  Component(model, "MatchSuggestion", "Drizzle table", "Weekly suggestions")
 }
 
 Rel(web, ctrl, "Calls", "JSON/HTTPS")

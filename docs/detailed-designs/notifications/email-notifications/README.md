@@ -37,15 +37,15 @@ The slice runs on the Banaro API, which queues notifications, and on the Banaro 
 them through the mail provider. It has no page of its own. The unsubscribe landing page belongs to
 the `settings/manage-email-preferences` feature (`L2-037` criteria 2 and 3).
 
-### Notification classes — `backend/app/Notifications/`
+### Notification classes — `src/notifications/`
 
 - **`BanaroMailNotification`** — abstract base class for every e-mail notification. It implements
-  `ShouldQueue` and calls `afterCommit()`, so no e-mail leaves for a rolled-back change. It runs on the
+  `queued` and calls `afterCommit()`, so no e-mail leaves for a rolled-back change. It runs on the
   `mail` queue.
   - `category()` returns the `EmailCategory`, or `null` for security e-mail.
   - `via()` returns `MailerChannel`, plus `database` when the class also feeds `/notifications`
     (`L2-027`).
-  - `shouldSend($notifiable, $channel)` asks `EmailPreferenceService::allows()` for the mail channel.
+  - `shouldSend(notifiable, channel)` asks `EmailPreferenceService.allows()` for the mail channel.
     Laravel calls `shouldSend()` when the queued job runs, so a preference changed after queueing
     still applies. A turned-off category sends nothing. Security e-mail, with a `null` category, never
     calls the service and always sends (`L2-029` criterion 2).
@@ -68,29 +68,29 @@ the `settings/manage-email-preferences` feature (`L2-037` criteria 2 and 3).
 
 ### Delivery — Banaro Worker
 
-- **Horizon `mail` queue** — a dedicated supervisor processes the `mail` queue. The target is a send
-  within 5 minutes of the trigger (`L2-029` criterion 1). A Horizon wait-time alert on the queue fires
+- **the BullMQ worker `mail` queue** — a dedicated supervisor processes the `mail` queue. The target is a send
+  within 5 minutes of the trigger (`L2-029` criterion 1). A the BullMQ worker wait-time alert on the queue fires
   before that budget is spent; its threshold is `<TO SUPPLY>`.
-- **`MailerChannel`** (`Notifications/Channels/`) — custom notification channel:
+- **`MailerChannel`** (`src/notifications/channels/`) — custom notification channel:
   1. It loads the `EmailDelivery` row for the notification id, and returns at once when the row is
      already `sent`. A retry after a successful hand-off therefore sends nothing twice (`L2-029`
      criterion 1).
-  2. It renders the Blade template under `resources/views/emails/{category}/`.
-  3. For any e-mail with a category, it asks `UnsubscribeTokenService::issue()` for a token. It adds
+  2. It renders the Blade template under `src/mail/templates/{category}/`.
+  3. For any e-mail with a category, it asks `UnsubscribeTokenService.issue()` for a token. It adds
      a link to `/unsubscribe?token=…` in the body. It also adds a `List-Unsubscribe` header that
      points at `POST /api/v1/email-preferences/unsubscribe`, with
      `List-Unsubscribe-Post: List-Unsubscribe=One-Click` (`L2-029` criterion 3).
-  4. It calls `Mailer::send()` and passes the notification id as the idempotency key where the vendor
+  4. It calls `Mailer.send()` and passes the notification id as the idempotency key where the vendor
      supports one.
   5. It records the delivery as `sent` with the provider's message id.
-- **`Mailer`** (`Contracts/`) — port with `send(OutgoingEmail): MailerReceipt`. It throws
+- **`Mailer`** (`src/contracts/`) — port with `send(OutgoingEmail): MailerReceipt`. It throws
   `MailerUnavailable` on a transient failure, which lets the job retry.
-- **`{Vendor}Mailer`** (`Integrations/Mail/`) — adapter for the mail provider; vendor `<TO SUPPLY>`.
-- **`UnsubscribeTokenService`** (`Services/Settings/`) — `issue(user, category)` returns the signed
+- **`{Vendor}Mailer`** (`src/integrations/mail/`) — adapter for the mail provider; vendor `<TO SUPPLY>`.
+- **`UnsubscribeTokenService`** (`src/services/settings/`) — `issue(user, category)` returns the signed
   token. The `settings/manage-email-preferences` feature owns it, the `/unsubscribe` page and the
-  anonymous `POST /email-preferences/unsubscribe` route in `routes/api_public.php`. Token lifetime is
+  anonymous `POST /email-preferences/unsubscribe` route in `src/http/public-routes.ts`. Token lifetime is
   an open point of that feature.
-- **`EmailPreferenceService`** (`Services/Settings/`) — `allows(user, category)` reads the member's
+- **`EmailPreferenceService`** (`src/services/settings/`) — `allows(user, category)` reads the member's
   stored choice. The `settings/manage-email-preferences` feature owns it.
 - **Minimum personal data** — each template carries the recipient's first name, the subject's title,
   the other member's display name where one exists, and a link into Banaro. It carries no other
@@ -98,7 +98,7 @@ the `settings/manage-email-preferences` feature (`L2-037` criteria 2 and 3).
 
 ### One e-mail per trigger
 
-- **`NotificationDedupeService`** (`Services/Notifications/`) — `claim(key)` inserts a
+- **`NotificationDedupeService`** (`src/services/notifications/`) — `claim(key)` inserts a
   `NotificationDedupeKey` row and returns `false` when the unique index refuses the key. Scheduled
   triggers claim a key before they send (`L2-029` criteria 1 and 5):
   - `event-reminder:{event}:{user}`
@@ -106,29 +106,29 @@ the `settings/manage-email-preferences` feature (`L2-037` criteria 2 and 3).
 - Event-driven triggers send from the action that records the change, after commit. The action runs
   once per change, and the delivery record stops duplicate sends on retry.
 
-### Scheduled commands — `routes/console.php`
+### Scheduled commands — `src/scheduler.ts`
 
-Both commands use `onOneServer()` and `withoutOverlapping()`, so each runs once across Worker replicas
+Both commands use `a Redis lock` and `a Redis lock`, so each runs once across Worker replicas
 (`L2-054` criterion 5).
 
-- **`SendEventRemindersCommand`** (`Console/Commands/`, signature `events:send-reminders`) — runs every
+- **`SendEventRemindersCommand`** (`src/console/commands/`, signature `events:send-reminders`) — runs every
   five minutes. It selects going RSVPs for events that are not cancelled and start between now and 24
   hours plus five minutes from now. For each pair it claims `event-reminder:{event}:{user}` and sends
   `EventReminderNotification` on the `database` and mail channels (`L2-029` criterion 1). For an event
   at 7:00 pm on Thursday, the e-mail leaves at about 7:00 pm on Wednesday.
-- **`SendWeeklyDigestCommand`** (`Console/Commands/`, signature `notifications:send-weekly-digest`) —
+- **`SendWeeklyDigestCommand`** (`src/console/commands/`, signature `notifications:send-weekly-digest`) —
   runs once a week; day and time `<TO SUPPLY>`. It dispatches one `SendWeeklyDigest` job per member
   with the Weekly digest category on.
-- **`SendWeeklyDigest`** (`Jobs/Notifications/`) — claims `digest:{user}:{iso_week}` (`L2-029`
+- **`SendWeeklyDigest`** (`src/jobs/notifications/`) — claims `digest:{user}:{iso_week}` (`L2-029`
   criterion 5). It gathers the member's unread notifications and unread conversations, and sends
   `WeeklyDigestNotification`. Whether a digest with no unread items is sent is `<TO SUPPLY>`.
 
 ### Models and enums
 
-- **`EmailDelivery`** (`Models/`) — `notification_id` (unique), `user_id`, `category`, `status`
+- **`EmailDelivery`** (`src/db/schema/`) — `notification_id` (unique), `user_id`, `category`, `status`
   (`queued`, `sent` or `failed`), `attempts`, `provider_message_id`, `sent_at` and `failed_at`.
-- **`NotificationDedupeKey`** (`Models/`) — `key` (unique) and `created_at`.
-- **`EmailCategory`** (`Enums/`) — `Matches`, `Messages`, `Events`, `ProjectActivity` and
+- **`NotificationDedupeKey`** (`src/db/schema/`) — `key` (unique) and `created_at`.
+- **`EmailCategory`** (`src/enums/`) — `Matches`, `Messages`, `src/events/`, `ProjectActivity` and
   `WeeklyDigest`, as `settings/manage-email-preferences` defines it. Security e-mail has no category.
 
 ### Observability

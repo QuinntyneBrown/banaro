@@ -28,7 +28,7 @@ receives 404.
 ### Delivery of new messages
 
 The design uses polling, not a push channel. The architecture baseline has no WebSocket server, and
-a push channel such as Laravel Reverb would add a new container to Banaro. Polling uses only the
+a push channel such as a WebSocket server would add a new container to Banaro. Polling uses only the
 existing Banaro API, Redis and database. Its cost is a delay of up to one polling interval and a
 steady read load. The choice shall be recorded as an ADR in `docs/adr/` before implementation
 (`<TO SUPPLY>` ADR number). A later move to a push channel needs its own ADR and a new container in
@@ -90,16 +90,16 @@ reply's e-mail notification leaves through the Banaro Worker.
 
 ### Backend — Banaro API
 
-All routes below are in `routes/api.php`, so each requires a verified member.
+All routes below are on the authenticated stack (`src/http/pipeline.ts`), so each requires a verified member.
 
-- **`ConversationController`** (`Controllers/Api/V1/Messaging/`) — `index()` handles
+- **`ConversationRoutes`** (`app/api/v1/`) — `index()` handles
   `GET /conversations`. It calls `ListConversations` and returns `ConversationSummaryResource` items.
-- **`MessageController`** (`Controllers/Api/V1/Messaging/`) — `index()` handles
+- **`MessageRoutes`** (`app/api/v1/`) — `index()` handles
   `GET /conversations/{conversation}/messages` and calls `ListMessages`. `store()` handles
   `POST /conversations/{conversation}/messages` and calls `SendMessage`.
-- **`ConversationReadController`** (`Controllers/Api/V1/Messaging/`) — `update()` handles
+- **`ConversationReadRoutes`** (`app/api/v1/`) — `update()` handles
   `PUT /conversations/{conversation}/read` and calls `MarkConversationRead`.
-- **Form requests** (`Requests/Messaging/`):
+- **Request schemas** (`src/http/requests/messaging/`):
   - `ListConversationsRequest` — `page`, and `per_page` from 1 to 50, default 12 (`L2-047`
     criterion 4).
   - `ListMessagesRequest` — at most one of `after` and `before`, each a message id, and `limit` up
@@ -108,30 +108,30 @@ All routes below are in `routes/api.php`, so each requires a verified member.
     length limits are `<TO SUPPLY>`.
   - `MarkConversationReadRequest` — `last_message_id` as an integer.
   - Each request authorizes through `ConversationPolicy` before validation.
-- **`ConversationPolicy`** (`Policies/`) — `view()` allows only the two participants. It denies
-  every other member with `Response::denyAsNotFound()`, so the API answers 404 and reveals nothing
+- **`ConversationPolicy`** (`src/policies/`) — `view()` allows only the two participants. It denies
+  every other member with `Response.denyAsNotFound()`, so the API answers 404 and reveals nothing
   (`L2-026` criterion 9, `L2-044` criterion 1). `reply()` denies a blocked pair with 403, using
-  `BlockService::isBlockedEitherWay()` from `Services/TrustAndSafety` (`L2-026` criterion 7).
-- **`ListConversations`** (`Actions/Messaging/`) — selects the member's conversations through
+  `BlockService.isBlockedEitherWay()` from `src/services/trust-and-safety/` (`L2-026` criterion 7).
+- **`ListConversations`** (`src/actions/messaging/`) — selects the member's conversations through
   `conversation_participants`, ordered by `last_message_at` then `id`, descending. It computes
   `unreadCount` from the read mark and excludes messages the member sent (`L2-026` criterion 4).
-- **`ListMessages`** (`Actions/Messaging/`) — without a cursor, returns the latest page of messages
+- **`ListMessages`** (`src/actions/messaging/`) — without a cursor, returns the latest page of messages
   in ascending order. With `after`, it returns newer messages for polling. With `before`, it returns
   earlier ones.
-- **`SendMessage`** (`Actions/Messaging/`) — in one transaction it returns the stored message for a
+- **`SendMessage`** (`src/actions/messaging/`) — in one transaction it returns the stored message for a
   repeated `client_message_id`, or inserts the message. It then updates `last_message_id`,
   `last_message_at` and the sender's read mark. After commit it queues `NewMessageNotification` for
   the other participant.
-- **`MarkConversationRead`** (`Actions/Messaging/`) — moves the member's read mark forward to the
+- **`MarkConversationRead`** (`src/actions/messaging/`) — moves the member's read mark forward to the
   given message id, never backward.
-- **`Conversation`**, **`ConversationParticipant`** and **`Message`** (`Models/`) — the models defined
+- **`Conversation`**, **`ConversationParticipant`** and **`Message`** (`src/db/schema/`) — the models defined
   in `say-hello`. Indexes on `conversation_participants (user_id)`,
   `conversations (last_message_at)` and `messages (conversation_id, id)` keep the inbox and polling
   queries within the read budget (`L2-047` criterion 1).
-- **`ConversationSummaryResource`** and **`MessageResource`** (`Resources/Messaging/`) — serialize the
+- **`ConversationSummaryResource`** and **`MessageResource`** (`src/http/resources/messaging/`) — serialize the
   `ConversationSummary` and `ChatMessage` shapes. `canReply` comes from the same block check as
   `reply()`. Message bodies are plain text, encoded on output (`L2-045` criterion 5).
-- **`NewMessageNotification`** (`Notifications/`) — the notification from `say-hello`, on the `mail`
+- **`NewMessageNotification`** (`src/notifications/`) — the notification from `say-hello`, on the `mail`
   and `database` channels, subject to the Messages e-mail preference (`L2-029`, `L2-037`).
 
 ### Failure handling

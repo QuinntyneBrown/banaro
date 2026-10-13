@@ -67,30 +67,30 @@ It reads only; RSVP writes belong to `rsvp-to-event`.
 
 ### Backend — Banaro API
 
-- **`EventController`** (`Controllers/Api/V1/Events/`) — `show()` handles `GET /events/{event}`. The
-  route is in `routes/api.php`, because `L2-019` grants the page to members. Route-model binding
+- **`EventRoutes`** (`app/api/v1/`) — `show()` handles `GET /events/{event}`. The
+  route is on the authenticated stack (`src/http/pipeline.ts`), because `L2-019` grants the page to members. Route-model binding
   returns 404 for an unknown id (`L2-019` criterion 4). The method calls `ViewEvent` and returns an
   `EventDetailResource`.
-- **`ViewEventRequest`** (`Requests/Events/`) — authorizes a verified member and accepts no query or
+- **`ViewEventRequest`** (`src/http/requests/events/`) — authorizes a verified member and accepts no query or
   body fields (`L2-045` criterion 1).
-- **`ViewEvent`** (`Actions/Events/`) — loads the event with its host. It reads the viewer's `Rsvp`
-  and, for a waitlisted RSVP, its position from `WaitlistService::positionOf()`. It asks
+- **`ViewEvent`** (`src/actions/events/`) — loads the event with its host. It reads the viewer's `Rsvp`
+  and, for a waitlisted RSVP, its position from `WaitlistService.positionOf()`. It asks
   `AttendeeListService` for the attendee preview. It returns an `EventView` value object.
-- **`AttendeeListService`** (`Services/Events/`) — `previewFor(Event, User $viewer, int $limit)`
+- **`AttendeeListService`** (`src/services/events/`) — `previewFor(Event, viewer: User, limit: number)`
   selects going RSVPs whose members allow attendee-list listing. The `control-privacy` feature owns
   that setting (`L2-036` criterion 1); its default is off (`L2-036` criterion 4). The service also
-  drops each attendee for whom `BlockService::isBlockedEitherWay($viewer, $attendee)` holds (`L2-032`
-  criterion 1). `BlockService` lives in `Services/TrustAndSafety` and is owned by `block-builder`.
+  drops each attendee for whom `BlockService.isBlockedEitherWay(viewer, attendee)` holds (`L2-032`
+  criterion 1). `BlockService` lives in `src/services/trust-and-safety/` and is owned by `block-builder`.
   The filters run in the query, not in the browser (`L2-044` criterion 5).
-- **`WaitlistService`** (`Services/Events/`) — the service from `rsvp-to-event`. This feature calls
+- **`WaitlistService`** (`src/services/events/`) — the service from `rsvp-to-event`. This feature calls
   only `positionOf(Rsvp)`.
-- **`Event`** (`Models/`) — the shared model. This feature also reads `description`, `category`,
+- **`Event`** (`src/db/schema/`) — the shared model. This feature also reads `description`, `category`,
   `recap`, `cancellation_note` and `host_id`. `phase()` returns `upcoming`, `started` or `ended` from
   `starts_at` and `ends_at`.
-- **`Rsvp`**, **`RsvpStatus`** and **`EventStatus`** (`Models/`, `Enums/`) — as defined in
+- **`Rsvp`**, **`RsvpStatus`** and **`EventStatus`** (`src/db/schema/`, `src/enums/`) — as defined in
   `rsvp-to-event`.
-- **`Builder`** (`Models/`) — public profile of the host and of each listed attendee.
-- **`EventDetailResource`** (`Resources/Events/`) — serializes an `EventView` into the `EventDetail`
+- **`Builder`** (`src/db/schema/`) — public profile of the host and of each listed attendee.
+- **`EventDetailResource`** (`src/http/resources/events/`) — serializes an `EventView` into the `EventDetail`
   shape. It embeds an `RsvpResource` for the viewer, or `status: none` without an RSVP. It builds
   `mapUrl` from the venue address and the map-service URL template.
 
@@ -150,7 +150,7 @@ and the attendee list from the Banaro database.
 
 ### Components
 
-Inside the Banaro API, `EventController` calls `ViewEvent`. `ViewEvent` uses `WaitlistService` for
+Inside the Banaro API, `EventRoutes` calls `ViewEvent`. `ViewEvent` uses `WaitlistService` for
 the waitlist position and `AttendeeListService` for the attendee preview. `AttendeeListService`
 applies the block rule from `BlockService`.
 

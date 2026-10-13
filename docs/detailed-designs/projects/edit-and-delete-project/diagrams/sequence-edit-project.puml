@@ -21,7 +21,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "ToastService" as toast
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "ProjectController" as controller
+  participant "ProjectRoutes" as controller
   participant "UpdateProjectRequest" as request
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
@@ -50,7 +50,7 @@ else owner
   page -> page : submitting state, button disabled, "Saving…" (L2-014 criterion 1)
   page -> client : update(id, draft)
   client -> controller : PATCH /api/v1/projects/{id}
-  controller -> request : authorize() then rules()
+  controller -> request : authorize() then schema.parse()
   request -> policy : update(member, project)
   policy --> request : true
   alt invalid values

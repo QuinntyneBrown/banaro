@@ -57,13 +57,13 @@ package "Backend — Banaro API" {
     -int absoluteLifetimeDays = 90
     +handle(request: Request, next: Closure): Response
   }
-  class SessionController {
-    +store(request: SignInRequest): SessionResource
+  class SessionRoutes {
+    +POST(request: SignInRequest): SessionResource
   }
   class SignIn {
     +handle(data: SignInData, request: Request): User
   }
-  class "config/session.php" as SessionConfig {
+  class "src/config/security.ts" as SessionConfig {
     +driver = redis
     +lifetime = 43200
   }
@@ -79,7 +79,7 @@ DialogSessionRecovery ..> SessionExpiredDialog : opens
 SessionExpiredDialog ..> SessionStore : signIn() / clear()
 SessionStore ..> IdentityApi : uses
 HttpIdentityApi ..|> IdentityApi
-HttpIdentityApi ..> SessionController : HTTPS
-SessionController ..> SignIn : calls
+HttpIdentityApi ..> SessionRoutes : HTTPS
+SessionRoutes ..> SignIn : calls
 EnforceAbsoluteSessionLifetime ..> SessionConfig : session store
 @enduml

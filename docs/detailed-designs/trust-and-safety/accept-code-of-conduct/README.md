@@ -53,26 +53,26 @@ through the Banaro API to the Banaro database.
 
 ### Backend — Banaro API
 
-- **`config/banaro.php`** — holds `code_of_conduct.version` and `code_of_conduct.published_on`. A
+- **`src/config/banaro.ts`** — holds `code_of_conduct.version` and `code_of_conduct.published_on`. A
   change to the text in the catalogue and a change to these values ship in the same release.
-- **`I18nController`** — serves the catalogue, including the `codeOfConduct.*` keys, at
-  `GET /api/v1/i18n/{locale}` from `routes/api_public.php`. The `localize-and-format` feature owns it.
-- **`CodeOfConductService`** (`Services/TrustAndSafety/`) — `currentVersion()` reads the
+- **`I18nRoutes`** — serves the catalogue, including the `codeOfConduct.*` keys, at
+  `GET /api/v1/i18n/{locale}` from `src/http/public-routes.ts`. The `localize-and-format` feature owns it.
+- **`CodeOfConductService`** (`src/services/trust-and-safety/`) — `currentVersion()` reads the
   configuration. `requiresAcceptance(User)` is true when the member has no acceptance of the current
   version.
-- **`CodeOfConductController`** (`Controllers/Api/V1/TrustAndSafety/`) — `store()` handles
-  `POST /code-of-conduct/acceptances` in `routes/api.php`. It calls `AcceptCodeOfConduct` and returns
+- **`CodeOfConductRoutes`** (`app/api/v1/`) — `store()` handles
+  `POST /code-of-conduct/acceptances` on the authenticated stack (`src/http/pipeline.ts`). It calls `AcceptCodeOfConduct` and returns
   201 with a `ConductAcceptanceResource`.
-- **`AcceptCodeOfConductRequest`** (`Requests/TrustAndSafety/`) — requires `version`.
-- **`AcceptCodeOfConduct`** (`Actions/TrustAndSafety/`) — rejects a version other than the current one
+- **`AcceptCodeOfConductRequest`** (`src/http/requests/trust-and-safety/`) — requires `version`.
+- **`AcceptCodeOfConduct`** (`src/actions/trust-and-safety/`) — rejects a version other than the current one
   with 422 and code `stale_code_of_conduct_version`. It then inserts a `ConductAcceptance` with the
   version and the server time, or returns the existing row for that version (`L2-034` criterion 3).
-- **`ConductAcceptance`** (`Models/`) — holds `user_id`, `version` and `accepted_at`, with a unique
+- **`ConductAcceptance`** (`src/db/schema/`) — holds `user_id`, `version` and `accepted_at`, with a unique
   index on (`user_id`, `version`). Rows are never updated, so the history of acceptances stays intact.
 - **Join integration** — `join-banaro`'s action records a `ConductAcceptance` for the current version
   when it creates the account, because the join form's consent is an acceptance.
 - **Sign-in integration** — the signed-in member payload of `sign-in-and-sign-out` includes
-  `codeOfConductAcceptanceRequired`, computed by `CodeOfConductService::requiresAcceptance()`
+  `codeOfConductAcceptanceRequired`, computed by `CodeOfConductService.requiresAcceptance()`
   (`L2-034` criterion 3).
 
 ### Open points
@@ -114,7 +114,7 @@ stores acceptances in the Banaro database.
 
 ### Components
 
-Inside the Banaro API, `CodeOfConductController` calls `AcceptCodeOfConduct`. `CodeOfConductService`
+Inside the Banaro API, `CodeOfConductRoutes` calls `AcceptCodeOfConduct`. `CodeOfConductService`
 reads the current version and tells sign-in whether a prompt is due.
 
 ![C4 component view for accepting the code of conduct](diagrams/c4-component.png)

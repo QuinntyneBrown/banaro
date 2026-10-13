@@ -43,11 +43,11 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class ReportController {
-    +store(request: SubmitReportRequest): ReportReceiptResource
+  class ReportRoutes {
+    +POST(request: SubmitReportRequest): ReportReceiptResource
   }
   class SubmitReportRequest {
-    +rules(): array
+    +schema: ZodObject
   }
   class SubmitReport {
     +handle(reporter: User, type: ReportSubjectType, id: int, reason: ReportReason, details: ?string): Report
@@ -56,23 +56,23 @@ package "Backend — Banaro API" {
     +resolve(viewer: User, type: ReportSubjectType, id: int): ReportSubject
   }
   class BlockService {
-    +isBlockedEitherWay(a: User, b: User): bool
+    +isBlockedEitherWay(a: User, b: User): boolean
   }
   class Report {
-    +int id
-    +int reporter_id
-    +ReportSubjectType subject_type
-    +int subject_id
-    +int reported_user_id
-    +ReportStatus status
-    +Carbon last_submitted_at
+    +id: number
+    +reporter_id: number
+    +subject_type: ReportSubjectType
+    +subject_id: number
+    +reported_user_id: number
+    +status: ReportStatus
+    +last_submitted_at: Timestamp
   }
   class ReportSubmission {
-    +int id
-    +int report_id
-    +ReportReason reason
-    +?string details
-    +Carbon created_at
+    +id: number
+    +report_id: number
+    +reason: ReportReason
+    +details: string | null
+    +created_at: Timestamp
   }
   enum ReportReason {
     Harassment
@@ -101,11 +101,11 @@ ReportDialog --> ReportDialogData : receives
 HttpTrustAndSafetyApi ..|> TrustAndSafetyApi
 TrustAndSafetyApi ..> CreateReportRequest : sends
 TrustAndSafetyApi ..> ReportReceipt : returns
-HttpTrustAndSafetyApi ..> ReportController : HTTPS
+HttpTrustAndSafetyApi ..> ReportRoutes : HTTPS
 
-ReportController ..> SubmitReportRequest : validates with
-ReportController ..> SubmitReport : calls
-ReportController ..> ReportReceiptResource : returns
+ReportRoutes ..> SubmitReportRequest : validates with
+ReportRoutes ..> SubmitReport : calls
+ReportRoutes ..> ReportReceiptResource : returns
 SubmitReport ..> ReportSubjectResolver : resolves via
 ReportSubjectResolver ..> BlockService : checks
 SubmitReport --> Report : creates or merges

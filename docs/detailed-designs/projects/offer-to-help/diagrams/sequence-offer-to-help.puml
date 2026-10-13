@@ -22,7 +22,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "ToastService" as toast
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "HelpOfferController" as controller
+  participant "HelpOfferRoutes" as controller
   participant "OfferToHelpRequest" as request
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
@@ -44,7 +44,7 @@ actor -> dialog : Choose role, write message, select "Send offer"
 dialog -> dialog : busy state, fields read-only, "Sending…" (L2-017 criterion 5)
 dialog -> client : offerHelp(projectId, { role, message })
 client -> controller : POST /api/v1/projects/{id}/help-offers
-controller -> request : authorize() then rules()
+controller -> request : authorize() then schema.parse()
 request -> policy : offerHelp(member, project)
 policy -> block : isBlockedEitherWay(member, owner) (L2-032)
 block --> policy : true or false

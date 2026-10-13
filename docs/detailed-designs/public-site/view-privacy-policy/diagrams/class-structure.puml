@@ -39,10 +39,10 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API and Worker" {
-  class I18nController {
-    +show(locale: string): JsonResponse
+  class I18nRoutes {
+    +GET(locale: string): Response
   }
-  class "emails/layout" as EmailLayout <<Blade view>> {
+  class "emails/layout" as EmailLayout <<mail template>> {
     +privacyUrl: string
   }
 }
@@ -54,5 +54,5 @@ Footer ..> PrivacyPage : links /privacy
 JoinPage ..> PrivacyPage : links /privacy
 SettingsPage ..> PrivacyPage : links /privacy
 EmailLayout ..> PrivacyPage : links {APP_URL}/privacy
-TranslationService ..> I18nController : HTTPS
+TranslationService ..> I18nRoutes : HTTPS
 @enduml

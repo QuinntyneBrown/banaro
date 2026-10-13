@@ -48,14 +48,14 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API and Worker" {
-  class ProfilePhotoController {
-    +store(request: UploadProfilePhotoRequest): ProfilePhotoResource
-    +show(photo: ProfilePhoto): ProfilePhotoResource
-    +destroy(): Response
-    +serve(photo: ProfilePhoto): StreamedResponse
+  class ProfilePhotoRoutes {
+    +POST(request: UploadProfilePhotoRequest): ProfilePhotoResource
+    +GET(photo: ProfilePhoto): ProfilePhotoResource
+    +DELETE(): Response
+    +serve(photo: ProfilePhoto): Response
   }
   class UploadProfilePhotoRequest {
-    +rules(): array
+    +schema: ZodObject
   }
   class UploadProfilePhoto {
     +handle(builder: Builder, file: UploadedFile, crop: array): ProfilePhoto
@@ -67,22 +67,22 @@ package "Backend — Banaro API and Worker" {
     +process(file: UploadedFile, crop: array): ProcessedImage
   }
   class ScanProfilePhoto {
-    +int photoId
+    +photoId: number
     +handle(scanner: MediaScanner): void
   }
   interface MediaScanner {
     +scan(path: string): ScanResult
   }
   class Builder {
-    +int id
-    +?string photo_id
+    +id: number
+    +photo_id: string | null
   }
   class ProfilePhoto {
-    +string id
-    +int builder_id
-    +string path
-    +PhotoStatus status
-    +?Carbon scanned_at
+    +id: string
+    +builder_id: number
+    +path: string
+    +status: PhotoStatus
+    +scanned_at: Timestamp | null
   }
   enum PhotoStatus {
     Pending
@@ -90,8 +90,8 @@ package "Backend — Banaro API and Worker" {
     Rejected
   }
   class ProfilePhotoPolicy {
-    +view(user: User, photo: ProfilePhoto): bool
-    +delete(user: User, photo: ProfilePhoto): bool
+    +view(user: User, photo: ProfilePhoto): boolean
+    +delete(user: User, photo: ProfilePhoto): boolean
   }
   class ProfilePhotoResource
 }
@@ -101,13 +101,13 @@ ChangePhotoDialog ..> PhotoFileCheck : checks file
 HttpProfilesApi ..|> ProfilesApi
 ProfilesApi ..> ProfilePhoto : returns
 ChangePhotoDialog --> CropRect : holds
-HttpProfilesApi ..> ProfilePhotoController : HTTPS
+HttpProfilesApi ..> ProfilePhotoRoutes : HTTPS
 
-ProfilePhotoController ..> UploadProfilePhotoRequest : validates with
-ProfilePhotoController ..> ProfilePhotoPolicy : authorizes with
-ProfilePhotoController ..> UploadProfilePhoto : calls
-ProfilePhotoController ..> RemoveProfilePhoto : calls
-ProfilePhotoController ..> ProfilePhotoResource : returns
+ProfilePhotoRoutes ..> UploadProfilePhotoRequest : validates with
+ProfilePhotoRoutes ..> ProfilePhotoPolicy : authorizes with
+ProfilePhotoRoutes ..> UploadProfilePhoto : calls
+ProfilePhotoRoutes ..> RemoveProfilePhoto : calls
+ProfilePhotoRoutes ..> ProfilePhotoResource : returns
 UploadProfilePhoto ..> PhotoProcessor : processes with
 UploadProfilePhoto ..> ScanProfilePhoto : dispatches
 ScanProfilePhoto ..> MediaScanner : scans with

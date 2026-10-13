@@ -8,9 +8,9 @@ System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "AboutPage, ContactPage")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Validates, rate-limits and queues contact messages; serves the catalogue")
-  Container(worker, "Banaro Worker", "Laravel Horizon", "Runs DeliverContactMessage")
-  ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters and Horizon queues")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Validates, rate-limits and queues contact messages; serves the catalogue")
+  Container(worker, "Banaro Worker", "BullMQ worker", "Runs DeliverContactMessage")
+  ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters and BullMQ queues")
 }
 
 Rel(visitor, web, "GET /about, GET /contact", "HTTPS")

@@ -53,41 +53,41 @@ package "Frontend — banaro application, components and api libraries" {
 }
 
 package "Backend — Banaro API" {
-  class ProjectController {
-    +index(request: BrowseProjectsRequest): ResourceCollection
+  class ProjectRoutes {
+    +GET(request: BrowseProjectsRequest): Page
   }
   class BrowseProjectsRequest {
-    +rules(): array
+    +schema: ZodObject
   }
   class BrowseProjects {
-    +handle(input: array, viewer: ?User): LengthAwarePaginator
+    +handle(input: array, viewer: User | null): Page
   }
   class ProjectSearchService {
-    +search(query: ProjectSearchQuery): LengthAwarePaginator
+    +search(query: ProjectSearchQuery): Page
   }
   class ProjectSearchQuery {
-    +?string text
-    +?ProjectStage stage
-    +?LookingForRole lookingFor
-    +?User viewer
-    +int page
-    +int perPage
+    +text: string | null
+    +stage: ProjectStage | null
+    +lookingFor: LookingForRole | null
+    +viewer: User | null
+    +page: number
+    +perPage: number
   }
   class BlockService {
     +applyScope(query, viewer: User, column: string): Builder
   }
   class Project {
-    +int id
-    +int owner_id
-    +string name
-    +string summary
-    +ProjectStage stage
-    +int feedback_count
-    +Carbon last_activity_at
+    +id: number
+    +owner_id: number
+    +name: string
+    +summary: string
+    +stage: ProjectStage
+    +feedback_count: number
+    +last_activity_at: Timestamp
   }
   class ProjectLookingFor {
-    +int project_id
-    +LookingForRole role
+    +project_id: number
+    +role: LookingForRole
   }
   class ProjectSummaryResource
 }
@@ -97,11 +97,11 @@ ProjectsPage ..> ProjectCard : renders
 HttpProjectsApi ..|> ProjectsApi
 ProjectsApi ..> ProjectQuery : sends
 ProjectsApi ..> ProjectSummary : returns
-HttpProjectsApi ..> ProjectController : HTTPS
+HttpProjectsApi ..> ProjectRoutes : HTTPS
 
-ProjectController ..> BrowseProjectsRequest : validates with
-ProjectController ..> BrowseProjects : calls
-ProjectController ..> ProjectSummaryResource : returns
+ProjectRoutes ..> BrowseProjectsRequest : validates with
+ProjectRoutes ..> BrowseProjects : calls
+ProjectRoutes ..> ProjectSummaryResource : returns
 BrowseProjects ..> ProjectSearchQuery : builds
 BrowseProjects ..> ProjectSearchService : calls
 ProjectSearchService ..> BlockService : excludes blocked owners

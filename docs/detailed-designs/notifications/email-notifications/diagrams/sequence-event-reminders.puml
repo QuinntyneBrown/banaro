@@ -26,7 +26,7 @@ box "Backend — Banaro Infrastructure" #FFF4E5
 end box
 
 clock -> scheduler : schedule:run tick
-scheduler -> redis : Take onOneServer lock for events:send-reminders
+scheduler -> redis : Take the scheduler lock for events:send-reminders
 alt lock held by another replica
   redis --> scheduler : Refused; skip (L2-054 criterion 5)
 else lock granted

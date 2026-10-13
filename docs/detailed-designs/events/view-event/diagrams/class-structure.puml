@@ -62,52 +62,52 @@ package "Frontend — banaro application, components and api libraries" {
 }
 
 package "Backend — Banaro API" {
-  class EventController {
-    +show(request: ViewEventRequest, event: Event): EventDetailResource
+  class EventRoutes {
+    +GET(request: ViewEventRequest, event: Event): EventDetailResource
   }
   class ViewEvent {
     +handle(viewer: User, event: Event): EventView
   }
   class EventView {
-    +Event event
-    +?Rsvp viewerRsvp
-    +?int waitlistPosition
-    +Collection attendeePreview
-    +int moreCount
+    +event: Event
+    +viewerRsvp: Rsvp | null
+    +waitlistPosition: number | null
+    +attendeePreview: Collection
+    +moreCount: number
   }
   class AttendeeListService {
     +previewFor(event: Event, viewer: User, limit: int): AttendeePreviewResult
   }
   class BlockService <<TrustAndSafety>> {
-    +isBlockedEitherWay(a: User, b: User): bool
+    +isBlockedEitherWay(a: User, b: User): boolean
   }
   class WaitlistService {
-    +positionOf(rsvp: Rsvp): int
+    +positionOf(rsvp: Rsvp): number
   }
   class Event {
-    +int id
-    +string title
-    +string category
-    +string description
-    +Carbon starts_at
-    +Carbon ends_at
-    +string venue_name
-    +string venue_address
-    +int host_id
-    +?string recap
-    +?string cancellation_note
-    +EventStatus status
+    +id: number
+    +title: string
+    +category: string
+    +description: string
+    +starts_at: Timestamp
+    +ends_at: Timestamp
+    +venue_name: string
+    +venue_address: string
+    +host_id: number
+    +recap: string | null
+    +cancellation_note: string | null
+    +status: EventStatus
     +phase(): string
   }
   class Rsvp {
-    +int event_id
-    +int user_id
-    +RsvpStatus status
+    +event_id: number
+    +user_id: number
+    +status: RsvpStatus
   }
   class Builder {
-    +int user_id
-    +string name
-    +string role
+    +user_id: number
+    +name: string
+    +role: string
   }
   enum RsvpStatus {
     Going
@@ -126,10 +126,10 @@ HttpEventsApi ..|> EventsApi
 EventsApi ..> EventDetail : returns
 EventDetail *-- AttendeePreview
 EventDetail *-- RsvpSummary
-HttpEventsApi ..> EventController : HTTPS
+HttpEventsApi ..> EventRoutes : HTTPS
 
-EventController ..> ViewEvent : calls
-EventController ..> EventDetailResource : returns
+EventRoutes ..> ViewEvent : calls
+EventRoutes ..> EventDetailResource : returns
 EventDetailResource ..> EventView : serializes
 ViewEvent ..> EventView : creates
 ViewEvent ..> WaitlistService : position via

@@ -61,23 +61,23 @@ database. Moderation e-mail leaves through the Banaro Worker.
 
 ### Backend — Banaro API
 
-- **Routes** — every moderation route is in `routes/api.php` inside a group with prefix `admin` and
+- **Routes** — every moderation route is on the authenticated stack (`src/http/pipeline.ts`) inside a group with prefix `admin` and
   the `EnsureAdministrator` middleware, after authentication and e-mail verification.
-- **`EnsureAdministrator`** (`Http/Middleware/`) — returns 403 unless the session user's role is
+- **`EnsureAdministrator`** (`src/http/middleware/`) — returns 403 unless the session user's role is
   `Administrator` (`L2-033` criterion 4). `ReportPolicy` repeats the check per action as a second
   guard.
-- **`AdminAccessController`** (`Controllers/Api/V1/TrustAndSafety/Admin/`) — `show()` handles
+- **`AdminAccessRoutes`** (`app/api/v1/`) — `show()` handles
   `GET /admin/access` and returns 204 for an administrator.
-- **`AdminReportController`** (`Controllers/Api/V1/TrustAndSafety/Admin/`) — `index()` returns
+- **`AdminReportRoutes`** (`app/api/v1/`) — `index()` returns
   `AdminReportResource` rows ordered by `created_at` ascending, then `id` (`L2-033` criterion 1).
   `show()` returns one `AdminReportDetailResource`.
-- **`ReportActionController`** (`Controllers/Api/V1/TrustAndSafety/Admin/`) — `store()` handles
+- **`ReportActionRoutes`** (`app/api/v1/`) — `store()` handles
   `POST /admin/reports/{report}/actions`. It validates with `ActOnReportRequest` and calls
   `ActOnReport`.
-- **`ActOnReportRequest`** (`Requests/TrustAndSafety/`) — requires `action` as a `ModerationActionType`
+- **`ActOnReportRequest`** (`src/http/requests/trust-and-safety/`) — requires `action` as a `ModerationActionType`
   and a `note` of `<TO SUPPLY>` maximum length.
-- **`ActOnReport`** (`Actions/TrustAndSafety/`) — applies the action in one database transaction:
-  1. It locks the report row with `lockForUpdate()` and rejects a report that is not `Open` with 409
+- **`ActOnReport`** (`src/actions/trust-and-safety/`) — applies the action in one database transaction:
+  1. It locks the report row with `SELECT … FOR UPDATE` and rejects a report that is not `Open` with 409
      and code `report_closed`.
   2. It applies the effect through `ModerationService`.
   3. It writes a `ModerationAction` row with the administrator, the action, the note and the time
@@ -86,26 +86,26 @@ database. Moderation e-mail leaves through the Banaro Worker.
   5. It writes an audit entry through `AuditLogger` in the same transaction (`L2-033` criterion 5).
   6. After commit, it queues the e-mail for the affected member unless the action is a dismissal
      (`L2-033` criterion 2).
-- **`ModerationService`** (`Services/TrustAndSafety/`) — one method per effect:
+- **`ModerationService`** (`src/services/trust-and-safety/`) — one method per effect:
   - `warn(User)` changes no data.
   - `suspend(User)` sets `users.suspended_at`. After commit, `ActOnReport` calls
-    `SessionRegistry::revokeAll()`, so the affected member's open sessions end.
+    `SessionRegistry.revokeAll()`, so the affected member's open sessions end.
   - `remove(ReportSubject)` soft-deletes a project, feedback item or message with `removed_at`. The
     effect for a builder subject is `<TO SUPPLY>`.
-- **`AuditLogger`** (`Services/TrustAndSafety/`) — `record(administrator, action, target, note)`
+- **`AuditLogger`** (`src/services/trust-and-safety/`) — `record(administrator, action, target, note)`
   inserts one `AuditEntry`. Every write under `/api/v1/admin/*` calls it.
-- **`AuditEntry`** (`Models/`) — holds `administrator_id`, `action`, `target_type`, `target_id`,
+- **`AuditEntry`** (`src/db/schema/`) — holds `administrator_id`, `action`, `target_type`, `target_id`,
   `note`, `context` (JSON) and `created_at`. The model has no `updated_at`. Its `updating` and
   `deleting` model events throw, and no route updates or deletes it (`L2-033` criterion 5).
-- **`ModerationAction`** (`Models/`) — holds `report_id`, `administrator_id`, `type`
+- **`ModerationAction`** (`src/db/schema/`) — holds `report_id`, `administrator_id`, `type`
   (`ModerationActionType`), `note` and `created_at`.
-- **`ModerationActionType`** (`Enums/`) — `Warn`, `Suspend`, `Remove` and `Dismiss`.
-- **`Role`** (`Enums/`) — `Member` and `Administrator`, stored on `users.role`.
+- **`ModerationActionType`** (`src/enums/`) — `Warn`, `Suspend`, `Remove` and `Dismiss`.
+- **`Role`** (`src/enums/`) — `Member` and `Administrator`, stored on `users.role`.
 - **`MemberWarnedNotification`**, **`AccountSuspendedNotification`** and
-  **`ContentRemovedNotification`** (`Notifications/`) — queued `mail` notifications. They are account
+  **`ContentRemovedNotification`** (`src/notifications/`) — queued `mail` notifications. They are account
   e-mail, so the e-mail preferences of `L2-037` do not turn them off. None names the reporter
   (`L2-031` criterion 4).
-- **`AdminReportResource`** and **`AdminReportDetailResource`** (`Resources/TrustAndSafety/Admin/`) —
+- **`AdminReportResource`** and **`AdminReportDetailResource`** (`src/http/resources/trust-and-safety/admin/`) —
   the only resources that include the reporter's identity.
 
 ### Suspension at sign-in
@@ -113,9 +113,9 @@ database. Moderation e-mail leaves through the Banaro Worker.
 The `sign-in-and-sign-out` feature owns sign-in. This feature adds one rule to it: after the password
 check succeeds, a user with `suspended_at` set receives 403 with code `account_suspended`, and no
 session is created. The `sign-in` page then explains that the account is suspended and links to the
-contact route (`L2-033` criterion 3). The `EnsureAccountActive` middleware on `routes/api.php` returns
+contact route (`L2-033` criterion 3). The `EnsureAccountActive` middleware on the authenticated stack (`src/http/pipeline.ts`) returns
 the same 403 for a session that predates the suspension. The sequence diagram names the sign-in parts
-`SignInPage`, `HttpIdentityApi`, `SessionController` and `SignIn`; the `sign-in-and-sign-out` design
+`SignInPage`, `HttpIdentityApi`, `SessionRoutes` and `SignIn`; the `sign-in-and-sign-out` design
 fixes their final names.
 
 ### Open points

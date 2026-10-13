@@ -20,9 +20,9 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpMessagingApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "ConversationController" as convCtrl
-  participant "MessageController" as msgCtrl
-  participant "ConversationReadController" as readCtrl
+  participant "ConversationRoutes" as convCtrl
+  participant "MessageRoutes" as msgCtrl
+  participant "ConversationReadRoutes" as readCtrl
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "ConversationPolicy" as policy

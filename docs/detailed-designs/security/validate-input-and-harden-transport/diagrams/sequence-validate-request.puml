@@ -21,10 +21,10 @@ box "Frontend — banaro application" #E0F2FE
   participant "csrfRecoveryInterceptor" as interceptor
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "SecurityHeaders" as headers
-  participant "VerifyRequestOrigin" as origin
-  participant "ValidateCsrfToken" as csrf
-  participant "FeedbackController" as controller
+  participant "securityHeaders" as headers
+  participant "verifyRequestOrigin" as origin
+  participant "session and csrf" as csrf
+  participant "FeedbackRoutes" as controller
   participant "GiveFeedbackRequest" as request
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
@@ -54,15 +54,15 @@ else allowed origin
     headers --> interceptor : 419 with security headers
     interceptor -> interceptor : GET /sanctum/csrf-cookie, repeat once
   else token valid
-    csrf -> controller : store(GiveFeedbackRequest, project)
-    controller -> request : Validate type, length 10..1,000, format (L2-045 criterion 1)
+    csrf -> controller : POST(ctx with project)
+    controller -> request : validate(): type, length 10..1,000, format (L2-045 criterion 1)
     alt invalid
       request --> headers : 422 validation_failed with field errors
       headers --> client : 422 with security headers
       client --> dialog : ValidationErrors
       dialog --> actor : invalid state; focus on first invalid field
     else valid
-      request --> controller : toData()
+      request --> controller : Parsed GiveFeedbackData
       controller -> action : handle(member, data)
       action -> db : INSERT feedback with bound parameters, body as plain text (L2-045 criterion 5)
       db --> action : Saved

@@ -69,12 +69,12 @@ package "Backend — Banaro API" {
   class AssignRequestId <<middleware>> {
     +handle(request: Request, next: Closure): Response
   }
-  class ExceptionRendering <<bootstrap/app.php withExceptions>> {
-    +render(e: Throwable, request: Request): JsonResponse
+  class ExceptionRendering <<src/http/pipeline.ts withExceptions>> {
+    +render(e: Throwable, request: Request): Response
   }
   class GenericServerErrorBody {
-    +string message
-    +string requestId
+    +message: string
+    +requestId: string
   }
 }
 

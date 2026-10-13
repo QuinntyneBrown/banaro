@@ -8,7 +8,7 @@ Person(visitor, "Visitor", "Not signed in")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "projects page, project cards, URL-held filters")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Anonymous project search, block-list scoping")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Anonymous project search, block-list scoping")
   ContainerDb(db, "Banaro database", "Relational database", "Projects, looking-for roles, builders, blocks")
   ContainerQueue(redis, "Redis", "Redis", "Sessions")
 }

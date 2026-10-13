@@ -20,7 +20,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpMatchingApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "MatchingOverviewController" as controller
+  participant "MatchingOverviewRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "BuildMatchingOverview" as action

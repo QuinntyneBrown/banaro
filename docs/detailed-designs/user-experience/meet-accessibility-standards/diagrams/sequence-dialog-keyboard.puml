@@ -26,7 +26,7 @@ box "Frontend — components library" #E0F2FE
   participant "Announcer" as announcer
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "RsvpController" as api
+  participant "RsvpRoutes" as api
 end box
 
 actor -> page : Tab to "Cancel RSVP" (2 px focus ring visible) and press Enter

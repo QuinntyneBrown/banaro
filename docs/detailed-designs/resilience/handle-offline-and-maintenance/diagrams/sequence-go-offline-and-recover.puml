@@ -24,7 +24,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "OfflinePage" as page
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "LivenessController" as live
+  participant "LivenessRoutes" as live
 end box
 
 window -> conn : offline event

@@ -37,20 +37,20 @@ The representative flow is a member opening the event page for Fall Demo Night.
   `events.json`, `errors.json` and `email.json`. The file name is the first key segment, so
   `events.json` holds `events.*` keys. Texts use `{name}` placeholders and an ICU `plural` subset,
   such as `{count, plural, one {# going} other {# going}}`.
-- **`CatalogueService`** (`app/Services/UserExperience/`) — `catalogue(string $locale): Catalogue`
+- **`CatalogueService`** (`src/services/user-experience/`) — `catalogue(locale: string): Catalogue`
   merges the locale's files into one flat key map. It caches the result in Redis under the locale and
   a content hash, and computes an `ETag` from the hash.
-- **`CatalogueController`** (`Controllers/Api/V1/UserExperience/`) — `show()` handles
+- **`CatalogueRoutes`** (`app/api/v1/`) — `show()` handles
   `GET /api/v1/i18n/{locale}` and validates it with `ShowCatalogueRequest`. The route is in
-  `routes/api_public.php`, because visitors need text too.
+  `src/http/public-routes.ts`, because visitors need text too.
   The `{locale}` parameter matches `config('banaro.locales')`, which holds only `en-CA`; any other
   value answers 404. The response carries `ETag` and `Cache-Control: public, max-age=<TO SUPPLY>`.
   A matching `If-None-Match` answers 304 (`L2-052` criterion 1).
-- **`CatalogueTranslationLoader`** (`app/Services/UserExperience/`) — implements Laravel's translation
-  `Loader` contract over the same files. `AppServiceProvider` registers it, and `config/app.php` sets
+- **`CatalogueTranslationLoader`** (`src/services/user-experience/`) — implements the catalogue
+  `Loader` contract over the same files. `AppServiceProvider` registers it, and `src/config/env.ts` sets
   `locale` and `fallback_locale` to `en-CA`. Validation messages, notification e-mail and Blade views
   therefore read the same catalogue as the browser.
-- **`DateTimeFormatter`** (`app/Services/UserExperience/`) — PHP twin of the frontend date formatter
+- **`DateTimeFormatter`** (`src/services/user-experience/`) — PHP twin of the frontend date formatter
   for e-mail, built on Carbon with `America/Toronto`. Both share one fixture table of inputs and
   expected outputs.
 - **Storage and transport** — the API stores times in UTC and sends them as ISO 8601 with `Z`. The API
@@ -58,17 +58,17 @@ The representative flow is a member opening the event page for Fall Demo Night.
 
 ### Backend — `i18n:check`
 
-- **`CheckI18nKeys`** (`app/Console/Commands/`, signature `i18n:check`) — collects every key used in
+- **`CheckI18nKeys`** (`src/console/commands/`, signature `i18n:check`) — collects every key used in
   code and compares the set with each catalogue in `resources/i18n/` (`L2-052` criterion 5):
   - frontend: `| t:'key'` and `t('key')` with a literal key in `frontend/projects/**/src/**/*.{ts,html}`
   - frontend key maps: `satisfies I18nKeyMap` objects that map enum values to literal keys, such as
     role labels, so computed keys are still found
   - backend: `__('key')`, `trans('key')`, `trans_choice('key')` and `@lang('key')` in `app/` and
     `resources/views/`
-  - validation: the message keys of the rules used in form requests
+  - validation: the message keys of the rules used in request schemas
 - It prints each missing key with the file and line that uses it and exits 1 when any key is missing.
   Unused catalogue keys are reported as warnings.
-- **`.ci/` i18n stage** — runs `php artisan i18n:check --frontend=../frontend` on every pipeline. A
+- **`.ci/` i18n stage** — runs `banaro i18n:check --frontend=../frontend` on every pipeline. A
   non-zero exit fails the build.
 
 ### Frontend — `api` library (`lib/i18n/`)
@@ -161,7 +161,7 @@ caches the merged catalogue in Redis.
 ### Components
 
 The `api` library's `TranslationService`, pipe and formatters serve every template. On the backend,
-`CatalogueService` feeds both the catalogue endpoint and Laravel's translator.
+`CatalogueService` feeds both the catalogue endpoint and the catalogue loader.
 
 ![C4 component view for localizing and formatting](diagrams/c4-component.png)
 

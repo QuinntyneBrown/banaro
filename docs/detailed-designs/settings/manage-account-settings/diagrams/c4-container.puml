@@ -8,10 +8,10 @@ System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Settings page, password dialogs, e-mail confirmation page")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Account updates, e-mail change, password change, session revocation")
-  Container(worker, "Banaro Worker", "Laravel Horizon", "Sends queued account e-mail")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Account updates, e-mail change, password change, session revocation")
+  Container(worker, "Banaro Worker", "BullMQ worker", "Sends queued account e-mail")
   ContainerDb(db, "Banaro database", "Relational database", "Users and pending e-mail changes")
-  ContainerQueue(redis, "Redis", "Redis", "Sessions, per-user session sets, Horizon queues")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions, per-user session sets, BullMQ queues")
 }
 
 Rel(member, web, "Uses", "HTTPS")

@@ -45,9 +45,9 @@ package "Backend — Banaro API" {
   }
   class "RateLimiter" as LaravelRateLimiter <<facade>> {
     +for(name: string, callback: Closure): void
-    +hit(key: string, decaySeconds: int): int
-    +tooManyAttempts(key: string, max: int): bool
-    +availableIn(key: string): int
+    +hit(key: string, decaySeconds: int): number
+    +tooManyAttempts(key: string, max: int): boolean
+    +availableIn(key: string): number
     +clear(key: string): void
   }
   class Limit {
@@ -66,16 +66,16 @@ package "Backend — Banaro API" {
     +forEmail(email: string): string
   }
   class AttemptLimiter {
-    +tooManyFailures(keys: array, max: array): bool
+    +tooManyFailures(keys: array, max: array): boolean
     +recordFailure(keys: array, decaySeconds: int): void
-    +availableIn(keys: array): int
+    +availableIn(keys: array): number
     +clear(key: string): void
   }
   class SignIn {
     +handle(credentials: SignInData, request: Request): User
   }
   class ThrottleRequestsException {
-    +getHeaders(): array
+    +getHeaders(): string[]
   }
 }
 

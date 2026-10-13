@@ -9,10 +9,10 @@ System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "offer-to-help dialog, owner's help-offer section")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Offer rules, answers, conversation start")
-  Container(worker, "Banaro Worker", "Laravel Horizon", "Sends queued notifications")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Offer rules, answers, conversation start")
+  Container(worker, "Banaro Worker", "BullMQ worker", "Sends queued notifications")
   ContainerDb(db, "Banaro database", "Relational database", "Projects, help offers, conversations, blocks")
-  ContainerQueue(redis, "Redis", "Redis", "Sessions and Horizon queues")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions and BullMQ queues")
 }
 
 Rel(member, web, "Uses", "HTTPS")

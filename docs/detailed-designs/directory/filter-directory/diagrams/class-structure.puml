@@ -60,32 +60,32 @@ package "Frontend — banaro application, components and api libraries" {
 
 package "Backend — Banaro API" {
   class SearchDirectoryRequest {
-    +rules(): array
+    +schema: ZodObject
   }
   class SearchDirectory {
-    +handle(viewer: ?User, query: DirectoryQueryData): DirectoryResult
+    +handle(viewer: User | null, query: DirectoryQueryData): DirectoryResult
   }
   class DirectoryFilters {
-    +array roles
-    +array openTo
-    +array areas
-    +array skillSlugs
-    +?int distanceKm
-    +static fromRequest(request: SearchDirectoryRequest, viewer: ?User): DirectoryFilters
+    +roles: string[]
+    +openTo: string[]
+    +areas: string[]
+    +skillSlugs: string[]
+    +distanceKm: number | null
+    +static fromRequest(request: SearchDirectoryRequest, viewer: User | null): DirectoryFilters
   }
   class DirectoryFilterApplier {
-    +apply(query: EloquentQuery, filters: DirectoryFilters, viewer: ?User): EloquentQuery
+    +apply(query: DrizzleQuery, filters: DirectoryFilters, viewer: User | null): DrizzleQuery
   }
   class FacetCounter {
-    +countsFor(filters: DirectoryFilters, viewer: ?User): array
+    +countsFor(filters: DirectoryFilters, viewer: User | null): string[]
   }
   class DistanceService {
-    +withinKm(query: EloquentQuery, fromNeighbourhood: int, km: int): EloquentQuery
+    +withinKm(query: DrizzleQuery, fromNeighbourhood: int, km: int): DrizzleQuery
   }
   class Neighbourhood {
-    +int id
-    +string name
-    +string area
+    +id: number
+    +name: string
+    +area: string
   }
   class DirectoryPageResource
 }

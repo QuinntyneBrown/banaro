@@ -55,37 +55,37 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class NotificationController {
-    +index(request: ListNotificationsRequest): AnonymousResourceCollection
+  class NotificationRoutes {
+    +GET(request: ListNotificationsRequest): Page
     +unreadCount(request: Request): UnreadCountResource
     +markRead(request: MarkNotificationReadRequest, notification: DatabaseNotification): Response
     +markAllRead(request: MarkAllNotificationsReadRequest): Response
   }
   class ListNotifications {
-    +handle(member: User, page: int, perPage: int): LengthAwarePaginator
+    +handle(member: User, page: int, perPage: int): Page
   }
   class CountUnreadNotifications {
-    +handle(member: User): int
+    +handle(member: User): number
   }
   class MarkNotificationRead {
     +handle(notification: DatabaseNotification): void
   }
   class MarkAllNotificationsRead {
-    +handle(member: User): int
+    +handle(member: User): number
   }
   class BlockService <<trust-and-safety>> {
-    +isBlockedEitherWay(a: User, b: User): bool
+    +isBlockedEitherWay(a: User, b: User): boolean
   }
   class User {
     +notifications(): MorphMany
   }
   class DatabaseNotification {
-    +string id
-    +string type
-    +int notifiable_id
-    +array data
-    +?Carbon read_at
-    +Carbon created_at
+    +id: string
+    +type: string
+    +notifiable_id: number
+    +data: Record<string, unknown>
+    +read_at: Timestamp | null
+    +created_at: Timestamp
   }
   enum NotificationKind {
     MatchesReady
@@ -97,8 +97,8 @@ package "Backend — Banaro API" {
     HelpOffered
     HelpOfferAnswered
   }
-  class InAppPayload <<trait>> {
-    +toDatabase(notifiable: User): array
+  class InAppPayload <<mixin>> {
+    +toDatabase(notifiable: User): string[]
   }
   class NotificationResource
   class UnreadCountResource
@@ -111,14 +111,14 @@ HeaderBell ..> UnreadCountStore : reads
 UnreadCountStore ..> NotificationsApi : uses
 HttpNotificationsApi ..|> NotificationsApi
 NotificationsApi ..> AppNotification : returns
-HttpNotificationsApi ..> NotificationController : HTTPS
+HttpNotificationsApi ..> NotificationRoutes : HTTPS
 
-NotificationController ..> ListNotifications : calls
-NotificationController ..> CountUnreadNotifications : calls
-NotificationController ..> MarkNotificationRead : calls
-NotificationController ..> MarkAllNotificationsRead : calls
-NotificationController ..> NotificationResource : returns
-NotificationController ..> UnreadCountResource : returns
+NotificationRoutes ..> ListNotifications : calls
+NotificationRoutes ..> CountUnreadNotifications : calls
+NotificationRoutes ..> MarkNotificationRead : calls
+NotificationRoutes ..> MarkAllNotificationsRead : calls
+NotificationRoutes ..> NotificationResource : returns
+NotificationRoutes ..> UnreadCountResource : returns
 ListNotifications ..> BlockService : filters
 ListNotifications --> User : notifications()
 User "1" *-- "*" DatabaseNotification : notifications

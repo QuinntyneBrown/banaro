@@ -52,12 +52,12 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class OwnProfileController {
-    +show(): OwnProfileResource
-    +update(request: UpdateOwnProfileRequest): OwnProfileResource
+  class OwnProfileRoutes {
+    +GET(): OwnProfileResource
+    +PUT(request: UpdateOwnProfileRequest): OwnProfileResource
   }
   class UpdateOwnProfileRequest {
-    +rules(): array
+    +schema: ZodObject
   }
   class GetOwnProfile {
     +handle(builder: Builder): Builder
@@ -66,45 +66,45 @@ package "Backend — Banaro API" {
     +handle(builder: Builder, data: array): Builder
   }
   class SkillCatalogue {
-    +resolve(entries: array): Collection<Skill>
+    +resolve(entries: array): unknown[]<Skill>
   }
   class Builder {
-    +int id
-    +string name
-    +?string headline
-    +int neighbourhood_id
-    +?string bio
-    +array open_to
-    +?int building_project_id
+    +id: number
+    +name: string
+    +headline: string | null
+    +neighbourhood_id: number
+    +bio: string | null
+    +open_to: string[]
+    +building_project_id: number | null
   }
   class ExperienceEntry {
-    +int id
-    +int builder_id
-    +string title
-    +?string organisation
-    +Carbon started_on
-    +?Carbon ended_on
-    +int position
+    +id: number
+    +builder_id: number
+    +title: string
+    +organisation: string | null
+    +started_on: Timestamp
+    +ended_on: Timestamp | null
+    +position: number
   }
   class ProfileLink {
-    +int id
-    +int builder_id
-    +string label
-    +string url
-    +int position
+    +id: number
+    +builder_id: number
+    +label: string
+    +url: string
+    +position: number
   }
   class Skill {
-    +int id
-    +string name
+    +id: number
+    +name: string
   }
   class Project {
-    +int id
-    +int owner_id
-    +string name
+    +id: number
+    +owner_id: number
+    +name: string
   }
   class OwnProfileResource
   class ProfileUpdated {
-    +int builderId
+    +builderId: number
   }
 }
 
@@ -112,12 +112,12 @@ ProfileEditPage ..> ProfilesApi : uses
 ProfileEditPage ..> ToastService : confirms save
 HttpProfilesApi ..|> ProfilesApi
 ProfilesApi ..> OwnProfile : returns
-HttpProfilesApi ..> OwnProfileController : HTTPS
+HttpProfilesApi ..> OwnProfileRoutes : HTTPS
 
-OwnProfileController ..> UpdateOwnProfileRequest : validates with
-OwnProfileController ..> GetOwnProfile : calls
-OwnProfileController ..> UpdateOwnProfile : calls
-OwnProfileController ..> OwnProfileResource : returns
+OwnProfileRoutes ..> UpdateOwnProfileRequest : validates with
+OwnProfileRoutes ..> GetOwnProfile : calls
+OwnProfileRoutes ..> UpdateOwnProfile : calls
+OwnProfileRoutes ..> OwnProfileResource : returns
 UpdateOwnProfile ..> SkillCatalogue : resolves skills
 UpdateOwnProfile ..> ProfileUpdated : dispatches
 UpdateOwnProfile --> Builder : writes

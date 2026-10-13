@@ -7,12 +7,12 @@ Container(web, "Banaro Web", "Angular", "ProjectsPage, ProjectCard, HttpProjects
 ContainerDb(db, "Banaro database", "Relational database", "projects, project_looking_for, builders, blocks")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "ProjectController", "Laravel controller", "index(): GET /projects, api_public.php")
-  Component(req, "BrowseProjectsRequest", "Form request", "q, stage, looking_for, page, per_page cap")
+  Component(ctrl, "ProjectRoutes", "Route handler", "index(): GET /projects, src/http/public-routes.ts")
+  Component(req, "BrowseProjectsRequest", "Request schema", "q, stage, looking_for, page, per_page cap")
   Component(action, "BrowseProjects", "Action", "Builds ProjectQuery for the optional viewer")
   Component(search, "ProjectSearchService", "Domain service", "Text, stage and role filters; activity order; 12 per page")
   Component(block, "BlockService", "Domain service (TrustAndSafety)", "Block relationships of the viewer")
-  Component(models, "Project / ProjectLookingFor", "Eloquent models", "Project fields and roles")
+  Component(models, "Project / ProjectLookingFor", "Drizzle tables", "Project fields and roles")
   Component(resource, "ProjectSummaryResource", "API resource", "ProjectSummary card shape")
 }
 
