@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: .ci/backend-env.sh
       - run: .ci/backend.sh
 
   frontend:
@@ -38,7 +37,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: .ci/backend-env.sh
       - run: .ci/e2e.sh
       - if: failure()
         uses: actions/upload-artifact@v4

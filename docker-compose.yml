@@ -1,5 +1,5 @@
 # Local backend for Banaro (ADR-0002). Migrations never run on start: run them explicitly with
-#   docker compose run --rm api php artisan migrate --seed
+#   docker compose run --rm api npm run banaro -- migrate --seed
 x-banaro-api: &banaro-api
   build: ./backend
   image: banaro-api:dev
@@ -15,22 +15,22 @@ x-banaro-api: &banaro-api
 services:
   api:
     <<: *banaro-api
-    command: php artisan serve --host=0.0.0.0 --port=8000
+    command: npm run dev -- --hostname 0.0.0.0 --port 8000
     ports:
       - '8100:8000'
     healthcheck:
-      test: ['CMD', 'php', '-r', "exit(@file_get_contents('http://localhost:8000/health/live') ? 0 : 1);"]
+      test: ['CMD', 'node', '-e', "fetch('http://localhost:8000/health/live').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"]
       interval: 3s
       timeout: 10s
       retries: 40
 
   worker:
     <<: *banaro-api
-    command: php artisan horizon
+    command: npm run worker
 
   scheduler:
     <<: *banaro-api
-    command: php artisan schedule:work
+    command: npm run scheduler
 
   postgres:
     image: postgres:16
