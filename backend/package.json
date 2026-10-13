@@ -14,7 +14,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "banaro": "tsx src/cli.ts"
+    "banaro": "tsx src/cli.ts",
+    "check": "prettier --check . && tsc --noEmit && eslint . && vitest run"
   },
   "dependencies": {
     "drizzle-orm": "0.45.4",

@@ -19,7 +19,7 @@ describe('translation catalogue', () => {
     expect(response.status).toBe(200);
     expect(response.headers.get('ETag')).toBeTruthy();
     expect(response.headers.get('Cache-Control')).toContain('public');
-    const catalogue: Record<string, string> = await response.json();
+    const catalogue = (await response.json()) as Record<string, string>;
     expect(catalogue['common.brand']).toBe('Banaro');
     for (const key of Object.keys(catalogue)) {
       expect(key).toMatch(/^[a-z][A-Za-z0-9]*(\.[A-Za-z0-9]+)+$/);
