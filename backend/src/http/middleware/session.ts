@@ -4,6 +4,9 @@ import { users } from '../../db/schema/users';
 import type { Middleware } from '../pipeline';
 import { readCookie, Session, SESSION_COOKIE } from '../session';
 
+const ABSOLUTE_LIFETIME_SECONDS =
+  Number(process.env.BANARO_SESSION_ABSOLUTE_LIFETIME_DAYS ?? 90) * 24 * 3600;
+
 const STATEFUL = (process.env.STATEFUL_DOMAINS ?? 'localhost:4300,localhost:4301,localhost:8100')
   .split(',')
   .map((domain) => domain.trim());
@@ -15,6 +18,11 @@ function sessionMiddleware(always: boolean): Middleware {
     const redis = ctx.deps.redis;
     ctx.session =
       (await Session.load(redis, readCookie(ctx.req, SESSION_COOKIE))) ?? Session.start();
+    // However active, a session ends 90 days after sign-in (L2-005 criterion 5).
+    const signedInAt = ctx.session.data.authenticatedAt;
+    if (signedInAt && Date.now() / 1000 - signedInAt > ABSOLUTE_LIFETIME_SECONDS) {
+      ctx.session.invalidate();
+    }
     const userId = ctx.session.data.userId;
     if (userId) {
       const [user] = await orm(ctx.deps.db).select().from(users).where(eq(users.id, userId));

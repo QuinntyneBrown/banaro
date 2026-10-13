@@ -8,6 +8,8 @@ const LIFETIME_SECONDS = Number(process.env.SESSION_LIFETIME ?? 43200) * 60;
 
 export interface SessionData {
   csrf: string;
+  /** Unix seconds of the last request; 30 idle days end the session (L2-005). */
+  lastActivity?: number;
   userId?: number;
   /** Unix seconds of the sign-in, for the 90-day absolute lifetime (L2-005 criterion 5). */
   authenticatedAt?: number;
@@ -35,7 +37,10 @@ export class Session {
   static async load(redis: Redis, cookie: string | undefined): Promise<Session | null> {
     const id = cookie ? verify(cookie) : null;
     const stored = id ? await redis.get(key(id)) : null;
-    return stored ? new Session(id!, JSON.parse(stored), true) : null;
+    if (!stored) return null;
+    const data = JSON.parse(stored) as SessionData;
+    if (now() - (data.lastActivity ?? 0) > LIFETIME_SECONDS) return null;
+    return new Session(id!, data, true);
   }
 
   /** A new id for the same data, so a session id seen before sign-in is useless after it. */
@@ -50,6 +55,7 @@ export class Session {
   }
 
   async save(redis: Redis): Promise<void> {
+    this.data.lastActivity = now();
     await redis.set(key(this.id), JSON.stringify(this.data), 'EX', LIFETIME_SECONDS);
     if (this.loadedId && this.loadedId !== this.id) await redis.del(key(this.loadedId));
   }
@@ -73,6 +79,7 @@ export class Session {
 }
 
 const key = (id: string) => `banaro:session:${id}`;
+const now = () => Math.floor(Date.now() / 1000);
 const randomId = () => randomBytes(30).toString('base64url');
 
 function secret(): string {
