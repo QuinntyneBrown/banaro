@@ -5,11 +5,13 @@
   "scripts": {
     "test": "playwright test",
     "test:banaro": "playwright test --project=banaro",
+    "test:a11y": "playwright test --project=a11y",
     "test:admin": "playwright test --project=admin",
     "perf-test": "node perf-test/perf-test.mjs",
     "perf-test:base": "node perf-test/build-base.mjs"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.64.0",
     "@types/node": "^22.20.5",
     "typescript": "~6.0.2"

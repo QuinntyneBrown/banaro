@@ -24,6 +24,12 @@ export default defineConfig({
       testIgnore: ['specs/admin/**'],
       use: { ...devices['Desktop Chrome'] },
     },
+    {
+      // Every route and state in routes.manifest.ts against WCAG 2.2 AA (L2-050).
+      name: 'a11y',
+      testMatch: ['a11y/**/*.spec.ts'],
+      use: { ...devices['Desktop Chrome'] },
+    },
   ],
   webServer: [
     {
