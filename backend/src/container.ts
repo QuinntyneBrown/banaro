@@ -16,12 +16,20 @@ export interface Deps {
 // Kept on globalThis so `next dev` reloads reuse one pool and one set of Redis connections.
 const store = globalThis as unknown as { banaroDeps?: Deps; banaroOverrides?: Partial<Deps> };
 
+// `timestamp without time zone` columns hold Toronto wall-clock time, as the e2e fixtures write it
+// (ADR-0008). Read them as strings so nothing shifts them to the host's zone.
+pg.types.setTypeParser(pg.types.builtins.TIMESTAMP, (value) => value);
+
 const redisOptions = { lazyConnect: true, maxRetriesPerRequest: 1, connectTimeout: 2000 };
 
 /** Shared clients. Nothing connects until first used. */
 export function deps(): Deps {
   store.banaroDeps ??= {
-    db: new pg.Pool({ connectionString: env.databaseUrl, connectionTimeoutMillis: 2000 }),
+    db: new pg.Pool({
+      connectionString: env.databaseUrl,
+      connectionTimeoutMillis: 2000,
+      options: '-c timezone=America/Toronto',
+    }),
     redis: new Redis(env.redisUrl, { ...redisOptions, db: env.redisDb }),
     cache: new Redis(env.redisUrl, { ...redisOptions, db: env.redisCacheDb }),
     logger: createLogger(),

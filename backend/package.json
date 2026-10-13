@@ -13,15 +13,18 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "banaro": "tsx src/cli.ts"
   },
   "dependencies": {
+    "drizzle-orm": "0.45.4",
     "ioredis": "5.11.1",
     "next": "16.3.8",
     "pg": "8.23.1",
     "pino": "10.4.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "tsx": "4.23.15"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

@@ -1,6 +1,7 @@
 # Local backend for Banaro (ADR-0002, ADR-0007). Install dependencies once, and run migrations
 # explicitly; they never run on start:
 #   docker compose run --rm api npm ci
+#   docker compose run --rm api npm run banaro -- migrate --seed
 x-banaro-api: &banaro-api
   build:
     context: ./backend
