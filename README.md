@@ -27,21 +27,20 @@ deliberately small and local, built for the Toronto community of Christian build
 
 ## Project status
 
-Banaro is in the **design phase**. The repository, agent guidance and an empty
-Angular workspace are set up. The requirements, detailed designs, mocks and design
-system come next, in that order. Implementation then starts from those artifacts, one
-thin vertical slice at a time.
+Banaro is **in development**. The requirements, detailed designs, mocks and design
+system are written, and features land one thin vertical slice at a time. The backend
+is being moved from Laravel to Next.js on Node (ADR-0007).
 
 | Artifact | Location | Status |
 |---|---|---|
-| High-level requirements (L1) | `docs/specs/L1.md` | Not started |
-| Detailed requirements with acceptance criteria (L2) | `docs/specs/L2.md` | Not started |
-| Detailed designs (C4, class and sequence diagrams) | `docs/detailed-designs/` | Not started |
-| HTML mocks for every page, dialog and state | `docs/mocks/` | Not started |
-| Design system (tokens, components, patterns) | `docs/design-system/` | Not started |
-| Laravel API, worker and scheduler | `backend/` (planned) | Not started |
-| Angular web app | [`frontend/`](frontend/README.md) | Scaffolded: empty workspace with lint, format and pre-commit hook |
-| Playwright end-to-end suite | `e2e/` (planned) | Not started |
+| High-level requirements (L1) | `docs/specs/L1.md` | Written |
+| Detailed requirements with acceptance criteria (L2) | `docs/specs/L2.md` | Written |
+| Detailed designs (C4, class and sequence diagrams) | `docs/detailed-designs/` | Written |
+| HTML mocks for every page, dialog and state | `docs/mocks/` | Written |
+| Design system (tokens, components, patterns) | `docs/design-system/` | Written |
+| Next.js API, worker and scheduler | `backend/` | In progress: port from Laravel |
+| Angular web app | [`frontend/`](frontend/README.md) | In progress |
+| Playwright end-to-end suite | `e2e/` | In progress |
 
 APIs, folder names and behaviour can change without notice until the first release.
 
@@ -81,8 +80,8 @@ The requirements will set the scope. This is the intent they start from.
 | Container | Technology | Responsibility |
 |---|---|---|
 | Banaro Web | Angular with server-side rendering | The builder, event host and admin user interface |
-| Banaro API | PHP 8.3, Laravel 11 | REST API; owns persistence, matching, events and authentication |
-| Banaro Worker | Laravel queue worker and scheduler | Email, event reminders, match suggestions and other background jobs |
+| Banaro API | Next.js 16 on Node 22, TypeScript, Drizzle ORM | REST API; owns persistence, matching, events and authentication |
+| Banaro Worker | BullMQ worker and scheduler on Node 22 | Email, event reminders, match suggestions and other background jobs |
 | Database | PostgreSQL 16 | System of record |
 | Cache | Redis | Sessions, cached profiles and search results, rate limits |
 | Object storage | Object storage behind a CDN | Builder avatars and project images |
@@ -101,7 +100,9 @@ its slice of this system.
 │   ├── mocks/              # Static HTML design reference, light and dark
 │   ├── design-system/      # Tokens, foundations, components and patterns
 │   └── adr/                # Architecture decision records
+├── backend/                # Next.js API, worker and scheduler (Banaro API and Worker)
 ├── frontend/               # Angular workspace (Banaro Web)
+├── e2e/                    # Playwright end-to-end, accessibility and visual tests
 ├── .claude/skills/         # Agent skills used to build this repository
 ├── .agents/skills/         # The same skills for other coding agents
 ├── AGENTS.md               # Conventions for humans and coding agents
@@ -115,10 +116,19 @@ its slice of this system.
 
 - [Git](https://git-scm.com/)
 - [Node.js](https://nodejs.org/) `^22.22.3`, `^24.15.0` or `>=26`, as required by Angular 22
+- [Docker](https://www.docker.com/) with Docker Compose, for the backend, PostgreSQL,
+  Redis and Mailpit
 - A modern browser
 
-The backend toolchain (PHP and Composer) and Playwright will be documented here when
-the first slice of code lands.
+### Run the API
+
+```sh
+docker compose up -d --wait api worker
+docker compose run --rm api npm run banaro -- migrate --seed   # migrations never run on start
+docker compose run --rm api npm test                           # backend integration tests
+```
+
+The API listens on http://localhost:8100 and Mailpit on http://localhost:8025.
 
 ### Run the web app
 
