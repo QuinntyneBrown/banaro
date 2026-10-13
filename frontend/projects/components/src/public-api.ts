@@ -10,6 +10,7 @@ export * from './lib/banner/banner';
 export * from './lib/brand/brand';
 export * from './lib/breadcrumb/breadcrumb';
 export * from './lib/button/button';
+export * from './lib/card/aside-card';
 export * from './lib/card/card';
 export * from './lib/checkbox/checkbox';
 export * from './lib/chip/chip';

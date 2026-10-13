@@ -1,6 +1,7 @@
 import { Type } from '@angular/core';
 import ActiveFilters from './ActiveFilters';
 import Alert from './Alert';
+import AsideCard from './AsideCard';
 import AuthCard from './AuthCard';
 import Avatar from './Avatar';
 import Badge from './Badge';
@@ -46,6 +47,7 @@ import TopBar from './TopBar';
 export const scenarios: Record<string, Type<unknown>> = {
   ActiveFilters,
   Alert,
+  AsideCard,
   AuthCard,
   Avatar,
   Badge,

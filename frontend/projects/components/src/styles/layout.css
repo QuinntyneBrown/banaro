@@ -43,6 +43,34 @@
   gap: var(--space-3);
   align-items: center;
 }
+/* Vertical groups, the detail-page two-column layout and the cluster that aligns to the top
+   (docs/specs/components/container-grid-stack.md). */
+.stack {
+  display: grid;
+  gap: var(--space-5);
+}
+.stack--sm {
+  gap: var(--space-2);
+}
+.stack--lg {
+  gap: var(--space-8);
+}
+.stack--end {
+  justify-items: end;
+}
+.cluster--top {
+  align-items: flex-start;
+}
+.two-col {
+  display: grid;
+  gap: var(--space-12);
+}
+@media (min-width: 64rem) {
+  .two-col {
+    grid-template-columns: minmax(0, 1fr) var(--size-two-col-grid-template-columns-34);
+    align-items: start;
+  }
+}
 .form {
   display: grid;
   gap: var(--space-6);
