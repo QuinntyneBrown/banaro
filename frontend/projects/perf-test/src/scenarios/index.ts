@@ -30,7 +30,11 @@ import Menu from './Menu';
 import PageHeader from './PageHeader';
 import Pagination from './Pagination';
 import ProfileHeader from './ProfileHeader';
+import ProjectCard from './ProjectCard';
+import ProjectCardList from './ProjectCardList';
 import SearchBox from './SearchBox';
+import SearchFilterToolbar from './SearchFilterToolbar';
+import Select from './Select';
 import SidebarNavigation from './SidebarNavigation';
 import Skeleton from './Skeleton';
 import SkillChips from './SkillChips';
@@ -76,7 +80,11 @@ export const scenarios: Record<string, Type<unknown>> = {
   PageHeader,
   Pagination,
   ProfileHeader,
+  ProjectCard,
+  ProjectCardList,
   SearchBox,
+  SearchFilterToolbar,
+  Select,
   SidebarNavigation,
   Skeleton,
   SkillChips,

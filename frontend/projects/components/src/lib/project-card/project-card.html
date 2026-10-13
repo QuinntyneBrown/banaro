@@ -1,0 +1,49 @@
+<ng-template #title>
+  @if (href(); as link) {
+    <a [routerLink]="link">{{ name() }}</a>
+  } @else {
+    {{ name() }}
+  }
+</ng-template>
+@if (summary() && eyebrow(); as eyebrow) {
+  <p class="eyebrow">{{ eyebrow }}</p>
+}
+<div class="project__head">
+  <span [class]="'project__mark project__mark--' + tone()" aria-hidden="true">{{ letter() }}</span>
+  <div>
+    @switch (headingLevel()) {
+      @case (2) {
+        <h2 class="project__name" [attr.id]="headingId()">
+          <ng-container [ngTemplateOutlet]="title" />
+        </h2>
+      }
+      @default {
+        <h3 class="project__name" [attr.id]="headingId()">
+          <ng-container [ngTemplateOutlet]="title" />
+        </h3>
+      }
+    }
+    <p class="project__owner">
+      @if (ownerParts(); as parts) {
+        {{ parts.before }}<a [routerLink]="ownerHref()">{{ parts.owner }}</a
+        >{{ parts.after }}
+      } @else {
+        {{ byline() }}
+      }
+    </p>
+  </div>
+</div>
+@if (line()) {
+  <p class="project__line">{{ line() }}</p>
+}
+@if (facts().length) {
+  <dl [class]="summary() ? 'facts' : 'project__facts'">
+    @for (fact of facts(); track fact.term) {
+      <div>
+        <dt>{{ fact.term }}</dt>
+        <dd>{{ fact.value }}</dd>
+      </div>
+    }
+  </dl>
+}
+<ng-content select="[slot=actions]" />

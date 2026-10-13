@@ -1,0 +1,65 @@
+<ng-template #count>
+  <p
+    [class]="variant() === 'stacked' ? 'proj-toolbar__count' : 'toolbar__count'"
+    aria-live="polite"
+  >
+    <ng-content select="[slot=count]" />
+  </p>
+</ng-template>
+<ng-template #tools><ng-content /></ng-template>
+<ng-template #lead><ng-content select="[slot=lead]" /></ng-template>
+<ng-template #search><ng-content select="[slot=search]" /></ng-template>
+<ng-template #chipsRow>
+  @if (activeFilters().length && clearAllLabel(); as clearLabel) {
+    <bn-active-filters
+      [label]="activeFiltersLabel()"
+      [chips]="chips()"
+      [clearLabel]="clearLabel"
+      (removed)="filterRemoved.emit($event)"
+      (cleared)="filtersCleared.emit()"
+    />
+  }
+</ng-template>
+
+@if (variant() === 'stacked') {
+  <form class="proj-toolbar" role="search" (submit)="submit($event)">
+    <ng-container [ngTemplateOutlet]="search" />
+    <div class="proj-toolbar__filters">
+      <ng-container [ngTemplateOutlet]="tools" />
+      <ng-container [ngTemplateOutlet]="chipsRow" />
+    </div>
+  </form>
+  @if (showCount()) {
+    <ng-container [ngTemplateOutlet]="count" />
+  }
+} @else {
+  <div class="toolbar">
+    <ng-container [ngTemplateOutlet]="lead" />
+    @if (showCount()) {
+      <ng-container [ngTemplateOutlet]="count" />
+    }
+    <div class="toolbar__tools">
+      @if (filtersLabel(); as label) {
+        <button
+          bn-button
+          variant="quiet"
+          size="sm"
+          type="button"
+          class="filters-btn"
+          aria-haspopup="dialog"
+          [attr.aria-expanded]="filtersOpen()"
+          (click)="filtersOpened.emit()"
+        >
+          <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h9M17 7h3M4 17h3M11 17h9" />
+            <circle cx="15" cy="7" r="2" />
+            <circle cx="9" cy="17" r="2" />
+          </svg>
+          {{ label }}
+        </button>
+      }
+      <ng-container [ngTemplateOutlet]="tools" />
+    </div>
+  </div>
+  <ng-container [ngTemplateOutlet]="chipsRow" />
+}

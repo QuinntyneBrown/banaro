@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import {
+  booleanAttribute,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import { Button } from '../button/button';
 
 /**
@@ -7,9 +16,9 @@ import { Button } from '../button/button';
  */
 @Component({
   selector: 'bn-search-box',
-  imports: [Button],
+  imports: [Button, NgTemplateOutlet],
   template: `
-    <form class="search" role="search" (submit)="submit($event, box.value)">
+    <ng-template #field>
       <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="11" cy="11" r="6.5" />
         <path d="m16 16 4.5 4.5" />
@@ -27,7 +36,14 @@ import { Button } from '../button/button';
         (input)="typed.emit(box.value)"
       />
       <button bn-button variant="primary" type="submit">{{ buttonLabel() }}</button>
-    </form>
+    </ng-template>
+    @if (embedded()) {
+      <div class="search"><ng-container [ngTemplateOutlet]="field" /></div>
+    } @else {
+      <form class="search" role="search" (submit)="submit($event)">
+        <ng-container [ngTemplateOutlet]="field" />
+      </form>
+    }
   `,
   styleUrl: './search-box.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,11 +55,16 @@ export class SearchBox {
   readonly inputId = input('q');
   /** The starting text, such as the search term from the URL. */
   readonly value = input('');
+  /** Renders `div.search` instead of `form.search`, to sit inside a toolbar's own form. */
+  readonly embedded = input(false, { transform: booleanAttribute });
   readonly searched = output<string>();
   readonly typed = output<string>();
 
-  protected submit(event: Event, query: string): void {
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+
+  protected submit(event: Event): void {
     event.preventDefault();
-    this.searched.emit(query.trim());
+    const box = this.host.nativeElement.querySelector<HTMLInputElement>('input.search__input');
+    this.searched.emit((box?.value ?? '').trim());
   }
 }

@@ -46,6 +46,20 @@
 :host(.input--lg) {
   min-height: var(--control-height-lg);
 }
+/* The chevron control inside bn-select (design system: select__control). bn-select sets the
+   --bn-select-* knobs for a select inside a field; the inline default is the pill. */
+:host(.select__control) {
+  appearance: none;
+  width: var(--bn-select-width, auto);
+  min-height: var(--bn-select-height, var(--control-height-md));
+  padding: 0 var(--space-10) 0 var(--space-4);
+  border-radius: var(--bn-select-radius, var(--radius-full));
+  font: var(--text-label);
+  cursor: pointer;
+}
+:host(.select__control:disabled) {
+  cursor: not-allowed;
+}
 @media (forced-colors: active) {
   :host {
     border: var(--border-width-hairline) solid CanvasText;

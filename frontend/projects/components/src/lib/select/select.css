@@ -1,0 +1,33 @@
+/* Extracted from docs/design-system/assets/components.css: select, select__wrap, select__chev. */
+:host {
+  display: inline-block;
+}
+:host(.select--field) {
+  display: block;
+  --bn-select-width: 100%;
+  --bn-select-height: var(--control-height-lg);
+  --bn-select-radius: var(--radius-md);
+}
+.select {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: var(--space-3);
+  font: var(--text-body-sm);
+  color: var(--color-fg-muted);
+}
+.select__wrap {
+  position: relative;
+  display: inline-flex;
+}
+:host(.select--field) .select__wrap {
+  display: flex;
+}
+.select__chev {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  translate: 0 -50%;
+  pointer-events: none;
+  color: var(--color-fg-subtle);
+}
