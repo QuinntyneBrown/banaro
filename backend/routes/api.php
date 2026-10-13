@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Profiles\OnboardingController;
 use App\Http\Controllers\Api\V1\Profiles\OwnProfileController;
 use App\Http\Controllers\Api\V1\Profiles\ProfilePhotoController;
 use App\Http\Controllers\Api\V1\Projects\ProjectController;
+use App\Http\Controllers\Api\V1\Settings\EmailPreferenceController;
 use App\Http\Controllers\Api\V1\Settings\PrivacyController;
 use App\Http\Controllers\Api\V1\TrustAndSafety\BlockController;
 use App\Http\Middleware\RequireCompleteProfile;
@@ -36,6 +37,10 @@ Route::middleware('auth:sanctum')->group(function () {
         // L2-036: the member's own privacy settings.
         Route::get('settings/privacy', [PrivacyController::class, 'show'])->name('settings.privacy.show');
         Route::put('settings/privacy', [PrivacyController::class, 'update'])->name('settings.privacy.update');
+
+        // L2-037: the member's own e-mail categories.
+        Route::get('settings/email-preferences', [EmailPreferenceController::class, 'show'])->name('settings.email-preferences.show');
+        Route::put('settings/email-preferences/{category}', [EmailPreferenceController::class, 'update'])->name('settings.email-preferences.update');
 
         // Everything below works on a finished profile (L2-006 criterion 1).
         Route::middleware(RequireCompleteProfile::class)->group(function () {

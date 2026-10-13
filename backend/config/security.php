@@ -10,6 +10,9 @@ return [
     // (L2-046 criterion 3). Falls back to a key derived from APP_KEY until one is set.
     'client_hash_key' => env('BANARO_CLIENT_HASH_KEY', hash('sha256', 'client|'.env('APP_KEY', ''))),
 
+    // Signs one-click unsubscribe links (L2-029 criterion 3); rotate it to void every link already sent.
+    'unsubscribe_key' => env('BANARO_UNSUBSCRIBE_KEY', hash('sha256', 'unsubscribe|'.env('APP_KEY', ''))),
+
     // Requests per minute for any client (L2-046 criterion 1).
     'api_requests_per_minute' => (int) env('BANARO_API_REQUESTS_PER_MINUTE', 120),
 

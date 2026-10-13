@@ -24,6 +24,9 @@
     "title": "We couldn't save your settings",
     "body": "Your choices are still here. Try again in a moment."
   },
+  "unsubscribe": {
+    "invalid": "That unsubscribe link isn't valid. Turn e-mail off in your settings instead."
+  },
   "privacy": {
     "meta": {
       "title": "Privacy settings · Banaro"

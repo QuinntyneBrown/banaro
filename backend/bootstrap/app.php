@@ -45,8 +45,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->throttleApi('api');
         // Opening a verification link and checking a reset link prove themselves with the link's
         // secret token and touch no session, and the pages make these calls during server-side
-        // rendering, which carries no CSRF token (decision D-021).
-        $middleware->validateCsrfTokens(except: ['api/v1/email/verify', 'api/v1/reset-password/check']);
+        // rendering, which carries no CSRF token (decision D-021). The unsubscribe link is the same: its
+        // signed token is the credential, and mail clients may post to it directly (L2-029 criterion 3).
+        $middleware->validateCsrfTokens(except: ['api/v1/email/verify', 'api/v1/reset-password/check', 'api/v1/email-preferences/unsubscribe']);
         // Runs inside the stateful session, before route authentication (L2-005 criterion 5).
         $middleware->appendToGroup('api', EnforceAbsoluteSessionLifetime::class);
         // After the lifetime check, so an ended session never counts as activity (L2-009).

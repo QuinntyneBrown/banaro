@@ -41,6 +41,8 @@ class AppServiceProvider extends ServiceProvider
         // Every API request: 120 per minute per member, or per hashed address when anonymous (L2-046).
         RateLimiter::for('api', fn (Request $request) => Limit::perMinute((int) config('security.api_requests_per_minute'))
             ->by(app(ClientFingerprint::class)->for($request)));
+        // Unsubscribe links: 10 per minute per hashed address, so the signature cannot be guessed at (D-056).
+        RateLimiter::for('unsubscribe', fn (Request $request) => Limit::perMinute(10)->by(app(ClientFingerprint::class)->ip($request)));
         // Contact form: 3 messages per hour per client, keyed by a hash of the IP (L2-040, L2-046).
         RateLimiter::for('contact', fn (Request $request) => Limit::perHour(3)->by(app(ClientFingerprint::class)->ip($request)));
         // Join: 5 attempts per IP in 10 minutes (L2-001 criterion 6).
