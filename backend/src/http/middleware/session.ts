@@ -19,6 +19,11 @@ function sessionMiddleware(always: boolean): Middleware {
     if (userId) {
       const [user] = await orm(ctx.deps.db).select().from(users).where(eq(users.id, userId));
       ctx.user = user ?? null;
+      // A changed password ends every session that began before the change (L2-004 criterion 10).
+      if (user && ctx.session.data.passwordHash !== user.password) {
+        ctx.session.invalidate();
+        ctx.user = null;
+      }
     }
 
     const response = await next();
