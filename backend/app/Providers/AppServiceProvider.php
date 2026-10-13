@@ -5,11 +5,13 @@ namespace App\Providers;
 use App\Contracts\MediaScanner;
 use App\Integrations\FakeMediaScanner;
 use App\Models\User;
+use App\Notifications\Channels\MailerChannel;
 use App\Services\Security\ClientFingerprint;
 use App\Services\UserExperience\CatalogueService;
 use App\Services\UserExperience\CatalogueTranslationLoader;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
@@ -38,6 +40,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Every notification's e-mail goes through one channel that records and de-duplicates it (L2-029).
+        Notification::extend('mail', fn ($app) => $app->make(MailerChannel::class));
+
         // Every API request: 120 per minute per member, or per hashed address when anonymous (L2-046).
         RateLimiter::for('api', fn (Request $request) => Limit::perMinute((int) config('security.api_requests_per_minute'))
             ->by(app(ClientFingerprint::class)->for($request)));

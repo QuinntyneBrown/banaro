@@ -14,14 +14,12 @@
 namespace Tests\Feature\Notifications;
 
 use App\Enums\EmailCategory;
-use App\Enums\NotificationKind;
 use App\Models\Block;
 use App\Models\User;
-use App\Notifications\MemberNotification;
 use App\Services\Notifications\NotifyMember;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Carbon;
+use Tests\Support\ProbeNotification;
 use Tests\TestCase;
 
 class InAppNotificationsTest extends TestCase
@@ -186,44 +184,5 @@ class InAppNotificationsTest extends TestCase
         $this->postJson('/api/v1/notifications/read-all')->assertUnauthorized();
 
         $this->actingAs(User::factory()->unverified()->create())->getJson('/api/v1/notifications')->assertForbidden();
-    }
-}
-
-/** A stand-in producer: the real ones arrive with projects, events, messaging and matching. */
-class ProbeNotification extends MemberNotification
-{
-    public function __construct(private readonly string $subjectId, private readonly ?EmailCategory $category, private readonly ?int $actorId = null)
-    {
-        parent::__construct();
-    }
-
-    public function kind(): NotificationKind
-    {
-        return NotificationKind::FeedbackReceived;
-    }
-
-    public function category(): ?EmailCategory
-    {
-        return $this->category;
-    }
-
-    public function subject(): array
-    {
-        return ['type' => 'project', 'id' => $this->subjectId];
-    }
-
-    public function params(): array
-    {
-        return ['title' => 'Psalter'];
-    }
-
-    public function actorUserId(): ?int
-    {
-        return $this->actorId;
-    }
-
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)->subject('New feedback on Psalter')->line('Someone left feedback.');
     }
 }
