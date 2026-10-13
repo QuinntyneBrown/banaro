@@ -28,7 +28,8 @@
     "pino": "10.4.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "tsx": "4.23.15"
+    "tsx": "4.23.15",
+    "zod": "4.6.5"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
