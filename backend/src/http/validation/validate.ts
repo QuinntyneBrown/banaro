@@ -1,5 +1,6 @@
 import type { z } from 'zod';
 import { HttpError } from '../pipeline';
+import { parseQuery } from './query';
 
 /** 422 with one list of messages per field, the shape the web app reads (L2-045 criterion 1). */
 export class ValidationError extends HttpError {
@@ -13,11 +14,11 @@ export class ValidationError extends HttpError {
 }
 
 /**
- * Validates a JSON body against a request schema. Strings are trimmed and empty strings become
- * null first, as the Laravel API did; the parsed result holds only the schema's fields.
+ * Validates a request's query and body against a request schema. Strings are trimmed and empty
+ * strings become null first, as the Laravel API did; the result holds only the schema's fields.
  */
 export async function validate<S extends z.ZodType>(schema: S, req: Request): Promise<z.output<S>> {
-  return validateInput(schema, await req.json().catch(() => ({})));
+  return validateInput(schema, { ...parseQuery(req), ...(await readBody(req)) });
 }
 
 /** Validates data already read, such as a query string or a multipart form. */
@@ -34,6 +35,19 @@ export async function validateInput<S extends z.ZodType>(
     (errors[field] ??= []).push(issue.message);
   }
   throw new ValidationError(errors);
+}
+
+/** A JSON or form body as an object; query and body merge, as Laravel's request input did. */
+async function readBody(req: Request): Promise<Record<string, unknown>> {
+  const type = req.headers.get('Content-Type') ?? '';
+  if (type.includes('application/x-www-form-urlencoded') || type.includes('multipart/form-data')) {
+    const form = await req.formData().catch(() => null);
+    return form ? Object.fromEntries(form) : {};
+  }
+  const body: unknown = await req.json().catch(() => ({}));
+  return body !== null && typeof body === 'object' && !Array.isArray(body)
+    ? (body as Record<string, unknown>)
+    : {};
 }
 
 function normalize(value: unknown): unknown {
