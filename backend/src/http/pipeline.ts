@@ -32,6 +32,8 @@ export class HttpError extends Error {
   }
 }
 
+export const notFound = () => new HttpError(404, { message: 'Not Found' });
+
 /** Innermost step: turns any error into a response, so outer middleware see the final status. */
 const errorBoundary: Middleware = async (ctx, next) => {
   try {
@@ -47,6 +49,9 @@ const errorBoundary: Middleware = async (ctx, next) => {
 
 /** Request logging stays outermost so it logs the final status after error handling (L2-053). */
 export const globalStack: Middleware[] = [logRequest, assignRequestId, securityHeaders];
+
+/** Routes under /api/v1. Session, CSRF and rate limiting join this stack as they are ported. */
+export const apiStack: Middleware[] = [...globalStack];
 
 /** Wraps a route handler in its middleware stack. */
 export function handle(stack: Middleware[], handler: (ctx: Ctx) => Promise<Response>) {

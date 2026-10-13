@@ -1,3 +1,4 @@
+import { checkI18nKeys } from './console/commands/i18n-check';
 import { migrate } from './console/commands/migrate';
 import { seed } from './console/commands/seed';
 import { deps } from './container';
@@ -9,6 +10,10 @@ const commands: Record<string, (args: string[]) => Promise<void>> = {
     if (args.includes('--seed')) await seed(deps().db);
   },
   seed: () => seed(deps().db),
+  'i18n:check': async (args) => {
+    const option = args.find((arg) => arg.startsWith('--frontend='));
+    process.exitCode = await checkI18nKeys({ frontend: option?.slice(11) ?? '../frontend' });
+  },
 };
 
 const [name, ...args] = process.argv.slice(2);
@@ -20,7 +25,7 @@ if (!command) {
 
 try {
   await command(args);
-  console.log(`${name}: done`);
+  if (!process.exitCode) console.log(`${name}: done`);
 } catch (error) {
   console.error(error);
   process.exitCode = 1;
