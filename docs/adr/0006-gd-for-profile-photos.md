@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-11
 **Category:** integration
-**Status:** Accepted
+**Status:** Superseded by ADR-0010 (2026-10-13)
 **Deciders:** Quinntyne Brown, Claude
 
 ## Context

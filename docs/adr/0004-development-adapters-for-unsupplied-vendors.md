@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-09
 **Category:** integration
-**Status:** Accepted
+**Status:** Accepted (amended 2026-10-13 for ADR-0007)
 **Deciders:** Quinntyne Brown, Claude
 
 ## Context
@@ -15,11 +15,13 @@ and scanning) need working implementations before the vendors are chosen.
 
 Banaro uses these adapters until the vendors are chosen:
 
-- **Mail:** Laravel's SMTP mailer, pointed at Mailpit in Docker Compose. Tests use `Mail::fake()`.
-- **Media storage:** a private local disk (`storage/app/private/media`). Files get random names and
-  never go inside `public/`.
-- **Media scanner:** `App\Integrations\FakeMediaScanner`, which implements `App\Contracts\MediaScanner`.
-  It accepts every file except those that contain the EICAR test string.
+- **Mail:** `SmtpMailer` (Nodemailer), pointed at Mailpit in Docker Compose. Tests bind
+  `InMemoryMailer`, which records each message for assertions.
+- **Media storage:** a private local directory (`MEDIA_PATH`, `storage/media` in the image). Files get
+  random names and are never served statically.
+- **Media scanner:** `FakeMediaScanner` (`backend/src/integrations/fake-media-scanner.ts`), which
+  implements the `MediaScanner` contract (`backend/src/contracts/media-scanner.ts`). It accepts every
+  file except those that contain the EICAR test string.
 
 ## Options Considered
 
@@ -45,8 +47,8 @@ Banaro uses these adapters until the vendors are chosen:
 
 ## Implementation Notes
 
-- Bind the contracts in `App\Providers\AppServiceProvider`, choosing each implementation from
-  configuration in `config/banaro.php`.
+- Bind the contracts in `backend/src/container.ts`, choosing each implementation from configuration
+  in `backend/src/config/banaro.ts`. Integration tests replace bindings with `setDeps()`.
 
 ## References
 
