@@ -63,5 +63,68 @@
       "view": "View {name}",
       "back": "Back to projects"
     }
+  },
+  "list": {
+    "meta": {
+      "title": "Projects · Banaro",
+      "description": "Products in progress from Christian builders in Toronto and the GTA. Read what is being made, leave feedback, or offer a hand."
+    },
+    "title": "Projects made nearby",
+    "sub": "{count, plural, one {# project} other {# projects}} from builders in Toronto and the GTA. Read what is being made, leave feedback, or offer a hand.",
+    "search": {
+      "label": "Search projects",
+      "button": "Search",
+      "placeholder": "Project, builder or what it does"
+    },
+    "resultsTitle": "Results",
+    "loading": "Loading projects…",
+    "loadFailed": "Projects could not be loaded",
+    "count": {
+      "showing": "Showing",
+      "of": "of",
+      "noun": "{count, plural, one {project} other {projects}}",
+      "recent": ", most recent first",
+      "match": "{count, plural, one {project matches} other {projects match}}"
+    },
+    "filters": {
+      "stage": "Stage",
+      "allStages": "All stages",
+      "lookingFor": "Looking for",
+      "anyone": "Anyone",
+      "active": "Active filters",
+      "clear": "Clear filters",
+      "remove": "Remove filter: {label}",
+      "stageChip": "Stage: {stage}",
+      "lookingForChip": "Looking for: {role}",
+      "lookingForTerm": "looking for {role}"
+    },
+    "card": {
+      "by": "by {owner}",
+      "stage": "Stage",
+      "lookingFor": "Looking for",
+      "feedback": "Feedback",
+      "comments": "{count, plural, one {# comment} other {# comments}}",
+      "noRole": "Feedback welcome"
+    },
+    "pager": {
+      "more": "Show more projects",
+      "busy": "Loading more projects…",
+      "status": "Showing {shown} of {total, plural, one {# project} other {# projects}}"
+    },
+    "noResults": {
+      "title": "No projects match those filters",
+      "body": "Try a wider stage, a different kind of help, or fewer words. Most projects are still early, so “Launched” is a narrow filter.",
+      "share": "Share a project"
+    },
+    "error": {
+      "title": "We couldn't load the projects",
+      "body": "Banaro had trouble reaching the server. Nothing you shared has been lost. Try again, or browse builders while it recovers.",
+      "tryAgain": "Try again",
+      "browse": "Browse builders"
+    },
+    "cta": {
+      "text": "Building something? Share it early; a first comment is often the most useful one.",
+      "share": "Share a project"
+    }
   }
 }

@@ -2,8 +2,10 @@ import { type Page } from '@playwright/test';
 import { type BuilderMember, createBuilder } from './fixtures/builders';
 import { createMember, type Member } from './fixtures/members';
 import { resetLink } from './fixtures/password-reset';
+import { createProject } from './fixtures/projects';
 import { BuilderProfilePage } from './pages/builder-profile.page';
 import { DirectoryPage } from './pages/directory.page';
+import { ProjectsPage } from './pages/projects.page';
 
 /**
  * Every route in every state the product shows, once, for the checks that walk the whole product:
@@ -122,6 +124,34 @@ export const routes: RouteEntry[] = [
   page('profile-edit', 'default', '/profile/edit', asMember),
   page('settings', 'privacy', '/settings/privacy', asMember),
   page('project-new', 'default', '/projects/new', asMember),
+  page('projects', 'default', '/projects', {
+    seed: () => {
+      createProject(createBuilder({ name: 'Daniel Reyes' }), {
+        name: 'Psalter',
+        summary: 'Scripture memory with spaced repetition',
+        stage: 'beta',
+        lookingFor: ['contributor'],
+        feedbackCount: 41,
+      });
+    },
+  }),
+  page('projects', 'loading', '/projects', {
+    reach: async (p) => {
+      const projects = new ProjectsPage(p);
+      await projects.holdResults();
+      await projects.search.fill('anything');
+      await projects.skeletons.first().waitFor();
+    },
+  }),
+  page('projects', 'error', '/projects', {
+    reach: async (p) => {
+      const projects = new ProjectsPage(p);
+      await projects.failResults();
+      await projects.stage.selectOption({ label: 'Idea' });
+      await projects.errorTitle.waitFor();
+    },
+  }),
+  page('projects', 'no-results', '/projects?q=chaplaincy&stage=launched&looking_for=advisor'),
 
   // Dialogs and menus, over the page they open from.
   {
