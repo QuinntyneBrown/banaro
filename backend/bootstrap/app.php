@@ -8,14 +8,17 @@ use App\Http\Middleware\LogRequest;
 use App\Http\Middleware\RecordActivity;
 use App\Http\Middleware\RespondDuringMaintenance;
 use App\Http\Middleware\SecurityHeaders;
+use App\Services\Security\ClientFingerprint;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -39,6 +42,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prepend([LogRequest::class, AssignRequestId::class, SecurityHeaders::class]);
         $middleware->replace(PreventRequestsDuringMaintenance::class, RespondDuringMaintenance::class);
         $middleware->statefulApi();
+        $middleware->throttleApi('api');
         // Opening a verification link and checking a reset link prove themselves with the link's
         // secret token and touch no session, and the pages make these calls during server-side
         // rendering, which carries no CSRF token (decision D-021).
@@ -50,6 +54,16 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->context(fn () => ['request_id' => Context::get('request_id')]);
+
+        // A breached limit is logged with the route and a hashed client, never the address (L2-046).
+        $exceptions->render(function (ThrottleRequestsException $e, Request $request) {
+            Log::warning('rate_limit.exceeded', [
+                'route' => $request->route()?->uri(),
+                'client' => app(ClientFingerprint::class)->for($request),
+            ]);
+
+            return null;
+        });
 
         // No session: the app opens the session-expired dialog on this code (L2-005 criterion 1).
         $exceptions->render(fn (AuthenticationException $e, Request $request) => $request->expectsJson()

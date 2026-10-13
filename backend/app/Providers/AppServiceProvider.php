@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Contracts\MediaScanner;
 use App\Integrations\FakeMediaScanner;
 use App\Models\User;
+use App\Services\Security\ClientFingerprint;
 use App\Services\UserExperience\CatalogueService;
 use App\Services\UserExperience\CatalogueTranslationLoader;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -37,14 +38,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Every API request: 120 per minute per member, or per hashed address when anonymous (L2-046).
+        RateLimiter::for('api', fn (Request $request) => Limit::perMinute((int) config('security.api_requests_per_minute'))
+            ->by(app(ClientFingerprint::class)->for($request)));
         // Contact form: 3 messages per hour per client, keyed by a hash of the IP (L2-040, L2-046).
-        RateLimiter::for('contact', fn (Request $request) => Limit::perHour(3)->by(hash('sha256', (string) $request->ip())));
+        RateLimiter::for('contact', fn (Request $request) => Limit::perHour(3)->by(app(ClientFingerprint::class)->ip($request)));
         // Join: 5 attempts per IP in 10 minutes (L2-001 criterion 6).
-        RateLimiter::for('join', fn (Request $request) => Limit::perMinutes(10, 5)->by(hash('sha256', (string) $request->ip())));
+        RateLimiter::for('join', fn (Request $request) => Limit::perMinutes(10, 5)->by(app(ClientFingerprint::class)->ip($request)));
         // Reset links: 5 per hour per address and 5 per hour per IP; unknown addresses count too (L2-004 criterion 5).
         RateLimiter::for('password-reset', fn (Request $request) => [
-            Limit::perHour(5)->by('email:'.hash('sha256', User::canonicalEmail((string) $request->input('email')))),
-            Limit::perHour(5)->by('ip:'.hash('sha256', (string) $request->ip())),
+            Limit::perHour(5)->by('email:'.app(ClientFingerprint::class)->hash(User::canonicalEmail((string) $request->input('email')))),
+            Limit::perHour(5)->by('ip:'.app(ClientFingerprint::class)->ip($request)),
         ]);
         // Profile photos: 10 uploads per hour per member (L2-008, L2-046; D-038).
         RateLimiter::for('photo-upload', fn (Request $request) => Limit::perHour(10)->by('user:'.$request->user()?->id));

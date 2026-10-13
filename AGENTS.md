@@ -269,3 +269,18 @@ These are measurements, not tests: they assert no behavior, so they do not count
 toward ATDD, and the "never write architecture tests" rule does not apply to them.
 They do not replace the page-level checks in `e2e/perf/` or the Lighthouse and
 bundle budgets in the pipeline.
+
+## Working continuously - mandatory
+
+Agents work until the whole task is done. Do not stop to report progress between slices.
+
+- After a slice is committed, start the next slice in the same turn. A summary is not a stopping point.
+- Report only when every slice of the approved plan is finished, or when blocked on a decision or
+  input that only the user can provide (a destructive action, a scope change, missing credentials).
+- A passing test run, a green commit or a finished phase is a cue to open the next step, not to
+  hand control back. After a phase, push, open the pull request and begin the next phase.
+- Before ending any turn, check the last paragraph: if it promises work ("next I will...") or lists
+  next steps, do that work now with tool calls instead of ending the turn.
+- Keep status updates to one short line between tool calls; do not pause for acknowledgement.
+- Work that is blocked is not a reason to stop: finish every part that does not depend on the
+  blocker, then state the blocker once.
