@@ -1,3 +1,6 @@
+/** Requests a member or anonymous client may make to the API in a minute (L2-046). */
+export const apiRequestsPerMinute = 120;
+
 /** Transport and browser hardening headers on every response (L2-045 criterion 3). */
 export const securityHeaders: Record<string, string> = {
   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',

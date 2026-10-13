@@ -13,6 +13,7 @@ import {
 } from './middleware/member-guards';
 import { securityHeaders } from './middleware/security-headers';
 import { session } from './middleware/session';
+import { throttle } from './middleware/throttle';
 
 /** What every middleware and handler sees for one request. */
 export interface Ctx {
@@ -61,7 +62,14 @@ function render(error: unknown, ctx: Ctx): Response {
 export const globalStack: Middleware[] = [logRequest, assignRequestId, securityHeaders];
 
 /** Routes under /api/v1: first-party sessions with CSRF checks (ADR-0011). */
-export const apiStack: Middleware[] = [...globalStack, maintenance, session, csrf, recordActivity];
+export const apiStack: Middleware[] = [
+  ...globalStack,
+  maintenance,
+  session,
+  csrf,
+  throttle('api'),
+  recordActivity,
+];
 
 /** Routes that need a signed-in account. */
 export const memberStack: Middleware[] = [...apiStack, auth];

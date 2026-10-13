@@ -1,3 +1,4 @@
+import { apiRequestsPerMinute } from '../../config/security';
 import { canonicalEmail } from '../../db/schema/users';
 import { clientHash, clientIp } from '../../services/security/client-fingerprint';
 import { HttpError, type Ctx, type Middleware } from '../pipeline';
@@ -11,6 +12,9 @@ interface Limit {
 
 const byIp = (ctx: Ctx) => clientHash(`ip:${clientIp(ctx.req)}`);
 
+/** The signed-in member, or the hashed address of an anonymous client. */
+const byClient = (ctx: Ctx) => (ctx.user ? clientHash(`user:${ctx.user.id}`) : byIp(ctx));
+
 /** The `email` field of a JSON body, read without using up the body. */
 async function emailOf(req: Request): Promise<string> {
   const body = (await req
@@ -22,6 +26,8 @@ async function emailOf(req: Request): Promise<string> {
 
 /** Named limits; each counts against a hashed client. */
 const limiters: Record<string, (ctx: Ctx) => Limit[] | Promise<Limit[]>> = {
+  // Every API route: 120 requests a minute per member or anonymous client (L2-046).
+  api: (ctx) => [{ key: byClient(ctx), max: apiRequestsPerMinute, windowSeconds: 60 }],
   // Visitors write to the team at most 3 times an hour (L2-040 criterion 3).
   contact: (ctx) => [{ key: byIp(ctx), max: 3, windowSeconds: 3600 }],
   // Join: 5 attempts per address in 10 minutes (L2-001 criterion 6).
@@ -55,7 +61,7 @@ export function throttle(name: keyof typeof limiters): Middleware {
     for (const limit of limits) {
       if (await rateLimiter.tooManyAttempts(redis, limit.key, limit.max)) {
         const retryAfter = await rateLimiter.availableIn(redis, limit.key);
-        ctx.deps.logger.warn({ route: ctx.route, client: byIp(ctx) }, 'rate_limit.exceeded');
+        ctx.deps.logger.warn({ route: ctx.route, client: byClient(ctx) }, 'rate_limit.exceeded');
         throw new HttpError(
           429,
           { message: 'Too Many Attempts.' },
