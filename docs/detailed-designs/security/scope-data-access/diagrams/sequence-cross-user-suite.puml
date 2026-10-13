@@ -18,21 +18,21 @@ actor "Developer" as actor
 box "Pipeline — .ci" #FFF4E5
   participant "Backend test stage" as stage
 end box
-box "Backend — tests/Feature/Security" #ECFDF3
+box "Backend — tests/feature/security" #ECFDF3
   participant "CrossUserAccessTest" as test
   participant "RouteOwnershipRegistry" as registry
   participant "RouteOwnershipFixture" as fixture
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "HTTP kernel and routes/api.php" as kernel
+  participant "tests/support/router.ts and route handlers" as kernel
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5
   database "Test database" as db
 end box
 
 actor -> stage : Push a change that adds a route
-stage -> test : php artisan test --testsuite=Feature
-test -> kernel : Route::getRoutes() from routes/api.php
+stage -> test : npm test (Vitest)
+test -> kernel : Route table from app/**/route.ts, stacks that include auth
 kernel --> test : Authenticated routes
 loop each authenticated route
   test -> registry : fixtureFor(routeName)
@@ -44,7 +44,7 @@ loop each authenticated route
     test -> fixture : arrange(member B)
     fixture -> db : Create B's record
     fixture --> test : Route parameters
-    test -> kernel : Call route as member A
+    test -> kernel : Call the handler in-process as member A
     kernel -> db : Query through A's scopes
     db --> kernel : No row of B
     kernel --> test : Response

@@ -3,7 +3,7 @@
 LAYOUT_WITH_LEGEND()
 title Components — Meet page-performance budgets
 
-Container(api, "Banaro API", "Laravel", "Page data, image variants")
+Container(api, "Banaro API", "Next.js 16, Node 22", "Page data, image variants")
 System_Ext(ci, "CI pipeline", "Stages and runner")
 
 Container_Boundary(web, "Banaro Web — banaro application") {

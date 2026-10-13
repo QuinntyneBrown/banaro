@@ -20,7 +20,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpProfilesApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "ProfilePhotoController" as controller
+  participant "ProfilePhotoRoutes" as controller
 end box
 box "Backend — Banaro Worker" #ECFDF3
   participant "ScanProfilePhoto" as job
@@ -55,7 +55,7 @@ end
 loop until ready, rejected or timed out
   dialog -> client : getPhoto(id)
   client -> controller : GET /api/v1/me/photo/{id}
-  controller -> controller : ProfilePhotoPolicy::view, owner only (L2-044 criterion 1)
+  controller -> controller : ProfilePhotoPolicy.view, owner only (L2-044 criterion 1)
   controller -> db : Read status
   controller --> client : 200 ProfilePhotoResource
   client --> dialog : ProfilePhoto

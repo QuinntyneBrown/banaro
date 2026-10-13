@@ -12,5 +12,5 @@ System_Ext(ci, "CI pipeline", "Runs the .ci stages; platform <TO SUPPLY>")
 Rel(member, banaro, "Reads and changes only own records using", "HTTPS")
 Rel(visitor, banaro, "Reads anonymous routes only", "HTTPS")
 Rel(admin, banaro, "Uses role-restricted /admin routes", "HTTPS")
-Rel(ci, banaro, "Runs the cross-user access suite against", "PHPUnit")
+Rel(ci, banaro, "Runs the cross-user access suite against", "Vitest")
 @enduml

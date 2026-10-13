@@ -73,54 +73,54 @@ package "Frontend — banaro application, components and api libraries" {
 }
 
 package "Backend — Banaro API" {
-  class ConversationController {
-    +index(request: ListConversationsRequest): AnonymousResourceCollection
+  class ConversationRoutes {
+    +GET(request: ListConversationsRequest): Page
   }
-  class MessageController {
-    +index(request: ListMessagesRequest, conversation: Conversation): AnonymousResourceCollection
-    +store(request: SendMessageRequest, conversation: Conversation): MessageResource
+  class MessageRoutes {
+    +GET(request: ListMessagesRequest, conversation: Conversation): Page
+    +POST(request: SendMessageRequest, conversation: Conversation): MessageResource
   }
-  class ConversationReadController {
-    +update(request: MarkConversationReadRequest, conversation: Conversation): Response
+  class ConversationReadRoutes {
+    +PUT(request: MarkConversationReadRequest, conversation: Conversation): Response
   }
   class ConversationPolicy {
     +view(user: User, conversation: Conversation): Response
     +reply(user: User, conversation: Conversation): Response
   }
   class BlockService <<TrustAndSafety>> {
-    +isBlockedEitherWay(a: User, b: User): bool
+    +isBlockedEitherWay(a: User, b: User): boolean
   }
   class ListConversations {
-    +handle(member: User, perPage: int): LengthAwarePaginator
+    +handle(member: User, perPage: number): Page
   }
   class ListMessages {
-    +handle(member: User, conversation: Conversation, cursor: MessageCursor): Collection
+    +handle(member: User, conversation: Conversation, cursor: MessageCursor): unknown[]
   }
   class SendMessage {
     +handle(sender: User, conversation: Conversation, body: string, clientMessageId: string): Message
   }
   class MarkConversationRead {
-    +handle(member: User, conversation: Conversation, lastMessageId: int): void
+    +handle(member: User, conversation: Conversation, lastMessageId: number): void
   }
   class Conversation {
-    +int id
-    +string pair_key
-    +?int last_message_id
-    +?Carbon last_message_at
+    +id: number
+    +pair_key: string
+    +last_message_id: number | null
+    +last_message_at: Timestamp | null
     +otherParticipant(user: User): User
   }
   class ConversationParticipant {
-    +int conversation_id
-    +int user_id
-    +?int last_read_message_id
+    +conversation_id: number
+    +user_id: number
+    +last_read_message_id: number | null
   }
   class Message {
-    +int id
-    +int conversation_id
-    +int sender_id
-    +string body
-    +string client_message_id
-    +Carbon created_at
+    +id: number
+    +conversation_id: number
+    +sender_id: number
+    +body: string
+    +client_message_id: string
+    +created_at: Timestamp
   }
   class NewMessageNotification
 }
@@ -135,14 +135,14 @@ HttpMessagingApi ..|> MessagingApi
 MessagingApi ..> Thread : returns
 Thread *-- ChatMessage
 Thread --> ConversationSummary
-HttpMessagingApi ..> MessageController : HTTPS
+HttpMessagingApi ..> MessageRoutes : HTTPS
 
-ConversationController ..> ListConversations : calls
-MessageController ..> ListMessages : calls
-MessageController ..> SendMessage : calls
-ConversationReadController ..> MarkConversationRead : calls
-MessageController ..> ConversationPolicy : authorizes
-ConversationReadController ..> ConversationPolicy : authorizes
+ConversationRoutes ..> ListConversations : calls
+MessageRoutes ..> ListMessages : calls
+MessageRoutes ..> SendMessage : calls
+ConversationReadRoutes ..> MarkConversationRead : calls
+MessageRoutes ..> ConversationPolicy : authorizes
+ConversationReadRoutes ..> ConversationPolicy : authorizes
 ConversationPolicy ..> BlockService : checks
 SendMessage ..> NewMessageNotification : queues
 SendMessage --> Message : creates

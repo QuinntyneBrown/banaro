@@ -9,7 +9,8 @@ Banaro is a full-stack platform that connects Christian product builders in Toro
 
 The stack:
 
-- **Backend:** PHP / Laravel — owns persistence, matching, events, and authentication
+- **Backend:** Next.js on Node 22, TypeScript — an API-only application that owns persistence (Drizzle on
+  PostgreSQL), matching, events, and authentication; BullMQ on Redis runs the Worker
 - **Frontend:** Angular — provides the app
 - **E2E:** Playwright — covers behavior and visual parity with the design reference
 
@@ -31,7 +32,7 @@ that order with the `engineering-requirements`, `writing-software-design-documen
 This is the layout the repository grows into once the whole solution is built. Folders appear slice by
 slice as features land; create new code where this tree says it belongs. The three runtime containers
 map to two applications: `backend/` builds the `banaro-api` image, which runs as both the Banaro API
-and the Banaro Worker (Horizon and the scheduler), and `frontend/` is an Angular workspace that builds
+and the Banaro Worker (the BullMQ worker and the scheduler), and `frontend/` is an Angular workspace that builds
 the `banaro-web` image. The workspace holds two applications (`banaro` and `admin`), two libraries they
 share (`components` and `api`), and the `perf-test` scenario application. Keeping `admin` a separate
 application keeps administrator code out of the public bundle; record the split in an ADR when the
@@ -56,44 +57,43 @@ banaro/
 │   ├── detailed-designs/          # {subsystem}/{feature}/README.md + diagrams/
 │   ├── mocks/                     # pages/, dialogs/, notifications/, assets/
 │   └── specs/                     # L1.md, L2.md
-├── backend/                       # Laravel 11 on PHP 8.3 — Banaro API and Banaro Worker
-│   ├── app/
-│   │   ├── Actions/{Subsystem}/   # one use case per class; business rules live here
-│   │   ├── Services/{Subsystem}/  # domain services (MatchingService, DistanceService, ...)
-│   │   ├── Jobs/{Subsystem}/      # queued work (event reminders, match suggestions, digests)
-│   │   ├── Events/  Listeners/
-│   │   ├── Models/                # Eloquent models (Builder, Project, Event, Match, ...)
-│   │   ├── Enums/                 # closed vocabularies (roles, skills, RSVP status, ...)
-│   │   ├── Contracts/             # ports for outside services (MediaScanner, Mailer, ...)
-│   │   ├── Integrations/          # adapters that implement Contracts/
-│   │   ├── Policies/              # ownership and role authorisation
-│   │   ├── Notifications/         # transactional email
-│   │   ├── Console/Commands/      # artisan commands (i18n:check, ...)
-│   │   └── Http/
-│   │       ├── Controllers/Api/V1/{Subsystem}/   # thin: validate, call an action, return a resource
-│   │       ├── Controllers/Health/               # /health/live, /health/ready
-│   │       ├── Middleware/
-│   │       ├── Requests/{Subsystem}/             # FormRequest validation
-│   │       └── Resources/{Subsystem}/            # JSON response shapes
-│   ├── bootstrap/                 # app.php: middleware order, exception handling, routing
-│   ├── config/                    # Laravel config plus banaro.php and security.php
-│   ├── database/
-│   │   ├── factories/
-│   │   ├── migrations/            # expand–contract only; never run on startup
-│   │   └── seeders/               # idempotent, safe to re-run
-│   ├── resources/
-│   │   ├── i18n/{locale}/         # translation catalogues served at /api/v1/i18n/{locale}
-│   │   └── views/emails/
-│   ├── routes/
-│   │   ├── api.php                # /api/v1, authenticated by default
-│   │   ├── api_public.php         # intentional anonymous routes
-│   │   └── console.php            # scheduled commands
+├── backend/                       # Next.js 16 on Node 22 (TypeScript) — Banaro API and Banaro Worker
+│   ├── app/                       # App Router: the HTTP surface only, one route.ts per path
+│   │   ├── api/v1/{path}/route.ts # thin: validate, call an action, return a resource
+│   │   ├── health/{live,ready}/   # /health/live, /health/ready
+│   │   └── sanctum/csrf-cookie/   # CSRF cookie endpoint kept for the Angular client (ADR-0011)
+│   ├── src/
+│   │   ├── actions/{subsystem}/   # one use case per class; business rules live here
+│   │   ├── services/{subsystem}/  # domain services (MatchScoreService, DistanceService, ...)
+│   │   ├── jobs/{subsystem}/      # BullMQ jobs (event reminders, match suggestions, digests)
+│   │   ├── notifications/         # in-app and e-mail notifications
+│   │   ├── policies/              # ownership and role authorisation
+│   │   ├── enums/                 # closed vocabularies (roles, skills, RSVP status, ...)
+│   │   ├── contracts/             # ports for outside services (MediaScanner, Mailer, Queue, ...)
+│   │   ├── integrations/          # adapters that implement contracts/
+│   │   ├── db/
+│   │   │   ├── schema/            # Drizzle tables (builders, projects, events, match_suggestions, ...)
+│   │   │   ├── migrations/        # expand–contract only; never run on startup
+│   │   │   └── seeders/           # idempotent, safe to re-run
+│   │   ├── http/
+│   │   │   ├── pipeline.ts        # handle(): middleware order, error handling, the route stacks
+│   │   │   ├── middleware/        # request id, logging, headers, maintenance, session, CSRF, throttle
+│   │   │   ├── public-routes.ts   # intentional anonymous routes; everything else is authenticated
+│   │   │   ├── requests/{subsystem}/    # zod request schemas
+│   │   │   └── resources/{subsystem}/   # JSON response shapes
+│   │   ├── console/commands/      # banaro CLI commands (migrate, seed, i18n:check, ...)
+│   │   ├── config/                # banaro.ts, security.ts, env.ts
+│   │   ├── mail/templates/        # e-mail templates
+│   │   ├── container.ts           # binds contracts to adapters
+│   │   └── cli.ts  worker.ts  scheduler.ts
+│   ├── resources/i18n/{locale}/   # translation catalogues served at /api/v1/i18n/{locale}
 │   ├── tests/
-│   │   ├── Feature/{Subsystem}/   # integration tests against the API
-│   │   ├── Feature/Security/      # cross-user access suite and route-ownership fixtures
+│   │   ├── support/               # in-process router, cookie jar, members and projects
+│   │   ├── feature/{subsystem}/   # integration tests against the API
+│   │   ├── feature/security/      # cross-user access suite and route-ownership fixtures
 │   │   └── load/                  # load scenarios for the response-time budgets
-│   ├── composer.json
-│   └── Dockerfile                 # banaro-api image (API and Worker)
+│   ├── package.json  next.config.ts  drizzle.config.ts  vitest.config.ts
+│   └── Dockerfile                 # banaro-api image (API, Worker, scheduler and CLI)
 ├── frontend/                      # Angular workspace — Banaro Web; angular.json declares every project
 │   ├── angular.json  package.json  tsconfig.json  eslint.config.js  .prettierrc
 │   ├── projects/
@@ -149,16 +149,58 @@ banaro/
 
 ## Backend conventions
 
-- Business rules live in domain services, actions, and jobs — not controllers.
+- Business rules live in domain services, actions, and jobs — not route handlers.
+- Route handlers are thin: parse the request with its zod schema, call one action, return a resource.
+- Route handlers read only the `Request` they are given and return a `Response`. Never use
+  `next/headers` or Next.js middleware; the `handle()` pipeline in `src/http/pipeline.ts` owns
+  cookies, sessions and middleware order, so tests can call handlers in-process.
+- Every `route.ts` exports `runtime = 'nodejs'`, `dynamic = 'force-dynamic'` and its `stack`.
 - The API does **not** run database migrations on startup. Run them explicitly.
 - Seed data is idempotent and safe to re-run.
-- Endpoints require authentication by default. Preserve intentional anonymous access and middleware ordering when changing API auth.
+- Endpoints require authentication by default; `src/http/public-routes.ts` lists the intentional
+  anonymous routes. Preserve intentional anonymous access and middleware ordering when changing API auth.
 - Keep request logging outside the exception-handling middleware so handled response statuses are logged correctly.
 - User-owned data must remain scoped to the current user; resources belonging to other users should never be exposed.
+- Keep the HTTP contract the Angular `api` library depends on: the `banaro_session` and `XSRF-TOKEN`
+  cookies, status 419, the 422 `errors` shape, `{code}` refusals and the paging envelope (ADR-0011).
+- Database and Redis clients are singletons; BullMQ workers are created only in `src/worker.ts`.
+
+### Backend CLI
+
+Every backend command runs in the `api` container (ADR-0002):
+
+```bash
+docker compose run --rm api npm run banaro -- migrate --seed      # migrations, then reference data
+docker compose run --rm api npm run banaro -- i18n:check --frontend=/frontend
+docker compose run --rm api npm run banaro -- queue:work --queue=default --stop-when-empty
+docker compose run --rm api npm run banaro -- maintenance:on --retry=600   # maintenance:off to end
+docker compose run --rm api npm test                              # Vitest integration suite
+```
 
 ### Tests
 
-Back end tests are integration tests against the API. Follow the existing test patterns when adding coverage.
+Back end tests are Vitest integration tests against the API in `backend/tests/feature/`. They call the
+route handlers in-process through `tests/support/router.ts` against a real PostgreSQL `banaro_test`
+database and Redis, with the mailer, queue, clock and media scanner replaced through `setDeps()`.
+Follow the existing test patterns when adding coverage.
+
+## Scope, Simplicity, and Zero-Waste Engineering (CRITICAL)
+
+This is the absolute highest-priority rule in this repository. AI agents tend to over-engineer, hallucinate future needs, and balloon codebase complexity. This kills project velocity and comprehensibility. You must resist this impulse. Deliver radically simple solutions that fulfill the exact prompt—nothing more.
+
+### 1. Absolute Scope Lock
+*   **Deliver Only the Explicit Request:** Implement exactly what is asked for in the immediate task. Do not invent features, add unrequested states, create predictive API endpoints, or spin up new UI screens/components unless explicitly ordered.
+*   **Zero Future-Proofing:** Do not write code for "imagined future use cases." Write code strictly for the present moment. If the user didn't ask for it today, it does not exist.
+*   **Ignore Unsent Requirements:** Documents, specs, or mocks may contain broader context or future phases. Do not implement them early. Only implement what is requested in the active prompt.
+
+### 2. Radical Simplicity & Proportionality
+*   **Proportional Diffs:** The size and footprint of your code change must match the size of the request. A small feature or fix must result in a small, clean, readable diff.
+*   **Path of Least Resistance:** Always choose the simplest, most direct code path that solves the problem. Do not introduce new abstractions, architectural layers, design patterns, wrappers, or external libraries unless it is physically impossible to solve the issue without them.
+*   **No Unsolicited Refactoring:** Do not "improve," rewrite, or clean up code adjacent to your task unless it is strictly broken and blocking your implementation. Leave surrounding code alone.
+
+### 3. Hard Stop & Query Clause
+*   **When in Doubt, Ask:** If a task seems to logically require expanding the scope, introduces a major jump in complexity, or conflicts with the existing architecture, **STOP IMMEDIATELY**. Do not guess. Present the trade-offs to the user and await explicit confirmation before writing a single line of code.
+
 
 ## Frontend conventions
 

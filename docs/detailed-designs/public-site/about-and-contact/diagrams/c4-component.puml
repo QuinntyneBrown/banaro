@@ -5,15 +5,15 @@ title Components — About and contact
 
 Container(web, "Banaro Web", "Angular, SSR", "ContactPage, HttpPublicSiteApi")
 ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters, mail queue")
-Container(worker, "Banaro Worker", "Laravel Horizon", "Runs queued jobs")
+Container(worker, "Banaro Worker", "BullMQ worker", "Runs queued jobs")
 
 Container_Boundary(api, "Banaro API") {
-  Component(routes, "api_public.php", "Route file", "Anonymous POST /contact-messages")
+  Component(routes, "src/http/public-routes.ts", "Route list", "Anonymous POST /contact-messages")
   Component(limiter, "contact rate limiter", "throttle:contact middleware", "3 per hour per hashed IP, 429 with Retry-After")
-  Component(ctrl, "ContactMessageController", "Laravel controller", "store(): 202")
-  Component(req, "SendContactMessageRequest", "Form request", "Name, e-mail, topic, 10-2,000 character message, honeypot")
+  Component(ctrl, "ContactMessageRoutes", "Route handler", "store(): 202")
+  Component(req, "SendContactMessageRequest", "Request schema", "Name, e-mail, topic, 10-2,000 character message, honeypot")
   Component(action, "SendContactMessage", "Action", "Discards honeypot submissions or dispatches the job")
-  Component(job, "DeliverContactMessage", "Queued job", "Mails the team inbox, Reply-To sender")
+  Component(job, "DeliverContactMessage", "BullMQ job", "Mails the team inbox, Reply-To sender")
   Component(topic, "ContactTopic", "Enum", "Closed list of topics")
 }
 

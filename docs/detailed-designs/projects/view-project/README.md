@@ -60,34 +60,34 @@ the Banaro API to the Banaro database. It writes nothing.
 
 ### Backend — Banaro API
 
-- **`ProjectController`** (`Controllers/Api/V1/Projects/`) — `show()` handles
-  `GET /projects/{project}`. The route is in `routes/api_public.php`, so a visitor may call it. The
-  Sanctum stateful guard still resolves a member when a session cookie is present. The method calls
+- **`ProjectRoutes`** (`app/api/v1/`) — `show()` handles
+  `GET /projects/{project}`. The route is in `src/http/public-routes.ts`, so a visitor may call it. The
+  the session middleware stateful guard still resolves a member when a session cookie is present. The method calls
   `ViewProject` and returns a `ProjectResource`.
-- **`FeedbackController`** (`Controllers/Api/V1/Projects/`) — `index()` handles
-  `GET /projects/{project}/feedback`, also in `routes/api_public.php`. It calls `ListProjectFeedback`
+- **`FeedbackRoutes`** (`app/api/v1/`) — `index()` handles
+  `GET /projects/{project}/feedback`, also in `src/http/public-routes.ts`. It calls `ListProjectFeedback`
   and returns a `FeedbackResource` collection.
-- **`ShowProjectRequest`** and **`ListFeedbackRequest`** (`Requests/Projects/`) — validate the route
+- **`ShowProjectRequest`** and **`ListFeedbackRequest`** (`src/http/requests/projects/`) — validate the route
   key and `page`. `per_page` defaults to 12 and is capped at 50 (`L2-047` criterion 4).
-- **`ViewProject`** (`Actions/Projects/`) — loads the project with its owner's `Builder` profile and
-  its looking-for roles in one eager-loaded query. Route-model binding returns 404 for an id that does
+- **`ViewProject`** (`src/actions/projects/`) — loads the project with its owner's `Builder` profile and
+  its looking-for roles in one extra query. The bindings middleware returns 404 for an id that does
   not exist or a project that was deleted (`L2-013` criterion 4).
-- **`ListProjectFeedback`** (`Actions/Projects/`) — returns feedback newest first, through the
-  `Feedback::visibleTo(?User)` query scope:
+- **`ListProjectFeedback`** (`src/actions/projects/`) — returns feedback newest first, through the
+  `Feedback.visibleTo(?User)` query scope:
   - It includes items that are not hidden.
   - It includes hidden items whose author is the viewer, and all hidden items for an administrator
     (`L2-016` criterion 4).
   - For a member viewer, it excludes items whose author is in a block relationship with the viewer.
     `Feedback` uses the `ExcludesBlockedUsers` trait, whose `withoutBlockedFor()` scope calls
-    `BlockService::applyScope()` (`Services/TrustAndSafety`) on `author_id`. The `block-builder`
+    `BlockService.applyScope()` (`src/services/trust-and-safety/`) on `author_id`. The `block-builder`
     feature owns both (`L2-032` criterion 1, `L2-044` criterion 5).
-- **`ProjectPolicy`** (`Policies/`) — `update`, `delete` and `viewHelpOffers` allow only the owner.
+- **`ProjectPolicy`** (`src/policies/`) — `update`, `delete` and `viewHelpOffers` allow only the owner.
   `giveFeedback` and `offerHelp` allow a verified member who is not the owner. A visitor gets `false`
   for each.
-- **`ProjectResource`** (`Resources/Projects/`) — serializes the project and the `permissions` block,
+- **`ProjectResource`** (`src/http/resources/projects/`) — serializes the project and the `permissions` block,
   evaluated with `ProjectPolicy` for the optional viewer. Owner fields respect the owner's privacy
   settings (`L2-036` criterion 1).
-- **`FeedbackResource`** (`Resources/Projects/`) — serializes one feedback item into the
+- **`FeedbackResource`** (`src/http/resources/projects/`) — serializes one feedback item into the
   `FeedbackView` shape. `hidden` appears only for viewers who may see hidden items.
 
 ### Open points
@@ -137,7 +137,7 @@ endpoints of the Banaro API. The API reads projects, feedback and blocks from th
 
 ### Components
 
-Inside the Banaro API, `ProjectController` and `FeedbackController` each call one read action.
+Inside the Banaro API, `ProjectRoutes` and `FeedbackRoutes` each call one read action.
 `ProjectPolicy` computes the viewer's permissions, and `BlockService` filters the feedback list.
 
 ![C4 component view for viewing a project](diagrams/c4-component.png)

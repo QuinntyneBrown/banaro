@@ -22,7 +22,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpDirectoryApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "BuilderDirectoryController" as controller
+  participant "BuilderDirectoryRoutes" as controller
   participant "SearchDirectoryRequest" as request
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3

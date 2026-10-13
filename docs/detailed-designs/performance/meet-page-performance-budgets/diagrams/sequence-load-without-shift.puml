@@ -25,7 +25,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "bn-builder-card / bn-avatar" as card
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "BuilderController" as api
+  participant "BuilderRoutes" as api
   participant "Photo variant route" as photos
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5

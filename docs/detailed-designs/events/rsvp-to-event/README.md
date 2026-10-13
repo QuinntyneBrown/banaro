@@ -48,14 +48,14 @@ E-mail is sent through the Banaro Worker.
 
 ### Backend — Banaro API
 
-- **`RsvpController`** (`Controllers/Api/V1/Events/`) — `store()` handles `PUT /events/{event}/rsvp`.
-  `destroy()` handles `DELETE /events/{event}/rsvp`. Both routes are in `routes/api.php`, so they
+- **`RsvpRoutes`** (`app/api/v1/`) — `store()` handles `PUT /events/{event}/rsvp`.
+  `destroy()` handles `DELETE /events/{event}/rsvp`. Both routes are on the authenticated stack (`src/http/pipeline.ts`), so they
   require a verified member. Each method calls one action and returns an `RsvpResource`.
-- **`RsvpToEventRequest`** and **`CancelRsvpRequest`** (`Requests/Events/`) — form requests that
+- **`RsvpToEventRequest`** and **`CancelRsvpRequest`** (`src/http/requests/events/`) — request schemas that
   authorize the member and reject any request body fields. The member is always taken from the
   session, never from the body.
-- **`RsvpToEvent`** (`Actions/Events/`) — applies the RSVP rules in one database transaction:
-  1. It locks the event row with `lockForUpdate()`. Concurrent RSVPs for one event therefore run one
+- **`RsvpToEvent`** (`src/actions/events/`) — applies the RSVP rules in one database transaction:
+  1. It locks the event row with `SELECT … FOR UPDATE`. Concurrent RSVPs for one event therefore run one
      after another (`L2-020` criterion 3).
   2. It rejects a closed event with 422 and code `event_closed` (`L2-020` criterion 7). The design
      also treats a cancelled event as closed.
@@ -63,22 +63,22 @@ E-mail is sent through the Banaro Worker.
   4. Otherwise it creates a `going` RSVP and increments `going_count` while places remain. At capacity
      it creates a `waitlisted` RSVP stamped with `waitlisted_at` (`L2-020` criteria 1 and 2).
   5. After commit, it queues `RsvpConfirmedNotification` for a going member.
-- **`CancelRsvp`** (`Actions/Events/`) — locks the event row, deletes the member's RSVP and returns
+- **`CancelRsvp`** (`src/actions/events/`) — locks the event row, deletes the member's RSVP and returns
   404 when none exists. When the deleted RSVP was going, it decrements `going_count` and calls
-  `WaitlistService::promoteNext()` in the same transaction (`L2-020` criterion 4).
-- **`WaitlistService`** (`Services/Events/`) — `promoteNext(Event)` changes the oldest waitlisted RSVP
+  `WaitlistService.promoteNext()` in the same transaction (`L2-020` criterion 4).
+- **`WaitlistService`** (`src/services/events/`) — `promoteNext(Event)` changes the oldest waitlisted RSVP
   (ordered by `waitlisted_at`, then `id`) to going and increments `going_count`. It then queues
   `WaitlistPromotedNotification` after commit. `positionOf(Rsvp)` counts the waitlisted RSVPs ahead of
   the given RSVP and adds one.
-- **`Event`** (`Models/`) — holds `capacity` (nullable), `going_count`, `starts_at`, `ends_at` and
+- **`Event`** (`src/db/schema/`) — holds `capacity` (nullable), `going_count`, `starts_at`, `ends_at` and
   `status`. `spotsLeft()` returns `capacity - going_count`, or `null` without capacity. `isClosed()`
   is true once `starts_at` has passed or `status` is `Cancelled`.
-- **`Rsvp`** (`Models/`) — one row per member and event, enforced by a unique index on
+- **`Rsvp`** (`src/db/schema/`) — one row per member and event, enforced by a unique index on
   (`event_id`, `user_id`). It holds `status` (`RsvpStatus`) and `waitlisted_at`. The unique index is
   the second guard on idempotence, after the row lock.
-- **`RsvpResource`** (`Resources/Events/`) — serializes an RSVP and its event into the `RsvpSummary`
+- **`RsvpResource`** (`src/http/resources/events/`) — serializes an RSVP and its event into the `RsvpSummary`
   shape.
-- **`RsvpConfirmedNotification`** and **`WaitlistPromotedNotification`** (`Notifications/`) — queued
+- **`RsvpConfirmedNotification`** and **`WaitlistPromotedNotification`** (`src/notifications/`) — queued
   notifications on the `mail` and `database` channels. The Banaro Worker sends them through the
   `Mailer` contract, subject to e-mail preferences (`L2-029`).
 
@@ -122,7 +122,7 @@ RSVPs in the Banaro database and queues notifications on Redis. The Banaro Worke
 
 ### Components
 
-Inside the Banaro API, `RsvpController` calls `RsvpToEvent` or `CancelRsvp`. `CancelRsvp` relies on
+Inside the Banaro API, `RsvpRoutes` calls `RsvpToEvent` or `CancelRsvp`. `CancelRsvp` relies on
 `WaitlistService` to promote the next waitlisted member.
 
 ![C4 component view for RSVP to an event](diagrams/c4-component.png)

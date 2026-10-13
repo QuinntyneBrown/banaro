@@ -5,20 +5,20 @@ title Components — Manage account settings
 
 Container(web, "Banaro Web", "Angular", "SettingsPage, AccountSettingsSection, SessionsSection, HttpSettingsApi")
 ContainerDb(db, "Banaro database", "Relational database", "users, pending_email_changes")
-ContainerQueue(redis, "Redis", "Redis", "Sessions and Horizon queues")
+ContainerQueue(redis, "Redis", "Redis", "Sessions and BullMQ queues")
 
 Container_Boundary(api, "Banaro API") {
-  Component(settings, "SettingsController", "Laravel controller", "GET /settings")
-  Component(account, "AccountController", "Laravel controller", "PATCH /settings/account")
-  Component(emailChange, "EmailChangeController", "Laravel controller", "POST /settings/email-change/confirm (api_public.php)")
-  Component(password, "PasswordController", "Laravel controller", "PUT /settings/password")
-  Component(sessionsCtrl, "SessionController", "Laravel controller", "DELETE /settings/sessions/others")
+  Component(settings, "SettingsRoutes", "Route handler", "GET /settings")
+  Component(account, "AccountRoutes", "Route handler", "PATCH /settings/account")
+  Component(emailChange, "EmailChangeRoutes", "Route handler", "POST /settings/email-change/confirm (src/http/public-routes.ts)")
+  Component(password, "PasswordRoutes", "Route handler", "PUT /settings/password")
+  Component(sessionsCtrl, "SessionRoutes", "Route handler", "DELETE /settings/sessions/others")
   Component(update, "UpdateAccount / RequestEmailChange", "Actions", "Save name, store pending e-mail change")
   Component(confirm, "ConfirmEmailChange", "Action", "Apply the new address from a valid token")
   Component(change, "ChangePassword", "Action", "Hash new password, revoke other sessions")
   Component(signOut, "SignOutOtherDevices", "Action", "Revoke other sessions")
   Component(registry, "SessionRegistry", "Domain service", "revokeOthers(user, current), revokeAll(user)")
-  Component(models, "User / PendingEmailChange", "Eloquent models", "Account details and pending change")
+  Component(models, "User / PendingEmailChange", "Drizzle tables", "Account details and pending change")
   Component(notify, "Account notifications", "Queued notifications", "ConfirmNewEmail, EmailChangeRequested, PasswordChanged")
 }
 

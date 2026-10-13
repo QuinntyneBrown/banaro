@@ -21,7 +21,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "CodeOfConductPage" as page
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "I18nController" as i18n
+  participant "I18nRoutes" as i18n
 end box
 
 opt from the join form
@@ -31,7 +31,7 @@ opt from the join form
   join -> ssr : Open /code-of-conduct in a new tab (target="_blank", rel="noopener")
 end
 actor -> ssr : GET /code-of-conduct (no session needed, L2-034 criterion 1)
-ssr -> i18n : GET /api/v1/i18n/en-CA (route in api_public.php)
+ssr -> i18n : GET /api/v1/i18n/en-CA (route in src/http/public-routes.ts)
 i18n --> ssr : Catalogue with codeOfConduct.* text and version date
 ssr -> page : Render sections, table of contents, "Last updated" date
 page --> ssr : HTML

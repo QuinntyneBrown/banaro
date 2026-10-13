@@ -79,32 +79,32 @@ external system takes part.
 
 ### Backend — Banaro API
 
-- **Route** — `GET /builders` in `routes/api_public.php`, unchanged from `browse-directory`.
-- **`SearchDirectoryRequest`** (`Requests/Directory/`) — this slice adds the filter keys (`L2-045`
+- **Route** — `GET /builders` in `src/http/public-routes.ts`, unchanged from `browse-directory`.
+- **`SearchDirectoryRequest`** (`src/http/requests/directory/`) — this slice adds the filter keys (`L2-045`
   criterion 1). It returns 422 for any value outside these sets:
   - `role[]` holds `BuilderRole` cases.
   - `open_to[]` holds `OpenTo` cases.
   - `area[]` holds known neighbourhood areas, such as "Downtown Toronto" or "Mississauga".
   - `skills[]` holds existing skill slugs.
   - `distance` is one of `5`, `10`, `25`, `40` or `any`.
-- **`DirectoryFilters`** (`Services/Directory/`) — value object built from the validated request. It
+- **`DirectoryFilters`** (`src/services/directory/`) — value object built from the validated request. It
   resolves the distance limit: the chosen value, or 40 km when none is chosen (`L2-010` criterion 2).
   For a visitor, or a member without a neighbourhood, there is no distance limit.
-- **`DirectoryFilterApplier`** (`Services/Directory/`) — adds the filters to the directory query from
+- **`DirectoryFilterApplier`** (`src/services/directory/`) — adds the filters to the directory query from
   `SearchDirectory` (`L2-010` criterion 1, `L2-047` criterion 3):
   - Each group becomes one `whereIn` or `whereHas` clause, so options in a group combine with OR.
   - Groups are chained, so they combine with AND.
   - Distance joins `neighbourhood_distances` from the member's neighbourhood and keeps rows within the
     limit.
-- **`FacetCounter`** (`Services/Directory/`) — computes option counts. For each group it counts
+- **`FacetCounter`** (`src/services/directory/`) — computes option counts. For each group it counts
   builders matching all the other groups' filters, grouped by that group's options. The counts use the
   same privacy and block scopes as the results, so a hidden builder is never counted (`L2-010`
   criterion 1).
-- **`SearchDirectory`** (`Actions/Directory/`) — from `browse-directory`; it now calls
+- **`SearchDirectory`** (`src/actions/directory/`) — from `browse-directory`; it now calls
   `DirectoryFilterApplier` before sorting and `FacetCounter` after paging.
-- **`DirectoryPageResource`** (`Resources/Directory/`) — adds `meta.facets`, `meta.appliedFilters` and
+- **`DirectoryPageResource`** (`src/http/resources/directory/`) — adds `meta.facets`, `meta.appliedFilters` and
   `meta.distanceKm`.
-- **`Neighbourhood`** (`Models/`) — its `area` column groups neighbourhoods into the options of the
+- **`Neighbourhood`** (`src/db/schema/`) — its `area` column groups neighbourhoods into the options of the
   "Neighbourhood or city" group.
 - **Indexes** — `builders(role)`, `builder_skill(skill_id, builder_id)` and
   `neighbourhood_distances(from_id, distance_km)` keep filtered queries and counts within budget

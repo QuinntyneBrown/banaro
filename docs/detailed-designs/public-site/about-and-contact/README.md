@@ -70,17 +70,17 @@ contact page through the Banaro API and Redis to the Banaro Worker and the mail 
 
 ### Backend — Banaro API
 
-- **Route** — `POST /contact-messages` is in `routes/api_public.php`, so it accepts anonymous
+- **Route** — `POST /contact-messages` is in `src/http/public-routes.ts`, so it accepts anonymous
   requests. It carries the `throttle:contact` middleware. The route keeps CSRF protection
   (`L2-045` criterion 2), because Banaro Web sends the CSRF token for visitors too.
-- **`contact` rate limiter** — defined in `AppServiceProvider` with
-  `Limit::perHour(3)->by(hash(client IP))`. The fourth request from one IP within an hour returns
+- **`contact` rate limiter** — defined in `src/http/rate-limit/limiters.ts` as
+  3 per hour keyed by the hashed client IP. The fourth request from one IP within an hour returns
   429 with `Retry-After` (`L2-040` criterion 3). The limit log line carries the route and the hashed
   client identifier, not the raw IP (`L2-046` criterion 3).
-- **`ContactMessageController`** (`Controllers/Api/V1/PublicSite/`) — `store()` validates with
+- **`ContactMessageRoutes`** (`app/api/v1/`) — `store()` validates with
   `SendContactMessageRequest`, calls `SendContactMessage` and returns 202 with an empty JSON object.
   The response is identical whether the message was queued or discarded.
-- **`SendContactMessageRequest`** (`Requests/PublicSite/`) — form request with these rules
+- **`SendContactMessageRequest`** (`src/http/requests/public-site/`) — request schema with these rules
   (`L2-045` criterion 1):
   - `name` — required string; maximum length `<TO SUPPLY>`.
   - `email` — required, valid e-mail format.
@@ -88,19 +88,19 @@ contact page through the Banaro API and Redis to the Banaro Worker and the mail 
   - `message` — required string of 10 to 2,000 characters.
   - `website` — nullable string; any value marks the request as automated.
   On failure it returns 422 with field errors.
-- **`ContactTopic`** (`Enums/`) — `General`, `Partnership`, `Press`, `ReportProblem` and
+- **`ContactTopic`** (`src/enums/`) — `General`, `Partnership`, `Press`, `ReportProblem` and
   `ProposeEvent`, the five topics in `L2-040` criterion 2.
-- **`SendContactMessage`** (`Actions/PublicSite/`) — `handle(ContactMessageData)`:
+- **`SendContactMessage`** (`src/actions/public-site/`) — `handle(ContactMessageData)`:
   1. When `website` holds any value, it discards the message, logs the discard without the message
      text, and returns (`L2-040` criterion 3).
   2. Otherwise it dispatches `DeliverContactMessage` on the `mail` queue (`L2-040` criterion 2).
-- **`ContactMessageData`** (`Actions/PublicSite/`) — read-only value object built from the validated
+- **`ContactMessageData`** (`src/actions/public-site/`) — read-only value object built from the validated
   request. It stores message text as plain text (`L2-045` criterion 5).
-- **`DeliverContactMessage`** (`Jobs/PublicSite/`) — queued job that the Banaro Worker runs. It sends
+- **`DeliverContactMessage`** (`src/jobs/public-site/`) — queued job that the Banaro Worker runs. It sends
   `ContactMessageMail` to the team inbox through the `Mailer` contract, with `Reply-To` set to the
   sender. It retries with back-off up to five times and then logs the failure with an alert, as for
   other transactional e-mail (`L2-029` criterion 4).
-- **`ContactMessageMail`** (`resources/views/emails/`) — plain-text e-mail that encodes the sender's
+- **`ContactMessageMail`** (`src/mail/templates/`) — plain-text e-mail that encodes the sender's
   text on output.
 
 ### Open points
@@ -149,7 +149,7 @@ for the counter and the queue. The Banaro Worker sends the e-mail.
 
 ### Components
 
-Inside the Banaro API, the `contact` rate limiter runs before `ContactMessageController`. The
+Inside the Banaro API, the `contact` rate limiter runs before `ContactMessageRoutes`. The
 controller validates with `SendContactMessageRequest` and calls `SendContactMessage`, which discards
 honeypot submissions or queues `DeliverContactMessage`.
 

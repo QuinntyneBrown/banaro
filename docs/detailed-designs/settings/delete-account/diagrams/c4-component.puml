@@ -5,21 +5,21 @@ title Components — Delete an account
 
 Container(web, "Banaro Web", "Angular", "DeleteAccountDialog, DataExportPanel, HttpSettingsApi")
 ContainerDb(db, "Banaro database", "Relational database", "users and personal data, data_exports")
-ContainerQueue(redis, "Redis", "Redis", "Sessions and Horizon queues")
+ContainerQueue(redis, "Redis", "Redis", "Sessions and BullMQ queues")
 ContainerDb(media, "Media storage", "Private file storage", "Photos and export archives")
 
 Container_Boundary(api, "Banaro API and Banaro Worker (banaro-api image)") {
-  Component(accountCtrl, "AccountController", "Laravel controller", "DELETE /settings/account")
-  Component(req, "DeleteAccountRequest", "Form request", "confirmation = DELETE, current password")
+  Component(accountCtrl, "AccountRoutes", "Route handler", "DELETE /settings/account")
+  Component(req, "DeleteAccountRequest", "Request schema", "confirmation = DELETE, current password")
   Component(delete, "DeleteAccount", "Action", "Anonymise, delete projects, revoke sessions in one transaction")
   Component(registry, "SessionRegistry", "Domain service", "revokeAll(user)")
-  Component(erase, "ErasePersonalData", "Queued job", "Erases profile, photo, messages sent, preferences")
+  Component(erase, "ErasePersonalData", "BullMQ job", "Erases profile, photo, messages sent, preferences")
   Component(waitlist, "WaitlistService", "Domain service", "promoteNext(event) for freed places")
   Component(sweep, "EraseDeletedAccounts", "Scheduled command", "Daily re-dispatch before the 30-day deadline")
-  Component(exportCtrl, "DataExportController", "Laravel controller", "POST, GET, signed download")
-  Component(build, "BuildDataExport", "Queued job", "Writes JSON archive, signs 24-hour link")
+  Component(exportCtrl, "DataExportRoutes", "Route handler", "POST, GET, signed download")
+  Component(build, "BuildDataExport", "BullMQ job", "Writes JSON archive, signs 24-hour link")
   Component(prune, "PruneDataExports", "Scheduled command", "Hourly removal of expired archives")
-  Component(models, "User / DataExport", "Eloquent models", "deleted_at, erase_by, erased_at; export status")
+  Component(models, "User / DataExport", "Drizzle tables", "deleted_at, erase_by, erased_at; export status")
 }
 
 Rel(web, accountCtrl, "Calls", "JSON/HTTPS")

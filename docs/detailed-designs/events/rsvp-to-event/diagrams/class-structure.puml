@@ -41,9 +41,9 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class RsvpController {
-    +store(request: RsvpToEventRequest, event: Event): RsvpResource
-    +destroy(request: CancelRsvpRequest, event: Event): RsvpResource
+  class RsvpRoutes {
+    +POST(request: RsvpToEventRequest, event: Event): RsvpResource
+    +DELETE(request: CancelRsvpRequest, event: Event): RsvpResource
   }
   class RsvpToEvent {
     +handle(member: User, event: Event): Rsvp
@@ -53,25 +53,25 @@ package "Backend — Banaro API" {
   }
   class WaitlistService {
     +promoteNext(event: Event): ?Rsvp
-    +positionOf(rsvp: Rsvp): int
+    +positionOf(rsvp: Rsvp): number
   }
   class Event {
-    +int id
-    +string title
-    +?int capacity
-    +int going_count
-    +Carbon starts_at
-    +Carbon ends_at
-    +EventStatus status
-    +spotsLeft(): ?int
-    +isClosed(): bool
+    +id: number
+    +title: string
+    +capacity: number | null
+    +going_count: number
+    +starts_at: Timestamp
+    +ends_at: Timestamp
+    +status: EventStatus
+    +spotsLeft(): number | null
+    +isClosed(): boolean
   }
   class Rsvp {
-    +int id
-    +int event_id
-    +int user_id
-    +RsvpStatus status
-    +?Carbon waitlisted_at
+    +id: number
+    +event_id: number
+    +user_id: number
+    +status: RsvpStatus
+    +waitlisted_at: Timestamp | null
   }
   enum RsvpStatus {
     Going
@@ -90,11 +90,11 @@ EventDetailPage ..> EventsApi : uses
 CancelRsvpDialog ..> EventsApi : uses
 HttpEventsApi ..|> EventsApi
 EventsApi ..> RsvpSummary : returns
-HttpEventsApi ..> RsvpController : HTTPS
+HttpEventsApi ..> RsvpRoutes : HTTPS
 
-RsvpController ..> RsvpToEvent : calls
-RsvpController ..> CancelRsvp : calls
-RsvpController ..> RsvpResource : returns
+RsvpRoutes ..> RsvpToEvent : calls
+RsvpRoutes ..> CancelRsvp : calls
+RsvpRoutes ..> RsvpResource : returns
 CancelRsvp ..> WaitlistService : promotes via
 RsvpToEvent ..> RsvpConfirmedNotification : queues
 WaitlistService ..> WaitlistPromotedNotification : queues

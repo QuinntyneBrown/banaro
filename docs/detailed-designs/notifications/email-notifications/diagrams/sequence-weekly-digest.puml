@@ -17,7 +17,7 @@ skinparam package {
 participant "Clock (weekly, day and time <TO SUPPLY>)" as clock
 box "Backend — Banaro Worker" #ECFDF3
   participant "Scheduler" as scheduler
-  participant "SendWeeklyDigestCommand" as cmd
+  participant "SendWeeklyDigests" as cmd
   participant "SendWeeklyDigest" as job
   participant "NotificationDedupeService" as dedupe
   participant "EmailPreferenceService" as prefs
@@ -27,14 +27,14 @@ box "Backend — Banaro Infrastructure" #FFF4E5
   database "Banaro database" as db
 end box
 
-clock -> scheduler : schedule:run tick
-scheduler -> redis : Take onOneServer lock (L2-054 criterion 5)
-scheduler -> cmd : Run notifications:send-weekly-digest
-cmd -> db : Members with the Weekly digest category on (chunkById)
+clock -> scheduler : Weekly due time
+scheduler -> redis : Job scheduler creates one job (L2-054 criterion 5)
+redis -> cmd : A worker runs SendWeeklyDigests
+cmd -> db : Members with the Weekly digest category on, in id-ordered batches
 loop each member
   cmd -> redis : Dispatch SendWeeklyDigest(member, iso_week)
 end
-cmd --> scheduler : Exit 0
+cmd --> redis : Job completed
 redis -> job : handle()
 job -> dedupe : claim("digest:{member}:{iso_week}")
 dedupe -> db : INSERT notification_dedupe_keys

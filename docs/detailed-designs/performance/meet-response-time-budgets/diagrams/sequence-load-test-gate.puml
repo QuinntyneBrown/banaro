@@ -32,9 +32,9 @@ end box
 
 actor -> stage : Pipeline reaches the load-test stage
 stage -> api : Start load environment (size <TO SUPPLY>)
-stage -> api : php artisan migrate --force (explicit step, L2-054)
+stage -> api : banaro migrate --force (explicit step, L2-054)
 api -> db : Apply migrations
-stage -> seeder : php artisan db:seed --class=LoadTestSeeder
+stage -> seeder : banaro seed --class=LoadTestSeeder
 seeder -> db : Upsert 10,000 builders, 100 members, projects, events
 seeder -> redis : Write 100 member sessions
 seeder --> stage : Session cookies for the scenario

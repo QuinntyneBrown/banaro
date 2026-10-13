@@ -65,56 +65,56 @@ Banaro Worker looks up the account and sends the e-mail.
 ### Backend — Banaro API
 
 - **Routes** — `POST /api/v1/forgot-password`, `POST /api/v1/reset-password/check` and
-  `POST /api/v1/reset-password` in `routes/api_public.php`. The person resetting a password is not
+  `POST /api/v1/reset-password` in `src/http/public-routes.ts`. The person resetting a password is not
   signed in.
-- **`password-reset` rate limiter** — defined in `AppServiceProvider::boot()` and applied to
+- **`password-reset` rate limiter** — defined in `src/http/rate-limit/limiters.ts` and applied to
   `POST /forgot-password`. It allows 5 requests per hour per canonical e-mail and 5 per hour per IP
   address. The next request receives 429 with `Retry-After` (`L2-004` criterion 5). Unknown addresses
   are limited the same way, so a 429 reveals nothing.
-- **`PasswordResetLinkController`** (`Controllers/Api/V1/Identity/`) — `store()` validates through
+- **`PasswordResetLinkRoutes`** (`app/api/v1/`) — `store()` validates through
   `SendPasswordResetLinkRequest`, calls `RequestPasswordReset` and returns 202 with an empty body.
-- **`PasswordResetController`** (`Controllers/Api/V1/Identity/`) — `check()` validates through
+- **`PasswordResetRoutes`** (`app/api/v1/`) — `check()` validates through
   `CheckPasswordResetRequest`, calls `CheckPasswordResetLink` and returns 204. `store()` validates
   through `ResetPasswordRequest`, calls `ResetPassword` and returns 204. A rejected link returns 422
   with code `reset_link_invalid`.
 - **`SendPasswordResetLinkRequest`**, **`CheckPasswordResetRequest`** and **`ResetPasswordRequest`**
-  (`Requests/Identity/`) — form requests. `ResetPasswordRequest` applies `PasswordPolicy::rules()`
+  (`src/http/requests/identity/`) — request schemas. `ResetPasswordRequest` applies `PasswordPolicy.schema`
   and `confirmed` to `password`.
-- **`RequestPasswordReset`** (`Actions/Identity/`) — dispatches the `SendPasswordResetLink` job for
+- **`RequestPasswordReset`** (`src/actions/identity/`) — dispatches the `SendPasswordResetLink` job for
   every well-formed address. It does no account lookup, so the response and its timing do not depend
   on registration (`L2-004` criterion 1).
-- **`CheckPasswordResetLink`** (`Actions/Identity/`) — loads the account by canonical e-mail and asks
+- **`CheckPasswordResetLink`** (`src/actions/identity/`) — loads the account by canonical e-mail and asks
   the password broker's token repository whether the token exists and is under 60 minutes old.
-- **`ResetPassword`** (`Actions/Identity/`) — `handle(ResetPasswordData)` runs in one transaction:
+- **`ResetPassword`** (`src/actions/identity/`) — `handle(ResetPasswordData)` runs in one transaction:
   1. It checks the token as `CheckPasswordResetLink` does, and rejects an expired, used or tampered
      link (`L2-004` criterion 3).
   2. It rejects a new password that matches the current hash, with a field error on `password`
      (`L2-004` criterion 4). `PasswordPolicy` has already rejected a short or common password.
   3. It stores the new hash, rotates `remember_token` and deletes the token, so the link is
      single-use (`L2-004` criterion 2).
-  4. It calls `SessionRevocationService::revokeAll()`.
+  4. It calls `SessionRevocationService.revokeAll()`.
   5. When `email_verified_at` is null it sets it, because the link proves control of the address
      (`L2-004` criterion 8).
   6. It queues `PasswordChangedNotification` (below) (`L2-004` criterion 9).
-- **`PasswordPolicy`** (`Services/Identity/`) — the password rules shared with `join-banaro`: a
+- **`PasswordPolicy`** (`src/services/identity/`) — the password rules shared with `join-banaro`: a
   12-character minimum and the common-password list.
-- **`SessionRevocationService`** (`Services/Identity/`) — ends every session of an account. The
-  stateful API middleware includes Laravel's `AuthenticateSession`, which stores the password hash in
+- **`SessionRevocationService`** (`src/services/identity/`) — ends every session of an account. The
+  stateful API middleware includes the session middleware, which stores the password hash in
   each session. After the hash changes, each older session is logged out on its next request with
   401 (`L2-004` criterion 2). `revokeAll()` also ends the current request's session when one exists.
-- **Password broker** — Laravel's database token repository on the `password_reset_tokens` table.
-  `config/auth.php` sets `expire` to 60 minutes and `throttle` to 0, since the rate limiter already
+- **Password broker** — the reset-token store on the `password_reset_tokens` table.
+  `src/config/security.ts` sets `expire` to 60 minutes and `throttle` to 0, since the rate limiter already
   limits requests. A new token replaces any earlier token for the account.
 
 ### Backend — Banaro Worker
 
-- **`SendPasswordResetLink`** (`Jobs/Identity/`) — queued job. It loads the account by canonical
+- **`SendPasswordResetLink`** (`src/jobs/identity/`) — queued job. It loads the account by canonical
   e-mail and stops when none exists. Otherwise it creates a token through the password broker and
   sends `ResetPasswordNotification`.
-- **`ResetPasswordNotification`** (`Notifications/`) — `mail` channel notification with the link to
+- **`ResetPasswordNotification`** (`src/notifications/`) — `mail` channel notification with the link to
   `/reset-password` on the Banaro Web origin. It is security e-mail, so preferences do not suppress it
   (`L2-029` criterion 2).
-- **`PasswordChangedNotification`** (`Notifications/`) — security `mail` notification "Your Banaro
+- **`PasswordChangedNotification`** (`src/notifications/`) — security `mail` notification "Your Banaro
   password was changed", with a link to `/forgot-password` and to the contact page. Preferences do not
   suppress it.
 
@@ -166,8 +166,8 @@ the account, writes the token to the Banaro database and sends the e-mail.
 
 ### Components
 
-`PasswordResetLinkController` calls `RequestPasswordReset`, which queues `SendPasswordResetLink`.
-`PasswordResetController` calls `CheckPasswordResetLink` or `ResetPassword`. `ResetPassword` relies
+`PasswordResetLinkRoutes` calls `RequestPasswordReset`, which queues `SendPasswordResetLink`.
+`PasswordResetRoutes` calls `CheckPasswordResetLink` or `ResetPassword`. `ResetPassword` relies
 on `PasswordPolicy`, the password broker and `SessionRevocationService`.
 
 ![C4 component view for recovering a forgotten password](diagrams/c4-component.png)

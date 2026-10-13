@@ -9,6 +9,6 @@ System(banaro, "Banaro", "Connects Christian product builders in Toronto and the
 System_Ext(orchestrator, "Container orchestrator", "Runs and restarts instances; platform <TO SUPPLY>")
 
 Rel(member, banaro, "Uses; sees offline and maintenance states", "HTTPS")
-Rel(maintainer, banaro, "Switches maintenance mode on and off", "artisan down / up")
+Rel(maintainer, banaro, "Switches maintenance mode on and off", "banaro maintenance:on / maintenance:off")
 Rel(orchestrator, banaro, "Probes /health/live, 200 during maintenance", "HTTP")
 @enduml

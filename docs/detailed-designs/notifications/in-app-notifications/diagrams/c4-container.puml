@@ -7,10 +7,10 @@ Person(member, "Member", "Signed-in, verified builder")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Notifications page, header bell, UnreadCountStore")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Lists, counts and marks notifications")
-  Container(worker, "Banaro Worker", "Laravel Horizon", "Writes queued database notifications")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Lists, counts and marks notifications")
+  Container(worker, "Banaro Worker", "BullMQ worker", "Writes queued database notifications")
   ContainerDb(db, "Banaro database", "Relational database", "notifications table")
-  ContainerQueue(redis, "Redis", "Redis", "Sessions, Horizon queues")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions, BullMQ queues")
 }
 
 Rel(member, web, "Uses", "HTTPS")

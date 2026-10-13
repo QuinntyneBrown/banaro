@@ -37,10 +37,10 @@ feature touches.
 | Container | Technology | Responsibility |
 |-----------|------------|----------------|
 | Banaro Web | Angular workspace, server-side rendering (SSR), `banaro-web` image | Serves the `banaro` application (public site and member areas) and the `admin` application under `/admin`. |
-| Banaro API | Laravel 11 on PHP 8.3, `banaro-api` image | Exposes `/api/v1`. It owns authentication, validation, persistence, matching and events. |
-| Banaro Worker | Laravel Horizon and the Laravel scheduler, `banaro-api` image | Runs queued jobs (e-mail, media scanning, waitlist promotion) and scheduled commands (Monday matching, event reminders, weekly digests). |
-| Banaro database | Relational database; engine `<TO SUPPLY>` | Holds accounts, profiles, projects, events, matches, messages, notifications, reports and audit entries. |
-| Redis | Redis | Holds sessions, cache entries, rate-limit counters and the Horizon queues. |
+| Banaro API | Next.js 16 route handlers on Node 22 (TypeScript), `banaro-api` image | Exposes `/api/v1`. It owns authentication, validation, persistence, matching and events. |
+| Banaro Worker | BullMQ worker and scheduler processes on Node 22, `banaro-api` image | Runs queued jobs (e-mail, media scanning, waitlist promotion) and scheduled commands (Monday matching, event reminders, weekly digests). |
+| Banaro database | PostgreSQL 16 (ADR-0001), accessed through Drizzle ORM (ADR-0008) | Holds accounts, profiles, projects, events, matches, messages, notifications, reports and audit entries. |
+| Redis | Redis | Holds sessions, cache entries, rate-limit counters, the maintenance flag and the BullMQ queues. |
 | Media storage | Private file storage outside the web root; provider `<TO SUPPLY>` | Holds profile photos under random names. |
 
 ### External systems
@@ -51,15 +51,18 @@ feature touches.
 
 ### Authentication
 
-The browser holds one Laravel session cookie (`HttpOnly`, `Secure`, `SameSite=Lax`) and a CSRF token.
-Laravel Sanctum authenticates the Banaro Web applications as first-party, stateful clients. Every route
-in `routes/api.php` requires an authenticated session. Routes in `routes/api_public.php` are the
-deliberate anonymous exceptions.
+The browser holds one session cookie, `banaro_session` (`HttpOnly`, `Secure`, `SameSite=Lax`), and a
+CSRF token in the `XSRF-TOKEN` cookie (ADR-0011). The session middleware in the `handle()` request
+pipeline (`backend/src/http/pipeline.ts`) loads the session from Redis. The CSRF middleware compares the
+`X-XSRF-TOKEN` header with the session's token on every state-changing request and answers 419 on a
+mismatch. `GET /sanctum/csrf-cookie` issues the token; it keeps the path the Angular client calls.
+Every route requires an authenticated session unless `backend/src/http/public-routes.ts` lists it as a
+deliberate anonymous exception.
 
 ### Naming
 
-Subsystem folders in this tree map to code folders by name: `trust-and-safety` becomes
-`TrustAndSafety` in PHP namespaces.
+Subsystem folders in this tree map to code folders by name: `trust-and-safety` stays
+`trust-and-safety` in `backend/src/{layer}/` folders. Files are kebab-case; classes are PascalCase.
 
 | Layer | Location | Naming |
 |-------|----------|--------|
@@ -68,16 +71,19 @@ Subsystem folders in this tree map to code folders by name: `trust-and-safety` b
 | Shared component | `frontend/projects/components/src/lib/{component}/` | Class `{Name}`, selector `bn-{name}` |
 | API contract | `frontend/projects/api/src/lib/services/` | Interface `{Subsystem}Api`, token `{SUBSYSTEM}_API`, class `Http{Subsystem}Api` |
 | API fake | `frontend/projects/api/src/lib/testing/` | Class `InMemory{Subsystem}Api` |
-| Controller | `backend/app/Http/Controllers/Api/V1/{Subsystem}/` | `{Noun}Controller`; validates, calls one action, returns a resource |
-| Form request | `backend/app/Http/Requests/{Subsystem}/` | `{Verb}{Noun}Request` |
-| Action | `backend/app/Actions/{Subsystem}/` | `{Verb}{Noun}`, single public `handle()` method |
-| Domain service | `backend/app/Services/{Subsystem}/` | `{Noun}Service` |
-| Job | `backend/app/Jobs/{Subsystem}/` | `{Verb}{Noun}` |
-| Resource | `backend/app/Http/Resources/{Subsystem}/` | `{Noun}Resource` |
-| Policy | `backend/app/Policies/` | `{Model}Policy` |
-| Model | `backend/app/Models/` | Singular noun; `User` holds credentials, `Builder` holds the public profile |
+| Route handler | `backend/app/api/v1/{path}/route.ts` | Exports `GET`, `POST`, `PUT` or `DELETE` wrapped in `handle()`; validates, calls one action, returns a resource. Designs name a resource's route files together as `{Noun}Routes` (for example `ProjectRoutes` for `projects/route.ts` and `projects/[project]/route.ts`) |
+| Request schema | `backend/src/http/requests/{subsystem}/{verb}-{noun}.ts` | `{Verb}{Noun}Request`: a zod `schema` and an optional `authorize(ctx)`; `validate()` runs `authorize()`, then `schema.parse()` |
+| Action | `backend/src/actions/{subsystem}/{verb}-{noun}.ts` | Class `{Verb}{Noun}`, single public `handle()` method |
+| Domain service | `backend/src/services/{subsystem}/{noun}-service.ts` | `{Noun}Service` |
+| Job | `backend/src/jobs/{subsystem}/{verb}-{noun}.ts` | `{Verb}{Noun}`, a BullMQ job with its queue, attempts and backoff |
+| Resource | `backend/src/http/resources/{subsystem}/{noun}-resource.ts` | `{Noun}Resource`, a serializer to the JSON shape |
+| Policy | `backend/src/policies/{model}-policy.ts` | `{Model}Policy` |
+| Notification | `backend/src/notifications/{subsystem}/` | `{Event}Notification`; in-app and mail channels |
+| Table | `backend/src/db/schema/{table}.ts` | Drizzle table; row type is the singular noun. `User` holds credentials, `Builder` holds the public profile |
+| CLI command | `backend/src/console/commands/` | `banaro {group}:{verb}`, run with `npm run banaro -- …` |
 
-PHP 8 reserves the word `match`. The matching model is therefore `MatchSuggestion`, not `Match`.
+The matching row type is `MatchSuggestion`, not `Match`, so it never shadows the built-in `Match`
+names in TypeScript and the designs, tables and API keep one name.
 
 ### Diagram conventions
 

@@ -24,14 +24,14 @@ box "Frontend — banaro application" #E0F2FE
   participant "MaintenancePage" as mpage
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "RespondDuringMaintenance" as mw
-  participant "LivenessController" as live
+  participant "maintenance middleware" as mw
+  participant "LivenessRoutes" as live
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5
   database "Redis" as redis
 end box
 
-maintainer -> mw : php artisan down ~-~-retry={seconds}
+maintainer -> mw : banaro maintenance:on ~-~-retry={seconds}
 mw -> redis : Store flag {time, retry} (cache maintenance driver)
 actor -> page : Open any page
 page -> interceptor : GET /api/v1/...
@@ -52,7 +52,7 @@ live --> orch : 200, no restart (L2-043 criterion 3)
 opt SSR of a page during maintenance
   mpage -> mpage : RESPONSE_INIT status 503, Retry-After header, noindex
 end
-maintainer -> mw : php artisan up
+maintainer -> mw : banaro maintenance:off
 mw -> redis : Clear flag
 actor -> mpage : Select "Check again"
 mpage -> page : Re-navigate to failedUrl

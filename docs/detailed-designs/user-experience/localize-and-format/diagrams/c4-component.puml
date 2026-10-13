@@ -15,12 +15,12 @@ Container_Boundary(web, "Banaro Web") {
 }
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "CatalogueController", "Controller (api_public.php)", "200 with ETag, 304, 404 for other locales")
+  Component(ctrl, "CatalogueRoutes", "Controller (src/http/public-routes.ts)", "200 with ETag, 304, 404 for other locales")
   Component(service, "CatalogueService", "Domain service", "Merges resources/i18n/{locale}/*.json")
-  Component(loader, "CatalogueTranslationLoader", "Translation loader", "Laravel translator over the same files")
+  Component(loader, "CatalogueTranslationLoader", "Translation loader", "Catalogue loader over the same files")
   Component(phpdate, "DateTimeFormatter", "Domain service", "Toronto dates for e-mail")
   Component(files, "resources/i18n/en-CA", "JSON catalogue files", "common, directory, events, errors, email")
-  Component(check, "CheckI18nKeys (i18n:check)", "Artisan command", "Fails on keys missing from a catalogue")
+  Component(check, "CheckI18nKeys (i18n:check)", "CLI command", "Fails on keys missing from a catalogue")
 }
 
 Rel(page, pipes, "Uses")

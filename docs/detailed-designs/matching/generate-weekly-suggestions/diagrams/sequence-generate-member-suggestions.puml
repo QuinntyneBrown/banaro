@@ -15,7 +15,7 @@ skinparam package {
   BackgroundColor #F9FAFB
 }
 box "Backend — Banaro Worker" #FFF4E5
-  participant "Horizon worker" as horizon
+  participant "BullMQ worker" as worker
   participant "GenerateMatchSuggestions" as job
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
@@ -30,7 +30,7 @@ box "Backend — Banaro Infrastructure" #FFF4E5
   queue "Redis queue" as queue
 end box
 
-horizon -> job : handle()
+worker -> job : handle()
 job -> action : handle(member, 2026-W42)
 action -> db : BEGIN; SELECT matching_preference FOR UPDATE
 db --> action : Locked preference
@@ -64,9 +64,9 @@ else first run this week
   end
   action --> job : MatchingRun
 end
-job --> horizon : Done
+job --> worker : Done
 opt exception before commit
   action -> db : ROLLBACK, nothing stored
-  horizon -> horizon : Retry with back-off, same ISO week key
+  worker -> worker : Retry with back-off, same ISO week key
 end
 @enduml

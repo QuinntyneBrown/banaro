@@ -24,7 +24,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "TranslationService" as i18n
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "I18nController" as controller
+  participant "I18nRoutes" as controller
 end box
 
 actor -> ssr : GET /about (no sign-in)

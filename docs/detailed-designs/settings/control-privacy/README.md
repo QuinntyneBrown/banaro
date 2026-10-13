@@ -50,37 +50,37 @@ Banaro database. The enforcement half runs inside every API resource that shows 
 
 ### Backend — Banaro API: saving the settings
 
-- **`PrivacyController`** (`Controllers/Api/V1/Settings/`) — `update()` handles
-  `PUT /settings/privacy` in `routes/api.php`. It acts on the session user only and returns a
+- **`PrivacyRoutes`** (`app/api/v1/`) — `update()` handles
+  `PUT /settings/privacy` on the authenticated stack (`src/http/pipeline.ts`). It acts on the session user only and returns a
   `PrivacySettingsResource`.
-- **`UpdatePrivacySettingsRequest`** (`Requests/Settings/`) — requires all five fields, with the two
+- **`UpdatePrivacySettingsRequest`** (`src/http/requests/settings/`) — requires all five fields, with the two
   enumerations validated against `ProfileAudience` and `LocationPrecision`.
-- **`UpdatePrivacySettings`** (`Actions/Settings/`) — writes the five values in one statement
+- **`UpdatePrivacySettings`** (`src/actions/settings/`) — writes the five values in one statement
   (`L2-036` criterion 1).
-- **`PrivacySettings`** (`Models/`) — one row per user: `profile_visibility`, `location_precision`,
+- **`PrivacySettings`** (`src/db/schema/`) — one row per user: `profile_visibility`, `location_precision`,
   `email_contact`, `show_online_status` and `list_in_attendees`. The migration and the model defaults
   set `MembersOnly`, online status on and attendee listing off (`L2-036` criterion 4). The join action
   of `join-banaro` creates the row with the account.
-- **`ProfileAudience`** and **`LocationPrecision`** (`Enums/`) — `Everyone` and `MembersOnly`;
+- **`ProfileAudience`** and **`LocationPrecision`** (`src/enums/`) — `Everyone` and `MembersOnly`;
   `Neighbourhood` and `CityOnly`.
 
 ### Backend — Banaro API: enforcing the settings
 
-- **`ProfileVisibilityService`** (`Services/Settings/`) — the single visibility rule for every
+- **`ProfileVisibilityService`** (`src/services/settings/`) — the single visibility rule for every
   subsystem. Other designs that name a `ProfileVisibility` service or filter refer to this class:
-  - `canView(?User $viewer, User $owner): bool` — true for the owner, for any viewer under
+  - `canView(viewer: User | null, owner: User): boolean` — true for the owner, for any viewer under
     `Everyone`, and for a verified member under `MembersOnly` (`L2-036` criterion 2).
-  - `applyScope(Builder $query, ?User $viewer): Builder` — removes `MembersOnly` profiles from a
+  - `applyScope(query: Builder, viewer: User | null): Builder` — removes `MembersOnly` profiles from a
     listing when the viewer is not signed in. The signed-out directory uses it (`L2-036` criterion 2).
-  - `locationFor(?User $viewer, User $owner): ProfileLocation` — the neighbourhood and city for
+  - `locationFor(viewer: User | null, owner: User): ProfileLocation` — the neighbourhood and city for
     `Neighbourhood`; the city only for `CityOnly` (`L2-036` criterion 3).
-  - `distanceFor(?User $viewer, User $owner): ?float` — the exact distance from `DistanceService` for
+  - `distanceFor(viewer: User | null, owner: User): number | null` — the exact distance from `DistanceService` for
     `Neighbourhood`; for `CityOnly`, that distance rounded to the nearest 5 km
     (`round(km / 5) * 5`) (`L2-036` criterion 3).
-  - `showsOnlineStatus(User $owner)`, `listsInAttendees(User $owner)` and
-    `allowsEmailContact(User $owner)` — read the switches.
-- **`ProfileFields`** (`Http/Resources/Concerns/`) — trait for resources that serialize another
-  member. It calls the service and uses `$this->when()` and `mergeWhen()`, so a hidden field is absent
+  - `showsOnlineStatus(owner: User)`, `listsInAttendees(owner: User)` and
+    `allowsEmailContact(owner: User)` — read the switches.
+- **`ProfileFields`** (`src/http/resources/concerns/`) — trait for resources that serialize another
+  member. It calls the service and adds each optional field only when the service allows it, so a hidden field is absent
   from the JSON (`L2-036` criterion 1, `L2-011` criterion 4). The owner always receives every field.
 - **Consumers** — `BuilderResource` and `BuilderCardResource` (directory and profile),
   `MatchSuggestionResource` (matching), `AttendeeResource` (events, which also filters out members with
@@ -133,7 +133,7 @@ and applies them to every response about the member.
 
 ### Components
 
-Inside the Banaro API, `PrivacyController` calls `UpdatePrivacySettings`. Every resource that shows
+Inside the Banaro API, `PrivacyRoutes` calls `UpdatePrivacySettings`. Every resource that shows
 another member uses `ProfileFields`, which calls `ProfileVisibilityService` and `DistanceService`.
 
 ![C4 component view for controlling privacy](diagrams/c4-component.png)

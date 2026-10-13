@@ -5,15 +5,15 @@ title Components — Say hello
 
 Container(web, "Banaro Web", "Angular", "SayHelloDialog, ToastService, HttpMessagingApi")
 ContainerDb(db, "Banaro database", "Relational database", "conversations, conversation_participants, messages")
-ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters and Horizon queues")
+ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters and BullMQ queues")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "ConversationController", "Laravel controller", "store() for POST /conversations in api.php")
-  Component(req, "StartConversationRequest", "Form request", "recipient_id, body 10–1,000, client_message_id")
+  Component(ctrl, "ConversationRoutes", "Route handler", "POST /conversations on the authenticated stack")
+  Component(req, "StartConversationRequest", "Request schema", "recipient_id, body 10–1,000, client_message_id")
   Component(action, "StartConversation", "Action", "Creates or reuses the pair's conversation and stores the message")
   Component(block, "BlockService", "Domain service (TrustAndSafety)", "isBlockedEitherWay()")
   Component(limiter, "FirstMessageLimiter", "Domain service", "20 first messages per member per day")
-  Component(models, "Conversation / ConversationParticipant / Message", "Eloquent models", "Pair key, read marks, message body")
+  Component(models, "Conversation / ConversationParticipant / Message", "Drizzle tables", "Pair key, read marks, message body")
   Component(resource, "ConversationResource", "API resource", "ConversationRef JSON shape")
   Component(event, "ConversationStarted", "Domain event", "Heard by the matching subsystem")
   Component(notify, "NewMessageNotification", "Queued notification", "mail and database channels")

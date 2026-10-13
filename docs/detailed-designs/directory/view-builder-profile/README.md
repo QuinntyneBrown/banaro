@@ -76,18 +76,18 @@ database. Redis caches match scores. No external system takes part.
 
 ### Backend — Banaro API
 
-- **Route** — `GET /builders/{builder}` is in `routes/api_public.php`, so a visitor may open a profile
+- **Route** — `GET /builders/{builder}` is in `src/http/public-routes.ts`, so a visitor may open a profile
   whose visibility is "Everyone" (`L2-036` criterion 2). The route still resolves the session when one
   exists.
-- **`BuilderProfileController`** (`Controllers/Api/V1/Directory/`) — `show()` calls
+- **`BuilderProfileRoutes`** (`app/api/v1/`) — `show()` calls
   `ViewBuilderProfile`. It returns a `BuilderProfileResource` for a member and a
   `PublicBuilderProfileResource` for a visitor.
-- **`ShowBuilderProfileRequest`** (`Requests/Directory/`) — validates the shape of the public id and
+- **`ShowBuilderProfileRequest`** (`src/http/requests/directory/`) — validates the shape of the public id and
   resolves the viewer (`L2-045` criterion 1).
-- **`ViewBuilderProfile`** (`Actions/Directory/`) — builds the profile for one viewer:
+- **`ViewBuilderProfile`** (`src/actions/directory/`) — builds the profile for one viewer:
   1. It loads the builder by public id with skills, experience, links, neighbourhood, photo and
      building project.
-  2. It raises the same `NotFoundHttpException` when the builder does not exist, the account is
+  2. It raises the same `NotFoundError` when the builder does not exist, the account is
      deleted, or a block exists in either direction (`L2-011` criterion 3, `L2-032` criterion 4). It
      also raises it when `ProfileVisibility` denies the viewer the profile, for example a visitor and
      a "Members only" profile.
@@ -102,17 +102,17 @@ database. Redis caches match scores. No external system takes part.
 - **`ProfileVisibility`** (`settings` subsystem, `L2-036`) — this design calls it and does not redefine
   it. `canView(builder, viewer)` decides access. `visibleFields(builder, viewer)` returns the fields
   the viewer may see.
-- **`MatchScoreService`** (`Services/Matching/`, `matching` subsystem) — `scoreFor(viewer, builder)`
+- **`MatchScoreService`** (`src/services/matching/`, `matching` subsystem) — `scoreFor(viewer, builder)`
   returns the integer score and its reasons. This design does not define the weights (`L2-022`
   criterion 4).
-- **`DistanceService`** and **`PresenceService`** (`Services/Directory/`) — shared with
+- **`DistanceService`** and **`PresenceService`** (`src/services/directory/`) — shared with
   `browse-directory`.
-- **`BuilderProfileResource`** (`Resources/Directory/`) — serializes only the visible fields, using
+- **`BuilderProfileResource`** (`src/http/resources/directory/`) — serializes only the visible fields, using
   conditional attributes so hidden keys are absent rather than null (`L2-011` criterion 4). It links
   the building project by its public id.
-- **`PublicBuilderProfileResource`** (`Resources/Directory/`) — the visitor shape, without match score,
+- **`PublicBuilderProfileResource`** (`src/http/resources/directory/`) — the visitor shape, without match score,
   exact distance, online status or actions, in line with the visitor card of `L2-009` criterion 6.
-- **`Builder`** (`Models/`) — adds `public_id` (random, unique, indexed) and `deleted_at`. Route model
+- **`Builder`** (`src/db/schema/`) — adds `public_id` (random, unique, indexed) and `deleted_at`. Route model
   binding uses `public_id`, never the numeric key.
 
 ### Failure handling
@@ -164,7 +164,7 @@ blocks from the Banaro database and match scores from Redis.
 
 ### Components
 
-Inside the Banaro API, `BuilderProfileController` calls `ViewBuilderProfile`. The action asks
+Inside the Banaro API, `BuilderProfileRoutes` calls `ViewBuilderProfile`. The action asks
 `ProfileVisibility` what the viewer may see, and asks `MatchScoreService`, `DistanceService` and
 `PresenceService` for the viewer-specific facts.
 

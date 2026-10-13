@@ -51,23 +51,23 @@ Banaro API to the Banaro database. It sends no notification.
 
 ### Backend — Banaro API
 
-- **`MatchSuggestionPassController`** (`Controllers/Api/V1/Matching/`) — `store()` handles
+- **`MatchSuggestionPassRoutes`** (`app/api/v1/`) — `store()` handles
   `POST /matching/suggestions/{suggestion}/pass`. It resolves `{suggestion}` through the member's own
   `matchSuggestions()` relation, so another member's id yields 404 (`L2-044` criterion 1). It calls
-  `PassOnSuggestion` and returns a `MatchSuggestionResource`. The route is in `routes/api.php`.
-- **`PassSuggestionRequest`** (`Requests/Matching/`) — accepts `reason` as an optional `PassReason`
+  `PassOnSuggestion` and returns a `MatchSuggestionResource`. The route is on the authenticated stack (`src/http/pipeline.ts`).
+- **`PassSuggestionRequest`** (`src/http/requests/matching/`) — accepts `reason` as an optional `PassReason`
   value and ignores every other field (`L2-045` criterion 1, `L2-044` criterion 4).
-- **`MatchSuggestionPolicy`** (`Policies/`) — `pass()` allows the owner only.
-- **`PassOnSuggestion`** (`Actions/Matching/`) — records the pass in one transaction:
-  1. It locks the suggestion row with `lockForUpdate()`.
+- **`MatchSuggestionPolicy`** (`src/policies/`) — `pass()` allows the owner only.
+- **`PassOnSuggestion`** (`src/actions/matching/`) — records the pass in one transaction:
+  1. It locks the suggestion row with `SELECT … FOR UPDATE`.
   2. It returns the suggestion unchanged when it is already `passed`, so a retried request is
      idempotent.
   3. Otherwise it sets `status` to `passed`, stores `pass_reason` and stamps `acted_at` (`L2-024`
      criterion 1).
   4. It sends no notification, raises no event toward the other builder, and exposes the pass in no
      response to that builder (`L2-024` criterion 1).
-- **`PassReason`** (`Enums/`) — `NotRightSkills`, `TooFar`, `NotLookingNow` and `Other`.
-- **`MatchSuggestion`** (`Models/`) — defined by `generate-weekly-suggestions`; this feature writes
+- **`PassReason`** (`src/enums/`) — `NotRightSkills`, `TooFar`, `NotLookingNow` and `Other`.
+- **`MatchSuggestion`** (`src/db/schema/`) — defined by `generate-weekly-suggestions`; this feature writes
   `status`, `pass_reason` and `acted_at`.
 
 ### Effects on later runs
@@ -114,7 +114,7 @@ The Banaro Worker reads the stored reasons on the next Monday run.
 
 ### Components
 
-Inside the Banaro API, `MatchSuggestionPassController` validates with `PassSuggestionRequest` and calls
+Inside the Banaro API, `MatchSuggestionPassRoutes` validates with `PassSuggestionRequest` and calls
 `PassOnSuggestion`. `MatchSuggestionPolicy` limits the action to the suggestion's owner.
 
 ![C4 component view for passing on a suggestion](diagrams/c4-component.png)

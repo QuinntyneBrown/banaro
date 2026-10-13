@@ -9,8 +9,8 @@ Container_Ext(runner, "Load runner", "Load-testing tool <TO SUPPLY>", "Runs back
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "List pages that request one page at a time")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Paged, indexed reads; short writes")
-  Container(worker, "Banaro Worker", "Laravel Horizon", "Runs queued notifications and media work")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Paged, indexed reads; short writes")
+  Container(worker, "Banaro Worker", "BullMQ worker", "Runs queued notifications and media work")
   ContainerDb(db, "Banaro database", "Relational database", "Indexed builders, skills, match scores, distances")
   ContainerQueue(redis, "Redis", "Redis", "Sessions, cached aggregates, queues")
 }

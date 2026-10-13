@@ -7,7 +7,7 @@ Person(member, "Member", "Signed-in, verified builder")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Matching setup page, matchingSetUpGuard on /matching")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Validates and stores matching preferences")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Validates and stores matching preferences")
   ContainerDb(db, "Banaro database", "Relational database", "Matching preferences, e-mail preferences")
   ContainerQueue(redis, "Redis", "Redis", "Sessions")
 }

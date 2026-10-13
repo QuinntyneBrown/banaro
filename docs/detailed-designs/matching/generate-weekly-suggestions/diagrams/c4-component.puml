@@ -4,19 +4,19 @@ LAYOUT_WITH_LEGEND()
 title Components — Generate weekly suggestions
 
 ContainerDb(db, "Banaro database", "Relational database", "matching_preferences, builders, blocks, match_suggestions, matching_runs")
-ContainerQueue(redis, "Redis", "Redis", "Scheduler lock, Horizon queues")
+ContainerQueue(redis, "Redis", "Redis", "Scheduler lock, BullMQ queues")
 
 Container_Boundary(worker, "Banaro Worker") {
-  Component(schedule, "routes/console.php", "Laravel scheduler", "Monday 06:00 America/Toronto, onOneServer, withoutOverlapping")
-  Component(cmd, "GenerateWeeklySuggestionsCommand", "Artisan command", "Fixes the ISO week key, dispatches one job per active member")
-  Component(job, "GenerateMatchSuggestions", "Queued job, ShouldBeUnique", "One member, one ISO week")
+  Component(schedule, "src/scheduler.ts", "BullMQ scheduler", "Monday 06:00 America/Toronto, one run across replicas")
+  Component(cmd, "GenerateWeeklySuggestionsCommand", "CLI command", "Fixes the ISO week key, dispatches one job per active member")
+  Component(job, "GenerateMatchSuggestions", "BullMQ job, unique job id", "One member, one ISO week")
   Component(action, "GenerateSuggestionsForMember", "Action", "Locks, checks the run, stores up to three suggestions")
   Component(cal, "MatchingScheduleService", "Domain service", "ISO week key, next run date")
   Component(candidates, "MatchCandidateService", "Domain service", "Applies the eligibility rules")
   Component(score, "MatchScoreService", "Domain service", "Integer 0-100 score and reasons")
   Component(distance, "DistanceService", "Domain service (directory)", "Kilometres between neighbourhoods")
   Component(block, "BlockService", "Domain service (trust and safety)", "isBlockedEitherWay()")
-  Component(models, "MatchingPreference / MatchSuggestion / MatchingRun", "Eloquent models", "Preferences, suggestions, runs")
+  Component(models, "MatchingPreference / MatchSuggestion / MatchingRun", "Drizzle tables", "Preferences, suggestions, runs")
   Component(notify, "MatchSuggestionsReadyNotification", "Queued notification", "database and mail channels")
 }
 

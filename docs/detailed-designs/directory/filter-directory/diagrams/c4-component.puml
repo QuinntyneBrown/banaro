@@ -7,8 +7,8 @@ Container(web, "Banaro Web", "Angular", "DirectoryPage, FilterSheet, DirectoryQu
 ContainerDb(db, "Banaro database", "Relational database", "builders, builder_skill, neighbourhoods, neighbourhood_distances")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "BuilderDirectoryController", "Laravel controller", "GET /builders (api_public.php)")
-  Component(req, "SearchDirectoryRequest", "Form request", "Enum membership for role, open to, area, skills, distance")
+  Component(ctrl, "BuilderDirectoryRoutes", "Route handler", "GET /builders (src/http/public-routes.ts)")
+  Component(req, "SearchDirectoryRequest", "Request schema", "Enum membership for role, open to, area, skills, distance")
   Component(action, "SearchDirectory", "Action", "Builds the filtered, sorted page")
   Component(filters, "DirectoryFilters", "Value object", "Selection and distance limit (default 40 km)")
   Component(applier, "DirectoryFilterApplier", "Domain service", "AND across groups, OR within a group")

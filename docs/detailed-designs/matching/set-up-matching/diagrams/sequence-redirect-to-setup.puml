@@ -22,7 +22,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "MatchingSetupPage" as page
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "MatchingOverviewController" as controller
+  participant "MatchingOverviewRoutes" as controller
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5
   database "Banaro database" as db

@@ -15,9 +15,9 @@ skinparam package {
   BackgroundColor #F9FAFB
 }
 box "Backend — Banaro Worker" #ECFDF3
-  participant "Worker replica A: schedule:work" as schedA
-  participant "Worker replica B: schedule:work" as schedB
-  participant "Horizon workers (A and B)" as horizon
+  participant "Scheduler replica A" as schedA
+  participant "Scheduler replica B" as schedB
+  participant "BullMQ workers (A and B)" as worker
   participant "GenerateWeeklySuggestions" as job
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5
@@ -25,32 +25,27 @@ box "Backend — Banaro Infrastructure" #FFF4E5
   database "Banaro database" as db
 end box
 
-note over schedA, schedB
+par on start
+  schedA -> redis : upsertJobScheduler("monday-matching", Monday 06:00 America/Toronto)
+else
+  schedB -> redis : upsertJobScheduler("monday-matching", same pattern)
+end
+redis -> redis : One scheduler record per id; the second upsert changes nothing (L2-054 criterion 5)
+note over redis
   Monday 06:00 America/Toronto (L2-022 criterion 1)
 end note
+redis -> redis : Create one job GenerateWeeklySuggestions for this due time
 par
-  schedA -> redis : onOneServer(): SET lock "schedule:{entry}:{minute}" NX (L2-054 criterion 5)
+  worker -> redis : Worker A asks for the next job
 else
-  schedB -> redis : onOneServer(): SET lock "schedule:{entry}:{minute}" NX
+  worker -> redis : Worker B asks for the next job
 end
-alt replica A wins the lock
-  redis --> schedA : OK
-  redis --> schedB : Lock held
-  schedB -> schedB : Skip entry this minute
-  schedA -> redis : Dispatch GenerateWeeklySuggestions (ShouldBeUnique)
-else replica B wins the lock
-  redis --> schedB : OK
-  redis --> schedA : Lock held
-  schedA -> schedA : Skip entry this minute
-  schedB -> redis : Dispatch GenerateWeeklySuggestions (ShouldBeUnique)
-end
-horizon -> redis : Reserve next job
-redis --> horizon : Job, reserved by exactly one worker
-horizon -> job : handle()
+redis --> worker : Job, locked by exactly one worker
+worker -> job : handle()
 job -> db : Create suggestions
-job --> horizon : Done
-horizon -> redis : Delete job, release unique lock
-opt previous run still going
-  schedA -> schedA : withoutOverlapping() skips the entry
+job --> worker : Done
+worker -> redis : Mark job completed
+opt a job for the same week is still running
+  redis -> redis : The deterministic job id refuses a second job for the week
 end
 @enduml

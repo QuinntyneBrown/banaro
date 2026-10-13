@@ -7,8 +7,8 @@ Container(web, "Banaro Web", "Angular", "DashboardPage, authGuard, HttpDashboard
 ContainerDb(db, "Banaro database", "Relational database", "match_suggestions, rsvps, events, conversations, projects, builders")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "DashboardController", "Laravel controller", "show() and section() in api.php")
-  Component(req, "ViewDashboardRequest / ViewDashboardSectionRequest", "Form requests", "Authorize member, validate section name")
+  Component(ctrl, "DashboardRoutes", "Route handler", "GET handlers for the dashboard and each section, on the authenticated stack")
+  Component(req, "ViewDashboardRequest / ViewDashboardSectionRequest", "Request schemas", "Authorize member, validate section name")
   Component(build, "BuildDashboard", "Action", "All sections, activity flag and next steps")
   Component(buildOne, "BuildDashboardSection", "Action", "One section for a retry")
   Component(assembler, "DashboardAssembler", "Domain service", "Runs each provider in isolation; failure becomes status failed")

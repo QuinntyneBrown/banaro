@@ -5,15 +5,15 @@ title Components — RSVP to an event
 
 Container(web, "Banaro Web", "Angular", "EventDetailPage, CancelRsvpDialog, HttpEventsApi")
 ContainerDb(db, "Banaro database", "Relational database", "events, rsvps")
-ContainerQueue(redis, "Redis", "Redis", "Horizon queues")
+ContainerQueue(redis, "Redis", "Redis", "BullMQ queues")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "RsvpController", "Laravel controller", "PUT and DELETE /events/{event}/rsvp")
-  Component(req, "RsvpToEventRequest / CancelRsvpRequest", "Form requests", "Authorize the member, reject body fields")
+  Component(ctrl, "RsvpRoutes", "Route handler", "PUT and DELETE /events/{event}/rsvp")
+  Component(req, "RsvpToEventRequest / CancelRsvpRequest", "Request schemas", "Authorize the member, reject body fields")
   Component(rsvp, "RsvpToEvent", "Action", "Locks the event, creates a going or waitlisted RSVP")
   Component(cancel, "CancelRsvp", "Action", "Deletes the RSVP and frees the place")
   Component(waitlist, "WaitlistService", "Domain service", "Promotes the next waitlisted member, computes positions")
-  Component(models, "Event / Rsvp", "Eloquent models", "Capacity, going count, RSVP status")
+  Component(models, "Event / Rsvp", "Drizzle tables", "Capacity, going count, RSVP status")
   Component(resource, "RsvpResource", "API resource", "RsvpSummary JSON shape")
   Component(notify, "RsvpConfirmedNotification / WaitlistPromotedNotification", "Queued notifications", "mail and database channels")
 }

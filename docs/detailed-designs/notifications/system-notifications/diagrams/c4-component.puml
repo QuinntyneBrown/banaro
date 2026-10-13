@@ -3,7 +3,7 @@
 LAYOUT_WITH_LEGEND()
 title Components — System notifications
 
-Container(api, "Banaro API", "Laravel", "SiteAnnouncementController, Admin\\SiteAnnouncementController, session")
+Container(api, "Banaro API", "Next.js 16, Node 22", "SiteAnnouncementRoutes, Admin\\SiteAnnouncementRoutes, session")
 
 Container_Boundary(web, "Banaro Web") {
   Component(feature, "Feature pages and dialogs", "Angular", "Raise toasts after actions")

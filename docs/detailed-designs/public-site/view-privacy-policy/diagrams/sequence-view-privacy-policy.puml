@@ -25,7 +25,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "SeoService" as seo
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "I18nController" as controller
+  participant "I18nRoutes" as controller
 end box
 
 alt link inside the app

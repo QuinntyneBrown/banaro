@@ -56,25 +56,25 @@ Banaro API to the Banaro database.
 
 ### Backend — Banaro API
 
-- **`ProjectController`** (`Controllers/Api/V1/Projects/`) — `edit()`, `update()` and `destroy()`
+- **`ProjectRoutes`** (`app/api/v1/`) — `edit()`, `update()` and `destroy()`
   handle `GET /projects/{project}/edit`, `PATCH /projects/{project}` and `DELETE /projects/{project}`.
-  All three routes are in `routes/api.php`.
+  All three routes are on the authenticated stack (`src/http/pipeline.ts`).
 - **`EditProjectRequest`**, **`UpdateProjectRequest`** and **`DeleteProjectRequest`**
-  (`Requests/Projects/`) — each `authorize()` method calls `ProjectPolicy`. Laravel runs `authorize()`
+  (`src/http/requests/projects/`) — each `authorize()` method calls `ProjectPolicy`. `validate()` runs `authorize()`
   before the rules, so a non-owner receives 403 and no action runs (`L2-014` criterion 2).
   - `UpdateProjectRequest` applies the same rules as `ShareProjectRequest` and ignores `owner_id`
     (`L2-044` criterion 4).
   - `DeleteProjectRequest` requires `confirm_name` to equal the project name. The API therefore
     enforces the typed confirmation too, not only the dialog.
-- **`ProjectPolicy`** (`Policies/`) — `update()` and `delete()` return true only when the user's id
+- **`ProjectPolicy`** (`src/policies/`) — `update()` and `delete()` return true only when the user's id
   equals `owner_id`.
-- **`UpdateProject`** (`Actions/Projects/`) — in one transaction, updates the editable fields, syncs
+- **`UpdateProject`** (`src/actions/projects/`) — in one transaction, updates the editable fields, syncs
   the `project_looking_for` rows to the submitted roles and sets `last_activity_at` to now.
-- **`DeleteProject`** (`Actions/Projects/`) — in one transaction, deletes the project's help offers,
+- **`DeleteProject`** (`src/actions/projects/`) — in one transaction, deletes the project's help offers,
   feedback items and looking-for rows, then the project (`L2-014` criterion 4). Foreign keys with
   `ON DELETE CASCADE` back this up. A failure rolls back, so the project and its input remain
   (`L2-014` criterion 5).
-- **`ProjectResource`** (`Resources/Projects/`) — returns the updated project.
+- **`ProjectResource`** (`src/http/resources/projects/`) — returns the updated project.
 
 Conversations that began from an accepted help offer belong to the `messaging` subsystem. Deleting
 the project does not delete them.
@@ -124,7 +124,7 @@ and updates or deletes rows in the Banaro database.
 
 ### Components
 
-Inside the Banaro API, each form request asks `ProjectPolicy` before validation. `ProjectController`
+Inside the Banaro API, each request schema asks `ProjectPolicy` before validation. `ProjectRoutes`
 then calls `UpdateProject` or `DeleteProject`.
 
 ![C4 component view for editing and deleting a project](diagrams/c4-component.png)

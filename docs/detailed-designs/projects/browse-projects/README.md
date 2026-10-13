@@ -51,28 +51,28 @@ API to the Banaro database.
 
 ### Backend — Banaro API
 
-- **`ProjectController`** (`Controllers/Api/V1/Projects/`) — `index()` handles `GET /projects`. The
-  route is in `routes/api_public.php`, so a visitor may call it. The Sanctum stateful guard resolves a
+- **`ProjectRoutes`** (`app/api/v1/`) — `index()` handles `GET /projects`. The
+  route is in `src/http/public-routes.ts`, so a visitor may call it. The session middleware stateful guard resolves a
   member when a session cookie is present.
-- **`BrowseProjectsRequest`** (`Requests/Projects/`) — validates `q` as a string (maximum length
+- **`BrowseProjectsRequest`** (`src/http/requests/projects/`) — validates `q` as a string (maximum length
   `<TO SUPPLY>`), `stage` as a `ProjectStage` case, `looking_for` as a `LookingForRole` case and
   `page` as a positive integer. `per_page` defaults to 12 and is capped at 50 (`L2-047` criterion 4).
-- **`BrowseProjects`** (`Actions/Projects/`) — builds a `ProjectSearchQuery` from the validated input and
+- **`BrowseProjects`** (`src/actions/projects/`) — builds a `ProjectSearchQuery` from the validated input and
   the optional viewer. It calls `ProjectSearchService` and returns the paginator.
-- **`ProjectSearchService`** (`Services/Projects/`) — composes one query (`L2-015` criteria 1 and 2):
+- **`ProjectSearchService`** (`src/services/projects/`) — composes one query (`L2-015` criteria 1 and 2):
   - Search text: case-insensitive match on project name, one-line description and owner name, with
     bound parameters (`L2-045` criterion 5).
   - Stage: equality on `projects.stage`.
   - "Looking for": an `EXISTS` on `project_looking_for` for the role.
   - Block list: for a member viewer, it excludes projects whose owner is in a block relationship with
-    the viewer. It calls `BlockService::applyScope($query, $viewer, 'owner_id')` from
-    `Services/TrustAndSafety`, owned by `block-builder` (`L2-032` criterion 1, `L2-044` criterion 5).
+    the viewer. It calls `BlockService.applyScope(query, viewer, 'owner_id')` from
+    `src/services/trust-and-safety/`, owned by `block-builder` (`L2-032` criterion 1, `L2-044` criterion 5).
   - Order: `last_activity_at` descending, then `id` descending, 12 per page.
   - Indexes on `projects (last_activity_at, id)`, `projects (stage, last_activity_at)` and
     `project_looking_for (role, project_id)` keep the query inside the read budget (`L2-047`
     criterion 1).
-- **`ProjectSummaryResource`** (`Resources/Projects/`) — serializes one row into the `ProjectSummary`
-  shape. It eager-loads owners and roles to avoid one query per card.
+- **`ProjectSummaryResource`** (`src/http/resources/projects/`) — serializes one row into the `ProjectSummary`
+  shape. It joins owners and loads roles in one extra query, so there is no query per card.
 
 `last_activity_at` changes when a project is shared or edited, when it receives feedback, and when
 its owner replies to feedback. The `share-project`, `edit-and-delete-project` and `give-feedback`
@@ -122,7 +122,7 @@ queries projects, roles and blocks in the Banaro database.
 
 ### Components
 
-Inside the Banaro API, `ProjectController` calls `BrowseProjects`, which delegates the query to
+Inside the Banaro API, `ProjectRoutes` calls `BrowseProjects`, which delegates the query to
 `ProjectSearchService`. The service consults `BlockService` for a signed-in viewer.
 
 ![C4 component view for browsing projects](diagrams/c4-component.png)

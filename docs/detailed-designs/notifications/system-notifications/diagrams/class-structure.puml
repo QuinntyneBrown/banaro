@@ -91,10 +91,10 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class SiteAnnouncementController {
+  class SiteAnnouncementRoutes {
     +current(): SiteAnnouncementResource
   }
-  class "Admin\\SiteAnnouncementController" as AdminCtrl {
+  class "Admin\\SiteAnnouncementRoutes" as AdminCtrl {
     +store(request: PublishSiteAnnouncementRequest): SiteAnnouncementResource
     +update(request: UpdateSiteAnnouncementRequest, a: SiteAnnouncement): SiteAnnouncementResource
     +destroy(a: SiteAnnouncement): Response
@@ -103,21 +103,21 @@ package "Backend — Banaro API" {
     +handle(): ?SiteAnnouncement
   }
   class PublishSiteAnnouncement {
-    +handle(admin: User, data: array): SiteAnnouncement
+    +handle(admin: User, data: unknown[]): SiteAnnouncement
   }
   class SiteAnnouncement {
-    +int id
-    +string message
-    +BannerVariant variant
-    +?string link_label
-    +?string link_url
-    +bool dismissible
-    +?Carbon starts_at
-    +?Carbon ends_at
-    +Carbon published_at
-    +?Carbon closed_at
-    +int version
-    +int created_by
+    +id: number
+    +message: string
+    +variant: BannerVariant
+    +link_label: string | null
+    +link_url: string | null
+    +dismissible: boolean
+    +starts_at: Timestamp | null
+    +ends_at: Timestamp | null
+    +published_at: Timestamp
+    +closed_at: Timestamp | null
+    +version: number
+    +created_by: number
   }
   enum BannerVariant {
     Info
@@ -147,9 +147,9 @@ ConnectionBannerSource ..> ConnectivityService : subscribes
 ConnectionBannerSource ..> BannerService : shows
 ConnectivityInterceptor ..> ConnectivityService : reports
 HttpAnnouncementsApi ..|> AnnouncementsApi
-HttpAnnouncementsApi ..> SiteAnnouncementController : HTTPS
+HttpAnnouncementsApi ..> SiteAnnouncementRoutes : HTTPS
 
-SiteAnnouncementController ..> GetCurrentAnnouncement : calls
+SiteAnnouncementRoutes ..> GetCurrentAnnouncement : calls
 AdminCtrl ..> PublishSiteAnnouncement : calls
 GetCurrentAnnouncement --> SiteAnnouncement : reads
 PublishSiteAnnouncement --> SiteAnnouncement : writes

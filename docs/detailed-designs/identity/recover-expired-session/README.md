@@ -72,17 +72,17 @@ Redis holds the sessions.
 
 ### Backend — Banaro API
 
-- **Idle lifetime** — `config/session.php` sets `lifetime` to 43,200 minutes (30 days). Each request
+- **Idle lifetime** — `src/config/security.ts` sets `lifetime` to 43,200 minutes (30 days). Each request
   rewrites the Redis session with a fresh time-to-live. A session without activity for 30 days
   therefore expires (`L2-005` criterion 5).
-- **`EnforceAbsoluteSessionLifetime`** (`Http/Middleware/`) — runs in the stateful API middleware
+- **`EnforceAbsoluteSessionLifetime`** (`src/http/middleware/`) — runs in the stateful API middleware
   after the session starts and before authentication. It reads the `authenticated_at` value that
   `SignIn` stored. After 90 days it logs out and invalidates the session, so the request continues
-  unauthenticated (`L2-005` criterion 5). `config/security.php` holds the 90-day value.
-- **Unauthenticated response** — `bootstrap/app.php` renders `AuthenticationException` on API routes
+  unauthenticated (`L2-005` criterion 5). `src/config/security.ts` holds the 90-day value.
+- **Unauthenticated response** — the error boundary in `src/http/pipeline.ts` renders `UnauthenticatedError` on API routes
   as 401 with code `unauthenticated` and no redirect. Wrong credentials answer 422, not 401, so a
   failed sign-in never triggers the dialog.
-- **`SessionController`** and **`SignIn`** (`Controllers/Api/V1/Identity/`, `Actions/Identity/`) —
+- **`SessionRoutes`** and **`SignIn`** (`app/api/v1/`, `src/actions/identity/`) —
   the sign-in endpoint from `sign-in-and-sign-out`. The dialog reuses it unchanged, including its
   throttle and its new session identifier.
 
@@ -133,7 +133,7 @@ their idle and absolute lifetimes, in Redis.
 
 Inside Banaro Web, `sessionExpiryInterceptor` reaches `SessionExpiredDialog` through the
 `SESSION_RECOVERY` token. Inside the Banaro API, `EnforceAbsoluteSessionLifetime` ends old sessions
-and `SessionController` signs the member in again.
+and `SessionRoutes` signs the member in again.
 
 ![C4 component view for recovering an expired session](diagrams/c4-component.png)
 

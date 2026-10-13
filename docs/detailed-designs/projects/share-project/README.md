@@ -56,10 +56,10 @@ database. No e-mail or queued work is involved.
 
 ### Backend — Banaro API
 
-- **`ProjectController`** (`Controllers/Api/V1/Projects/`) — `store()` handles `POST /projects`. The
-  route is in `routes/api.php`, so it requires a verified member. It calls `ShareProject` and returns
+- **`ProjectRoutes`** (`app/api/v1/`) — `store()` handles `POST /projects`. The
+  route is on the authenticated stack (`src/http/pipeline.ts`), so it requires a verified member. It calls `ShareProject` and returns
   a `ProjectResource` with status 201.
-- **`ShareProjectRequest`** (`Requests/Projects/`) — form request with these rules (`L2-012`
+- **`ShareProjectRequest`** (`src/http/requests/projects/`) — request schema with these rules (`L2-012`
   criterion 2):
   - `name`: required, string, at most 80 characters.
   - `summary`: required, string, at most 140 characters.
@@ -70,20 +70,20 @@ database. No e-mail or queued work is involved.
 
   It accepts only these keys through `validated()`. An `owner_id` or other field in the body is
   ignored (`L2-044` criterion 4).
-- **`ShareProject`** (`Actions/Projects/`) — creates the project in one database transaction:
-  1. It locks the member's `users` row with `lockForUpdate()`. Two concurrent shares from one member
+- **`ShareProject`** (`src/actions/projects/`) — creates the project in one database transaction:
+  1. It locks the member's `users` row with `SELECT … FOR UPDATE`. Two concurrent shares from one member
      therefore run one after another.
   2. It counts the member's projects. At 10 or more it throws `ProjectLimitReached`, which the
      exception handler renders as 422 with code `project_limit` (`L2-012` criterion 4).
   3. It creates the `Project` with `owner_id` taken from the session and `last_activity_at` set to
      now. It then writes one `project_looking_for` row per role (`L2-012` criterion 1).
-- **`Project`** (`Models/`) — holds `owner_id`, `name`, `summary`, `description`, `stage`
-  (`ProjectStage`), `link`, `feedback_count` and `last_activity_at`. It has `$fillable` limited to the
+- **`Project`** (`src/db/schema/`) — holds `owner_id`, `name`, `summary`, `description`, `stage`
+  (`ProjectStage`), `link`, `feedback_count` and `last_activity_at`. The action writes only the
   editable fields, so `owner_id` is never mass-assigned.
-- **`ProjectLookingFor`** (`Models/`) — one row per project and role, unique on
+- **`ProjectLookingFor`** (`src/db/schema/`) — one row per project and role, unique on
   (`project_id`, `role`). The `browse-projects` feature filters on it.
-- **`ProjectStage`** and **`LookingForRole`** (`Enums/`) — closed vocabularies for stage and roles.
-- **`ProjectResource`** (`Resources/Projects/`) — serializes the project, its owner summary and the
+- **`ProjectStage`** and **`LookingForRole`** (`src/enums/`) — closed vocabularies for stage and roles.
+- **`ProjectResource`** (`src/http/resources/projects/`) — serializes the project, its owner summary and the
   viewer's permissions into the `ProjectDetail` shape that `view-project` also uses.
 
 ### Text handling
@@ -136,7 +136,7 @@ the project to the Banaro database.
 
 ### Components
 
-Inside the Banaro API, `ProjectController` validates with `ShareProjectRequest` and calls
+Inside the Banaro API, `ProjectRoutes` validates with `ShareProjectRequest` and calls
 `ShareProject`. The action locks the owner row, counts projects and writes `Project` and
 `ProjectLookingFor` rows.
 

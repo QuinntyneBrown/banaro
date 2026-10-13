@@ -63,26 +63,26 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class EventController {
-    +index(request: ListEventsRequest): AnonymousResourceCollection
+  class EventRoutes {
+    +GET(request: ListEventsRequest): Page
   }
   class ListEventsRequest {
-    +rules(): array
+    +schema: ZodObject
   }
   class ListEvents {
-    +handle(when: string, perPage: int): LengthAwarePaginator
+    +handle(when: string, perPage: number): Page
   }
   class Event {
-    +int id
-    +string title
-    +Carbon starts_at
-    +Carbon ends_at
-    +string venue_name
-    +string venue_address
-    +?int capacity
-    +int going_count
-    +EventStatus status
-    +spotsLeft(): ?int
+    +id: number
+    +title: string
+    +starts_at: Timestamp
+    +ends_at: Timestamp
+    +venue_name: string
+    +venue_address: string
+    +capacity: number | null
+    +going_count: number
+    +status: EventStatus
+    +spotsLeft(): number | null
   }
   enum EventStatus {
     Scheduled
@@ -100,11 +100,11 @@ InMemoryEventsApi ..|> EventsApi
 EventsApi ..> EventListQuery : takes
 EventsApi ..> Page : returns
 Page o-- EventSummary : items
-HttpEventsApi ..> EventController : HTTPS
+HttpEventsApi ..> EventRoutes : HTTPS
 
-EventController ..> ListEventsRequest : validates with
-EventController ..> ListEvents : calls
-EventController ..> EventSummaryResource : returns
+EventRoutes ..> ListEventsRequest : validates with
+EventRoutes ..> ListEvents : calls
+EventRoutes ..> EventSummaryResource : returns
 ListEvents --> Event : queries
 EventSummaryResource ..> Event : serializes
 Event --> EventStatus : has

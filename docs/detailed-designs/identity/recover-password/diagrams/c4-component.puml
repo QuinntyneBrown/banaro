@@ -4,22 +4,22 @@ LAYOUT_WITH_LEGEND()
 title Components — Recover a forgotten password
 
 Container(web, "Banaro Web", "Angular", "ForgotPasswordPage, ResetPasswordPage, resetPasswordResolver, HttpIdentityApi")
-Container(worker, "Banaro Worker", "Laravel Horizon", "Runs SendPasswordResetLink, sends ResetPasswordNotification")
+Container(worker, "Banaro Worker", "BullMQ worker", "Runs SendPasswordResetLink, sends ResetPasswordNotification")
 ContainerDb(db, "Banaro database", "Relational database", "users, password_reset_tokens")
-ContainerQueue(redis, "Redis", "Redis", "Sessions, rate-limit counters, Horizon queues")
+ContainerQueue(redis, "Redis", "Redis", "Sessions, rate-limit counters, BullMQ queues")
 
 Container_Boundary(api, "Banaro API") {
-  Component(limiter, "password-reset rate limiter", "Laravel RateLimiter", "5 per hour per e-mail and per IP")
-  Component(linkCtrl, "PasswordResetLinkController", "Laravel controller", "POST /forgot-password")
-  Component(resetCtrl, "PasswordResetController", "Laravel controller", "POST /reset-password/check and /reset-password")
-  Component(reqs, "SendPasswordResetLinkRequest / CheckPasswordResetRequest / ResetPasswordRequest", "Form requests", "E-mail, token, new password and confirmation")
+  Component(limiter, "password-reset rate limiter", "Redis rate limiter", "5 per hour per e-mail and per IP")
+  Component(linkCtrl, "PasswordResetLinkRoutes", "Route handler", "POST /forgot-password")
+  Component(resetCtrl, "PasswordResetRoutes", "Route handler", "POST /reset-password/check and /reset-password")
+  Component(reqs, "SendPasswordResetLinkRequest / CheckPasswordResetRequest / ResetPasswordRequest", "Request schemas", "E-mail, token, new password and confirmation")
   Component(request, "RequestPasswordReset", "Action", "Queues the job for every well-formed address")
   Component(check, "CheckPasswordResetLink", "Action", "Token exists and is under 60 minutes old")
   Component(reset, "ResetPassword", "Action", "Changes the password, deletes the token")
   Component(policy, "PasswordPolicy", "Domain service", "12-character minimum, common-password list")
   Component(revoke, "SessionRevocationService", "Domain service", "Ends every session of the account")
-  Component(broker, "Password broker", "Laravel token repository", "Hashed tokens, 60-minute expiry")
-  Component(user, "User", "Eloquent model", "Password hash, remember token")
+  Component(broker, "Password broker", "Reset-token store", "Hashed tokens, 60-minute expiry")
+  Component(user, "User", "Drizzle table", "Password hash, remember token")
 }
 
 Rel(web, limiter, "Calls", "JSON/HTTPS")

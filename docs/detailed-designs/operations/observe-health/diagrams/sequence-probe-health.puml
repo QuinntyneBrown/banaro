@@ -16,10 +16,10 @@ skinparam package {
 }
 participant "Container orchestrator" as orch
 box "Backend — Banaro API application" #D1FADF
-  participant "LogRequest" as log
-  participant "AssignRequestId" as reqid
-  participant "LivenessController" as live
-  participant "ReadinessController" as ready
+  participant "logRequest" as log
+  participant "assignRequestId" as reqid
+  participant "health/live route" as live
+  participant "health/ready route" as ready
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "ReadinessService" as svc
@@ -37,7 +37,7 @@ reqid -> live : No session, CSRF, auth, rate limit or maintenance check
 live --> reqid : 200 {status: "ok"}, no dependency touched (L2-053 criterion 1)
 reqid --> log : Response with X-Request-Id
 log --> orch : 200
-log -> log : terminate(): one JSON line (L2-053 criterion 3)
+log -> log : after next() resolves: one JSON line (L2-053 criterion 3)
 
 == Readiness ==
 orch -> log : GET /health/ready

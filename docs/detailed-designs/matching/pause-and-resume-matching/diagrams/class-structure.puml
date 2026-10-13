@@ -36,9 +36,9 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class MatchingPauseController {
-    +store(request: PauseMatchingRequest): MatchingPreferenceResource
-    +destroy(request: ResumeMatchingRequest): MatchingPreferenceResource
+  class MatchingPauseRoutes {
+    +POST(request: PauseMatchingRequest): MatchingPreferenceResource
+    +DELETE(request: ResumeMatchingRequest): MatchingPreferenceResource
   }
   class PauseMatching {
     +handle(member: User): MatchingPreference
@@ -47,9 +47,9 @@ package "Backend — Banaro API" {
     +handle(member: User): MatchingPreference
   }
   class MatchingPreference {
-    +int user_id
-    +MatchingStatus status
-    +?Carbon paused_at
+    +user_id: number
+    +status: MatchingStatus
+    +paused_at: Timestamp | null
   }
   enum MatchingStatus {
     Active
@@ -63,7 +63,7 @@ package "Backend — Banaro Worker" {
     +handle(member: User, isoWeek: string): MatchingRun
   }
   class MatchCandidateService {
-    +eligibleFor(member: User, preference: MatchingPreference): Collection<Builder>
+    +eligibleFor(member: User, preference: MatchingPreference): unknown[]<Builder>
   }
 }
 
@@ -72,11 +72,11 @@ MatchingPage ..> MatchingApi : uses
 MatchingPage ..> ToastService : resume failure
 PauseMatchingDialog ..> MatchingApi : uses
 HttpMatchingApi ..|> MatchingApi
-HttpMatchingApi ..> MatchingPauseController : HTTPS
+HttpMatchingApi ..> MatchingPauseRoutes : HTTPS
 
-MatchingPauseController ..> PauseMatching : calls
-MatchingPauseController ..> ResumeMatching : calls
-MatchingPauseController ..> MatchingPreferenceResource : returns
+MatchingPauseRoutes ..> PauseMatching : calls
+MatchingPauseRoutes ..> ResumeMatching : calls
+MatchingPauseRoutes ..> MatchingPreferenceResource : returns
 PauseMatching --> MatchingPreference : locks and updates
 ResumeMatching --> MatchingPreference : locks and updates
 MatchingPreference --> MatchingStatus : has

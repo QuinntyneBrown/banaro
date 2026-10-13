@@ -68,13 +68,13 @@ database and Media storage. The Banaro Worker runs the media scan through the Me
 ### Backend — Banaro API
 
 - **Routes** — `POST /me/photo`, `GET /me/photo/{photo}` and `DELETE /me/photo` are in
-  `routes/api.php` and require a verified member. `GET /photos/{photo}` is in `routes/api_public.php`,
+  the authenticated stack (`src/http/pipeline.ts`) and require a verified member. `GET /photos/{photo}` is in `src/http/public-routes.ts`,
   because visitors see photos in the directory (`L2-009` criterion 6).
-- **`ProfilePhotoController`** (`Controllers/Api/V1/Profiles/`) — `store()` calls `UploadProfilePhoto`.
+- **`ProfilePhotoRoutes`** (`app/api/v1/`) — `store()` calls `UploadProfilePhoto`.
   `show()` returns the member's own photo status. `destroy()` calls `RemoveProfilePhoto`. `serve()`
   streams a ready photo from Media storage. It answers 404 for a photo that is not ready, or that the
   viewer may not see under the owner's privacy settings (the `ProfileVisibility` filter of `L2-036`).
-- **`UploadProfilePhotoRequest`** (`Requests/Profiles/`) — validates on the server (`L2-008`
+- **`UploadProfilePhotoRequest`** (`src/http/requests/profiles/`) — validates on the server (`L2-008`
   criterion 2, `L2-045` criterion 6):
   - `photo` is a file of at most 5 MB.
   - Its sniffed content type and its extension are both JPEG, PNG or WebP, and they agree. A HEIC file
@@ -82,33 +82,33 @@ database and Media storage. The Banaro Worker runs the media scan through the Me
   - Its pixel size is at least 480 × 480.
   - `crop` holds integer `x`, `y` and `size` within the image, with `size` at least 480.
   - Each failure returns 422 with a message that names the problem.
-- **`UploadProfilePhoto`** (`Actions/Profiles/`) — handles an accepted upload:
-  1. It calls `PhotoProcessor::process()` with the file and the crop.
+- **`UploadProfilePhoto`** (`src/actions/profiles/`) — handles an accepted upload:
+  1. It calls `PhotoProcessor.process()` with the file and the crop.
   2. It writes the result to Media storage under a random name in the quarantine area (`L2-045`
      criterion 6).
   3. It creates a `ProfilePhoto` row with status `Pending` for the member's builder.
   4. After commit it dispatches the `ScanProfilePhoto` job and returns 202 with the photo.
-- **`PhotoProcessor`** (`Services/Profiles/`) — decodes the image, applies the square crop and resizes
+- **`PhotoProcessor`** (`src/services/profiles/`) — decodes the image, applies the square crop and resizes
   it to 480 × 480 px. It encodes a new WebP file (`L2-048` criterion 3). Encoding a new file drops all
   metadata, including GPS EXIF (`L2-008` criterion 4). The image library is `<TO SUPPLY>`.
-- **`ScanProfilePhoto`** (`Jobs/Profiles/`) — queued job on the Banaro Worker. It reads the file and
-  calls `MediaScanner::scan()` (`L2-008` criterion 4):
+- **`ScanProfilePhoto`** (`src/jobs/profiles/`) — queued job on the Banaro Worker. It reads the file and
+  calls `MediaScanner.scan()` (`L2-008` criterion 4):
   - For a clean file it moves the file out of quarantine, sets the photo to `Ready` and points
     `builders.photo_id` at it. It then deletes the previous photo row and file.
   - For an infected file it deletes the file and sets the photo to `Rejected`.
   - Scanner faults are retried with back-off. A photo that is still unscanned after the last attempt
     becomes `Rejected`.
-- **`RemoveProfilePhoto`** (`Actions/Profiles/`) — clears `builders.photo_id` and deletes the
+- **`RemoveProfilePhoto`** (`src/actions/profiles/`) — clears `builders.photo_id` and deletes the
   `ProfilePhoto` row in one transaction. After commit it deletes the stored file from Media storage
   (`L2-008` criterion 5).
-- **`MediaScanner`** (`Contracts/`) and its adapter (`Integrations/`) — the port to the Media scanner
+- **`MediaScanner`** (`src/contracts/`) and its adapter (`src/integrations/`) — the port to the Media scanner
   from the architecture baseline. The vendor is `<TO SUPPLY>`.
-- **`ProfilePhoto`** (`Models/`) — `id` (random UUID), `builder_id`, `path`, `status`
+- **`ProfilePhoto`** (`src/db/schema/`) — `id` (random UUID), `builder_id`, `path`, `status`
   (`PhotoStatus`), `scanned_at`.
-- **`PhotoStatus`** (`Enums/`) — `Pending`, `Ready`, `Rejected`.
-- **`ProfilePhotoResource`** (`Resources/Profiles/`) — serializes a photo into the `ProfilePhoto` shape.
+- **`PhotoStatus`** (`src/enums/`) — `Pending`, `Ready`, `Rejected`.
+- **`ProfilePhotoResource`** (`src/http/resources/profiles/`) — serializes a photo into the `ProfilePhoto` shape.
   It includes `url` only for a ready photo.
-- **`ProfilePhotoPolicy`** (`Policies/`) — `view` and `delete` allow only the owning builder's user, so
+- **`ProfilePhotoPolicy`** (`src/policies/`) — `view` and `delete` allow only the owning builder's user, so
   `GET /me/photo/{photo}` for another member's photo returns 404 (`L2-044` criterion 1).
 
 ### Failure handling
@@ -132,7 +132,7 @@ unchanged.
 - Whether smaller renditions (for example 64 px for cards) are generated alongside the 480 px file:
   `<TO SUPPLY>`.
 - Media storage provider, and whether photos are streamed by the API or served through signed URLs:
-  `<TO SUPPLY>`. The design streams them through `ProfilePhotoController::serve()`.
+  `<TO SUPPLY>`. The design streams them through `ProfilePhotoRoutes.serve()`.
 - Upload rate limit beyond the general limit of `L2-046` criterion 1: `<TO SUPPLY>`.
 
 ## Requirements
@@ -163,7 +163,7 @@ records the result in the Banaro database.
 
 ### Components
 
-Inside the Banaro API, `ProfilePhotoController` calls `UploadProfilePhoto` or `RemoveProfilePhoto`.
+Inside the Banaro API, `ProfilePhotoRoutes` calls `UploadProfilePhoto` or `RemoveProfilePhoto`.
 `UploadProfilePhoto` relies on `PhotoProcessor` and dispatches `ScanProfilePhoto`, which the worker runs
 against the `MediaScanner` contract.
 

@@ -57,44 +57,44 @@ API to the Banaro database, Redis and media storage. The Banaro Worker runs the 
 
 ### Backend — Banaro API
 
-- **`AccountController`** (`Controllers/Api/V1/Settings/`) — `destroy()` handles
-  `DELETE /settings/account` in `routes/api.php`. It calls `DeleteAccount`, invalidates the current
+- **`AccountRoutes`** (`app/api/v1/`) — `destroy()` handles
+  `DELETE /settings/account` on the authenticated stack (`src/http/pipeline.ts`). It calls `DeleteAccount`, invalidates the current
   session, clears the cookie and returns 204.
-- **`DeleteAccountRequest`** (`Requests/Settings/`) — requires `confirmation` equal to `DELETE` and a
+- **`DeleteAccountRequest`** (`src/http/requests/settings/`) — requires `confirmation` equal to `DELETE` and a
   `password` that passes the `current_password` rule. A mismatch returns 422 with field errors and
   changes nothing (`L2-038` criterion 1).
-- **`DeleteAccount`** (`Actions/Settings/`) — runs in one database transaction, so a failure leaves
+- **`DeleteAccount`** (`src/actions/settings/`) — runs in one database transaction, so a failure leaves
   everything unchanged (`L2-038` criterion 3):
-  1. It locks the user row with `lockForUpdate()`.
+  1. It locks the user row with `SELECT … FOR UPDATE`.
   2. It anonymises the account: it sets `deleted_at` and `erase_by` (now plus 30 days), replaces the
      name with a neutral label, and sets `email` and `password` to null. The address becomes free, so
      a later join creates a new, empty account (`L2-038` criteria 2 and 4).
   3. It deletes the member's owned projects with their feedback and help offers (`L2-038` criterion 2).
-  4. After commit, it calls `SessionRegistry::revokeAll()` to end every session
+  4. After commit, it calls `SessionRegistry.revokeAll()` to end every session
      (`L2-038` criterion 2). Revoking only after commit keeps sessions intact when the transaction
      fails.
   5. After commit, it dispatches `ErasePersonalData` for the user.
-- **`ErasePersonalData`** (`Jobs/Settings/`) — queued job on the Banaro Worker. It erases the
+- **`ErasePersonalData`** (`src/jobs/settings/`) — queued job on the Banaro Worker. It erases the
   profile, the photo in media storage, messages sent, privacy settings, e-mail preferences, matching
   preferences and suggestions, blocks, RSVPs and pending tokens. For each RSVP to an upcoming event in
-  which the member was going, it calls `WaitlistService::promoteNext()` of `rsvp-to-event`. It is
+  which the member was going, it calls `WaitlistService.promoteNext()` of `rsvp-to-event`. It is
   idempotent, retries with back-off, and sets `erased_at` when done (`L2-038` criterion 2).
-- **`EraseDeletedAccounts`** (`Console/Commands/`) — scheduled daily in `routes/console.php`. It
+- **`EraseDeletedAccounts`** (`src/console/commands/`) — scheduled daily in `src/scheduler.ts`. It
   re-dispatches `ErasePersonalData` for any account with `deleted_at` set and `erased_at` empty, and
   raises an alert for any account still unerased when `erase_by` is within `<TO SUPPLY>` days. This
   sweep keeps the 30-day deadline when a job fails.
-- **`DataExportController`** (`Controllers/Api/V1/Settings/`) — `store()` creates a `DataExport` with
+- **`DataExportRoutes`** (`app/api/v1/`) — `store()` creates a `DataExport` with
   status `pending` and dispatches `BuildDataExport`, returning 202. `show()` returns the export's status.
   `download()` handles `GET /settings/data-exports/{export}/download`, which requires both the
   owner's session and a valid temporary signature (`signed` middleware), and streams the file.
-- **`BuildDataExport`** (`Jobs/Settings/`) — queued job on the Banaro Worker. It writes one JSON file of
+- **`BuildDataExport`** (`src/jobs/settings/`) — queued job on the Banaro Worker. It writes one JSON file of
   the member's profile, projects, messages and RSVPs to private media storage under a random name. It
-  then marks the export `ready` with a download URL from `URL::temporarySignedRoute()` that expires in
+  then marks the export `ready` with a download URL from `URL.temporarySignedRoute()` that expires in
   24 hours (`L2-038` criterion 5).
-- **`PruneDataExports`** (`Console/Commands/`) — scheduled hourly. It deletes export files and rows
+- **`PruneDataExports`** (`src/console/commands/`) — scheduled hourly. It deletes export files and rows
   older than 24 hours.
-- **`DataExport`** (`Models/`) — holds `user_id`, `status`, `path`, `ready_at` and `expires_at`.
-- **`DataExportPolicy`** (`Policies/`) — limits `show` and `download` to the export's owner
+- **`DataExport`** (`src/db/schema/`) — holds `user_id`, `status`, `path`, `ready_at` and `expires_at`.
+- **`DataExportPolicy`** (`src/policies/`) — limits `show` and `download` to the export's owner
   (`L2-044` criterion 1).
 
 ### Open points
@@ -142,8 +142,8 @@ remaining data and builds data exports in media storage.
 
 ### Components
 
-Inside the Banaro API, `AccountController` calls `DeleteAccount`, which dispatches `ErasePersonalData`.
-`DataExportController` dispatches `BuildDataExport`. Two scheduled commands guard the deadlines.
+Inside the Banaro API, `AccountRoutes` calls `DeleteAccount`, which dispatches `ErasePersonalData`.
+`DataExportRoutes` dispatches `BuildDataExport`. Two scheduled commands guard the deadlines.
 
 ![C4 component view for deleting an account](diagrams/c4-component.png)
 

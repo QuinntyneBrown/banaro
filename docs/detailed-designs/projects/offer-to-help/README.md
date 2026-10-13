@@ -59,48 +59,48 @@ API to the Banaro database. Notifications leave through Redis and the Banaro Wor
 
 ### Backend — Banaro API
 
-- **`HelpOfferController`** (`Controllers/Api/V1/Projects/`) — `store()` and `index()` handle
-  `POST` and `GET /projects/{project}/help-offers` in `routes/api.php`.
-- **`HelpOfferDecisionController`** (`Controllers/Api/V1/Projects/`) — `update()` handles
-  `PUT /projects/{project}/help-offers/{offer}/decision` in `routes/api.php`. Scoped bindings return
+- **`HelpOfferRoutes`** (`app/api/v1/`) — `store()` and `index()` handle
+  `POST` and `GET /projects/{project}/help-offers` on the authenticated stack (`src/http/pipeline.ts`).
+- **`HelpOfferDecisionRoutes`** (`app/api/v1/`) — `update()` handles
+  `PUT /projects/{project}/help-offers/{offer}/decision` on the authenticated stack (`src/http/pipeline.ts`). Scoped bindings return
   404 for an offer of another project.
-- **`OfferToHelpRequest`** (`Requests/Projects/`) — `authorize()` calls `ProjectPolicy::offerHelp()`.
-  The rules require `role` to be one of the project's looking-for roles, through `Rule::in`. They
+- **`OfferToHelpRequest`** (`src/http/requests/projects/`) — `authorize()` calls `ProjectPolicy.offerHelp()`.
+  The rules require `role` to be one of the project's looking-for roles, through `z.enum`. They
   require `message` as a string of 10 to 1,000 characters (`L2-017` criteria 1 and 2).
-- **`ListHelpOffersRequest`** (`Requests/Projects/`) — `authorize()` calls
-  `ProjectPolicy::viewHelpOffers()` and validates `page`.
-- **`AnswerHelpOfferRequest`** (`Requests/Projects/`) — `authorize()` calls
-  `HelpOfferPolicy::answer()`. The rules require `decision` to be `accepted` or `declined`.
-- **`ProjectPolicy`** (`Policies/`):
+- **`ListHelpOffersRequest`** (`src/http/requests/projects/`) — `authorize()` calls
+  `ProjectPolicy.viewHelpOffers()` and validates `page`.
+- **`AnswerHelpOfferRequest`** (`src/http/requests/projects/`) — `authorize()` calls
+  `HelpOfferPolicy.answer()`. The rules require `decision` to be `accepted` or `declined`.
+- **`ProjectPolicy`** (`src/policies/`):
   - `offerHelp()` allows a verified member who is not the owner, on a project with at least one
     looking-for role.
-  - It denies a blocked pair through `BlockService::isBlockedEitherWay(member, owner)` from
-    `Services/TrustAndSafety`, because blocked members cannot interact (`L2-032`).
+  - It denies a blocked pair through `BlockService.isBlockedEitherWay(member, owner)` from
+    `src/services/trust-and-safety/`, because blocked members cannot interact (`L2-032`).
   - `viewHelpOffers()` allows only the owner and denies others as not found (`L2-044` criterion 1).
-- **`HelpOfferPolicy`** (`Policies/`) — `answer()` allows only the owner of the offer's project.
-- **`OfferToHelp`** (`Actions/Projects/`) — runs in one transaction:
-  1. It locks the project row with `lockForUpdate()`. Concurrent offers from one member therefore run
+- **`HelpOfferPolicy`** (`src/policies/`) — `answer()` allows only the owner of the offer's project.
+- **`OfferToHelp`** (`src/actions/projects/`) — runs in one transaction:
+  1. It locks the project row with `SELECT … FOR UPDATE`. Concurrent offers from one member therefore run
      one after another.
   2. It looks for a `Pending` offer by the member on the project. If one exists it throws
      `HelpOfferPending`, rendered as 409 with code `offer_pending` (`L2-017` criterion 3).
   3. It creates a `Pending` `HelpOffer` with `offerer_id` from the session.
   4. After commit, it queues `HelpOfferedNotification` to the owner (`L2-017` criterion 1).
-- **`AnswerHelpOffer`** (`Actions/Projects/`) — locks the offer row and returns 409 with code
+- **`AnswerHelpOffer`** (`src/actions/projects/`) — locks the offer row and returns 409 with code
   `offer_answered` unless it is `Pending`. It then sets the status and `answered_at`.
-  - On accept it calls the `messaging` subsystem's `StartConversation` action (`Actions/Messaging`)
+  - On accept it calls the `messaging` subsystem's `StartConversation` action (`src/actions/messaging/`)
     for the owner and the offerer. It stores the returned `conversation_id` on the offer (`L2-017`
     criterion 4, `L2-026`). `StartConversation` applies the messaging rules, including the block
     check of `L2-026` criterion 7. A refusal rolls back the whole answer.
   - After commit it queues `HelpOfferAnsweredNotification` to the offerer (`L2-017` criterion 4).
-- **`ListHelpOffers`** (`Actions/Projects/`) — returns the project's offers, open offers first, then
+- **`ListHelpOffers`** (`src/actions/projects/`) — returns the project's offers, open offers first, then
   newest first.
-- **`HelpOffer`** (`Models/`) — holds `project_id`, `offerer_id`, `role` (`LookingForRole`),
+- **`HelpOffer`** (`src/db/schema/`) — holds `project_id`, `offerer_id`, `role` (`LookingForRole`),
   `message`, `status` (`HelpOfferStatus`), `answered_at` and `conversation_id`. The message is stored
   as plain text and encoded on output (`L2-045` criterion 5).
-- **`HelpOfferStatus`** (`Enums/`) — `Pending`, `Accepted` and `Declined`.
-- **`HelpOfferResource`** (`Resources/Projects/`) — serializes an offer into the `HelpOfferView`
+- **`HelpOfferStatus`** (`src/enums/`) — `Pending`, `Accepted` and `Declined`.
+- **`HelpOfferResource`** (`src/http/resources/projects/`) — serializes an offer into the `HelpOfferView`
   shape.
-- **`HelpOfferedNotification`** and **`HelpOfferAnsweredNotification`** (`Notifications/`) — queued
+- **`HelpOfferedNotification`** and **`HelpOfferAnsweredNotification`** (`src/notifications/`) — queued
   notifications dispatched after commit. The Banaro Worker sends them. `HelpOfferedNotification` uses
   the `mail` and `database` channels under the "Project activity" e-mail category (`L2-029`
   criterion 1, `L2-037`).
@@ -118,7 +118,7 @@ API to the Banaro database. Notifications leave through Redis and the Banaro Wor
     conversation only on accept. `<TO SUPPLY>`.
 - The owner's help-offer section and its accept and decline actions have no mock. The `own` mock shows
   only an "Offers to help" count. A mock is `<TO SUPPLY>` before implementation.
-- `StartConversation::handle(sender, recipient, body, clientMessageId)` (`say-hello`) needs a first
+- `StartConversation.handle(sender, recipient, body, clientMessageId)` (`say-hello`) needs a first
   message. Which member is the sender, and whether the body is the offer message: `<TO SUPPLY>`.
 - Whether an accepted offer counts toward the daily cap of 20 first messages (`L2-026` criterion 8),
   which `StartConversation` applies: `<TO SUPPLY>`.

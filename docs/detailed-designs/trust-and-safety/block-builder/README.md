@@ -54,33 +54,33 @@ API to the Banaro database. A block sends no e-mail, so the Banaro Worker takes 
 
 ### Backend — Banaro API
 
-- **`BlockController`** (`Controllers/Api/V1/TrustAndSafety/`) — `index()`, `store()` and `destroy()`
+- **`BlockRoutes`** (`app/api/v1/`) — `index()`, `store()` and `destroy()`
   handle `GET /blocks`, `PUT /blocks/{builder}` and `DELETE /blocks/{builder}`. The routes are in
-  `routes/api.php`, so they require a verified member. The blocker always comes from the session.
-- **`BlockBuilderRequest`** and **`UnblockBuilderRequest`** (`Requests/TrustAndSafety/`) — form
+  the authenticated stack (`src/http/pipeline.ts`), so they require a verified member. The blocker always comes from the session.
+- **`BlockBuilderRequest`** and **`UnblockBuilderRequest`** (`src/http/requests/trust-and-safety/`) — form
   requests that authorize the member and reject any request body fields.
-- **`BlockBuilder`** (`Actions/TrustAndSafety/`) — creates the block:
+- **`BlockBuilder`** (`src/actions/trust-and-safety/`) — creates the block:
   1. It rejects a block of the member's own builder with 422 and code `cannot_block_self`.
   2. It returns 404 for a builder that does not exist, is deleted, or has already blocked the member.
      The response is the same in each case, so it reveals no block.
   3. It inserts the `Block` row; an existing row returns unchanged, so the request is idempotent.
   4. It sends no notification to the blocked party.
-- **`UnblockBuilder`** (`Actions/TrustAndSafety/`) — deletes the blocker's own `Block` row and returns
+- **`UnblockBuilder`** (`src/actions/trust-and-safety/`) — deletes the blocker's own `Block` row and returns
   204, or 404 when none exists. Visibility returns in both directions unless the other member holds a
   separate block of their own (`L2-032` criterion 3).
-- **`BlockService`** (`Services/TrustAndSafety/`) — the single block rule for every subsystem:
-  - `isBlockedEitherWay(User $a, User $b): bool` — true when a `Block` row exists from `a` to `b` or
+- **`BlockService`** (`src/services/trust-and-safety/`) — the single block rule for every subsystem:
+  - `isBlockedEitherWay(a: User, b: User): boolean` — true when a `Block` row exists from `a` to `b` or
     from `b` to `a`.
-  - `applyScope(Builder $query, User $viewer, string $userColumn = 'user_id'): Builder` — adds a
+  - `applyScope(query: Builder, viewer: User, userColumn: string = 'user_id'): Builder` — adds a
     `whereNotExists` subquery on `blocks` in both directions for the given user column. It returns the
     same query for chaining.
-  - `blockedByMember(User $blocker): Collection` — the blocker's own blocks, newest first, for the
+  - `blockedByMember(blocker: User): Block[]` — the blocker's own blocks, newest first, for the
     blocked list.
-- **`ExcludesBlockedUsers`** (`Models/Concerns/`) — trait that gives a model the local scope
-  `withoutBlockedFor(User $viewer)`, which delegates to `BlockService::applyScope()`.
-- **`Block`** (`Models/`) — holds `blocker_id`, `blocked_id` and `created_at`. A unique index on
+- **`ExcludesBlockedUsers`** (`src/db/schema/concerns/`) — trait that gives a model the local scope
+  `withoutBlockedFor(viewer: User)`, which delegates to `BlockService.applyScope()`.
+- **`Block`** (`src/db/schema/`) — holds `blocker_id`, `blocked_id` and `created_at`. A unique index on
   (`blocker_id`, `blocked_id`) and a second index on `blocked_id` serve both directions of the scope.
-- **`BlockedBuilderResource`** (`Resources/TrustAndSafety/`) — serializes one row of the blocked list.
+- **`BlockedBuilderResource`** (`src/http/resources/trust-and-safety/`) — serializes one row of the blocked list.
 
 ### Enforcement in other subsystems
 
@@ -89,14 +89,14 @@ The table names the consumer in each design (`L2-032` criteria 1 and 4).
 
 | Surface | Consumer | Rule |
 |---------|----------|------|
-| Directory and search | listing queries in `browse-directory` and `filter-directory` | `withoutBlockedFor($viewer)` |
-| Builder profile | route binding in `view-builder-profile` | `withoutBlockedFor($viewer)`, so a blocked profile returns 404 |
+| Directory and search | listing queries in `browse-directory` and `filter-directory` | `withoutBlockedFor(viewer)` |
+| Builder profile | route binding in `view-builder-profile` | `withoutBlockedFor(viewer)`, so a blocked profile returns 404 |
 | Matching | `MatchingService` in `generate-weekly-suggestions` and `review-matches` | scope on candidates and on stored suggestions |
 | Project feedback | feedback listing in `give-feedback` and `view-project` | scope on the feedback author |
 | Event attendee lists | attendee listing in `view-event` | scope on the attendee |
 | Messaging | conversation policy in `say-hello` and `hold-conversations` | 404 when fetching the other member's conversations; 403 on send (`L2-026` criterion 7) |
 
-The enforcement sequence names the consumers `BuilderController`, `ConversationController`,
+The enforcement sequence names the consumers `BuilderRoutes`, `ConversationRoutes`,
 `ConversationPolicy` and `SayHelloDialog`. The consuming designs fix their final names.
 
 ### Open points
@@ -139,7 +139,7 @@ Banaro database and applies them to every query that lists or loads another memb
 
 ### Components
 
-Inside the Banaro API, `BlockController` calls `BlockBuilder` or `UnblockBuilder`. `BlockService` is
+Inside the Banaro API, `BlockRoutes` calls `BlockBuilder` or `UnblockBuilder`. `BlockService` is
 the shared component that directory, matching, projects, events, messaging and search call.
 
 ![C4 component view for blocking a builder](diagrams/c4-component.png)

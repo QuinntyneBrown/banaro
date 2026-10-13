@@ -8,14 +8,14 @@ System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Unsubscribe landing page (settings)")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Feature actions queue notifications after commit; signed unsubscribe route")
-  Container(worker, "Banaro Worker", "Laravel Horizon and scheduler", "mail queue, reminders every 5 minutes, weekly digest")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Feature actions queue notifications after commit; signed unsubscribe route")
+  Container(worker, "Banaro Worker", "BullMQ worker and scheduler", "mail queue, reminders every 5 minutes, weekly digest")
   ContainerDb(db, "Banaro database", "Relational database", "E-mail preferences, delivery records, dedupe keys, RSVPs, notifications")
   ContainerQueue(redis, "Redis", "Redis", "mail queue, scheduler locks")
 }
 
 Rel(api, redis, "Queues notifications", "Redis protocol")
-Rel(worker, redis, "Takes jobs; holds onOneServer locks", "Redis protocol")
+Rel(worker, redis, "Takes jobs; job schedulers", "Redis protocol")
 Rel(worker, db, "Reads preferences; writes delivery records and dedupe keys", "SQL")
 Rel(worker, mail, "Sends e-mail via", "Mailer contract")
 Rel(mail, member, "Delivers e-mail to")

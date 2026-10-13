@@ -20,8 +20,8 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpProjectsApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "ProjectController" as pctrl
-  participant "FeedbackController" as fctrl
+  participant "ProjectRoutes" as pctrl
+  participant "FeedbackRoutes" as fctrl
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "ViewProject" as view
@@ -37,7 +37,7 @@ actor -> page : Open /projects/{id}
 page --> actor : loading state with skeletons (L2-013 criterion 5)
 par project
   page -> client : get(id)
-  client -> pctrl : GET /api/v1/projects/{id} (api_public.php)
+  client -> pctrl : GET /api/v1/projects/{id} (src/http/public-routes.ts)
   pctrl -> pctrl : Resolve optional session viewer
   alt project missing or deleted
     pctrl --> client : 404 (L2-013 criterion 4)

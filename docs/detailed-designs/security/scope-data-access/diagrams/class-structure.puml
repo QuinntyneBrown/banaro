@@ -25,65 +25,61 @@ package "Frontend — api library (lib/auth)" {
 }
 
 package "Backend — Banaro API" {
-  class OwnedByMember <<trait>> {
-    +owner(): BelongsTo
-    +scopeOwnedBy(query: Builder, member: User): Builder
+  class Scopes <<src/db/scopes.ts>> {
+    +ownedBy(table: Table, member: User): SQL
+    +withParticipant(member: User): SQL
+    +visibleTo(table: Table, viewer: User | null): SQL
   }
-  class Conversation {
-    +int id
-    +scopeWithParticipant(query: Builder, member: User): Builder
+  class conversations <<table>> {
+    +id: number
   }
-  class Notification {
-    +int id
-    +int user_id
-    #array fillable
+  class notifications <<table>> {
+    +id: string
+    +notifiable_id: number
   }
-  class Project {
-    +int id
-    +int owner_id
-    +bool is_published
-    #array fillable
-    +scopeVisibleTo(query: Builder, viewer: ?User): Builder
+  class projects <<table>> {
+    +id: number
+    +owner_id: number
+    +is_published: boolean
   }
-  class Builder {
-    +int id
-    +int user_id
-    +scopeVisibleTo(query: Builder, viewer: ?User): Builder
+  class builders <<table>> {
+    +id: number
+    +user_id: number
   }
   class BlockService {
-    +blockedIdsFor(viewer: User): Collection<int>
-    +isBlockedPair(a: User, b: User): bool
-    +forget(viewer: User): void
+    +blockedIdsFor(viewer: User): Promise<number[]>
+    +isBlockedPair(a: User, b: User): Promise<boolean>
+    +forget(viewer: User): Promise<void>
   }
   class ConversationPolicy {
-    +view(member: User, conversation: Conversation): Response
+    +view(member: User, conversation: Conversation): PolicyResult
   }
   class ProjectPolicy {
-    +view(member: ?User, project: Project): Response
-    +update(member: User, project: Project): Response
+    +view(member: User | null, project: Project): PolicyResult
+    +update(member: User, project: Project): PolicyResult
   }
-  class "Response" as AuthResponse {
-    +{static} allow(): Response
-    +{static} denyAsNotFound(): Response
-    +{static} deny(): Response
+  class PolicyResult {
+    +{static} allow(): PolicyResult
+    +{static} denyAsNotFound(): PolicyResult
+    +{static} deny(): PolicyResult
   }
-  abstract class ApiRequest {
-    +rules(): array
-    +validated(): array
+  class "validate()" as Validate <<src/http/validation>> {
+    +validate(request: RequestSchema, ctx: Ctx): Promise<Parsed>
   }
   class UpdateProjectRequest {
-    +rules(): array
+    +schema: ZodObject
+    +authorize(ctx: Ctx): Promise<PolicyResult>
   }
 }
 
-package "Backend — tests/Feature/Security" {
+package "Backend — tests/feature/security" {
   interface RouteOwnershipFixture {
     +routeName(): string
-    +arrange(owner: User): array
+    +arrange(owner: User): string[]
     +expectation(): Expectation
-    +sentinels(owner: User): array
-    +isListing(): bool
-    +writableInput(): ?array
+    +sentinels(owner: User): string[]
+    +isListing(): boolean
+    +writableInput(): string[] | null
   }
   enum Expectation {
     NotFound
@@ -91,28 +87,30 @@ package "Backend — tests/Feature/Security" {
     SelfOnly
   }
   class RouteOwnershipRegistry {
-    +fixtureFor(routeName: string): ?RouteOwnershipFixture
-    +all(): array
+    +fixtureFor(routeName: string): RouteOwnershipFixture | null
+    +all(): string[]
   }
-  class MessagingFixtures
+  class "fixtures/messaging.ts" as MessagingFixtures
   class CrossUserAccessTest {
-    +test_every_authenticated_route_has_a_fixture(): void
-    +test_second_member_cannot_reach_owner_records(): void
+    +every authenticated route has a fixture
+    +a second member cannot reach the owner's records
   }
   class UnauthenticatedAccessTest
   class GuardedFieldsTest
   class ListingVisibilityTest
 }
 
-Notification ..|> OwnedByMember
-Project ..|> OwnedByMember
-Builder ..> BlockService : visibleTo() reads
-Project ..> BlockService : visibleTo() reads
-ConversationPolicy ..> AuthResponse : denyAsNotFound()
-ProjectPolicy ..> AuthResponse : denyAsNotFound()
-ConversationPolicy ..> Conversation : guards
-ProjectPolicy ..> Project : guards
-UpdateProjectRequest --|> ApiRequest
+Scopes ..> notifications : ownedBy
+Scopes ..> projects : ownedBy, visibleTo
+Scopes ..> builders : visibleTo
+Scopes ..> conversations : withParticipant
+Scopes ..> BlockService : visibleTo() reads
+ConversationPolicy ..> PolicyResult : denyAsNotFound()
+ProjectPolicy ..> PolicyResult : denyAsNotFound()
+ConversationPolicy ..> conversations : guards
+ProjectPolicy ..> projects : guards
+Validate ..> UpdateProjectRequest : authorize, then schema.parse
+UpdateProjectRequest ..> ProjectPolicy : authorize
 
 MessagingFixtures ..|> RouteOwnershipFixture
 RouteOwnershipRegistry "1" o-- "*" RouteOwnershipFixture

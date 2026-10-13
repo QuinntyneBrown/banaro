@@ -21,7 +21,7 @@ box "Frontend — banaro application" #E0F2FE
 end box
 box "Backend — Banaro API application" #D1FADF
   participant "throttle:contact" as limiter
-  participant "ContactMessageController" as controller
+  participant "ContactMessageRoutes" as controller
   participant "SendContactMessageRequest" as req
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
@@ -42,7 +42,7 @@ alt client checks fail
 else client checks pass
   page -> page : submitting state, "Sending…", fields read-only (L2-040 criterion 2)
   page -> client : sendContactMessage(request)
-  client -> limiter : POST /api/v1/contact-messages (api_public.php, CSRF token)
+  client -> limiter : POST /api/v1/contact-messages (src/http/public-routes.ts, CSRF token)
   limiter -> redis : Increment counter for hashed client IP
   alt more than 3 in the hour from this IP
     limiter --> client : 429 with Retry-After (L2-040 criterion 3)

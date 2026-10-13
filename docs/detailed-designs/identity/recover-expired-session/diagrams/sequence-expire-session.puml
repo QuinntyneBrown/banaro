@@ -21,7 +21,7 @@ end box
 box "Backend — Banaro API application" #D1FADF
   participant "StartSession" as start
   participant "EnforceAbsoluteSessionLifetime" as absolute
-  participant "auth:sanctum" as auth
+  participant "auth" as auth
   participant "Member endpoint controller" as controller
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5

@@ -17,10 +17,9 @@ skinparam package {
 actor "Developer" as actor
 box "Pipeline — .ci" #FFF4E5
   participant "dependency-scan stage" as stage
-  participant "Severity gate script" as gate
 end box
 box "Backend — banaro-api sources" #D1FADF
-  participant "composer audit" as composer
+  participant "npm audit" as backendAudit
 end box
 box "Frontend — banaro-web and e2e sources" #E0F2FE
   participant "npm audit" as npm
@@ -28,12 +27,10 @@ end box
 participant "Advisory databases" as advisories
 
 actor -> stage : Open or update a pull request
-stage -> composer : composer audit --format=json (backend/)
-composer -> advisories : Look up composer.lock packages
-advisories --> composer : Advisories with severity
-composer --> stage : JSON report
-stage -> gate : Filter report by severity
-gate --> stage : Count of high and critical advisories
+stage -> backendAudit : npm audit --audit-level=high (backend/)
+backendAudit -> advisories : Look up package-lock.json packages
+advisories --> backendAudit : Advisories with severity
+backendAudit --> stage : Exit code
 stage -> npm : npm audit --audit-level=high (frontend/, e2e/)
 npm -> advisories : Look up package-lock.json packages
 advisories --> npm : Advisories with severity

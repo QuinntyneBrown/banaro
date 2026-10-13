@@ -7,14 +7,14 @@ Container(web, "Banaro Web", "Angular", "CodeOfConductPage, JoinPage, AcceptCode
 ContainerDb(db, "Banaro database", "Relational database", "conduct_acceptances")
 
 Container_Boundary(api, "Banaro API") {
-  Component(i18n, "I18nController", "Laravel controller", "GET /i18n/{locale}, codeOfConduct.* keys")
-  Component(ctrl, "CodeOfConductController", "Laravel controller", "POST /code-of-conduct/acceptances")
-  Component(req, "AcceptCodeOfConductRequest", "Form request", "Requires version")
+  Component(i18n, "I18nRoutes", "Route handler", "GET /i18n/{locale}, codeOfConduct.* keys")
+  Component(ctrl, "CodeOfConductRoutes", "Route handler", "POST /code-of-conduct/acceptances")
+  Component(req, "AcceptCodeOfConductRequest", "Request schema", "Requires version")
   Component(action, "AcceptCodeOfConduct", "Action", "Rejects stale versions, records acceptance idempotently")
   Component(service, "CodeOfConductService", "Domain service", "currentVersion(), requiresAcceptance(user)")
-  Component(config, "config/banaro.php", "Configuration", "code_of_conduct.version and published_on")
+  Component(config, "src/config/banaro.ts", "Configuration", "code_of_conduct.version and published_on")
   Component(signin, "Sign-in payload", "identity subsystem", "codeOfConductAcceptanceRequired flag")
-  Component(model, "ConductAcceptance", "Eloquent model", "user_id, version, accepted_at")
+  Component(model, "ConductAcceptance", "Drizzle table", "user_id, version, accepted_at")
 }
 
 Rel(web, i18n, "Loads catalogue", "JSON/HTTPS")

@@ -7,7 +7,7 @@ Person(member, "Member", "Builder with a Banaro account")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Sign-in page, account menu, SessionStore")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3, Sanctum", "Credential check, throttling, session lifecycle")
+  Container(api, "Banaro API", "Next.js 16, Node 22, session middleware", "Credential check, throttling, session lifecycle")
   ContainerDb(db, "Banaro database", "Relational database", "users")
   ContainerQueue(redis, "Redis", "Redis", "Sessions and failed-attempt counters")
 }

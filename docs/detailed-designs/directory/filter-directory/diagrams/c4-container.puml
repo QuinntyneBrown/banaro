@@ -7,7 +7,7 @@ Person(member, "Member", "Signed-in, verified builder")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Directory page, filter sidebar and filter sheet")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Validates filters, applies them, counts options")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Validates filters, applies them, counts options")
   ContainerDb(db, "Banaro database", "Relational database", "Builders, skills, neighbourhoods, distances")
   ContainerDb(redis, "Redis", "Redis", "Sessions, cached match scores")
 }

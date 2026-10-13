@@ -7,13 +7,13 @@ Container(web, "Banaro Web", "Angular", "EventDetailPage, AttendeeCluster, HttpE
 ContainerDb(db, "Banaro database", "Relational database", "events, rsvps, builders, blocks")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "EventController", "Laravel controller", "show() for GET /events/{event} in api.php")
-  Component(req, "ViewEventRequest", "Form request", "Authorizes a verified member")
+  Component(ctrl, "EventRoutes", "Route handler", "GET /events/{event} on the authenticated stack")
+  Component(req, "ViewEventRequest", "Request schema", "Authorizes a verified member")
   Component(action, "ViewEvent", "Action", "Assembles event, host, viewer RSVP and attendee preview")
   Component(waitlist, "WaitlistService", "Domain service", "positionOf() for a waitlisted viewer")
   Component(attendees, "AttendeeListService", "Domain service", "Listed, unblocked going members")
   Component(block, "BlockService", "Domain service (TrustAndSafety)", "isBlockedEitherWay()")
-  Component(models, "Event / Rsvp / Builder", "Eloquent models", "Event fields, RSVP status, public profiles")
+  Component(models, "Event / Rsvp / Builder", "Drizzle tables", "Event fields, RSVP status, public profiles")
   Component(resource, "EventDetailResource", "API resource", "EventDetail JSON shape with map URL")
 }
 

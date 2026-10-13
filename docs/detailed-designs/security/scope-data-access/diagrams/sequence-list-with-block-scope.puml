@@ -20,12 +20,12 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpDirectoryApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "BuilderController" as controller
+  participant "BuilderRoutes" as controller
   participant "BuilderResource" as resource
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "ListBuilders" as action
-  participant "Builder::visibleTo" as scope
+  participant "visibleTo(builders, viewer)" as scope
   participant "BlockService" as block
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5
@@ -36,7 +36,7 @@ end box
 actor -> page : Open /builders
 page -> client : list(filters, page)
 client -> controller : GET /api/v1/builders?page=1
-controller -> controller : Validate ListBuildersRequest
+controller -> controller : validate(ListBuildersRequest, ctx)
 controller -> action : handle(member, filters)
 action -> scope : visibleTo(member)
 scope -> block : blockedIdsFor(member)

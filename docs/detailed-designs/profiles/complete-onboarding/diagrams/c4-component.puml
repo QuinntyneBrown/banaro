@@ -7,14 +7,14 @@ Container(web, "Banaro Web", "Angular", "OnboardingPage, onboardingGuard, HttpPr
 ContainerDb(db, "Banaro database", "Relational database", "builders, skills, builder_skill, neighbourhoods")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "OnboardingController", "Laravel controller", "GET, PUT /me/onboarding/{step}, POST /me/onboarding/complete")
-  Component(req, "SaveOnboardingAboutRequest / SaveOnboardingSkillsRequest / SaveOnboardingGoalsRequest", "Form requests", "Required fields, skill limit of 12, enum membership")
+  Component(ctrl, "OnboardingRoutes", "Route handler", "GET, PUT /me/onboarding/{step}, POST /me/onboarding/complete")
+  Component(req, "SaveOnboardingAboutRequest / SaveOnboardingSkillsRequest / SaveOnboardingGoalsRequest", "Request schemas", "Required fields, skill limit of 12, enum membership")
   Component(get, "GetOnboardingProgress", "Action", "Loads saved answers and the next step")
   Component(save, "SaveOnboardingStep", "Action", "Saves one step in one transaction")
   Component(complete, "CompleteOnboarding", "Action", "Checks readiness and stamps completion")
   Component(svc, "OnboardingService", "Domain service", "Tracks saved steps, finds the first unfinished step")
   Component(catalogue, "SkillCatalogue", "Domain service", "Catalogue skills, resolves custom skills")
-  Component(models, "Builder / Skill / Neighbourhood", "Eloquent models", "Profile, ordered skills, GTA neighbourhoods")
+  Component(models, "Builder / Skill / Neighbourhood", "Drizzle tables", "Profile, ordered skills, GTA neighbourhoods")
   Component(resource, "OnboardingResource", "API resource", "OnboardingProgress JSON shape")
 }
 

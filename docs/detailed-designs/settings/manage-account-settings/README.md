@@ -14,7 +14,7 @@ Terms used in this design:
 - **account details** — member's full name, e-mail address and password
 - **pending e-mail change** — requested new address that waits for confirmation from that address
 - **confirmation link** — signed, single-use link sent to the new address to complete an e-mail change
-- **session** — one signed-in browser, identified by its Laravel session id
+- **session** — one signed-in browser, identified by its session id
 - **other sessions** — every session of the member except the one making the request
 
 The member edits the Account tab and selects "Save changes". A name change saves at once. An e-mail
@@ -68,45 +68,45 @@ Redis. The Banaro Worker sends the e-mail.
 
 ### Backend — Banaro API
 
-Every route below except the confirmation is in `routes/api.php` and acts on the session user only; no
+Every route below except the confirmation is on the authenticated stack (`src/http/pipeline.ts`) and acts on the session user only; no
 route takes a user id (`L2-044` criterion 1).
 
-- **`SettingsController`** (`Controllers/Api/V1/Settings/`) — `show()` handles `GET /settings` and
+- **`SettingsRoutes`** (`app/api/v1/`) — `show()` handles `GET /settings` and
   returns a `SettingsResource` with the account, privacy and e-mail parts.
-- **`AccountController`** (`Controllers/Api/V1/Settings/`) — `update()` handles
+- **`AccountRoutes`** (`app/api/v1/`) — `update()` handles
   `PATCH /settings/account` and calls `UpdateAccount`.
-- **`UpdateAccountRequest`** (`Requests/Settings/`) — validates `name` (required, length
+- **`UpdateAccountRequest`** (`src/http/requests/settings/`) — validates `name` (required, length
   `<TO SUPPLY>`), `email` (well-formed) and `current_password`. `current_password` is required when
-  `email` differs from the stored address and shall match it (Laravel `current_password` rule). Fields
+  `email` differs from the stored address and shall match it (checked with `PasswordPolicy.verify`). Fields
   such as `role` or `verified_at` are ignored (`L2-044` criterion 4).
-- **`UpdateAccount`** (`Actions/Settings/`) — saves the name. When the e-mail differs, it calls
+- **`UpdateAccount`** (`src/actions/settings/`) — saves the name. When the e-mail differs, it calls
   `RequestEmailChange`. It returns the updated `AccountSettings`.
-- **`RequestEmailChange`** (`Actions/Settings/`) — stores one `PendingEmailChange` per member with a
+- **`RequestEmailChange`** (`src/actions/settings/`) — stores one `PendingEmailChange` per member with a
   hashed random token and an expiry of `<TO SUPPLY>`, replacing any earlier one. After commit it queues
   `ConfirmNewEmailNotification` to the new address and `EmailChangeRequestedNotification` to the
   current address (`L2-035` criterion 1).
-- **`EmailChangeController`** (`Controllers/Api/V1/Settings/`) — `confirm()` handles
-  `POST /settings/email-change/confirm` from `routes/api_public.php`, because the member may open the
+- **`EmailChangeRoutes`** (`app/api/v1/`) — `confirm()` handles
+  `POST /settings/email-change/confirm` from `src/http/public-routes.ts`, because the member may open the
   link on a device without a session. It calls `ConfirmEmailChange`.
-- **`ConfirmEmailChange`** (`Actions/Settings/`) — finds the pending change by token hash, rejects an
+- **`ConfirmEmailChange`** (`src/actions/settings/`) — finds the pending change by token hash, rejects an
   expired or used token with 422 `invalid_email_change_token`, checks that the address is still free
   case-insensitively (`L2-001`), sets `users.email` and `email_verified_at`, and deletes the pending
   change.
-- **`PasswordController`** (`Controllers/Api/V1/Settings/`) — `update()` handles `PUT /settings/password`
+- **`PasswordRoutes`** (`app/api/v1/`) — `update()` handles `PUT /settings/password`
   with `ChangePasswordRequest` (current password, new password of at least 12 characters, not on the
   common-password list, as in `L2-001`) and calls `ChangePassword`.
-- **`ChangePassword`** (`Actions/Settings/`) — hashes and stores the new password, sets
+- **`ChangePassword`** (`src/actions/settings/`) — hashes and stores the new password, sets
   `password_changed_at`, regenerates the current session id, and calls
-  `SessionRegistry::revokeOthers()` (`L2-035` criterion 1). After commit it queues
+  `SessionRegistry.revokeOthers()` (`L2-035` criterion 1). After commit it queues
   `PasswordChangedNotification`, a security e-mail that preferences never turn off (`L2-029`).
-- **`SessionController`** (`Controllers/Api/V1/Settings/`) — `destroyOthers()` handles
+- **`SessionRoutes`** (`app/api/v1/`) — `destroyOthers()` handles
   `DELETE /settings/sessions/others` and calls `SignOutOtherDevices`, which calls
-  `SessionRegistry::revokeOthers()` (`L2-035` criterion 4).
-- **`SessionRegistry`** (`Services/Identity/`) — keeps a Redis set of session ids per user, filled at
-  sign-in. `revokeOthers(User, string $currentId)` destroys every other session in the set.
+  `SessionRegistry.revokeOthers()` (`L2-035` criterion 4).
+- **`SessionRegistry`** (`src/services/identity/`) — keeps a Redis set of session ids per user, filled at
+  sign-in. `revokeOthers(User, currentId: string)` destroys every other session in the set.
   `revokeAll(User)` destroys all of them; `moderate-reports` and `delete-account` call it.
-- **`PendingEmailChange`** (`Models/`) — holds `user_id`, `new_email`, `token_hash` and `expires_at`.
-- **`SettingsResource`** and **`AccountSettingsResource`** (`Resources/Settings/`) — the JSON shapes
+- **`PendingEmailChange`** (`src/db/schema/`) — holds `user_id`, `new_email`, `token_hash` and `expires_at`.
+- **`SettingsResource`** and **`AccountSettingsResource`** (`src/http/resources/settings/`) — the JSON shapes
   above. The password hash is never serialized.
 
 ### Open points
@@ -183,7 +183,7 @@ tells the old address. Following the link completes the change.
 
 ### Behaviour — change the password or sign out of other devices
 
-Both paths end in `SessionRegistry::revokeOthers()`, which destroys every session except the current
+Both paths end in `SessionRegistry.revokeOthers()`, which destroys every session except the current
 one.
 
 ![Sequence diagram for changing the password and revoking sessions](diagrams/sequence-revoke-sessions.png)

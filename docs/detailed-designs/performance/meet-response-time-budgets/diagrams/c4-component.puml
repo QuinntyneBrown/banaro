@@ -5,12 +5,12 @@ title Components — Meet response-time budgets
 
 Container(web, "Banaro Web", "Angular", "HttpDirectoryApi with PageRequest")
 ContainerDb(db, "Banaro database", "Relational database", "builders, builder_skill, match_scores, neighbourhood_distances")
-ContainerQueue(redis, "Redis", "Redis", "Cached aggregates, Horizon queues")
+ContainerQueue(redis, "Redis", "Redis", "Cached aggregates, BullMQ queues")
 Container_Ext(runner, "Load runner", "Tool <TO SUPPLY>", "read-endpoints and write-endpoints scenarios")
 
 Container_Boundary(api, "Banaro API") {
-  Component(request, "ListBuildersRequest with PaginatesResults", "Form request", "page; per_page default 12, capped at 50")
-  Component(ctrl, "BuilderController", "Controller", "GET /builders")
+  Component(request, "ListBuildersRequest with PaginatesResults", "Request schema", "page; per_page default 12, capped at 50")
+  Component(ctrl, "BuilderRoutes", "Controller", "GET /builders")
   Component(query, "DirectoryQuery", "Domain service", "Visibility scope, facets, sort, page; selected columns only")
   Component(distance, "DistanceService", "Domain service", "Precomputed neighbourhood distances")
   Component(resource, "PaginatedResource and BuilderCardResource", "API resources", "Items plus page meta")

@@ -66,20 +66,20 @@ database. The Banaro Worker delivers the recipient's e-mail.
 
 ### Backend — Banaro API
 
-- **`ConversationController`** (`Controllers/Api/V1/Messaging/`) — `store()` handles
-  `POST /conversations`. The route is in `routes/api.php`, so it requires a verified member. The
+- **`ConversationRoutes`** (`app/api/v1/`) — `store()` handles
+  `POST /conversations`. The route is on the authenticated stack (`src/http/pipeline.ts`), so it requires a verified member. The
   method calls `StartConversation` and returns a `ConversationResource` with 201 for a new
   conversation, or 200 when it reuses one.
-- **`StartConversationRequest`** (`Requests/Messaging/`) — validates `recipient_id` as an integer,
+- **`StartConversationRequest`** (`src/http/requests/messaging/`) — validates `recipient_id` as an integer,
   `body` as a trimmed string of 10 to 1,000 characters, and `client_message_id` as a UUID (`L2-026`
   criterion 2, `L2-045` criterion 1). It ignores any other field, so the sender always comes from
   the session (`L2-044` criterion 4).
-- **`StartConversation`** (`Actions/Messaging/`) — single public `handle(User $sender, User $recipient,
-  string $body, string $clientMessageId): StartConversationResult`. It runs in one database
+- **`StartConversation`** (`src/actions/messaging/`) — single public `handle(sender: User, recipient: User,
+  body: string, clientMessageId: string): StartConversationResult`. It runs in one database
   transaction:
   1. It returns 404 when the recipient is the sender, does not exist, or is deleted or suspended. The
      response does not say which reason applies.
-  2. It calls `BlockService::isBlockedEitherWay($sender, $recipient)` from `Services/TrustAndSafety`.
+  2. It calls `BlockService.isBlockedEitherWay(sender, recipient)` from `src/services/trust-and-safety/`.
      A blocked pair receives 403 with code `blocked` (`L2-026` criterion 7).
   3. It returns the stored result unchanged when a message with the same sender and client message
      id exists. A retried or aborted request therefore stores one message.
@@ -90,27 +90,27 @@ database. The Banaro Worker delivers the recipient's e-mail.
      It marks the message read for the sender.
   6. After commit, it queues `NewMessageNotification` for the recipient. For a new conversation it
      also dispatches the `ConversationStarted` event.
-- **`FirstMessageLimiter`** (`Services/Messaging/`) — wraps the Laravel `RateLimiter` on Redis with
+- **`FirstMessageLimiter`** (`src/services/messaging/`) — wraps the Redis rate limiter (`src/http/rate-limit/`) with
   the key `first-messages:{userId}` and 20 attempts per window. It counts only conversations that are
   created, not validation failures or replies. Over the limit, the action returns 429 with code
   `first_message_limit` and a `Retry-After` header (`L2-026` criterion 8). The general limit of 120
   requests per minute still applies (`L2-046` criterion 1).
-- **`BlockService`** (`Services/TrustAndSafety/`) — owned by `block-builder`. This feature calls only
+- **`BlockService`** (`src/services/trust-and-safety/`) — owned by `block-builder`. This feature calls only
   `isBlockedEitherWay()`.
-- **`Conversation`** (`Models/`) — `id`, `pair_key` (lower user id, a colon and the higher user id,
+- **`Conversation`** (`src/db/schema/`) — `id`, `pair_key` (lower user id, a colon and the higher user id,
   with a unique index), `last_message_id`, `last_message_at` and `created_at`. The unique pair key
   keeps one conversation per pair even under concurrent first messages.
-- **`ConversationParticipant`** (`Models/`) — `conversation_id`, `user_id` and
+- **`ConversationParticipant`** (`src/db/schema/`) — `conversation_id`, `user_id` and
   `last_read_message_id`. `hold-conversations` uses the last field for unread markers.
-- **`Message`** (`Models/`) — `id`, `conversation_id`, `sender_id`, `body` (plain text, encoded on
+- **`Message`** (`src/db/schema/`) — `id`, `conversation_id`, `sender_id`, `body` (plain text, encoded on
   output per `L2-045` criterion 5), `client_message_id` and `created_at`. A unique index on
   (`sender_id`, `client_message_id`) enforces idempotence.
-- **`ConversationResource`** (`Resources/Messaging/`) — serializes the result into the
+- **`ConversationResource`** (`src/http/resources/messaging/`) — serializes the result into the
   `ConversationRef` shape.
-- **`ConversationStarted`** (`Events/`) — domain event carrying the conversation, sender and
+- **`ConversationStarted`** (`src/events/`) — domain event carrying the conversation, sender and
   recipient. The `matching` subsystem listens to it to mark a suggestion as contacted (`L2-023`
   criterion 5); the `review-matches` feature owns that listener.
-- **`NewMessageNotification`** (`Notifications/`) — queued notification on the `mail` and `database`
+- **`NewMessageNotification`** (`src/notifications/`) — queued notification on the `mail` and `database`
   channels (`L2-026` criterion 1). The Banaro Worker sends the e-mail through the `Mailer` contract,
   subject to the member's Messages e-mail preference (`L2-029`, `L2-037`).
 
@@ -170,7 +170,7 @@ Banaro database and counts first messages in Redis. The Banaro Worker sends the 
 
 ### Components
 
-Inside the Banaro API, `ConversationController` calls `StartConversation`. The action checks the block
+Inside the Banaro API, `ConversationRoutes` calls `StartConversation`. The action checks the block
 rule through `BlockService` and the daily cap through `FirstMessageLimiter`. After commit it queues
 `NewMessageNotification` and dispatches `ConversationStarted`.
 

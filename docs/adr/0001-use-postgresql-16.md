@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-09
 **Category:** data
-**Status:** Accepted
+**Status:** Accepted (amended 2026-10-13 for ADR-0007 and ADR-0008)
 **Deciders:** Quinntyne Brown, Claude
 
 ## Context
@@ -15,7 +15,7 @@ before the first migration lands. Banaro needs:
 - ranked match suggestions (L2-022)
 - reliable transactions for RSVP capacity and waitlist promotion (L2-020)
 
-Laravel 11 supports PostgreSQL, MySQL, MariaDB, SQL Server and SQLite as first-class drivers.
+The backend's data layer (Drizzle ORM, ADR-0008) supports PostgreSQL, MySQL and SQLite.
 
 ## Decision
 
@@ -29,10 +29,10 @@ Banaro uses PostgreSQL 16 in every environment: local development, tests, CI and
   - `jsonb`, plus partial and expression indexes
   - row locking for capacity-bound RSVPs
   - transactional DDL, so migrations are safer
-- **Cons:** a little less common than MySQL among Laravel projects.
+- **Cons:** a little less common than MySQL on shared hosting.
 
 ### Option 2: MySQL 8
-- **Pros:** the most common Laravel pairing, and widely hosted.
+- **Pros:** widely hosted.
 - **Cons:** weaker full-text search. No transactional DDL, so a failed migration can leave a
   half-applied schema.
 
@@ -56,8 +56,9 @@ Banaro uses PostgreSQL 16 in every environment: local development, tests, CI and
 
 ## Implementation Notes
 
-- `DB_CONNECTION=pgsql`, using the `postgres:16` image in `docker-compose.yml`.
-- Feature tests use a dedicated `banaro_test` database with `RefreshDatabase`.
+- `DATABASE_URL` points at the `postgres:16` image in `docker-compose.yml`.
+- Integration tests use a dedicated `banaro_test` database. The Vitest setup migrates it once and
+  truncates the non-reference tables before each test.
 
 ## References
 

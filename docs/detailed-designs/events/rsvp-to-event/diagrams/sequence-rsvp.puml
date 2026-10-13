@@ -21,7 +21,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "ToastService" as toast
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "RsvpController" as controller
+  participant "RsvpRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "RsvpToEvent" as action

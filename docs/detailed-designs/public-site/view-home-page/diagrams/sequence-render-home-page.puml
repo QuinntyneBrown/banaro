@@ -24,7 +24,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpPublicSiteApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "HomeController" as controller
+  participant "HomeRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "GetPlatformStatistics" as stats

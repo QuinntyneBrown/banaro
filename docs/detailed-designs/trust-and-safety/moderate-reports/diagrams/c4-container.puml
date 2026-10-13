@@ -8,10 +8,10 @@ System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "adminGate and the admin application under /admin")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Administrator middleware, moderation actions, audit log")
-  Container(worker, "Banaro Worker", "Laravel Horizon", "Sends queued moderation e-mail")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Administrator middleware, moderation actions, audit log")
+  Container(worker, "Banaro Worker", "BullMQ worker", "Sends queued moderation e-mail")
   ContainerDb(db, "Banaro database", "Relational database", "Reports, moderation actions, audit entries, users")
-  ContainerQueue(redis, "Redis", "Redis", "Sessions and Horizon queues")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions and BullMQ queues")
 }
 
 Rel(admin, web, "Uses", "HTTPS")

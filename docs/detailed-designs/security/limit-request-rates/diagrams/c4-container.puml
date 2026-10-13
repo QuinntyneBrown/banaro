@@ -8,7 +8,7 @@ Person(visitor, "Visitor", "Not signed in")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "rateLimitInterceptor, toasts and form messages")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3, one or more replicas", "Named limiters, 429 responses, hashed logging")
+  Container(api, "Banaro API", "Next.js 16, Node 22, one or more replicas", "Named limiters, 429 responses, hashed logging")
   ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters shared by all replicas")
 }
 

@@ -21,10 +21,10 @@ box "Frontend — banaro application" #E0F2FE
   participant "rateLimitInterceptor" as interceptor
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "ThrottleRequestsWithLogging (api)" as general
-  participant "ThrottleRequestsWithLogging (feedback)" as throttle
-  participant "FeedbackController" as controller
-  participant "Exception rendering" as render
+  participant "throttle(api)" as general
+  participant "throttle(feedback)" as throttle
+  participant "FeedbackRoutes" as controller
+  participant "Error boundary" as render
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "GiveFeedback" as action
@@ -52,7 +52,7 @@ alt count <= 10
   dialog --> actor : Dialog closes; feedback at top of list
 else count > 10 (L2-016 criterion 5)
   throttle -> logs : rate_limit.exceeded, route, limiter feedback, client hash (L2-046 criterion 3)
-  throttle -> render : ThrottleRequestsException
+  throttle -> render : TooManyRequestsError
   render --> interceptor : 429 rate_limited, limiter feedback, Retry-After
   interceptor --> dialog : RateLimitedError(feedback, seconds)
   dialog -> dialog : failed state with rateLimit.feedback; text preserved

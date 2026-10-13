@@ -40,54 +40,56 @@ package "Frontend — api library and banaro application" {
 }
 
 package "Backend — Banaro API" {
-  class RateLimitServiceProvider {
-    +boot(): void
-  }
-  class "RateLimiter" as LaravelRateLimiter <<facade>> {
-    +for(name: string, callback: Closure): void
-    +hit(key: string, decaySeconds: int): int
-    +tooManyAttempts(key: string, max: int): bool
-    +availableIn(key: string): int
-    +clear(key: string): void
+  class Limiters <<src/http/rate-limit/limiters.ts>> {
+    +api(ctx: Ctx): Limit[]
+    +join(ctx: Ctx): Limit[]
+    +passwordReset(ctx: Ctx): Limit[]
+    +feedback(ctx: Ctx): Limit[]
+    +firstMessage(ctx: Ctx): Limit[]
+    +contact(ctx: Ctx): Limit[]
   }
   class Limit {
-    +{static} perMinute(n: int): Limit
-    +{static} perMinutes(minutes: int, n: int): Limit
-    +{static} perHour(n: int): Limit
-    +{static} perDay(n: int): Limit
-    +by(key: string): Limit
+    +key: string
+    +max: number
+    +windowSeconds: number
   }
-  class ThrottleRequestsWithRedis
-  class ThrottleRequestsWithLogging {
-    #buildException(request: Request, key: string, maxAttempts: int, responseCallback: ?callable): Throwable
+  class RedisRateLimiter {
+    +hit(key: string, windowSeconds: number): Promise<number>
+    +tooManyAttempts(key: string, max: number): Promise<boolean>
+    +availableIn(key: string): Promise<number>
+    +clear(key: string): Promise<void>
+  }
+  class throttle <<middleware>> {
+    +throttle(name: string): Middleware
   }
   class ClientFingerprint {
-    +forRequest(request: Request): string
+    +forRequest(ctx: Ctx): string
     +forEmail(email: string): string
   }
   class AttemptLimiter {
-    +tooManyFailures(keys: array, max: array): bool
-    +recordFailure(keys: array, decaySeconds: int): void
-    +availableIn(keys: array): int
-    +clear(key: string): void
+    +tooManyFailures(keys: string[], max: number[]): Promise<boolean>
+    +recordFailure(keys: string[], decaySeconds: number): Promise<void>
+    +availableIn(keys: string[]): Promise<number>
+    +clear(key: string): Promise<void>
   }
   class SignIn {
-    +handle(credentials: SignInData, request: Request): User
+    +handle(credentials: SignInData, ctx: Ctx): Promise<User>
   }
-  class ThrottleRequestsException {
-    +getHeaders(): array
+  class TooManyRequestsError {
+    +limiter: string
+    +retryAfter: number
   }
 }
 
-ThrottleRequestsWithLogging --|> ThrottleRequestsWithRedis
-ThrottleRequestsWithLogging ..> ClientFingerprint : logs hashed id
-ThrottleRequestsWithLogging ..> ThrottleRequestsException : builds
-RateLimitServiceProvider ..> LaravelRateLimiter : registers limiters
-RateLimitServiceProvider ..> Limit : returns
-RateLimitServiceProvider ..> ClientFingerprint : keys by
-AttemptLimiter ..> LaravelRateLimiter : wraps
+throttle ..> Limiters : resolves named limiter
+throttle ..> RedisRateLimiter : counts in Redis DB 1
+throttle ..> ClientFingerprint : logs hashed id
+throttle ..> TooManyRequestsError : throws
+Limiters ..> Limit : returns
+Limiters ..> ClientFingerprint : keys by
+AttemptLimiter ..> RedisRateLimiter : wraps
 SignIn ..> AttemptLimiter : checks and records
-SignIn ..> ThrottleRequestsException : throws when exhausted
+SignIn ..> TooManyRequestsError : throws when exhausted
 
 rateLimitInterceptor ..> RateLimitedError : throws
 rateLimitInterceptor ..> RateLimitNotice : general limit

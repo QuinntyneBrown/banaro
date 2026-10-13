@@ -22,8 +22,8 @@ box "Frontend — banaro application" #E0F2FE
   participant "ToastService" as toast
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "FeedbackReplyController" as rctrl
-  participant "FeedbackVisibilityController" as vctrl
+  participant "FeedbackReplyRoutes" as rctrl
+  participant "FeedbackVisibilityRoutes" as vctrl
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "FeedbackPolicy" as policy
@@ -75,6 +75,6 @@ else hide an item
   client --> page : FeedbackView
   page -> toast : Confirm the item is hidden
   page --> actor : Item removed from the public list
-  note over db : Feedback::visibleTo() keeps hidden items for the author\nand administrators (L2-016 criterion 4)
+  note over db : Feedback.visibleTo() keeps hidden items for the author\nand administrators (L2-016 criterion 4)
 end
 @enduml

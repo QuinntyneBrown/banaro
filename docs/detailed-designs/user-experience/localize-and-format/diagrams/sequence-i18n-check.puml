@@ -30,10 +30,10 @@ box "Backend — Banaro Infrastructure" #FFF4E5
 end box
 
 actor -> stage : Push a change that adds t('events.reminderSent')
-stage -> cmd : php artisan i18n:check --frontend=../frontend
+stage -> cmd : banaro i18n:check --frontend=../frontend
 cmd -> fe : Scan t pipe, t() calls and I18nKeyMap objects
 fe --> cmd : Used frontend keys with file and line
-cmd -> be : Scan __(), trans(), trans_choice(), @lang and validation rules
+cmd -> be : Scan t('key') in backend/src and app, and the zod error map keys
 be --> cmd : Used backend keys with file and line
 loop each locale folder
   cmd -> files : Load keys

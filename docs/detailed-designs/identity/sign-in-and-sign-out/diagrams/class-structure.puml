@@ -59,10 +59,10 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class SessionController {
-    +show(): SessionResource
-    +store(request: SignInRequest): SessionResource
-    +destroy(): Response
+  class SessionRoutes {
+    +GET(): SessionResource
+    +POST(request: SignInRequest): SessionResource
+    +DELETE(): Response
   }
   class SignIn {
     +handle(data: SignInData, request: Request): User
@@ -74,17 +74,17 @@ package "Backend — Banaro API" {
     +check(email: string, ip: string): void
     +recordFailure(email: string, ip: string): void
     +clear(email: string): void
-    +availableIn(email: string, ip: string): int
+    +availableIn(email: string, ip: string): number
   }
   class User {
-    +int id
-    +string name
-    +string email
-    +string password
-    +?Carbon email_verified_at
+    +id: number
+    +name: string
+    +email: string
+    +password: string
+    +email_verified_at: Timestamp | null
   }
   class SessionResource {
-    +toArray(request: Request): array
+    +toArray(request: Request): string[]
   }
 }
 
@@ -97,11 +97,11 @@ SessionStore ..> IdentityApi : uses
 HttpIdentityApi ..|> IdentityApi
 IdentityApi ..> SignInRequest : sends
 IdentityApi ..> MemberSession : returns
-HttpIdentityApi ..> SessionController : HTTPS
+HttpIdentityApi ..> SessionRoutes : HTTPS
 
-SessionController ..> SignIn : calls
-SessionController ..> SignOut : calls
-SessionController ..> SessionResource : returns
+SessionRoutes ..> SignIn : calls
+SessionRoutes ..> SignOut : calls
+SessionRoutes ..> SessionResource : returns
 SignIn ..> SignInThrottleService : checks / records
 SignIn --> User : loads
 SessionResource ..> User : serializes

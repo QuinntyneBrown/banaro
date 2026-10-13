@@ -79,12 +79,12 @@ criterion 6).
 
 ### Backend — Banaro API
 
-- **Routes** — `GET /me/profile` and `PUT /me/profile` are in `routes/api.php` and require a verified
+- **Routes** — `GET /me/profile` and `PUT /me/profile` are on the authenticated stack (`src/http/pipeline.ts`) and require a verified
   member. Neither takes a builder id; the builder is always the session's own, so one member cannot
   edit another's profile (`L2-044` criterion 1).
-- **`OwnProfileController`** (`Controllers/Api/V1/Profiles/`) — `show()` calls `GetOwnProfile`.
+- **`OwnProfileRoutes`** (`app/api/v1/`) — `show()` calls `GetOwnProfile`.
   `update()` calls `UpdateOwnProfile`. Both return an `OwnProfileResource`.
-- **`UpdateOwnProfileRequest`** (`Requests/Profiles/`) — validates the whole profile and returns 422
+- **`UpdateOwnProfileRequest`** (`src/http/requests/profiles/`) — validates the whole profile and returns 422
   with field errors on failure (`L2-007` criterion 3, `L2-045` criterion 1):
   - `name` is required.
   - `neighbourhood_id` shall exist in the GTA neighbourhood list.
@@ -95,24 +95,24 @@ criterion 6).
   - `open_to` values are `OpenTo` cases.
   - `building_project_id` is nullable and shall name a project the member owns.
   - Fields outside this list, such as `user_id` or `role`, are dropped (`L2-044` criterion 4).
-- **`GetOwnProfile`** (`Actions/Profiles/`) — loads the member's builder with skills in order,
+- **`GetOwnProfile`** (`src/actions/profiles/`) — loads the member's builder with skills in order,
   experience entries, links, neighbourhood and the member's own projects.
-- **`UpdateOwnProfile`** (`Actions/Profiles/`) — writes the profile in one database transaction:
+- **`UpdateOwnProfile`** (`src/actions/profiles/`) — writes the profile in one database transaction:
   1. It updates `name`, `headline`, `neighbourhood_id`, `bio`, `open_to` and `building_project_id`.
-  2. It resolves skills through `SkillCatalogue::resolve()` and syncs `builder_skill` with positions.
+  2. It resolves skills through `SkillCatalogue.resolve()` and syncs `builder_skill` with positions.
   3. It replaces the builder's `ExperienceEntry` and `ProfileLink` rows with the submitted lists.
   4. After commit it dispatches the `ProfileUpdated` event. The `directory` subsystem listens to it to
      refresh the builder's search text (`browse-directory`).
-- **`SkillCatalogue`** (`Services/Profiles/`) — shared with `complete-onboarding`; resolves catalogue
+- **`SkillCatalogue`** (`src/services/profiles/`) — shared with `complete-onboarding`; resolves catalogue
   and custom skills.
-- **`Builder`** (`Models/`) — this slice adds `headline`, `bio` and `building_project_id` to the
+- **`Builder`** (`src/db/schema/`) — this slice adds `headline`, `bio` and `building_project_id` to the
   fields that `complete-onboarding` uses. Text is stored as plain text and encoded on output
   (`L2-045` criterion 5).
-- **`ExperienceEntry`** and **`ProfileLink`** (`Models/`) — rows owned by one builder, each with a
+- **`ExperienceEntry`** and **`ProfileLink`** (`src/db/schema/`) — rows owned by one builder, each with a
   `position` that keeps the member's order.
-- **`OwnProfileResource`** (`Resources/Profiles/`) — serializes the editable profile and its option
+- **`OwnProfileResource`** (`src/http/resources/profiles/`) — serializes the editable profile and its option
   lists into the `OwnProfile` shape.
-- **`ProfileUpdated`** (`Events/`) — carries the builder id after a successful save.
+- **`ProfileUpdated`** (`src/events/`) — carries the builder id after a successful save.
 
 ### Failure handling
 
@@ -172,7 +172,7 @@ database and reads the session from Redis.
 
 ### Components
 
-Inside the Banaro API, `OwnProfileController` validates with `UpdateOwnProfileRequest` and calls
+Inside the Banaro API, `OwnProfileRoutes` validates with `UpdateOwnProfileRequest` and calls
 `GetOwnProfile` or `UpdateOwnProfile`. `UpdateOwnProfile` resolves skills through `SkillCatalogue` and
 raises `ProfileUpdated` for the directory.
 

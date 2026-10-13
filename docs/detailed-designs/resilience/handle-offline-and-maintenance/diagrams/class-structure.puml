@@ -63,19 +63,19 @@ package "Frontend — banaro application" {
 }
 
 package "Backend — Banaro API" {
-  class PreventRequestsDuringMaintenance <<Laravel>> {
+  interface Middleware {
     #except: array
-    +handle(request: Request, next: Closure): Response
+    +run(ctx: Ctx, next: Next): Promise<Response>
   }
-  class RespondDuringMaintenance {
-    #except = ['health/*']
-    +handle(request: Request, next: Closure): Response
-    -body(data: array): JsonResponse
+  class "maintenance middleware" as MaintenanceMiddleware {
+    -exempt: string[] = ['health/*', 'api/v1/i18n/*']
+    +run(ctx: Ctx, next: Next): Promise<Response>
+    -body(payload: MaintenancePayload): Response
   }
   class MaintenancePayload {
-    +int time
-    +int retry
-    +expectedBackAt(): CarbonImmutable
+    +time: number
+    +retry: number
+    +expectedBackAt(): Timestamp
   }
 }
 
@@ -89,7 +89,7 @@ RouterErrorPageNavigator ..> MaintenancePage : routes to
 ConnectionBanner ..> ConnectivityService : bound by the shell to
 OfflinePage ..> ConnectivityService : waits for online
 DraftStore ..> ConnectivityService : reads
-PreventRequestsDuringMaintenance <|-- RespondDuringMaintenance
-RespondDuringMaintenance ..> MaintenancePayload : reads
-MaintenanceInterceptor ..> RespondDuringMaintenance : HTTPS 503
+Middleware <|.. MaintenanceMiddleware
+MaintenanceMiddleware ..> MaintenancePayload : reads
+MaintenanceInterceptor ..> MaintenanceMiddleware : HTTPS 503
 @enduml

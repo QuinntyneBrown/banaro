@@ -56,20 +56,20 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class AccountController {
-    +update(request: UpdateAccountRequest): AccountSettingsResource
+  class AccountRoutes {
+    +PUT(request: UpdateAccountRequest): AccountSettingsResource
   }
-  class PasswordController {
-    +update(request: ChangePasswordRequest): Response
+  class PasswordRoutes {
+    +PUT(request: ChangePasswordRequest): Response
   }
-  class SessionController {
+  class SessionRoutes {
     +destroyOthers(request: Request): Response
   }
-  class EmailChangeController {
+  class EmailChangeRoutes {
     +confirm(request: ConfirmEmailChangeRequest): Response
   }
   class UpdateAccount {
-    +handle(member: User, data: array): User
+    +handle(member: User, data: unknown[]): User
   }
   class RequestEmailChange {
     +handle(member: User, newEmail: string): PendingEmailChange
@@ -89,18 +89,18 @@ package "Backend — Banaro API" {
     +revokeAll(user: User): void
   }
   class User {
-    +int id
-    +string name
-    +string email
-    +Carbon email_verified_at
-    +string password
-    +Carbon password_changed_at
+    +id: number
+    +name: string
+    +email: string
+    +email_verified_at: Timestamp
+    +password: string
+    +password_changed_at: Timestamp
   }
   class PendingEmailChange {
-    +int user_id
-    +string new_email
-    +string token_hash
-    +Carbon expires_at
+    +user_id: number
+    +new_email: string
+    +token_hash: string
+    +expires_at: Timestamp
   }
 }
 
@@ -114,13 +114,13 @@ SessionsSection ..> SettingsApi : uses
 ChangePasswordDialog ..> SettingsApi : uses
 HttpSettingsApi ..|> SettingsApi
 SettingsApi ..> AccountSettings : returns
-HttpSettingsApi ..> AccountController : HTTPS
+HttpSettingsApi ..> AccountRoutes : HTTPS
 
-AccountController ..> UpdateAccount : calls
+AccountRoutes ..> UpdateAccount : calls
 UpdateAccount ..> RequestEmailChange : calls on new e-mail
-EmailChangeController ..> ConfirmEmailChange : calls
-PasswordController ..> ChangePassword : calls
-SessionController ..> SignOutOtherDevices : calls
+EmailChangeRoutes ..> ConfirmEmailChange : calls
+PasswordRoutes ..> ChangePassword : calls
+SessionRoutes ..> SignOutOtherDevices : calls
 ChangePassword ..> SessionRegistry : revokes
 SignOutOtherDevices ..> SessionRegistry : revokes
 RequestEmailChange --> PendingEmailChange : creates

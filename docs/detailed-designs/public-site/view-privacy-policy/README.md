@@ -52,13 +52,13 @@ holds the copy, and the Banaro Worker's e-mail layout links to the page.
   - the shell `Footer` (`shell/`) on every page, labelled "Privacy";
   - `JoinPage` (`pages/join/`), next to the code-of-conduct agreement;
   - `SettingsPage` (`pages/settings/`), in the privacy and account sections;
-  - the e-mail layout (`resources/views/emails/`), as an absolute link built from the application URL.
+  - the e-mail layout (`src/mail/templates/`), as an absolute link built from the application URL.
 
 ### Backend — Banaro API and Banaro Worker
 
-- **`I18nController`** (`Controllers/Api/V1/`) — serves the catalogue, including the `privacy.*`
+- **`I18nRoutes`** (`app/api/v1/`) — serves the catalogue, including the `privacy.*`
   keys, from `resources/i18n/en-CA/`. The `localize-and-format` feature owns it.
-- **E-mail layout** (`resources/views/emails/layout`) — shared layout for every transactional e-mail.
+- **E-mail layout** (`src/mail/templates/layout`) — shared layout for every transactional e-mail.
   Its footer links to `{APP_URL}/privacy`. The Banaro Worker renders it when it sends mail.
 
 No model, action or endpoint is specific to this feature.

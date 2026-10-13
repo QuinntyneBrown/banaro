@@ -43,34 +43,34 @@ package "Frontend — banaro application, components and api libraries" {
 }
 
 package "Backend — Banaro API" {
-  class ProjectController {
+  class ProjectRoutes {
     +edit(request: EditProjectRequest, project: Project): ProjectResource
-    +update(request: UpdateProjectRequest, project: Project): ProjectResource
-    +destroy(request: DeleteProjectRequest, project: Project): Response
+    +PUT(request: UpdateProjectRequest, project: Project): ProjectResource
+    +DELETE(request: DeleteProjectRequest, project: Project): Response
   }
   class UpdateProjectRequest {
-    +authorize(): bool
-    +rules(): array
+    +authorize(): boolean
+    +schema: ZodObject
   }
   class DeleteProjectRequest {
-    +authorize(): bool
-    +rules(): array
+    +authorize(): boolean
+    +schema: ZodObject
   }
   class ProjectPolicy {
-    +update(user: User, project: Project): bool
-    +delete(user: User, project: Project): bool
+    +update(user: User, project: Project): boolean
+    +delete(user: User, project: Project): boolean
   }
   class UpdateProject {
-    +handle(project: Project, data: array): Project
+    +handle(project: Project, data: unknown[]): Project
   }
   class DeleteProject {
     +handle(project: Project): void
   }
   class Project {
-    +int id
-    +int owner_id
-    +string name
-    +Carbon last_activity_at
+    +id: number
+    +owner_id: number
+    +name: string
+    +last_activity_at: Timestamp
   }
   class ProjectLookingFor
   class Feedback
@@ -83,15 +83,15 @@ ProjectEditPage ..> DeleteProjectDialog : opens
 ProjectEditPage ..> ToastService : uses
 DeleteProjectDialog ..> ProjectsApi : uses
 HttpProjectsApi ..|> ProjectsApi
-HttpProjectsApi ..> ProjectController : HTTPS
+HttpProjectsApi ..> ProjectRoutes : HTTPS
 
-ProjectController ..> UpdateProjectRequest : validates with
-ProjectController ..> DeleteProjectRequest : validates with
+ProjectRoutes ..> UpdateProjectRequest : validates with
+ProjectRoutes ..> DeleteProjectRequest : validates with
 UpdateProjectRequest ..> ProjectPolicy : authorize
 DeleteProjectRequest ..> ProjectPolicy : authorize
-ProjectController ..> UpdateProject : calls
-ProjectController ..> DeleteProject : calls
-ProjectController ..> ProjectResource : returns
+ProjectRoutes ..> UpdateProject : calls
+ProjectRoutes ..> DeleteProject : calls
+ProjectRoutes ..> ProjectResource : returns
 UpdateProject --> Project : updates
 DeleteProject --> Project : deletes
 Project "1" *-- "*" ProjectLookingFor

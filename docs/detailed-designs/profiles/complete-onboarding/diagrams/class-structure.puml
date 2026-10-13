@@ -47,15 +47,15 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class OnboardingController {
-    +show(): OnboardingResource
+  class OnboardingRoutes {
+    +GET(): OnboardingResource
     +updateAbout(request: SaveOnboardingAboutRequest): OnboardingResource
     +updateSkills(request: SaveOnboardingSkillsRequest): OnboardingResource
     +updateGoals(request: SaveOnboardingGoalsRequest): OnboardingResource
     +complete(): OnboardingResource
   }
   class SaveOnboardingStep {
-    +handle(builder: Builder, step: OnboardingStep, answers: array): Builder
+    +handle(builder: Builder, step: OnboardingStep, answers: unknown[]): Builder
   }
   class CompleteOnboarding {
     +handle(builder: Builder): Builder
@@ -66,37 +66,37 @@ package "Backend — Banaro API" {
   class OnboardingService {
     +nextStep(builder: Builder): ?OnboardingStep
     +markSaved(builder: Builder, step: OnboardingStep): void
-    +isReady(builder: Builder): bool
+    +isReady(builder: Builder): boolean
   }
   class SkillCatalogue {
-    +catalogue(): Collection<Skill>
-    +resolve(entries: array): Collection<Skill>
+    +catalogue(): unknown[]<Skill>
+    +resolve(entries: unknown[]): unknown[]<Skill>
   }
   class Builder {
-    +int id
-    +int user_id
-    +string name
-    +?BuilderRole role
-    +?int neighbourhood_id
-    +array open_to
-    +?string building_summary
-    +array onboarding_saved_steps
-    +?Carbon onboarding_completed_at
-    +isComplete(): bool
+    +id: number
+    +user_id: number
+    +name: string
+    +role: BuilderRole | null
+    +neighbourhood_id: number | null
+    +open_to: string[]
+    +building_summary: string | null
+    +onboarding_saved_steps: Record<string, unknown>
+    +onboarding_completed_at: Timestamp | null
+    +isComplete(): boolean
   }
   class Skill {
-    +int id
-    +string name
-    +string slug
-    +string normalized_name
-    +bool is_catalogue
+    +id: number
+    +name: string
+    +slug: string
+    +normalized_name: string
+    +is_catalogue: boolean
   }
   class Neighbourhood {
-    +int id
-    +string name
-    +string area
-    +float latitude
-    +float longitude
+    +id: number
+    +name: string
+    +area: string
+    +latitude: number
+    +longitude: number
   }
   enum OnboardingStep {
     About
@@ -123,12 +123,12 @@ OnboardingPage ..> SessionService : updates flag
 onboardingGuard ..> SessionService : reads onboardingComplete
 HttpProfilesApi ..|> ProfilesApi
 ProfilesApi ..> OnboardingProgress : returns
-HttpProfilesApi ..> OnboardingController : HTTPS
+HttpProfilesApi ..> OnboardingRoutes : HTTPS
 
-OnboardingController ..> GetOnboardingProgress : calls
-OnboardingController ..> SaveOnboardingStep : calls
-OnboardingController ..> CompleteOnboarding : calls
-OnboardingController ..> OnboardingResource : returns
+OnboardingRoutes ..> GetOnboardingProgress : calls
+OnboardingRoutes ..> SaveOnboardingStep : calls
+OnboardingRoutes ..> CompleteOnboarding : calls
+OnboardingRoutes ..> OnboardingResource : returns
 GetOnboardingProgress ..> OnboardingService : uses
 SaveOnboardingStep ..> OnboardingService : marks saved
 SaveOnboardingStep ..> SkillCatalogue : resolves skills

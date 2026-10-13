@@ -61,42 +61,42 @@ API to the Banaro database. Owner notifications leave through Redis and the Bana
 
 ### Backend — Banaro API
 
-- **`FeedbackController`** (`Controllers/Api/V1/Projects/`) — `store()` handles
-  `POST /projects/{project}/feedback` in `routes/api.php`. The route carries the
+- **`FeedbackRoutes`** (`app/api/v1/`) — `store()` handles
+  `POST /projects/{project}/feedback` on the authenticated stack (`src/http/pipeline.ts`). The route carries the
   `throttle:project-feedback` middleware. It calls `GiveFeedback` and returns a `FeedbackResource`
   with status 201.
-- **`FeedbackReplyController`** and **`FeedbackVisibilityController`**
-  (`Controllers/Api/V1/Projects/`) — `store()` methods for the `reply` and `hidden` routes, both in
-  `routes/api.php`. The routes use scoped bindings, so a feedback id from another project returns
+- **`FeedbackReplyRoutes`** and **`FeedbackVisibilityRoutes`**
+  (`app/api/v1/`) — `store()` methods for the `reply` and `hidden` routes, both in
+  the authenticated stack (`src/http/pipeline.ts`). The routes use scoped bindings, so a feedback id from another project returns
   404.
-- **`GiveFeedbackRequest`** (`Requests/Projects/`) — `authorize()` calls
-  `ProjectPolicy::giveFeedback()`. The rules require `body` as a string of 10 to 1,000 characters
+- **`GiveFeedbackRequest`** (`src/http/requests/projects/`) — `authorize()` calls
+  `ProjectPolicy.giveFeedback()`. The rules require `body` as a string of 10 to 1,000 characters
   (`L2-016` criterion 2).
-- **`ReplyToFeedbackRequest`** and **`HideFeedbackRequest`** (`Requests/Projects/`) — `authorize()`
-  calls `FeedbackPolicy::reply()` or `FeedbackPolicy::hide()`. The reply `body` length limit is
+- **`ReplyToFeedbackRequest`** and **`HideFeedbackRequest`** (`src/http/requests/projects/`) — `authorize()`
+  calls `FeedbackPolicy.reply()` or `FeedbackPolicy.hide()`. The reply `body` length limit is
   `<TO SUPPLY>`.
-- **`ProjectPolicy`** (`Policies/`) — `giveFeedback()` allows a verified member who is not the owner.
-  It denies a blocked pair through `BlockService::isBlockedEitherWay(member, owner)` from
-  `Services/TrustAndSafety`. A denial returns 403 (`L2-016` criterion 6).
-- **`FeedbackPolicy`** (`Policies/`) — `reply()` and `hide()` allow only the project owner.
+- **`ProjectPolicy`** (`src/policies/`) — `giveFeedback()` allows a verified member who is not the owner.
+  It denies a blocked pair through `BlockService.isBlockedEitherWay(member, owner)` from
+  `src/services/trust-and-safety/`. A denial returns 403 (`L2-016` criterion 6).
+- **`FeedbackPolicy`** (`src/policies/`) — `reply()` and `hide()` allow only the project owner.
 - **Rate limiter `project-feedback`** — allows 10 requests per hour per member id. The limiter
   returns 429 with `Retry-After` (`L2-016` criterion 5). The `limit-request-rates` feature registers
   the limiters and logs breaches.
-- **`GiveFeedback`** (`Actions/Projects/`) — in one transaction, creates the `Feedback` row with
+- **`GiveFeedback`** (`src/actions/projects/`) — in one transaction, creates the `Feedback` row with
   `author_id` from the session and increments `projects.feedback_count`. It also sets
   `last_activity_at`. After commit it queues `FeedbackReceivedNotification` to the owner (`L2-016`
   criterion 1).
-- **`ReplyToFeedback`** (`Actions/Projects/`) — locks the feedback row and sets `reply_body` and
+- **`ReplyToFeedback`** (`src/actions/projects/`) — locks the feedback row and sets `reply_body` and
   `replied_at`. A second reply returns 409 with code `reply_exists`, so each item has one reply
   (`L2-016` criterion 4). It also sets the project's `last_activity_at`.
-- **`HideFeedback`** (`Actions/Projects/`) — sets `hidden_at` and `hidden_by`. The
-  `Feedback::visibleTo()` scope in `view-project` then shows the item only to its author and to
+- **`HideFeedback`** (`src/actions/projects/`) — sets `hidden_at` and `hidden_by`. The
+  `Feedback.visibleTo()` scope in `view-project` then shows the item only to its author and to
   administrators (`L2-016` criterion 4).
-- **`Feedback`** (`Models/`) — holds `project_id`, `author_id`, `body`, `reply_body`, `replied_at`,
+- **`Feedback`** (`src/db/schema/`) — holds `project_id`, `author_id`, `body`, `reply_body`, `replied_at`,
   `hidden_at` and `hidden_by`. Feedback text is stored as plain text and encoded on output (`L2-045`
   criterion 5).
-- **`FeedbackResource`** (`Resources/Projects/`) — serializes an item into the `FeedbackView` shape.
-- **`FeedbackReceivedNotification`** (`Notifications/`) — queued notification on the `mail` and
+- **`FeedbackResource`** (`src/http/resources/projects/`) — serializes an item into the `FeedbackView` shape.
+- **`FeedbackReceivedNotification`** (`src/notifications/`) — queued notification on the `mail` and
   `database` channels, dispatched after commit. The Banaro Worker sends it through the `Mailer`
   contract under the "Project activity" e-mail category (`L2-029` criteria 1 and 2, `L2-037`).
 

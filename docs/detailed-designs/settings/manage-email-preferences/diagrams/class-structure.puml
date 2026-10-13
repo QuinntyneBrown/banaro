@@ -40,14 +40,14 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class EmailPreferenceController {
-    +update(request: SetEmailPreferenceRequest, category: EmailCategory): EmailPreferencesResource
+  class EmailPreferenceRoutes {
+    +PUT(request: SetEmailPreferenceRequest, category: EmailCategory): EmailPreferencesResource
   }
-  class UnsubscribeController {
-    +store(request: UnsubscribeRequest): JsonResponse
+  class UnsubscribeRoutes {
+    +POST(request: UnsubscribeRequest): Response
   }
   class SetEmailPreference {
-    +handle(member: User, category: EmailCategory, enabled: bool): array
+    +handle(member: User, category: EmailCategory, enabled: boolean): string[]
   }
   class Unsubscribe {
     +handle(token: string): EmailCategory
@@ -57,12 +57,12 @@ package "Backend — Banaro API" {
     +verify(token: string): ?UnsubscribeClaim
   }
   class EmailPreferenceService {
-    +allows(member: User, category: EmailCategory): bool
+    +allows(member: User, category: EmailCategory): boolean
   }
   class EmailPreference {
-    +int user_id
-    +EmailCategory category
-    +bool enabled
+    +user_id: number
+    +category: EmailCategory
+    +enabled: boolean
   }
   enum EmailCategory {
     Matches
@@ -72,11 +72,11 @@ package "Backend — Banaro API" {
     WeeklyDigest
   }
   class UnsubscribeClaim {
-    +int userId
-    +EmailCategory category
+    +userId: number
+    +category: EmailCategory
   }
   class User {
-    +int id
+    +id: number
   }
 }
 
@@ -84,11 +84,11 @@ EmailPreferencesSection ..> SettingsApi : uses
 UnsubscribePage ..> SettingsApi : uses
 HttpSettingsApi ..|> SettingsApi
 SettingsApi ..> EmailPreferences : returns
-HttpSettingsApi ..> EmailPreferenceController : HTTPS
-HttpSettingsApi ..> UnsubscribeController : HTTPS
+HttpSettingsApi ..> EmailPreferenceRoutes : HTTPS
+HttpSettingsApi ..> UnsubscribeRoutes : HTTPS
 
-EmailPreferenceController ..> SetEmailPreference : calls
-UnsubscribeController ..> Unsubscribe : calls
+EmailPreferenceRoutes ..> SetEmailPreference : calls
+UnsubscribeRoutes ..> Unsubscribe : calls
 Unsubscribe ..> UnsubscribeTokenService : verifies with
 Unsubscribe ..> SetEmailPreference : calls
 UnsubscribeTokenService ..> UnsubscribeClaim : returns

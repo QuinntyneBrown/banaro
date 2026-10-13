@@ -47,23 +47,23 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API and Worker" {
-  class ContactMessageController {
-    +store(request: SendContactMessageRequest): JsonResponse
+  class ContactMessageRoutes {
+    +POST(request: SendContactMessageRequest): Response
   }
   class SendContactMessageRequest {
-    +rules(): array
+    +schema: ZodObject
     +toData(): ContactMessageData
   }
   class SendContactMessage {
     +handle(data: ContactMessageData): void
   }
   class ContactMessageData <<value object>> {
-    +string name
-    +string email
-    +ContactTopic topic
-    +string message
-    +?string website
-    +isHoneypotFilled(): bool
+    +name: string
+    +email: string
+    +topic: ContactTopic
+    +message: string
+    +website: string | null
+    +isHoneypotFilled(): boolean
   }
   enum ContactTopic {
     General
@@ -72,9 +72,9 @@ package "Backend — Banaro API and Worker" {
     ReportProblem
     ProposeEvent
   }
-  class DeliverContactMessage <<ShouldQueue>> {
+  class DeliverContactMessage <<queued>> {
     +int tries = 5
-    +backoff(): array
+    +backoff(): string[]
     +handle(mailer: Mailer): void
     +failed(e: Throwable): void
   }
@@ -88,10 +88,10 @@ ContactPage ..> PublicSiteApi : uses
 HttpPublicSiteApi ..|> PublicSiteApi
 InMemoryPublicSiteApi ..|> PublicSiteApi
 PublicSiteApi ..> ContactMessageRequest : sends
-HttpPublicSiteApi ..> ContactMessageController : HTTPS
+HttpPublicSiteApi ..> ContactMessageRoutes : HTTPS
 
-ContactMessageController ..> SendContactMessageRequest : validates with
-ContactMessageController ..> SendContactMessage : calls
+ContactMessageRoutes ..> SendContactMessageRequest : validates with
+ContactMessageRoutes ..> SendContactMessage : calls
 SendContactMessageRequest ..> ContactMessageData : creates
 SendContactMessage ..> ContactMessageData : reads
 ContactMessageData --> ContactTopic : has

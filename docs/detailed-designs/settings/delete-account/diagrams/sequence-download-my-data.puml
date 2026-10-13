@@ -20,7 +20,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpSettingsApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "DataExportController" as controller
+  participant "DataExportRoutes" as controller
 end box
 box "Backend — Banaro Worker" #ECFDF3
   participant "BuildDataExport" as job

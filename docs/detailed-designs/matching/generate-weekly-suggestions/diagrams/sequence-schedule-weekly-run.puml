@@ -28,20 +28,20 @@ end box
 
 clock -> schedA : schedule:run tick
 clock -> schedB : schedule:run tick
-schedA -> redis : Take onOneServer lock for matching:generate-weekly
+schedA -> redis : Take the scheduler lock for matching:generate-weekly
 redis --> schedA : Lock granted
-schedB -> redis : Take onOneServer lock for matching:generate-weekly
+schedB -> redis : Take the scheduler lock for matching:generate-weekly
 redis --> schedB : Lock held elsewhere
 schedB -> schedB : Skip run (L2-054 criterion 5)
 schedA -> cmd : Run matching:generate-weekly
 cmd -> cal : isoWeekOf(now in America/Toronto)
 cal --> cmd : 2026-W42
-loop chunkById over active matching preferences
+loop id-ordered batches of active matching preferences
   cmd -> db : SELECT user_id FROM matching_preferences WHERE status = active
   db --> cmd : Chunk of member ids
   loop each member
     cmd -> redis : Dispatch GenerateMatchSuggestions(userId, 2026-W42)
-    note right of redis : ShouldBeUnique drops a duplicate\nwhile the first job is queued\n(L2-022 criterion 3)
+    note right of redis : unique job id drops a duplicate\nwhile the first job is queued\n(L2-022 criterion 3)
   end
 end
 cmd --> schedA : Exit 0, members dispatched logged

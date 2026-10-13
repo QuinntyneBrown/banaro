@@ -68,25 +68,25 @@ It reads only.
 
 ### Backend — Banaro API
 
-- **`DashboardController`** (`Controllers/Api/V1/Dashboard/`) — `show()` handles `GET /dashboard` and
+- **`DashboardRoutes`** (`app/api/v1/`) — `show()` handles `GET /dashboard` and
   calls `BuildDashboard`. `section()` handles `GET /dashboard/sections/{section}` and calls
-  `BuildDashboardSection`. Both routes are in `routes/api.php`, so a visitor receives 401
+  `BuildDashboardSection`. Both routes are on the authenticated stack (`src/http/pipeline.ts`), so a visitor receives 401
   (`L2-044` criterion 3).
-- **`ViewDashboardRequest`** and **`ViewDashboardSectionRequest`** (`Requests/Dashboard/`) — authorize
+- **`ViewDashboardRequest`** and **`ViewDashboardSectionRequest`** (`src/http/requests/dashboard/`) — authorize
   a verified member. The second validates `section` against the `DashboardSectionName` enum
   (`L2-045` criterion 1).
-- **`DashboardSectionName`** (`Enums/`) — `Matches`, `Events`, `Messages`, `Projects` and `Profile`.
-- **`BuildDashboard`** (`Actions/Dashboard/`) — asks `DashboardAssembler` for every section. It sets
+- **`DashboardSectionName`** (`src/enums/`) — `Matches`, `src/events/`, `Messages`, `Projects` and `Profile`.
+- **`BuildDashboard`** (`src/actions/dashboard/`) — asks `DashboardAssembler` for every section. It sets
   `hasActivity` from the loaded sections and, when there is none, builds `nextSteps`. It always
   returns 200 when at least one section loaded (`L2-030` criterion 3).
-- **`BuildDashboardSection`** (`Actions/Dashboard/`) — asks `DashboardAssembler` for one section. A
+- **`BuildDashboardSection`** (`src/actions/dashboard/`) — asks `DashboardAssembler` for one section. A
   failure here returns 503, so the page keeps the inline retry.
-- **`DashboardAssembler`** (`Services/Dashboard/`) — runs each `DashboardSectionProvider` inside its
+- **`DashboardAssembler`** (`src/services/dashboard/`) — runs each `DashboardSectionProvider` inside its
   own `try`/`catch`. A thrown exception becomes `status: failed` for that section only. The
   exception is logged with the request ID (`L2-053` criterion 4) and no internal detail reaches the
   response.
-- **`DashboardSectionProvider`** (`Services/Dashboard/`) — interface with `name()` and
-  `load(User $member)`. Five implementations live in `Services/Dashboard/Sections/`:
+- **`DashboardSectionProvider`** (`src/services/dashboard/`) — interface with `name()` and
+  `load(member: User)`. Five implementations live in `src/services/dashboard/sections/`:
   - `MatchesSection` — this week's `MatchSuggestion` rows in match-score order and the unreviewed
     count. The matching rules, including block filtering, stay in the `matching` subsystem.
   - `EventsSection` — events the member is going to, through going `Rsvp` rows (not waitlisted) and
@@ -101,7 +101,7 @@ It reads only.
     five items filled in, 20% each: name and role, photo, skills, neighbourhood and what the member
     is looking for (`L2-030` criterion 9).
   Each provider scopes every query to the current member (`L2-044` criteria 1 and 5).
-- **`DashboardResource`** and **`DashboardSectionResource`** (`Resources/Dashboard/`) — serialize the
+- **`DashboardResource`** and **`DashboardSectionResource`** (`src/http/resources/dashboard/`) — serialize the
   `Dashboard` and `DashboardSection` shapes.
 
 ### Failure handling
@@ -158,7 +158,7 @@ section retry. The API reads each section from the Banaro database.
 
 ### Components
 
-Inside the Banaro API, `DashboardController` calls `BuildDashboard` or `BuildDashboardSection`. Both
+Inside the Banaro API, `DashboardRoutes` calls `BuildDashboard` or `BuildDashboardSection`. Both
 use `DashboardAssembler`, which isolates the five section providers from one another.
 
 ![C4 component view for viewing the dashboard](diagrams/c4-component.png)

@@ -7,10 +7,10 @@ Container(web, "Banaro Web", "Angular", "ProjectNewPage, ProjectFormModel, HttpP
 ContainerDb(db, "Banaro database", "Relational database", "users, projects, project_looking_for")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "ProjectController", "Laravel controller", "store(): POST /projects")
-  Component(req, "ShareProjectRequest", "Form request", "Field rules, http/https link, ignores owner_id")
+  Component(ctrl, "ProjectRoutes", "Route handler", "store(): POST /projects")
+  Component(req, "ShareProjectRequest", "Request schema", "Field rules, http/https link, ignores owner_id")
   Component(action, "ShareProject", "Action", "Locks owner, enforces project limit, creates project")
-  Component(models, "Project / ProjectLookingFor", "Eloquent models", "Project fields and looking-for roles")
+  Component(models, "Project / ProjectLookingFor", "Drizzle tables", "Project fields and looking-for roles")
   Component(enums, "ProjectStage / LookingForRole", "Enums", "Closed vocabularies")
   Component(resource, "ProjectResource", "API resource", "ProjectDetail JSON shape")
 }

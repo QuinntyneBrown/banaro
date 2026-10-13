@@ -34,17 +34,17 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class PrivacyController {
-    +update(request: UpdatePrivacySettingsRequest): PrivacySettingsResource
+  class PrivacyRoutes {
+    +PUT(request: UpdatePrivacySettingsRequest): PrivacySettingsResource
   }
   class UpdatePrivacySettings {
-    +handle(member: User, values: array): PrivacySettings
+    +handle(member: User, values: unknown[]): PrivacySettings
   }
   class PrivacySettings {
-    +int user_id
+    +user_id: number
     +ProfileAudience profile_visibility = MembersOnly
-    +LocationPrecision location_precision
-    +bool email_contact
+    +location_precision: LocationPrecision
+    +email_contact: boolean
     +bool show_online_status = true
     +bool list_in_attendees = false
   }
@@ -57,37 +57,37 @@ package "Backend — Banaro API" {
     CityOnly
   }
   class ProfileVisibilityService {
-    +canView(viewer: ?User, owner: User): bool
-    +applyScope(query: Builder, viewer: ?User): Builder
-    +locationFor(viewer: ?User, owner: User): ProfileLocation
-    +distanceFor(viewer: ?User, owner: User): ?float
-    +showsOnlineStatus(owner: User): bool
-    +listsInAttendees(owner: User): bool
-    +allowsEmailContact(owner: User): bool
+    +canView(viewer: User | null, owner: User): boolean
+    +applyScope(query: Builder, viewer: User | null): Builder
+    +locationFor(viewer: User | null, owner: User): ProfileLocation
+    +distanceFor(viewer: User | null, owner: User): number | null
+    +showsOnlineStatus(owner: User): boolean
+    +listsInAttendees(owner: User): boolean
+    +allowsEmailContact(owner: User): boolean
   }
   class ProfileLocation {
-    +string city
-    +?string neighbourhood
+    +city: string
+    +neighbourhood: string | null
   }
   class DistanceService {
-    +between(a: User, b: User): float
+    +between(a: User, b: User): number
   }
-  class ProfileFields <<trait>> {
-    #profileFields(request: Request, owner: User): array
+  class ProfileFields <<mixin>> {
+    #profileFields(request: Request, owner: User): string[]
   }
   class BuilderResource
   class AttendeeResource
   class User {
-    +int id
+    +id: number
   }
 }
 
 PrivacySettingsSection ..> SettingsApi : uses
 HttpSettingsApi ..|> SettingsApi
 SettingsApi ..> PrivacyModel : sends and returns
-HttpSettingsApi ..> PrivacyController : HTTPS
+HttpSettingsApi ..> PrivacyRoutes : HTTPS
 
-PrivacyController ..> UpdatePrivacySettings : calls
+PrivacyRoutes ..> UpdatePrivacySettings : calls
 UpdatePrivacySettings --> PrivacySettings : updates
 User "1" *-- "1" PrivacySettings
 PrivacySettings --> ProfileAudience : has

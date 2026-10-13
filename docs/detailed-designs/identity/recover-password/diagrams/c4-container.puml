@@ -8,10 +8,10 @@ System_Ext(mail, "Mail provider", "Delivers transactional e-mail")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Forgot-password and reset-password pages")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Request limits, link checks, password change")
-  Container(worker, "Banaro Worker", "Laravel Horizon", "Looks up the account, issues the token, sends e-mail")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Request limits, link checks, password change")
+  Container(worker, "Banaro Worker", "BullMQ worker", "Looks up the account, issues the token, sends e-mail")
   ContainerDb(db, "Banaro database", "Relational database", "users, password_reset_tokens")
-  ContainerQueue(redis, "Redis", "Redis", "Sessions, rate-limit counters, Horizon queues")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions, rate-limit counters, BullMQ queues")
 }
 
 Rel(person, web, "Uses", "HTTPS")

@@ -8,7 +8,7 @@ Person(viewer, "Viewer", "Member or visitor")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Settings Privacy tab; profile, directory and event pages")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Stores privacy settings, filters every profile response")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Stores privacy settings, filters every profile response")
   ContainerDb(db, "Banaro database", "Relational database", "Privacy settings, profiles, locations")
   ContainerDb(redis, "Redis", "Redis", "Sessions")
 }

@@ -40,37 +40,37 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class ProjectController {
-    +store(request: ShareProjectRequest): ProjectResource
+  class ProjectRoutes {
+    +POST(request: ShareProjectRequest): ProjectResource
   }
   class ShareProjectRequest {
-    +rules(): array
-    +validated(): array
+    +schema: ZodObject
+    +validated(): string[]
   }
   class ShareProject {
-    +handle(owner: User, data: array): Project
+    +handle(owner: User, data: unknown[]): Project
   }
   class ProjectLimitReached {
     +code: 'project_limit'
     +status: 422
   }
   class User {
-    +int id
+    +id: number
   }
   class Project {
-    +int id
-    +int owner_id
-    +string name
-    +string summary
-    +?string description
-    +ProjectStage stage
-    +?string link
-    +int feedback_count
-    +Carbon last_activity_at
+    +id: number
+    +owner_id: number
+    +name: string
+    +summary: string
+    +description: string | null
+    +stage: ProjectStage
+    +link: string | null
+    +feedback_count: number
+    +last_activity_at: Timestamp
   }
   class ProjectLookingFor {
-    +int project_id
-    +LookingForRole role
+    +project_id: number
+    +role: LookingForRole
   }
   enum ProjectStage {
     Idea
@@ -95,11 +95,11 @@ ProjectNewPage ..> ProjectsApi : uses
 ProjectNewPage ..> ProjectFormModel : builds form with
 HttpProjectsApi ..|> ProjectsApi
 ProjectsApi ..> ProjectDraft : sends
-HttpProjectsApi ..> ProjectController : HTTPS
+HttpProjectsApi ..> ProjectRoutes : HTTPS
 
-ProjectController ..> ShareProjectRequest : validates with
-ProjectController ..> ShareProject : calls
-ProjectController ..> ProjectResource : returns
+ProjectRoutes ..> ShareProjectRequest : validates with
+ProjectRoutes ..> ShareProject : calls
+ProjectRoutes ..> ProjectResource : returns
 ShareProject ..> ProjectLimitReached : throws
 ShareProject --> User : locks
 ShareProject --> Project : creates

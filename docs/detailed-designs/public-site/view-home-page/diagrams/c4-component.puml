@@ -8,12 +8,12 @@ ContainerDb(db, "Banaro database", "Relational database", "builders, projects, m
 ContainerDb(redis, "Redis", "Redis", "Cache store")
 
 Container_Boundary(api, "Banaro API") {
-  Component(routes, "api_public.php", "Route file", "Anonymous GET /home/* routes")
-  Component(ctrl, "HomeController", "Laravel controller", "statistics(), builders(), projects(), events()")
+  Component(routes, "src/http/public-routes.ts", "Route list", "Anonymous GET /home/* routes")
+  Component(ctrl, "HomeRoutes", "Route handler", "statistics(), builders(), projects(), events()")
   Component(stats, "GetPlatformStatistics", "Action", "Returns the platform statistics")
   Component(feeds, "ListFeaturedBuilders / ListFeaturedProjects / ListUpcomingEvents", "Actions", "Visitor-safe feed lists")
   Component(svc, "PlatformStatisticsService", "Domain service", "Counts real rows, caches for 600 s")
-  Component(models, "Builder / Project / MatchSuggestion / Event", "Eloquent models", "Source of counts and feed items")
+  Component(models, "Builder / Project / MatchSuggestion / Event", "Drizzle tables", "Source of counts and feed items")
   Component(res, "PlatformStatisticsResource / Featured*Resource / UpcomingEventResource", "API resources", "Visitor-safe JSON shapes")
 }
 
@@ -23,7 +23,7 @@ Rel(ctrl, stats, "Calls handle()")
 Rel(ctrl, feeds, "Calls handle()")
 Rel(ctrl, res, "Returns")
 Rel(stats, svc, "Calls current()")
-Rel(svc, redis, "Cache::remember", "Redis protocol")
+Rel(svc, redis, "cache.remember", "Redis protocol")
 Rel(svc, models, "Counts")
 Rel(feeds, models, "Queries")
 Rel(models, db, "Reads", "SQL")

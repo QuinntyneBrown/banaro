@@ -50,12 +50,12 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API and Worker" {
-  class PasswordResetLinkController {
-    +store(request: SendPasswordResetLinkRequest): Response
+  class PasswordResetLinkRoutes {
+    +POST(request: SendPasswordResetLinkRequest): Response
   }
-  class PasswordResetController {
+  class PasswordResetRoutes {
     +check(request: CheckPasswordResetRequest): Response
-    +store(request: ResetPasswordRequest): Response
+    +POST(request: ResetPasswordRequest): Response
   }
   class RequestPasswordReset {
     +handle(email: string): void
@@ -67,29 +67,29 @@ package "Backend — Banaro API and Worker" {
     +handle(data: ResetPasswordData): void
   }
   class PasswordPolicy {
-    +rules(): array
+    +schema: ZodObject
   }
   class SessionRevocationService {
     +revokeAll(user: User): void
   }
   interface TokenRepositoryInterface {
     +create(user): string
-    +exists(user, token: string): bool
+    +exists(user, token: string): boolean
     +delete(user): void
   }
   class SendPasswordResetLink <<Job>> {
-    +string email
+    +email: string
     +handle(broker: PasswordBroker): void
   }
   class ResetPasswordNotification {
-    +string token
-    +via(): array
+    +token: string
+    +via(): string[]
   }
   class User {
-    +int id
-    +string email
-    +string password
-    +string remember_token
+    +id: number
+    +email: string
+    +password: string
+    +remember_token: string
   }
 }
 
@@ -99,12 +99,12 @@ resetPasswordResolver ..> IdentityApi : uses
 HttpIdentityApi ..|> IdentityApi
 IdentityApi ..> PasswordResetLink : sends
 IdentityApi ..> ResetPasswordRequest : sends
-HttpIdentityApi ..> PasswordResetLinkController : HTTPS
-HttpIdentityApi ..> PasswordResetController : HTTPS
+HttpIdentityApi ..> PasswordResetLinkRoutes : HTTPS
+HttpIdentityApi ..> PasswordResetRoutes : HTTPS
 
-PasswordResetLinkController ..> RequestPasswordReset : calls
-PasswordResetController ..> CheckPasswordResetLink : calls
-PasswordResetController ..> ResetPassword : calls
+PasswordResetLinkRoutes ..> RequestPasswordReset : calls
+PasswordResetRoutes ..> CheckPasswordResetLink : calls
+PasswordResetRoutes ..> ResetPassword : calls
 RequestPasswordReset ..> SendPasswordResetLink : dispatches
 SendPasswordResetLink ..> TokenRepositoryInterface : create()
 SendPasswordResetLink ..> ResetPasswordNotification : sends

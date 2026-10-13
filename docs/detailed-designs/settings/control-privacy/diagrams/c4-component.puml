@@ -7,10 +7,10 @@ Container(web, "Banaro Web", "Angular", "PrivacySettingsSection, HttpSettingsApi
 ContainerDb(db, "Banaro database", "Relational database", "privacy_settings, builders")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "PrivacyController", "Laravel controller", "PUT /settings/privacy")
-  Component(req, "UpdatePrivacySettingsRequest", "Form request", "Five required fields")
+  Component(ctrl, "PrivacyRoutes", "Route handler", "PUT /settings/privacy")
+  Component(req, "UpdatePrivacySettingsRequest", "Request schema", "Five required fields")
   Component(action, "UpdatePrivacySettings", "Action", "Writes the five values")
-  Component(model, "PrivacySettings", "Eloquent model", "Visibility, precision and three switches; defaults")
+  Component(model, "PrivacySettings", "Drizzle table", "Visibility, precision and three switches; defaults")
   Component(service, "ProfileVisibilityService", "Domain service", "canView, applyScope, locationFor, distanceFor")
   Component(distance, "DistanceService", "Domain service", "Exact distance between two members")
   Component(trait, "ProfileFields", "Resource trait", "Omits hidden fields with when() and mergeWhen()")

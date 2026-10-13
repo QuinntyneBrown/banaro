@@ -21,7 +21,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "HttpProjectsApi" as client
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "ProjectController" as controller
+  participant "ProjectRoutes" as controller
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "BrowseProjects" as action
@@ -40,7 +40,7 @@ opt reader changes search text or a filter
 end
 page --> actor : loading state with skeleton cards (L2-015 criterion 4)
 page -> client : browse(query)
-client -> controller : GET /api/v1/projects?q=&stage=&looking_for=&page= (api_public.php)
+client -> controller : GET /api/v1/projects?q=&stage=&looking_for=&page= (src/http/public-routes.ts)
 controller -> controller : Validate BrowseProjectsRequest, resolve optional viewer
 controller -> action : handle(input, viewer)
 action -> search : search(ProjectSearchQuery)

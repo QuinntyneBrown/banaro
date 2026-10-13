@@ -7,12 +7,12 @@ Container(web, "Banaro Web", "Angular", "ProjectEditPage, DeleteProjectDialog, H
 ContainerDb(db, "Banaro database", "Relational database", "projects, project_looking_for, feedback, help_offers")
 
 Container_Boundary(api, "Banaro API") {
-  Component(ctrl, "ProjectController", "Laravel controller", "edit(), update(), destroy()")
-  Component(req, "EditProjectRequest / UpdateProjectRequest / DeleteProjectRequest", "Form requests", "authorize() first, then field rules and confirm_name")
+  Component(ctrl, "ProjectRoutes", "Route handler", "edit(), update(), destroy()")
+  Component(req, "EditProjectRequest / UpdateProjectRequest / DeleteProjectRequest", "Request schemas", "authorize() first, then field rules and confirm_name")
   Component(policy, "ProjectPolicy", "Policy", "update() and delete(): owner only")
   Component(update, "UpdateProject", "Action", "Updates fields, syncs roles, touches activity")
   Component(delete, "DeleteProject", "Action", "Deletes project and its input in one transaction")
-  Component(models, "Project / ProjectLookingFor / Feedback / HelpOffer", "Eloquent models", "Project and its input")
+  Component(models, "Project / ProjectLookingFor / Feedback / HelpOffer", "Drizzle tables", "Project and its input")
   Component(resource, "ProjectResource", "API resource", "ProjectDetail JSON shape")
 }
 

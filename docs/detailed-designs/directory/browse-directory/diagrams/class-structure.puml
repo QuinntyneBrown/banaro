@@ -65,21 +65,21 @@ package "Frontend — banaro application, components and api libraries" {
 }
 
 package "Backend — Banaro API" {
-  class BuilderDirectoryController {
-    +index(request: SearchDirectoryRequest): DirectoryPageResource
+  class BuilderDirectoryRoutes {
+    +GET(request: SearchDirectoryRequest): DirectoryPageResource
   }
   class SearchDirectory {
-    +handle(viewer: ?User, query: DirectoryQueryData): LengthAwarePaginator
+    +handle(viewer: User | null, query: DirectoryQueryData): Page
   }
   class DirectorySorter {
-    +apply(query: EloquentQuery, sort: DirectorySort, viewer: ?User): EloquentQuery
+    +apply(query: DrizzleQuery, sort: DirectorySort, viewer: User | null): DrizzleQuery
   }
   class MatchScoreService <<matching>> {
-    +scoresFor(viewer: User, builderIds: array): array
+    +scoresFor(viewer: User, builderIds: unknown[]): string[]
   }
   class DistanceService {
-    +betweenNeighbourhoods(from: int, to: int): float
-    +approximate(km: float): int
+    +betweenNeighbourhoods(from: number, to: number): number
+    +approximate(km: number): number
   }
   class PresenceService {
     +statusFor(builder: Builder): ?OnlineStatus
@@ -88,7 +88,7 @@ package "Backend — Banaro API" {
     +normalise(text: string): string
   }
   class ProfileVisibility <<settings>> {
-    +scopeListable(query: EloquentQuery, viewer: ?User): EloquentQuery
+    +scopeListable(query: DrizzleQuery, viewer: User | null): DrizzleQuery
   }
   enum DirectorySort {
     BestMatch
@@ -97,14 +97,14 @@ package "Backend — Banaro API" {
     Newest
   }
   class "Builder (model)" as BuilderModel {
-    +int id
-    +string public_id
-    +string name
-    +BuilderRole role
-    +int neighbourhood_id
-    +string search_text
-    +Carbon last_active_at
-    +Carbon created_at
+    +id: number
+    +public_id: string
+    +name: string
+    +role: BuilderRole
+    +neighbourhood_id: number
+    +search_text: string
+    +last_active_at: Timestamp
+    +created_at: Timestamp
   }
   class BuilderCardResource
   class PublicBuilderCardResource
@@ -118,10 +118,10 @@ BuilderCard ..> DistanceFormatter : formats distance
 HttpDirectoryApi ..|> DirectoryApi
 DirectoryApi ..> DirectoryResultPage : returns
 DirectoryResultPage "1" *-- "0..12" BuilderCardSummary
-HttpDirectoryApi ..> BuilderDirectoryController : HTTPS
+HttpDirectoryApi ..> BuilderDirectoryRoutes : HTTPS
 
-BuilderDirectoryController ..> SearchDirectory : calls
-BuilderDirectoryController ..> DirectoryPageResource : returns
+BuilderDirectoryRoutes ..> SearchDirectory : calls
+BuilderDirectoryRoutes ..> DirectoryPageResource : returns
 DirectoryPageResource ..> BuilderCardResource : members
 DirectoryPageResource ..> PublicBuilderCardResource : visitors
 SearchDirectory ..> ProfileVisibility : applies

@@ -5,17 +5,17 @@ title Components — Give feedback on a project
 
 Container(web, "Banaro Web", "Angular", "GiveFeedbackDialog, ReplyToFeedbackDialog, ProjectDetailPage, HttpProjectsApi")
 ContainerDb(db, "Banaro database", "Relational database", "projects, feedback, blocks")
-ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters, Horizon queues")
+ContainerQueue(redis, "Redis", "Redis", "Rate-limit counters, BullMQ queues")
 
 Container_Boundary(api, "Banaro API") {
   Component(throttle, "throttle:project-feedback", "Rate limiter middleware", "10 per hour per member")
-  Component(ctrl, "FeedbackController / FeedbackReplyController / FeedbackVisibilityController", "Laravel controllers", "POST /feedback, PUT /reply, PUT /hidden")
-  Component(req, "GiveFeedbackRequest / ReplyToFeedbackRequest / HideFeedbackRequest", "Form requests", "authorize() then length rules")
+  Component(ctrl, "FeedbackRoutes / FeedbackReplyRoutes / FeedbackVisibilityRoutes", "Route handlers", "POST /feedback, PUT /reply, PUT /hidden")
+  Component(req, "GiveFeedbackRequest / ReplyToFeedbackRequest / HideFeedbackRequest", "Request schemas", "authorize() then length rules")
   Component(ppolicy, "ProjectPolicy / FeedbackPolicy", "Policies", "Not owner and not blocked; owner only")
   Component(block, "BlockService", "Domain service (TrustAndSafety)", "isBlockedEitherWay()")
   Component(give, "GiveFeedback", "Action", "Stores item, counts, queues notification")
   Component(respond, "ReplyToFeedback / HideFeedback", "Actions", "One reply per item; hide from public view")
-  Component(models, "Project / Feedback", "Eloquent models", "Feedback, reply and hidden state")
+  Component(models, "Project / Feedback", "Drizzle tables", "Feedback, reply and hidden state")
   Component(resource, "FeedbackResource", "API resource", "FeedbackView JSON shape")
   Component(notify, "FeedbackReceivedNotification", "Queued notification", "mail and database channels")
 }

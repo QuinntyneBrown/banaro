@@ -7,10 +7,10 @@ Person(member, "Member", "Signed-in, verified builder")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Settings data-export panel, delete-account dialog")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Anonymises account, deletes projects, revokes sessions, signs export links")
-  Container(worker, "Banaro Worker", "Laravel Horizon and scheduler", "ErasePersonalData, BuildDataExport, daily sweep, export pruning")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Anonymises account, deletes projects, revokes sessions, signs export links")
+  Container(worker, "Banaro Worker", "BullMQ worker and scheduler", "ErasePersonalData, BuildDataExport, daily sweep, export pruning")
   ContainerDb(db, "Banaro database", "Relational database", "Users, profiles, projects, messages, RSVPs, data exports")
-  ContainerQueue(redis, "Redis", "Redis", "Sessions and Horizon queues")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions and BullMQ queues")
   ContainerDb(media, "Media storage", "Private file storage", "Profile photos and export archives")
 }
 

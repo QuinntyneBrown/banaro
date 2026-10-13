@@ -40,24 +40,24 @@ package "Frontend — banaro application and api library" {
 }
 
 package "Backend — Banaro API" {
-  class FeedbackController {
-    +store(request: GiveFeedbackRequest, project: Project): FeedbackResource
+  class FeedbackRoutes {
+    +POST(request: GiveFeedbackRequest, project: Project): FeedbackResource
   }
-  class FeedbackReplyController {
-    +store(request: ReplyToFeedbackRequest, project: Project, feedback: Feedback): FeedbackResource
+  class FeedbackReplyRoutes {
+    +POST(request: ReplyToFeedbackRequest, project: Project, feedback: Feedback): FeedbackResource
   }
-  class FeedbackVisibilityController {
-    +store(request: HideFeedbackRequest, project: Project, feedback: Feedback): FeedbackResource
+  class FeedbackVisibilityRoutes {
+    +POST(request: HideFeedbackRequest, project: Project, feedback: Feedback): FeedbackResource
   }
   class ProjectPolicy {
-    +giveFeedback(user: ?User, project: Project): bool
+    +giveFeedback(user: User | null, project: Project): boolean
   }
   class FeedbackPolicy {
-    +reply(user: User, feedback: Feedback): bool
-    +hide(user: User, feedback: Feedback): bool
+    +reply(user: User, feedback: Feedback): boolean
+    +hide(user: User, feedback: Feedback): boolean
   }
   class BlockService {
-    +isBlockedEitherWay(a: User, b: User): bool
+    +isBlockedEitherWay(a: User, b: User): boolean
   }
   class GiveFeedback {
     +handle(author: User, project: Project, body: string): Feedback
@@ -69,25 +69,25 @@ package "Backend — Banaro API" {
     +handle(owner: User, feedback: Feedback): Feedback
   }
   class Project {
-    +int id
-    +int owner_id
-    +int feedback_count
-    +Carbon last_activity_at
+    +id: number
+    +owner_id: number
+    +feedback_count: number
+    +last_activity_at: Timestamp
   }
   class Feedback {
-    +int id
-    +int project_id
-    +int author_id
-    +string body
-    +?string reply_body
-    +?Carbon replied_at
-    +?Carbon hidden_at
-    +?int hidden_by
-    +hasReply(): bool
+    +id: number
+    +project_id: number
+    +author_id: number
+    +body: string
+    +reply_body: string | null
+    +replied_at: Timestamp | null
+    +hidden_at: Timestamp | null
+    +hidden_by: number | null
+    +hasReply(): boolean
   }
   class FeedbackResource
   class FeedbackReceivedNotification {
-    +via(owner: User): array
+    +via(owner: User): string[]
     +toMail(owner: User): MailMessage
   }
 }
@@ -98,16 +98,16 @@ ProjectDetailPage ..> GiveFeedbackDialog : opens
 ProjectDetailPage ..> ReplyToFeedbackDialog : opens
 ProjectDetailPage ..> ProjectsApi : hides via
 HttpProjectsApi ..|> ProjectsApi
-HttpProjectsApi ..> FeedbackController : HTTPS
+HttpProjectsApi ..> FeedbackRoutes : HTTPS
 
-FeedbackController ..> GiveFeedback : calls
-FeedbackReplyController ..> ReplyToFeedback : calls
-FeedbackVisibilityController ..> HideFeedback : calls
-FeedbackController ..> ProjectPolicy : authorize
-FeedbackReplyController ..> FeedbackPolicy : authorize
-FeedbackVisibilityController ..> FeedbackPolicy : authorize
+FeedbackRoutes ..> GiveFeedback : calls
+FeedbackReplyRoutes ..> ReplyToFeedback : calls
+FeedbackVisibilityRoutes ..> HideFeedback : calls
+FeedbackRoutes ..> ProjectPolicy : authorize
+FeedbackReplyRoutes ..> FeedbackPolicy : authorize
+FeedbackVisibilityRoutes ..> FeedbackPolicy : authorize
 ProjectPolicy ..> BlockService : blocked pair check
 GiveFeedback ..> FeedbackReceivedNotification : queues
-FeedbackController ..> FeedbackResource : returns
+FeedbackRoutes ..> FeedbackResource : returns
 Project "1" *-- "*" Feedback : feedback
 @enduml

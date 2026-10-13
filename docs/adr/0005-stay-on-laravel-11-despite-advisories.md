@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-09
 **Category:** backend
-**Status:** Accepted
+**Status:** Superseded by ADR-0007 (2026-10-13)
 **Deciders:** Quinntyne Brown, Claude
 
 ## Context

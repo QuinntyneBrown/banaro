@@ -71,12 +71,12 @@ database. It sends no e-mail and queues no job.
 
 ### Backend — Banaro API
 
-- **`MatchingPreferenceController`** (`Controllers/Api/V1/Matching/`) — `show()` handles
+- **`MatchingPreferenceRoutes`** (`app/api/v1/`) — `show()` handles
   `GET /matching/preferences` and returns 404 when the member is not set up. `update()` handles
   `PUT /matching/preferences`, calls `SaveMatchingPreferences` and returns a
-  `MatchingPreferenceResource`. Both routes are in `routes/api.php`, so they require a verified
+  `MatchingPreferenceResource`. Both routes are on the authenticated stack (`src/http/pipeline.ts`), so they require a verified
   member.
-- **`SaveMatchingPreferencesRequest`** (`Requests/Matching/`) — form request with these rules
+- **`SaveMatchingPreferencesRequest`** (`src/http/requests/matching/`) — request schema with these rules
   (`L2-045` criterion 1):
   - `looking_for` — required array of at least one `MatchRole` value (`L2-021` criterion 2)
   - `skills` — required array of at least one skill from the shared vocabulary (`L2-021`
@@ -88,7 +88,7 @@ database. It sends no e-mail and queues no job.
   - `weekly_email` — boolean
   - The request ignores `user_id`, `status` and any other field the member may not set (`L2-044`
     criterion 4).
-- **`SaveMatchingPreferences`** (`Actions/Matching/`) — stores the preferences in one transaction:
+- **`SaveMatchingPreferences`** (`src/actions/matching/`) — stores the preferences in one transaction:
   1. It inserts or updates the member's single `MatchingPreference` row, keyed by `user_id`.
   2. A new row starts with status `active`. An existing row keeps its status, so saving a search
      never resumes paused matching; only the `pause-and-resume-matching` feature changes the status.
@@ -96,18 +96,18 @@ database. It sends no e-mail and queues no job.
      which the `settings/manage-email-preferences` feature owns (`L2-037`).
   4. It returns the preference with `nextRunOn` from `MatchingScheduleService` (`L2-021`
      criterion 1).
-- **`MatchingScheduleService`** (`Services/Matching/`) — owns the matching calendar.
+- **`MatchingScheduleService`** (`src/services/matching/`) — owns the matching calendar.
   `nextRunDate(now)` returns the next Monday at 06:00 America/Toronto, or today when it is Monday
   before 06:00. `isoWeekOf(instant)` returns the ISO week key, such as `2026-W42`. The
   `generate-weekly-suggestions` feature uses the same service.
-- **`MatchingPreference`** (`Models/`) — one row per member, enforced by a unique index on `user_id`.
+- **`MatchingPreference`** (`src/db/schema/`) — one row per member, enforced by a unique index on `user_id`.
   It holds `building_summary`, `looking_for` (JSON array of `MatchRole`), `skills` (JSON array of skill
   keys), `venture_stage`, `availability`, `max_distance_km`, `status` (`MatchingStatus`) and
   `paused_at`.
-- **`MatchRole`**, **`VentureStage`**, **`Availability`** and **`MatchingStatus`** (`Enums/`) —
+- **`MatchRole`**, **`VentureStage`**, **`Availability`** and **`MatchingStatus`** (`src/enums/`) —
   closed vocabularies. `MatchRole` holds `CoFounder`, `Advisor` and `Contributor`. `MatchingStatus`
   holds `Active` and `Paused`. The values of `VentureStage` and `Availability` are `<TO SUPPLY>`.
-- **`MatchingPreferenceResource`** (`Resources/Matching/`) — serializes the preference, its status
+- **`MatchingPreferenceResource`** (`src/http/resources/matching/`) — serializes the preference, its status
   and `nextRunOn` into the `MatchingPreferences` shape.
 
 ### Data scoping
@@ -164,7 +164,7 @@ and the Matches e-mail choice in the Banaro database.
 
 ### Components
 
-Inside the Banaro API, `MatchingPreferenceController` validates with `SaveMatchingPreferencesRequest`
+Inside the Banaro API, `MatchingPreferenceRoutes` validates with `SaveMatchingPreferencesRequest`
 and calls `SaveMatchingPreferences`. The action reads the next run date from `MatchingScheduleService`.
 
 ![C4 component view for setting up matching](diagrams/c4-component.png)

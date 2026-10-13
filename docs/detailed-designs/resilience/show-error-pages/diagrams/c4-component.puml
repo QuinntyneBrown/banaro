@@ -3,7 +3,7 @@
 LAYOUT_WITH_LEGEND()
 title Components — Show error pages
 
-Container(api, "Banaro API", "Laravel 11", "AssignRequestId, exception rendering in bootstrap/app.php")
+Container(api, "Banaro API", "Next.js 16", "AssignRequestId, exception rendering in src/http/pipeline.ts")
 
 Container_Boundary(web, "Banaro Web — banaro application and api library") {
   Component(ssr, "server.ts", "SSR server", "Renders routes; static 500 when rendering fails")

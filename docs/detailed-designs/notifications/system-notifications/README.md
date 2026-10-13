@@ -104,27 +104,27 @@ browser for connection banners. All three feed `BannerService`, which renders th
 
 ### Backend — Banaro API
 
-- **`SiteAnnouncementController`** (`Controllers/Api/V1/Notifications/`) — `current()` handles
+- **`SiteAnnouncementRoutes`** (`app/api/v1/`) — `current()` handles
   `GET /announcements/current`, calls `GetCurrentAnnouncement` and returns a
-  `SiteAnnouncementResource`. The route is in `routes/api_public.php`, because the site banner
+  `SiteAnnouncementResource`. The route is in `src/http/public-routes.ts`, because the site banner
   shows to visitors as well as members. The response carries no personal data.
-- **`GetCurrentAnnouncement`** (`Actions/Notifications/`) — returns the most recently published
+- **`GetCurrentAnnouncement`** (`src/actions/notifications/`) — returns the most recently published
   announcement whose window contains now, or `null`. It caches the result in Redis and clears the
   cache when an announcement changes.
-- **`Admin\SiteAnnouncementController`** (`Controllers/Api/V1/Admin/`) — `store()`, `update()` and
-  `destroy()` under `/api/v1/admin/announcements` in `routes/api.php`. Administrator middleware
+- **`admin/SiteAnnouncementRoutes`** (`app/api/v1/`) — `store()`, `update()` and
+  `destroy()` under `/api/v1/admin/announcements` on the authenticated stack (`src/http/pipeline.ts`). Administrator middleware
   returns 403 to anyone else (`L2-033` criterion 4).
 - **`PublishSiteAnnouncementRequest`** and **`UpdateSiteAnnouncementRequest`**
-  (`Requests/Notifications/`) — validate `message` (length `<TO SUPPLY>`), `variant`, `link_label`,
+  (`src/http/requests/notifications/`) — validate `message` (length `<TO SUPPLY>`), `variant`, `link_label`,
   `link_url` (HTTPS), `dismissible`, `starts_at` and `ends_at`.
 - **`PublishSiteAnnouncement`**, **`UpdateSiteAnnouncement`** and **`CloseSiteAnnouncement`**
-  (`Actions/Notifications/`) — write the announcement, bump its `version`, clear the cache and write an
+  (`src/actions/notifications/`) — write the announcement, bump its `version`, clear the cache and write an
   audit-log entry through the audit service of `trust-and-safety/moderate-reports` (`L2-033`
   criterion 5).
-- **`SiteAnnouncement`** (`Models/`) — `message`, `variant` (`BannerVariant`), `link_label`,
+- **`SiteAnnouncement`** (`src/db/schema/`) — `message`, `variant` (`BannerVariant`), `link_label`,
   `link_url`, `dismissible`, `starts_at`, `ends_at`, `published_at`, `closed_at`, `version` and
   `created_by`.
-- **`BannerVariant`** (`Enums/`) — `Info`, `Success`, `Warning` and `Danger`.
+- **`BannerVariant`** (`src/enums/`) — `Info`, `Success`, `Warning` and `Danger`.
 
 ### Open points
 

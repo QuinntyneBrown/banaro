@@ -8,10 +8,10 @@ System_Ext(scanner, "Media scanner", "Malware-scanning service")
 
 System_Boundary(banaro, "Banaro") {
   Container(web, "Banaro Web", "Angular, SSR", "Profile edit page, change-photo dialog")
-  Container(api, "Banaro API", "Laravel 11, PHP 8.3", "Validates, crops, resizes and strips metadata; serves ready photos")
-  Container(worker, "Banaro Worker", "Laravel Horizon", "Runs the media scan job")
+  Container(api, "Banaro API", "Next.js 16, Node 22", "Validates, crops, resizes and strips metadata; serves ready photos")
+  Container(worker, "Banaro Worker", "BullMQ worker", "Runs the media scan job")
   ContainerDb(db, "Banaro database", "Relational database", "Builders, profile photos and their status")
-  ContainerQueue(redis, "Redis", "Redis", "Sessions and Horizon queues")
+  ContainerQueue(redis, "Redis", "Redis", "Sessions and BullMQ queues")
   ContainerDb(media, "Media storage", "Private file storage outside the web root", "Photo files under random names")
 }
 
