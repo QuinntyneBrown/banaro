@@ -1,0 +1,262 @@
+<div class="wrap">
+  @switch (state()) {
+    @case ('not-found') {
+      <bn-error-page
+        code="404"
+        [heading]="'projects.detail.notFound.title' | t"
+        [lead]="'projects.detail.notFound.lead' | t"
+      >
+        <div class="cluster">
+          <a bn-button variant="primary" routerLink="/projects">{{
+            'projects.detail.notFound.browse' | t
+          }}</a>
+          <a bn-button variant="quiet" routerLink="/projects/new">{{
+            'projects.detail.notFound.share' | t
+          }}</a>
+        </div>
+      </bn-error-page>
+    }
+    @case ('error') {
+      <bn-breadcrumb [label]="'projects.detail.breadcrumb' | t" [items]="crumbs()" />
+      <h1 class="vh">{{ 'projects.detail.heading' | t }}</h1>
+      <div class="error">
+        <bn-empty-state tone="error" [heading]="'projects.detail.error.title' | t">
+          {{ 'projects.detail.error.body' | t }}
+          <button slot="actions" bn-button variant="primary" type="button" (click)="retry()">
+            {{ 'projects.detail.error.tryAgain' | t }}
+          </button>
+          <a slot="actions" bn-button variant="quiet" routerLink="/projects">{{
+            'projects.detail.error.back' | t
+          }}</a>
+        </bn-empty-state>
+      </div>
+    }
+    @case ('loading') {
+      @if (slow()) {
+        <bn-breadcrumb [label]="'projects.detail.breadcrumb' | t" [items]="crumbs()" />
+        <div aria-busy="true">
+          <h1 class="vh" role="status">{{ 'projects.detail.loading' | t }}</h1>
+          <div class="two-col">
+            <div class="stack stack--lg">
+              <span bn-skeleton shape="block"></span>
+              <span bn-skeleton></span>
+              <span bn-skeleton short></span>
+            </div>
+            <span bn-skeleton shape="block"></span>
+          </div>
+        </div>
+      }
+    }
+    @default {
+      @if (project(); as p) {
+        <bn-breadcrumb [label]="'projects.detail.breadcrumb' | t" [items]="crumbs()" />
+        <div class="proj-head">
+          <div class="proj-head__who">
+            <span [class]="'proj-head__mark project__mark--' + tone()" aria-hidden="true">{{
+              mark()
+            }}</span>
+            <div>
+              <h1 class="proj-head__name">{{ p.name }}</h1>
+              <p class="proj-head__by">
+                {{ 'projects.detail.by' | t }}
+                @if (p.owner.id) {
+                  <a [routerLink]="['/builders', p.owner.id]">{{ p.owner.name }}</a>
+                } @else {
+                  {{ p.owner.name }}
+                }
+                · {{ p.summary }}
+              </p>
+            </div>
+          </div>
+          @if (canGiveFeedback()) {
+            <div class="proj-head__actions">
+              <button bn-button variant="primary" type="button" (click)="giveFeedback()">
+                {{ 'projects.detail.actions.feedback' | t }}
+              </button>
+              @if (p.lookingFor.length) {
+                <button bn-button variant="quiet" type="button" (click)="offerToHelp()">
+                  {{ 'projects.detail.actions.help' | t }}
+                </button>
+              }
+            </div>
+          }
+          @if (!p.isOwn && !signedIn()) {
+            <div class="proj-head__actions">
+              <a
+                bn-button
+                variant="primary"
+                routerLink="/sign-in"
+                [queryParams]="{ returnTo: '/projects/' + p.id }"
+                >{{ 'projects.detail.actions.feedback' | t }}</a
+              >
+              @if (p.lookingFor.length) {
+                <a
+                  bn-button
+                  variant="quiet"
+                  routerLink="/sign-in"
+                  [queryParams]="{ returnTo: '/projects/' + p.id }"
+                  >{{ 'projects.detail.actions.help' | t }}</a
+                >
+              }
+            </div>
+          }
+        </div>
+        <div class="two-col">
+          <div class="stack stack--lg">
+            @if (paragraphs().length) {
+              <section aria-labelledby="about-title">
+                <h2 class="section__title" id="about-title">
+                  {{ 'projects.detail.about' | t: { name: p.name } }}
+                </h2>
+                <div class="prose">
+                  @for (paragraph of paragraphs(); track $index) {
+                    <p>{{ paragraph }}</p>
+                  }
+                </div>
+              </section>
+            }
+            <section aria-labelledby="fb-title">
+              <div class="cluster cluster--between">
+                <h2 class="section__title" id="fb-title">
+                  {{ 'projects.detail.feedback' | t }}
+                  <span class="muted"
+                    >· {{ 'projects.detail.comments' | t: { count: p.feedbackCount } }}</span
+                  >
+                </h2>
+                @if (canGiveFeedback() && p.feedbackCount > 0) {
+                  <button
+                    bn-button
+                    variant="quiet"
+                    size="sm"
+                    type="button"
+                    (click)="giveFeedback()"
+                  >
+                    {{ 'projects.detail.actions.feedback' | t }}
+                  </button>
+                }
+              </div>
+              @if (p.feedbackCount === 0) {
+                @if (p.isOwn) {
+                  <p class="muted">{{ 'projects.detail.emptyOwn' | t }}</p>
+                } @else {
+                  <bn-empty-state [heading]="'projects.detail.empty.title' | t">
+                    {{ 'projects.detail.empty.body' | t: { name: p.name, owner: p.owner.name } }}
+                    @if (canGiveFeedback()) {
+                      <button
+                        slot="actions"
+                        bn-button
+                        variant="primary"
+                        type="button"
+                        (click)="giveFeedback()"
+                      >
+                        {{ 'projects.detail.empty.cta' | t }}
+                      </button>
+                    } @else if (!signedIn()) {
+                      <a
+                        slot="actions"
+                        bn-button
+                        variant="primary"
+                        routerLink="/sign-in"
+                        [queryParams]="{ returnTo: '/projects/' + p.id }"
+                        >{{ 'projects.detail.empty.cta' | t }}</a
+                      >
+                    }
+                  </bn-empty-state>
+                }
+              } @else {
+                <ol class="comments">
+                  @for (item of feedback(); track item.id) {
+                    <li
+                      bn-comment
+                      [authorName]="item.author.name"
+                      [authorHref]="item.author.id ? ['/builders', item.author.id] : null"
+                      [photo]="item.author.photoUrl"
+                      [initials]="initials(item.author.name)"
+                      [tone]="tileOf(item.author.id ?? item.id)"
+                      [datetime]="item.createdAt"
+                      [when]="when(item)"
+                      [body]="item.body"
+                    ></li>
+                  }
+                </ol>
+                @if (feedbackState() === 'error') {
+                  <p class="muted">
+                    {{ 'projects.detail.listFailed.title' | t }}
+                    <button
+                      bn-button
+                      variant="text"
+                      size="sm"
+                      type="button"
+                      (click)="loadFeedback()"
+                    >
+                      {{ 'projects.detail.listFailed.retry' | t }}
+                    </button>
+                  </p>
+                }
+                @if (earlier() > 0) {
+                  <div class="cluster">
+                    <button
+                      bn-button
+                      variant="quiet"
+                      type="button"
+                      [busy]="feedbackState() === 'loading'"
+                      (click)="loadFeedback()"
+                    >
+                      {{ 'projects.detail.earlier' | t: { count: earlier() } }}
+                    </button>
+                  </div>
+                }
+              }
+            </section>
+          </div>
+          <aside class="stack" [attr.aria-label]="'projects.detail.aside.label' | t">
+            <div bn-aside-card [heading]="'projects.detail.aside.glance' | t">
+              <dl class="facts">
+                <div>
+                  <dt>{{ 'projects.detail.aside.stage' | t }}</dt>
+                  <dd>{{ stage() }}</dd>
+                </div>
+                @if (lookingFor()) {
+                  <div>
+                    <dt>{{ 'projects.detail.aside.lookingFor' | t }}</dt>
+                    <dd>{{ lookingFor() }}</dd>
+                  </div>
+                }
+                @if (updated(); as date) {
+                  <div>
+                    <dt>{{ 'projects.detail.aside.updated' | t }}</dt>
+                    <dd>{{ date }}</dd>
+                  </div>
+                }
+              </dl>
+              @if (p.link && host()) {
+                <a class="link" [href]="p.link" target="_blank" rel="noopener noreferrer">{{
+                  host()
+                }}</a>
+              }
+            </div>
+            <div bn-aside-card [eyebrow]="'projects.detail.aside.builder' | t">
+              <div class="who">
+                <bn-avatar
+                  [name]="p.owner.name"
+                  [src]="p.owner.photoUrl ?? null"
+                  [initials]="initials(p.owner.name)"
+                  [tile]="tileOf(p.owner.id ?? p.id)"
+                  size="md"
+                  decorative
+                />
+                <h2 class="who__name">
+                  @if (p.owner.id) {
+                    <a [routerLink]="['/builders', p.owner.id]">{{ p.owner.name }}</a>
+                  } @else {
+                    {{ p.owner.name }}
+                  }
+                </h2>
+              </div>
+            </div>
+          </aside>
+        </div>
+      }
+    }
+  }
+</div>

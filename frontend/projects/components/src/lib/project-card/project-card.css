@@ -1,0 +1,116 @@
+/* Extracted from docs/design-system/assets/components.css: project, project__*, facts. */
+:host {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-surface);
+  border: var(--border-width-hairline) solid var(--color-border-default);
+}
+@media (prefers-reduced-motion: no-preference) {
+  :host(.project) {
+    transition:
+      transform var(--duration-base) var(--ease-standard),
+      box-shadow var(--duration-slow) var(--ease-standard);
+  }
+  :host(.project:hover) {
+    transform: translateY(var(--lift));
+    box-shadow: var(--shadow-3);
+  }
+}
+.project__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.project__head > div {
+  min-width: 0;
+}
+.project__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--space-12);
+  height: var(--space-12);
+  border-radius: var(--radius-md);
+  font: var(--font-weight-light) var(--font-size-2xl) / 1 var(--font-family-display);
+  color: var(--color-tile-fg);
+}
+.project__mark--sage {
+  background: var(--color-tile-sage);
+}
+.project__mark--clay {
+  background: var(--color-tile-clay);
+}
+.project__mark--fjord {
+  background: var(--color-tile-fjord);
+}
+.project__mark--oat {
+  background: var(--color-tile-oat);
+}
+.project__name {
+  margin: 0;
+  font: var(--text-h3);
+  text-wrap: balance;
+}
+.project__name a {
+  color: inherit;
+  text-decoration: none;
+}
+.project__name a:hover {
+  text-decoration: underline;
+  text-underline-offset: var(--size-project-name-a-text-underline-offset-38);
+}
+.project__owner {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--color-fg-subtle);
+}
+.project__owner a {
+  color: inherit;
+}
+.project__line {
+  margin: 0;
+  color: var(--color-fg-muted);
+}
+.project__facts {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-top: var(--space-4);
+  border-top: var(--border-width-hairline) solid var(--color-border-default);
+  font: var(--text-body-sm);
+}
+.project__facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.project__facts dt {
+  color: var(--color-fg-subtle);
+  white-space: nowrap;
+}
+.project__facts dd {
+  margin: 0;
+  text-align: right;
+}
+.facts {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+.facts > div {
+  display: grid;
+  gap: var(--space-1);
+}
+.facts dt {
+  font: var(--text-overline);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-fg-subtle);
+}
+.facts dd {
+  margin: 0;
+  font: var(--text-body);
+}

@@ -11,6 +11,8 @@ export interface ProjectOptions {
   link?: string | null;
   /** Days since the project's last activity. */
   activeDaysAgo?: number;
+  /** How many comments the project has had. */
+  feedbackCount?: number;
 }
 
 const quote = (value: string) => `'${value.replace(/'/g, "''")}'`;
@@ -26,6 +28,7 @@ export function createProject(owner: Member, options: ProjectOptions = {}): stri
     lookingFor = [],
     link = null,
     activeDaysAgo = 0,
+    feedbackCount = 0,
   } = options;
   const id = Array.from(randomBytes(26), (b) => '0123456789abcdefghjkmnpqrstvwxyz'[b % 32]).join('');
   const active = `${NOW} - interval '${activeDaysAgo} days'`;
@@ -33,7 +36,7 @@ export function createProject(owner: Member, options: ProjectOptions = {}): stri
     INSERT INTO projects (public_id, owner_id, name, summary, description, stage, link, feedback_count,
                           last_activity_at, search_text, created_at, updated_at)
     VALUES (${quote(id)}, ${owner.id}, ${quote(name)}, ${quote(summary)}, ${literal(description)},
-            ${quote(stage)}, ${literal(link)}, 0, ${active}, ${quote(`${name} ${summary}`.toLowerCase())},
+            ${quote(stage)}, ${literal(link)}, ${feedbackCount}, ${active}, ${quote(`${name} ${summary}`.toLowerCase())},
             ${active}, ${active})`);
   for (const role of lookingFor) {
     sql(`INSERT INTO project_looking_for (project_id, role)

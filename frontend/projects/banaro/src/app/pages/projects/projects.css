@@ -1,0 +1,28 @@
+/* Extracted from docs/design-system/assets/components.css: projects, projects--list, proj-toolbar count. */
+.count strong {
+  color: var(--color-fg-default);
+  font-weight: var(--font-weight-semibold);
+}
+.projects {
+  display: grid;
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 48rem) {
+  .projects {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 80rem) {
+  .projects--list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.cta {
+  padding-block: var(--space-8) var(--space-12);
+}
+.cta p {
+  margin: 0;
+}

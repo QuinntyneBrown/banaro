@@ -1,0 +1,97 @@
+/* Extracted from docs/design-system/assets/components.css: proj-head, facts, section, dialog__who. */
+.proj-head {
+  display: grid;
+  gap: var(--space-6);
+  padding-block: var(--space-12) var(--space-8);
+}
+.proj-head__who {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+.proj-head__mark {
+  display: grid;
+  place-items: center;
+  width: var(--space-20);
+  height: var(--space-20);
+  flex: none;
+  border-radius: var(--radius-lg);
+  font: var(--font-weight-light) var(--font-size-3xl) / 1 var(--font-family-display);
+  color: var(--color-tile-fg);
+}
+.project__mark--sage {
+  background: var(--color-tile-sage);
+}
+.project__mark--clay {
+  background: var(--color-tile-clay);
+}
+.project__mark--fjord {
+  background: var(--color-tile-fjord);
+}
+.project__mark--oat {
+  background: var(--color-tile-oat);
+}
+.proj-head__name {
+  margin: 0;
+  font: var(--text-h1);
+  letter-spacing: var(--letter-spacing-tight);
+}
+.proj-head__by {
+  margin: 0;
+  color: var(--color-fg-muted);
+}
+.proj-head__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.section__title {
+  margin: 0 0 var(--space-5);
+  font: var(--text-h2);
+  font-size: var(--font-size-2xl);
+  letter-spacing: var(--letter-spacing-tight);
+}
+.prose {
+  margin-top: var(--space-5);
+}
+.facts {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+.facts > div {
+  display: grid;
+  gap: var(--space-1);
+}
+.facts dt {
+  font: var(--text-overline);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-fg-subtle);
+}
+.facts dd {
+  margin: 0;
+  font: var(--text-body);
+}
+.link {
+  font: var(--text-label);
+  overflow-wrap: anywhere;
+}
+.who {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.who__name {
+  margin: 0;
+  font: var(--text-h4);
+}
+.error {
+  padding-block: var(--space-10);
+}
+.comments {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

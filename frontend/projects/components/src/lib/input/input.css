@@ -1,13 +1,17 @@
 /* Extracted from docs/design-system/assets/components.css: input */
+/* bn-select sets the --bn-select-* knobs on its host, so a native select inside it takes the
+   chevron control look; every other input keeps the defaults. */
 :host {
-  width: 100%;
-  min-height: var(--control-height-lg);
-  padding: 0 var(--space-4);
+  width: var(--bn-select-width, 100%);
+  min-height: var(--bn-select-height, var(--control-height-lg));
+  padding: var(--bn-select-padding, 0 var(--space-4));
   border: var(--border-width-hairline) solid var(--color-border-strong);
-  border-radius: var(--radius-md);
+  border-radius: var(--bn-select-radius, var(--radius-md));
+  appearance: var(--bn-select-appearance, auto);
+  cursor: var(--bn-select-cursor, auto);
   background: var(--color-bg-surface);
   color: var(--color-fg-default);
-  font: var(--text-body);
+  font: var(--bn-select-font, var(--text-body));
 }
 :host::placeholder {
   color: var(--color-fg-subtle);

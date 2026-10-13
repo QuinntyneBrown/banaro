@@ -17,6 +17,8 @@ export class ProjectFormPage {
   readonly successTitle: Locator;
   readonly viewProject: Locator;
   readonly backToProjects: Locator;
+  readonly dangerZone: Locator;
+  readonly deleteProject: Locator;
 
   constructor(private readonly page: Page) {
     const main = page.getByRole('main');
@@ -34,6 +36,8 @@ export class ProjectFormPage {
     this.successTitle = main.locator('.empty__title');
     this.viewProject = main.getByRole('link', { name: /^View / });
     this.backToProjects = main.getByRole('link', { name: 'Back to projects' });
+    this.dangerZone = main.locator('.danger-zone');
+    this.deleteProject = this.dangerZone.getByRole('button', { name: 'Delete project' });
   }
 
   async openNew(): Promise<void> {

@@ -1,6 +1,7 @@
 import { Type } from '@angular/core';
 import ActiveFilters from './ActiveFilters';
 import Alert from './Alert';
+import AsideCard from './AsideCard';
 import AuthCard from './AuthCard';
 import Avatar from './Avatar';
 import Badge from './Badge';
@@ -11,6 +12,9 @@ import Button from './Button';
 import ButtonBusy from './ButtonBusy';
 import Card from './Card';
 import Choice from './Choice';
+import Comment from './Comment';
+import CommentList from './CommentList';
+import DangerZone from './DangerZone';
 import DarkTheme from './DarkTheme';
 import DescriptionList from './DescriptionList';
 import Dialog from './Dialog';
@@ -29,7 +33,11 @@ import Menu from './Menu';
 import PageHeader from './PageHeader';
 import Pagination from './Pagination';
 import ProfileHeader from './ProfileHeader';
+import ProjectCard from './ProjectCard';
+import ProjectCardList from './ProjectCardList';
 import SearchBox from './SearchBox';
+import SearchFilterToolbar from './SearchFilterToolbar';
+import Select from './Select';
 import SidebarNavigation from './SidebarNavigation';
 import Skeleton from './Skeleton';
 import SkillChips from './SkillChips';
@@ -46,6 +54,7 @@ import TopBar from './TopBar';
 export const scenarios: Record<string, Type<unknown>> = {
   ActiveFilters,
   Alert,
+  AsideCard,
   AuthCard,
   Avatar,
   Badge,
@@ -56,6 +65,9 @@ export const scenarios: Record<string, Type<unknown>> = {
   ButtonBusy,
   Card,
   Choice,
+  Comment,
+  CommentList,
+  DangerZone,
   DarkTheme,
   DescriptionList,
   Dialog,
@@ -74,7 +86,11 @@ export const scenarios: Record<string, Type<unknown>> = {
   PageHeader,
   Pagination,
   ProfileHeader,
+  ProjectCard,
+  ProjectCardList,
   SearchBox,
+  SearchFilterToolbar,
+  Select,
   SidebarNavigation,
   Skeleton,
   SkillChips,

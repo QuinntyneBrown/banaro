@@ -1,0 +1,155 @@
+<div class="wrap">
+  <bn-page-header
+    [eyebrow]="'projects.eyebrow' | t"
+    [heading]="'projects.list.title' | t"
+    [sub]="state() === 'ready' ? ('projects.list.sub' | t: { count: total() }) : undefined"
+  />
+
+  <bn-search-filter-toolbar
+    variant="stacked"
+    [showCount]="true"
+    [activeFilters]="activeFilters()"
+    [activeFiltersLabel]="'projects.list.filters.active' | t"
+    [clearAllLabel]="'projects.list.filters.clear' | t"
+    (filterRemoved)="removeFilter($event)"
+    (filtersCleared)="clearFilters()"
+    (searched)="searched($event)"
+  >
+    <bn-search-box
+      slot="search"
+      embedded
+      inputId="q"
+      [label]="'projects.list.search.label' | t"
+      [placeholder]="'projects.list.search.placeholder' | t"
+      [buttonLabel]="'projects.list.search.button' | t"
+      [value]="url().q"
+      (typed)="typed($event)"
+    />
+    <bn-select [label]="'projects.list.filters.stage' | t">
+      <select bn-input name="stage" (change)="chooseStage($any($event.target).value)">
+        <option value="" [selected]="!url().stage">
+          {{ 'projects.list.filters.allStages' | t }}
+        </option>
+        @for (stage of stages; track stage) {
+          <option [value]="stage" [selected]="stage === url().stage">
+            {{ stageLabel(stage) }}
+          </option>
+        }
+      </select>
+    </bn-select>
+    <bn-select [label]="'projects.list.filters.lookingFor' | t">
+      <select bn-input name="looking_for" (change)="chooseRole($any($event.target).value)">
+        <option value="" [selected]="!url().lookingFor">
+          {{ 'projects.list.filters.anyone' | t }}
+        </option>
+        @for (role of roles; track role) {
+          <option [value]="role" [selected]="role === url().lookingFor">
+            {{ roleLabel(role) }}
+          </option>
+        }
+      </select>
+    </bn-select>
+    <span slot="count" class="count">
+      @switch (state()) {
+        @case ('loading') {
+          {{ 'projects.list.loading' | t }}
+        }
+        @case ('error') {
+          {{ 'projects.list.loadFailed' | t }}
+        }
+        @default {
+          @if (total() === 0) {
+            <strong>0</strong> {{ 'projects.list.count.match' | t: { count: 0 } }} {{ terms() }}
+          } @else {
+            {{ 'projects.list.count.showing' | t }} <strong>{{ range() }}</strong>
+            {{ 'projects.list.count.of' | t }} <strong>{{ totalText() }}</strong>
+            {{ 'projects.list.count.noun' | t: { count: total() }
+            }}{{ 'projects.list.count.recent' | t }}
+          }
+        }
+      }
+    </span>
+  </bn-search-filter-toolbar>
+
+  <section id="results" aria-labelledby="results-title" [attr.aria-busy]="state() === 'loading'">
+    <h2 class="vh" id="results-title">{{ 'projects.list.resultsTitle' | t }}</h2>
+    @switch (state()) {
+      @case ('error') {
+        <div role="alert">
+          <bn-empty-state tone="error" [heading]="'projects.list.error.title' | t">
+            {{ 'projects.list.error.body' | t }}
+            <button slot="actions" bn-button variant="primary" type="button" (click)="tryAgain()">
+              {{ 'projects.list.error.tryAgain' | t }}
+            </button>
+            <a slot="actions" bn-button variant="quiet" routerLink="/builders">{{
+              'projects.list.error.browse' | t
+            }}</a>
+          </bn-empty-state>
+        </div>
+      }
+      @case ('loading') {
+        @if (slow()) {
+          <ul class="projects projects--list">
+            @for (s of skeletons; track s) {
+              <li><div bn-skeleton-card layout="media"></div></li>
+            }
+          </ul>
+        }
+      }
+      @default {
+        @if (total() === 0) {
+          <bn-empty-state [heading]="'projects.list.noResults.title' | t">
+            {{ 'projects.list.noResults.body' | t }}
+            @if (activeFilters().length) {
+              <button
+                slot="actions"
+                bn-button
+                variant="primary"
+                type="button"
+                (click)="clearFilters()"
+              >
+                {{ 'projects.list.filters.clear' | t }}
+              </button>
+            }
+            <a slot="actions" bn-button variant="quiet" routerLink="/projects/new">{{
+              'projects.list.noResults.share' | t
+            }}</a>
+          </bn-empty-state>
+        }
+        <ul class="projects projects--list">
+          @for (project of items(); track project.id) {
+            <li
+              bn-project-card
+              [name]="project.name"
+              [href]="['/projects', project.id]"
+              [byline]="bylineOf(project)"
+              [line]="project.summary"
+              [tone]="toneOf(project.id)"
+              [facts]="factsOf(project)"
+            ></li>
+          }
+        </ul>
+        @if (total() > items().length) {
+          <bn-pagination
+            [shown]="items().length"
+            [total]="total()"
+            [page]="loadedPage()"
+            [pageCount]="lastPage()"
+            [busy]="loadingMore()"
+            [moreLabel]="'projects.list.pager.more' | t"
+            [busyLabel]="'projects.list.pager.busy' | t"
+            [status]="pagerStatus()"
+            (more)="more()"
+          />
+        }
+      }
+    }
+  </section>
+
+  <div class="cta cluster cluster--between">
+    <p class="muted">{{ 'projects.list.cta.text' | t }}</p>
+    <a bn-button variant="primary" routerLink="/projects/new">{{
+      'projects.list.cta.share' | t
+    }}</a>
+  </div>
+</div>

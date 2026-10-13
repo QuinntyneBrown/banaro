@@ -1,0 +1,94 @@
+@switch (state()) {
+  @case ('forbidden') {
+    <bn-forbidden-page />
+  }
+  @case ('not-found') {
+    <div class="wrap">
+      <bn-error-page
+        code="404"
+        [heading]="'projects.detail.notFound.title' | t"
+        [lead]="'projects.detail.notFound.lead' | t"
+      >
+        <div class="cluster">
+          <a bn-button variant="primary" routerLink="/projects">{{
+            'projects.detail.notFound.browse' | t
+          }}</a>
+          <a bn-button variant="quiet" routerLink="/projects/new">{{
+            'projects.detail.notFound.share' | t
+          }}</a>
+        </div>
+      </bn-error-page>
+    </div>
+  }
+  @default {
+    <div class="wrap">
+      <div class="narrow">
+        @switch (state()) {
+          @case ('error') {
+            <bn-breadcrumb [label]="'projects.detail.breadcrumb' | t" [items]="crumbs()" />
+            <h1 class="vh">{{ 'projects.detail.heading' | t }}</h1>
+            <div class="page-block">
+              <bn-empty-state tone="error" [heading]="'projects.detail.error.title' | t">
+                {{ 'projects.detail.error.body' | t }}
+                <button slot="actions" bn-button variant="primary" type="button" (click)="retry()">
+                  {{ 'projects.detail.error.tryAgain' | t }}
+                </button>
+                <a slot="actions" bn-button variant="quiet" routerLink="/projects">{{
+                  'projects.detail.error.back' | t
+                }}</a>
+              </bn-empty-state>
+            </div>
+          }
+          @case ('loading') {
+            @if (slow()) {
+              <div aria-busy="true">
+                <h1 class="vh" role="status">{{ 'projects.detail.loading' | t }}</h1>
+                <div class="page-block stack">
+                  <span bn-skeleton shape="block"></span>
+                  <span bn-skeleton></span>
+                  <span bn-skeleton short></span>
+                </div>
+              </div>
+            }
+          }
+          @default {
+            @if (project(); as p) {
+              <bn-breadcrumb [label]="'projects.detail.breadcrumb' | t" [items]="crumbs()" />
+              <bn-page-header
+                [eyebrow]="'projects.eyebrow' | t"
+                [heading]="'projects.edit.title' | t: { name: p.name }"
+                [sub]="'projects.edit.sub' | t"
+              />
+              <div class="page-block">
+                <bn-project-form
+                  [initial]="initial()"
+                  [errors]="errors()"
+                  [busy]="saving()"
+                  [submitLabel]="'projects.edit.submit' | t"
+                  [busyLabel]="'projects.edit.submitting' | t"
+                  [cancelLink]="['/projects', p.id]"
+                  (submitted)="save($event)"
+                >
+                  @if (failed()) {
+                    <bn-alert variant="danger" [heading]="'projects.edit.failed.title' | t">
+                      {{ 'projects.edit.failed.body' | t }}
+                    </bn-alert>
+                  }
+                </bn-project-form>
+              </div>
+              <div class="danger">
+                <bn-danger-zone
+                  [heading]="'projects.edit.danger.title' | t"
+                  [actionLabel]="'projects.edit.danger.delete' | t"
+                  (actionTriggered)="confirmDelete()"
+                >
+                  {{ 'projects.edit.danger.body' | t: { name: p.name, count: p.feedbackCount } }}
+                </bn-danger-zone>
+              </div>
+            }
+          }
+        }
+      </div>
+    </div>
+  }
+}

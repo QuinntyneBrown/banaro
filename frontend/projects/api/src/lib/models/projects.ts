@@ -59,6 +59,48 @@ export interface ProjectCard {
   owner: ProjectOwner;
 }
 
+/** Who wrote a piece of feedback, linked by their profile id. */
+export interface FeedbackAuthor {
+  id: string | null;
+  name: string;
+  photoUrl: string | null;
+}
+
+/** One piece of feedback on a project (L2-016). */
+export interface FeedbackItem {
+  id: string;
+  body: string;
+  createdAt: string;
+  author: FeedbackAuthor;
+}
+
+export interface FeedbackPage {
+  items: FeedbackItem[];
+  total: number;
+  page: number;
+  perPage: number;
+  lastPage: number;
+}
+
+/** What a member sends to offer help with a project (L2-017). */
+export interface HelpOfferInput {
+  role: LookingForRole;
+  message: string;
+}
+
+export type HelpOfferStatus = 'pending' | 'accepted' | 'declined';
+
+/** One member's offer to help, as the owner reads it. */
+export interface HelpOfferView {
+  id: string;
+  role: LookingForRole;
+  message: string;
+  status: HelpOfferStatus;
+  createdAt: string;
+  conversationId: string | null;
+  offerer: FeedbackAuthor;
+}
+
 export interface ProjectQuery {
   q?: string;
   stage?: ProjectStage[];

@@ -1,0 +1,6 @@
+.page-block {
+  padding-block: var(--space-8) 0;
+}
+.danger {
+  padding-block: var(--space-8) var(--space-16);
+}

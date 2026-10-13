@@ -63,5 +63,235 @@
       "view": "View {name}",
       "back": "Back to projects"
     }
+  },
+  "list": {
+    "meta": {
+      "title": "Projects · Banaro",
+      "description": "Products in progress from Christian builders in Toronto and the GTA. Read what is being made, leave feedback, or offer a hand."
+    },
+    "title": "Projects made nearby",
+    "sub": "{count, plural, one {# project} other {# projects}} from builders in Toronto and the GTA. Read what is being made, leave feedback, or offer a hand.",
+    "search": {
+      "label": "Search projects",
+      "button": "Search",
+      "placeholder": "Project, builder or what it does"
+    },
+    "resultsTitle": "Results",
+    "loading": "Loading projects…",
+    "loadFailed": "Projects could not be loaded",
+    "count": {
+      "showing": "Showing",
+      "of": "of",
+      "noun": "{count, plural, one {project} other {projects}}",
+      "recent": ", most recent first",
+      "match": "{count, plural, one {project matches} other {projects match}}"
+    },
+    "filters": {
+      "stage": "Stage",
+      "allStages": "All stages",
+      "lookingFor": "Looking for",
+      "anyone": "Anyone",
+      "active": "Active filters",
+      "clear": "Clear filters",
+      "remove": "Remove filter: {label}",
+      "stageChip": "Stage: {stage}",
+      "lookingForChip": "Looking for: {role}",
+      "lookingForTerm": "looking for {role}"
+    },
+    "card": {
+      "by": "by {owner}",
+      "stage": "Stage",
+      "lookingFor": "Looking for",
+      "feedback": "Feedback",
+      "comments": "{count, plural, one {# comment} other {# comments}}",
+      "noRole": "Feedback welcome"
+    },
+    "pager": {
+      "more": "Show more projects",
+      "busy": "Loading more projects…",
+      "status": "Showing {shown} of {total, plural, one {# project} other {# projects}}"
+    },
+    "noResults": {
+      "title": "No projects match those filters",
+      "body": "Try a wider stage, a different kind of help, or fewer words. Most projects are still early, so “Launched” is a narrow filter.",
+      "share": "Share a project"
+    },
+    "error": {
+      "title": "We couldn't load the projects",
+      "body": "Banaro had trouble reaching the server. Nothing you shared has been lost. Try again, or browse builders while it recovers.",
+      "tryAgain": "Try again",
+      "browse": "Browse builders"
+    },
+    "cta": {
+      "text": "Building something? Share it early; a first comment is often the most useful one.",
+      "share": "Share a project"
+    }
+  },
+  "detail": {
+    "meta": {
+      "title": "{name} · Banaro",
+      "notFound": "Project not found · Banaro"
+    },
+    "breadcrumb": "Breadcrumb",
+    "loading": "Loading project…",
+    "about": "About {name}",
+    "feedback": "Feedback",
+    "comments": "{count, plural, one {# comment} other {# comments}}",
+    "empty": {
+      "title": "Be the first to say something",
+      "body": "{name} has no feedback yet. A question, a kind word or a small suggestion all help {owner} decide what to build next.",
+      "cta": "Give the first feedback"
+    },
+    "emptyOwn": "No comments yet. When someone leaves feedback, you will see it here.",
+    "actions": {
+      "feedback": "Give feedback",
+      "help": "Offer to help"
+    },
+    "aside": {
+      "label": "About this project",
+      "glance": "At a glance",
+      "stage": "Stage",
+      "lookingFor": "Looking for",
+      "updated": "Updated",
+      "builder": "The builder"
+    },
+    "notFound": {
+      "title": "We couldn't find that project",
+      "lead": "It may have been renamed, removed by its builder, or the link might have a typo.",
+      "browse": "Browse projects",
+      "share": "Share a project"
+    },
+    "error": {
+      "title": "We couldn't load this project",
+      "body": "Banaro had trouble reaching the server. The project and its feedback are safe. Try again, or go back to the showcase.",
+      "tryAgain": "Try again",
+      "back": "Back to projects"
+    },
+    "heading": "Project",
+    "by": "by",
+    "justNow": "just now",
+    "earlier": "{count, plural, one {Show # earlier comment} other {Show # earlier comments}}",
+    "earlierBusy": "Loading comments…",
+    "recent": "Showing the most recent first.",
+    "listFailed": {
+      "title": "We couldn't load the comments",
+      "retry": "Try again"
+    }
+  },
+  "edit": {
+    "meta": {
+      "title": "Edit {name} · Banaro"
+    },
+    "title": "Edit {name}",
+    "sub": "Changes appear on your project page as soon as you save.",
+    "crumb": "Edit",
+    "submit": "Save changes",
+    "submitting": "Saving…",
+    "saved": {
+      "title": "Changes saved",
+      "body": "{name} is up to date."
+    },
+    "failed": {
+      "title": "We couldn't save your changes",
+      "body": "Nothing was lost. Check your connection and try again."
+    },
+    "danger": {
+      "title": "Danger zone",
+      "body": "Deleting {name} removes the project page and {count, plural, one {its # comment} other {its # comments}}. This can't be undone.",
+      "delete": "Delete project"
+    }
+  },
+  "delete": {
+    "title": "Delete {name}?",
+    "description": "This permanently removes the project page and {count, plural, one {its # comment} other {its # comments}}. It can't be undone.",
+    "closeLabel": "Close dialog",
+    "removed": "The project page is removed and its link stops working.",
+    "offers": "Offers to help on it are removed too.",
+    "confirmLabel": "Type the project name to confirm",
+    "help": "Type {name} exactly as shown.",
+    "mismatch": "That doesn't match. Type {name} exactly as shown.",
+    "keep": "Keep project",
+    "confirm": "Delete project",
+    "busy": "Deleting…",
+    "tryAgain": "Try again",
+    "failed": {
+      "title": "We couldn't delete {name}",
+      "body": "Banaro couldn't reach the server. Nothing was deleted, and what you typed is still here. Try again in a moment."
+    },
+    "done": {
+      "title": "{name} deleted",
+      "body": "The project and its comments are gone."
+    }
+  },
+  "feedback": {
+    "errors": {
+      "required": "Write a comment before posting. Even one sentence helps.",
+      "min": "Use at least {min} characters. A little more helps the builder act on it.",
+      "max": "Use {max} characters or fewer."
+    },
+    "notAllowed": "Feedback isn't available between you and this builder.",
+    "title": "Give feedback on {name}",
+    "description": "Your name appears with your comment. {owner} is notified by e-mail and in Banaro.",
+    "closeLabel": "Close dialog",
+    "about": "by {owner} · {count, plural, one {# comment} other {# comments}} so far",
+    "label": "Your feedback",
+    "help": "Be specific and kind. {owner} reads every comment and can reply.",
+    "cancel": "Cancel",
+    "post": "Post feedback",
+    "posting": "Posting…",
+    "tryAgain": "Try again",
+    "failed": {
+      "title": "We couldn't post your feedback",
+      "body": "Banaro couldn't reach the server. Nothing was lost; your words are still here. Try again in a moment."
+    },
+    "slowDown": {
+      "title": "You're posting quickly",
+      "body": "Wait {minutes, plural, one {# minute} other {# minutes}}, then try again. Your words are still here."
+    },
+    "refused": {
+      "title": "You can't post feedback on this project",
+      "body": "Feedback isn't available between you and this builder."
+    }
+  },
+  "offer": {
+    "notAllowed": "Offers to help aren't available between you and this builder.",
+    "pending": "You already have an offer waiting on this project. The owner will reply soon.",
+    "errors": {
+      "role": "Choose one of the roles this project is looking for.",
+      "required": "Write a message before sending. A sentence about what you can do helps.",
+      "min": "Use at least {min} characters. A little more helps the owner decide.",
+      "max": "Use {max} characters or fewer."
+    },
+    "dialog": {
+      "title": "Offer to help with {name}",
+      "description": "{owner} is notified by e-mail and in Banaro, and sees your profile with your offer.",
+      "closeLabel": "Close dialog",
+      "lookingFor": "is looking for {roles}",
+      "roleLabel": "How could you help?",
+      "rolePlaceholder": "Choose a role",
+      "roleRequired": "Choose how you could help.",
+      "messageLabel": "Message",
+      "messageHelp": "Say what you could do and what you'd like to learn. Short is fine.",
+      "cancel": "Cancel",
+      "send": "Send offer",
+      "sending": "Sending…",
+      "tryAgain": "Try again",
+      "failed": {
+        "title": "We couldn't send your offer",
+        "body": "Banaro couldn't reach the server. Nothing was lost; your words are still here. Try again in a moment."
+      },
+      "pending": {
+        "title": "You already have an offer waiting",
+        "body": "The owner has not answered your earlier offer yet. You can offer again once they have."
+      },
+      "refused": {
+        "title": "You can't offer help on this project",
+        "body": "Offers aren't available between you and this builder."
+      },
+      "sent": {
+        "title": "Offer sent",
+        "body": "{owner} has your offer and will reply in Banaro."
+      }
+    }
   }
 }

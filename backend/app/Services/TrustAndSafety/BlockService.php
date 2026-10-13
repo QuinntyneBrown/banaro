@@ -3,6 +3,7 @@
 namespace App\Services\TrustAndSafety;
 
 use App\Models\Block;
+use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Eloquent\Builder as Query;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder as BaseQuery;
@@ -29,7 +30,7 @@ class BlockService
      * @param  TQuery  $query
      * @return TQuery
      */
-    public function applyScope(Query|BaseQuery $query, int $viewerId, string $userColumn = 'user_id'): Query|BaseQuery
+    public function applyScope(Query|BaseQuery $query, int $viewerId, string|Expression $userColumn = 'user_id'): Query|BaseQuery
     {
         return $query->whereNotExists(fn (BaseQuery $q) => $q->selectRaw('1')
             ->from('blocks')
