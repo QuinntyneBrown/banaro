@@ -40,8 +40,10 @@ export async function jobFailed(job: Job, error: Error, deps: Deps): Promise<voi
  */
 export async function work(deps: Deps, queue: QueueName, { once = false } = {}): Promise<number> {
   if (await isInMaintenance(deps.redis)) return 0;
+  // BullMQ leaves a connection it was given open, so this one is closed here or the process lingers.
+  const connection = queueConnection();
   const worker = new Worker(queue, null, {
-    connection: queueConnection(),
+    connection,
     prefix: PREFIX,
     settings: { backoffStrategy },
   });
@@ -62,6 +64,7 @@ export async function work(deps: Deps, queue: QueueName, { once = false } = {}):
     }
   } finally {
     await worker.close();
+    connection.disconnect();
   }
   return taken;
 }
