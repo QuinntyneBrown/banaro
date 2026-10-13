@@ -7,6 +7,7 @@ use App\Http\Middleware\EnforceAbsoluteSessionLifetime;
 use App\Http\Middleware\LogRequest;
 use App\Http\Middleware\RecordActivity;
 use App\Http\Middleware\RespondDuringMaintenance;
+use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -35,7 +36,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         // LogRequest stays outermost so it logs the final status after exception handling.
-        $middleware->prepend([LogRequest::class, AssignRequestId::class]);
+        $middleware->prepend([LogRequest::class, AssignRequestId::class, SecurityHeaders::class]);
         $middleware->replace(PreventRequestsDuringMaintenance::class, RespondDuringMaintenance::class);
         $middleware->statefulApi();
         // Opening a verification link and checking a reset link prove themselves with the link's
