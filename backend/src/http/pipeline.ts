@@ -6,6 +6,11 @@ import { auth } from './middleware/auth';
 import { csrf } from './middleware/csrf';
 import { logRequest } from './middleware/log-request';
 import { maintenance } from './middleware/maintenance';
+import {
+  recordActivity,
+  requireCompleteProfile,
+  requireVerifiedEmail,
+} from './middleware/member-guards';
 import { securityHeaders } from './middleware/security-headers';
 import { session } from './middleware/session';
 
@@ -56,10 +61,16 @@ function render(error: unknown, ctx: Ctx): Response {
 export const globalStack: Middleware[] = [logRequest, assignRequestId, securityHeaders];
 
 /** Routes under /api/v1: first-party sessions with CSRF checks (ADR-0011). */
-export const apiStack: Middleware[] = [...globalStack, maintenance, session, csrf];
+export const apiStack: Middleware[] = [...globalStack, maintenance, session, csrf, recordActivity];
 
 /** Routes that need a signed-in account. */
 export const memberStack: Middleware[] = [...apiStack, auth];
+
+/** Member features: a verified address is required (L2-002 criterion 4). */
+export const verifiedStack: Middleware[] = [...memberStack, requireVerifiedEmail];
+
+/** Features that work on a finished profile (L2-006 criterion 1). */
+export const profileStack: Middleware[] = [...verifiedStack, requireCompleteProfile];
 
 /**
  * Wraps a route handler in its middleware stack. An error at any layer becomes a response there,

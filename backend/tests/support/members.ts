@@ -1,4 +1,11 @@
+import { eq, sql } from 'drizzle-orm';
+import { nowStamp } from '../../src/clock';
 import { deps } from '../../src/container';
+import { builders } from '../../src/db/schema/builders';
+import { neighbourhoods } from '../../src/db/schema/neighbourhoods';
+import { seedReferenceData as seedReferenceDataInto } from '../../src/db/seeders/reference-data-seeder';
+import { refreshBuilderSearchText } from '../../src/services/directory/builder-search-text';
+import { ulid } from '../../src/ulid';
 import { Session } from '../../src/http/session';
 import { orm } from '../../src/db/orm';
 import { users, type User } from '../../src/db/schema/users';
@@ -26,6 +33,49 @@ export async function createUser(
       ...overrides,
     })
     .returning();
+  return user;
+}
+
+/** Neighbourhoods, their distances and the skill catalogue, as every environment has them. */
+export async function seedReferenceData(): Promise<void> {
+  await seedReferenceDataInto(orm(deps().db));
+}
+
+export async function neighbourhoodId(slug: string): Promise<number> {
+  const [row] = await orm(deps().db)
+    .select({ id: neighbourhoods.id })
+    .from(neighbourhoods)
+    .where(eq(neighbourhoods.slug, slug));
+  return row.id;
+}
+
+/** A verified member with a finished profile, ready to use every member route. */
+export async function createMember(
+  name = 'Amara Osei',
+  neighbourhood = 'riverdale',
+): Promise<User> {
+  const [{ count }] = await orm(deps().db)
+    .select({ count: sql<number>`count(*)::int` })
+    .from(neighbourhoods);
+  if (count === 0) await seedReferenceData();
+  const user = await createUser({ name });
+  const [builder] = await orm(deps().db)
+    .insert(builders)
+    .values({
+      userId: user.id,
+      publicId: ulid(),
+      name,
+      role: 'engineer',
+      neighbourhoodId: await neighbourhoodId(neighbourhood),
+      openTo: ['co_founding'],
+      onboardingSavedSteps: ['about', 'skills', 'goals'],
+      onboardingCompletedAt: nowStamp(),
+      lastActiveAt: nowStamp(),
+      createdAt: nowStamp(),
+      updatedAt: nowStamp(),
+    })
+    .returning();
+  await refreshBuilderSearchText(deps().db, builder.id);
   return user;
 }
 

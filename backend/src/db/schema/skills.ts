@@ -27,5 +27,5 @@ export function slugify(text: string): string {
 }
 
 function ascii(text: string): string {
-  return text.normalize('NFKD').replace(/[̀-ͯ]/g, '');
+  return text.normalize('NFKD').replace(/\p{Diacritic}/gu, '');
 }

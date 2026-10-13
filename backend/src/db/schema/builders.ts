@@ -1,4 +1,15 @@
-import { bigint, bigserial, char, jsonb, pgTable, text, uuid, varchar } from 'drizzle-orm/pg-core';
+import {
+  bigint,
+  bigserial,
+  char,
+  date,
+  jsonb,
+  pgTable,
+  smallint,
+  text,
+  uuid,
+  varchar,
+} from 'drizzle-orm/pg-core';
 import { stamp } from './columns';
 
 /** The public profile of a member. */
@@ -24,6 +35,37 @@ export const builders = pgTable('builders', {
 });
 
 export type Builder = typeof builders.$inferSelect;
+
+/** A builder's skills, in the order the builder chose them. */
+export const builderSkill = pgTable('builder_skill', {
+  builderId: bigint('builder_id', { mode: 'number' }).notNull(),
+  skillId: bigint('skill_id', { mode: 'number' }).notNull(),
+  position: smallint('position').notNull(),
+});
+
+/** Roles a builder has held, newest first by position. */
+export const experienceEntries = pgTable('experience_entries', {
+  id: bigserial('id', { mode: 'number' }).primaryKey(),
+  builderId: bigint('builder_id', { mode: 'number' }).notNull(),
+  position: smallint('position').notNull(),
+  title: varchar('title', { length: 100 }).notNull(),
+  organization: varchar('organization', { length: 100 }),
+  startedOn: date('started_on').notNull(),
+  endedOn: date('ended_on'),
+  createdAt: stamp('created_at'),
+  updatedAt: stamp('updated_at'),
+});
+
+/** Links on a profile, in order. */
+export const profileLinks = pgTable('profile_links', {
+  id: bigserial('id', { mode: 'number' }).primaryKey(),
+  builderId: bigint('builder_id', { mode: 'number' }).notNull(),
+  position: smallint('position').notNull(),
+  label: varchar('label', { length: 60 }).notNull(),
+  url: varchar('url', { length: 2048 }).notNull(),
+  createdAt: stamp('created_at'),
+  updatedAt: stamp('updated_at'),
+});
 
 /** A builder's photo; only a `ready` one is shown (L2-008). */
 export const profilePhotos = pgTable('profile_photos', {

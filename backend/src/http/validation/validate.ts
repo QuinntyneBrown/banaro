@@ -17,8 +17,15 @@ export class ValidationError extends HttpError {
  * null first, as the Laravel API did; the parsed result holds only the schema's fields.
  */
 export async function validate<S extends z.ZodType>(schema: S, req: Request): Promise<z.output<S>> {
-  const input = normalize(await req.json().catch(() => ({})));
-  const result = schema.safeParse(input);
+  return validateInput(schema, await req.json().catch(() => ({})));
+}
+
+/** Validates data already read, such as a query string or a multipart form. */
+export async function validateInput<S extends z.ZodType>(
+  schema: S,
+  input: unknown,
+): Promise<z.output<S>> {
+  const result = await schema.safeParseAsync(normalize(input));
   if (result.success) return result.data;
 
   const errors: Record<string, string[]> = {};
