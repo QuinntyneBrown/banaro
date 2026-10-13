@@ -1,0 +1,67 @@
+{
+  "errors": {
+    "nameRequired": "Enter your project's name.",
+    "nameMax": "Use 80 characters or fewer for the name.",
+    "summaryRequired": "Describe your project in one line.",
+    "summaryMax": "Shorten the one-line description to 140 characters or fewer.",
+    "descriptionMax": "Shorten the description to 2,000 characters or fewer.",
+    "stage": "Choose the stage your project is at.",
+    "lookingFor": "Choose from the roles listed.",
+    "link": "Enter a web address that starts with http:// or https://.",
+    "limit": "You can share up to {limit} projects. Delete one you no longer need to share another."
+  },
+  "eyebrow": "Project showcase",
+  "crumb": "Projects",
+  "stages": {
+    "idea": "Idea",
+    "design": "Design",
+    "prototype": "Prototype",
+    "beta": "Beta",
+    "pilot": "Pilot",
+    "launched": "Launched"
+  },
+  "roles": {
+    "technicalCoFounder": "Technical co-founder",
+    "coFounder": "Co-founder",
+    "contributor": "Contributors",
+    "advisor": "Advisor",
+    "engineer": "Engineer",
+    "designer": "Designer"
+  },
+  "form": {
+    "basics": "The basics",
+    "name": "Project name",
+    "nameHelp": "The name people will search for.",
+    "summary": "One-line summary",
+    "summaryHelp": "What it does, in a sentence. 140 characters at most.",
+    "description": "Description",
+    "descriptionHelp": "Who it is for, what exists today and what you need next.",
+    "where": "Where it is",
+    "stage": "Stage",
+    "lookingFor": "Who are you looking for?",
+    "lookingForHelp": "Choose all that apply, or none if you only want feedback.",
+    "links": "Links",
+    "link": "Link",
+    "linkHelp": "A website or code repository, starting with https://.",
+    "cancel": "Cancel"
+  },
+  "new": {
+    "meta": {
+      "title": "Share a project · Banaro"
+    },
+    "title": "Share a project",
+    "sub": "Tell builders nearby what you are making. Early is fine; a rough idea with a clear question gets the best feedback.",
+    "submit": "Share project",
+    "submitting": "Sharing…",
+    "limit": {
+      "title": "You've reached the project limit"
+    },
+    "failed": "We couldn't share your project. Your answers are still here; try again in a moment.",
+    "success": {
+      "title": "{name} is shared",
+      "body": "Builders nearby can now read it and leave feedback. We'll tell you when the first comment arrives.",
+      "view": "View {name}",
+      "back": "Back to projects"
+    }
+  }
+}
