@@ -38,7 +38,9 @@ export class ProjectPage {
     this.giveFeedback = actions
       .getByRole('link', { name: 'Give feedback' })
       .or(actions.getByRole('button', { name: 'Give feedback' }));
-    this.offerToHelp = main.locator('.proj-head__actions').getByRole('link', { name: 'Offer to help' });
+    this.offerToHelp = actions
+      .getByRole('link', { name: 'Offer to help' })
+      .or(actions.getByRole('button', { name: 'Offer to help' }));
     this.aboutTitle = main.getByRole('heading', { level: 2, name: /^About / });
     this.about = main.locator('.prose p');
     this.feedbackTitle = main.locator('#fb-title');

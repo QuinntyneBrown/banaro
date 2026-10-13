@@ -82,6 +82,25 @@ export interface FeedbackPage {
   lastPage: number;
 }
 
+/** What a member sends to offer help with a project (L2-017). */
+export interface HelpOfferInput {
+  role: LookingForRole;
+  message: string;
+}
+
+export type HelpOfferStatus = 'pending' | 'accepted' | 'declined';
+
+/** One member's offer to help, as the owner reads it. */
+export interface HelpOfferView {
+  id: string;
+  role: LookingForRole;
+  message: string;
+  status: HelpOfferStatus;
+  createdAt: string;
+  conversationId: string | null;
+  offerer: FeedbackAuthor;
+}
+
 export interface ProjectQuery {
   q?: string;
   stage?: ProjectStage[];

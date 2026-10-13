@@ -73,6 +73,11 @@
               <button bn-button variant="primary" type="button" (click)="giveFeedback()">
                 {{ 'projects.detail.actions.feedback' | t }}
               </button>
+              @if (p.lookingFor.length) {
+                <button bn-button variant="quiet" type="button" (click)="offerToHelp()">
+                  {{ 'projects.detail.actions.help' | t }}
+                </button>
+              }
             </div>
           }
           @if (!p.isOwn && !signedIn()) {
@@ -84,13 +89,15 @@
                 [queryParams]="{ returnTo: '/projects/' + p.id }"
                 >{{ 'projects.detail.actions.feedback' | t }}</a
               >
-              <a
-                bn-button
-                variant="quiet"
-                routerLink="/sign-in"
-                [queryParams]="{ returnTo: '/projects/' + p.id }"
-                >{{ 'projects.detail.actions.help' | t }}</a
-              >
+              @if (p.lookingFor.length) {
+                <a
+                  bn-button
+                  variant="quiet"
+                  routerLink="/sign-in"
+                  [queryParams]="{ returnTo: '/projects/' + p.id }"
+                  >{{ 'projects.detail.actions.help' | t }}</a
+                >
+              }
             </div>
           }
         </div>

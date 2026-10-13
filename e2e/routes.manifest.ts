@@ -7,6 +7,7 @@ import { createProject } from './fixtures/projects';
 import { BuilderProfilePage } from './pages/builder-profile.page';
 import { DeleteProjectDialog } from './pages/delete-project.dialog';
 import { GiveFeedbackDialog } from './pages/give-feedback.dialog';
+import { OfferToHelpDialog } from './pages/offer-to-help.dialog';
 import { DirectoryPage } from './pages/directory.page';
 import { ProjectFormPage } from './pages/project-form.page';
 import { ProjectPage } from './pages/project.page';
@@ -243,6 +244,41 @@ export const routes: RouteEntry[] = [
   }),
 
   // Dialogs and menus, over the page they open from.
+  ...(['default', 'busy', 'invalid', 'failed'] as const).map(
+    (state): RouteEntry => ({
+      ...page('offer-to-help', state, (c) => `/projects/${c.params['project']}`, {
+        ...asMember,
+        seed: (c) => {
+          c.params['project'] = createProject(createBuilder({ name: 'Daniel Reyes' }), {
+            name: 'Psalter',
+            lookingFor: ['contributor', 'advisor'],
+          });
+        },
+        reach: async (p) => {
+          const dialog = new OfferToHelpDialog(p);
+          await new ProjectPage(p).offerToHelp.click();
+          await dialog.dialog.waitFor();
+          const text = 'I can review the Laravel code on weekends and help write tests.';
+          if (state === 'invalid') await dialog.send.click();
+          if (state === 'busy') {
+            await dialog.holdSend();
+            await dialog.role.selectOption({ label: 'Advisor' });
+            await dialog.message.fill(text);
+            await dialog.send.click();
+            await dialog.send.filter({ hasText: 'Sending…' }).waitFor();
+          }
+          if (state === 'failed') {
+            await dialog.role.selectOption({ label: 'Advisor' });
+            await dialog.message.fill(text);
+            await dialog.failNextSend(500);
+            await dialog.send.click();
+            await dialog.alert.waitFor();
+          }
+        },
+      }),
+      kind: 'dialog',
+    }),
+  ),
   ...(['default', 'busy', 'invalid', 'failed'] as const).map(
     (state): RouteEntry => ({
       ...page('give-feedback', state, (c) => `/projects/${c.params['project']}`, {

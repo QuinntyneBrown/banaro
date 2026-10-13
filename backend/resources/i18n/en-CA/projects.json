@@ -261,6 +261,37 @@
       "required": "Write a message before sending. A sentence about what you can do helps.",
       "min": "Use at least {min} characters. A little more helps the owner decide.",
       "max": "Use {max} characters or fewer."
+    },
+    "dialog": {
+      "title": "Offer to help with {name}",
+      "description": "{owner} is notified by e-mail and in Banaro, and sees your profile with your offer.",
+      "closeLabel": "Close dialog",
+      "lookingFor": "is looking for {roles}",
+      "roleLabel": "How could you help?",
+      "rolePlaceholder": "Choose a role",
+      "roleRequired": "Choose how you could help.",
+      "messageLabel": "Message",
+      "messageHelp": "Say what you could do and what you'd like to learn. Short is fine.",
+      "cancel": "Cancel",
+      "send": "Send offer",
+      "sending": "Sending…",
+      "tryAgain": "Try again",
+      "failed": {
+        "title": "We couldn't send your offer",
+        "body": "Banaro couldn't reach the server. Nothing was lost; your words are still here. Try again in a moment."
+      },
+      "pending": {
+        "title": "You already have an offer waiting",
+        "body": "The owner has not answered your earlier offer yet. You can offer again once they have."
+      },
+      "refused": {
+        "title": "You can't offer help on this project",
+        "body": "Offers aren't available between you and this builder."
+      },
+      "sent": {
+        "title": "Offer sent",
+        "body": "{owner} has your offer and will reply in Banaro."
+      }
     }
   }
 }

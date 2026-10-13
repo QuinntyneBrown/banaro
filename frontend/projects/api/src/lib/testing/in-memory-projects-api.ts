@@ -3,6 +3,8 @@ import { Observable, of, throwError } from 'rxjs';
 import {
   FeedbackItem,
   FeedbackPage,
+  HelpOfferInput,
+  HelpOfferView,
   Project,
   ProjectInput,
   ProjectPage,
@@ -71,6 +73,18 @@ export class InMemoryProjectsApi implements ProjectsApi {
       page,
       perPage,
       lastPage: Math.max(1, Math.ceil(all.length / perPage)),
+    });
+  }
+
+  offerHelp(_id: string, offer: HelpOfferInput): Observable<HelpOfferView> {
+    return of({
+      id: String(this.nextId++),
+      role: offer.role,
+      message: offer.message,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      conversationId: null,
+      offerer: { id: 'me', name: 'Me', photoUrl: null },
     });
   }
 

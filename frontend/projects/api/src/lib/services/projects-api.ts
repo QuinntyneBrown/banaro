@@ -4,6 +4,9 @@ import { map, Observable } from 'rxjs';
 import {
   FeedbackItem,
   FeedbackPage,
+  HelpOfferInput,
+  HelpOfferStatus,
+  HelpOfferView,
   LookingForRole,
   Project,
   ProjectInput,
@@ -21,6 +24,8 @@ export interface ProjectsApi {
   /** A page of a project's feedback, newest first, five at a time (L2-016). */
   feedback(id: string, page: number): Observable<FeedbackPage>;
   giveFeedback(id: string, body: string): Observable<FeedbackItem>;
+  /** Offers help with a project; the owner is told (L2-017). */
+  offerHelp(id: string, offer: HelpOfferInput): Observable<HelpOfferView>;
 }
 
 export const PROJECTS_API = new InjectionToken<ProjectsApi>('PROJECTS_API');
@@ -77,6 +82,28 @@ function toFeedback(body: FeedbackBody): FeedbackItem {
     body: body.body,
     createdAt: body.created_at,
     author: { id: body.author.id, name: body.author.name, photoUrl: body.author.photo_url },
+  };
+}
+
+interface HelpOfferBody {
+  id: string;
+  role: LookingForRole;
+  message: string;
+  status: HelpOfferStatus;
+  created_at: string;
+  conversation_id: string | null;
+  offerer: { id: string | null; name: string; photo_url: string | null };
+}
+
+function toHelpOffer(body: HelpOfferBody): HelpOfferView {
+  return {
+    id: body.id,
+    role: body.role,
+    message: body.message,
+    status: body.status,
+    createdAt: body.created_at,
+    conversationId: body.conversation_id,
+    offerer: { id: body.offerer.id, name: body.offerer.name, photoUrl: body.offerer.photo_url },
   };
 }
 
@@ -181,5 +208,9 @@ export class HttpProjectsApi implements ProjectsApi {
 
   giveFeedback(id: string, body: string): Observable<FeedbackItem> {
     return this.http.post<FeedbackBody>(path(id) + '/feedback', { body }).pipe(map(toFeedback));
+  }
+
+  offerHelp(id: string, offer: HelpOfferInput): Observable<HelpOfferView> {
+    return this.http.post<HelpOfferBody>(path(id) + '/help-offers', offer).pipe(map(toHelpOffer));
   }
 }

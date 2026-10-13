@@ -36,9 +36,11 @@ import {
   ErrorPage,
   initialsOf,
   Skeleton,
+  ToastService,
 } from 'components';
 import { Subscription, timer } from 'rxjs';
 import { GiveFeedbackData, GiveFeedbackDialog } from '../../dialogs/give-feedback/give-feedback';
+import { OfferToHelpData, OfferToHelpDialog } from '../../dialogs/offer-to-help/offer-to-help';
 import { SeoService } from '../../shared/seo.service';
 
 type State = 'loading' | 'ready' | 'not-found' | 'error';
@@ -79,6 +81,7 @@ export class ProjectDetailPage {
   private readonly destroyRef = inject(DestroyRef);
   private readonly response = inject(RESPONSE_INIT, { optional: true });
   private readonly dialogs = inject(DialogService);
+  private readonly toasts = inject(ToastService);
 
   /** The project's public id, from the route. */
   readonly id = input.required<string>();
@@ -164,6 +167,33 @@ export class ProjectDetailPage {
 
   protected when(item: FeedbackItem): string {
     return formatRelative(item.createdAt, this.i18n.t('projects.detail.justNow'));
+  }
+
+  /** Opens the offer dialog; on success a toast confirms it (L2-017 criterion 1). */
+  protected offerToHelp(): void {
+    const project = this.project();
+    if (!project) return;
+    const ref = this.dialogs.open<OfferToHelpDialog, OfferToHelpData, unknown>(OfferToHelpDialog, {
+      data: {
+        projectId: project.id,
+        projectName: project.name,
+        ownerName: project.owner.name,
+        roles: project.lookingFor,
+      },
+      size: 'sm',
+      described: true,
+      autoFocus: 'select',
+    });
+    ref.closed.subscribe((offer) => {
+      if (!offer) return;
+      this.toasts.show({
+        variant: 'success',
+        title: this.i18n.t('projects.offer.dialog.sent.title'),
+        body: this.i18n.t('projects.offer.dialog.sent.body', {
+          owner: project.owner.name.split(/\s+/)[0],
+        }),
+      });
+    });
   }
 
   /** Opens the dialog; the new item heads the list and the count rises (L2-016 criterion 1). */
