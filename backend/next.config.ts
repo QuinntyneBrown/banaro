@@ -4,7 +4,7 @@ import type { NextConfig } from 'next';
 const config: NextConfig = {
   output: 'standalone',
   poweredByHeader: false,
-  serverExternalPackages: ['pg', 'ioredis', 'pino'],
+  serverExternalPackages: ['pg', 'ioredis', 'pino', 'sharp', 'bullmq'],
 };
 
 export default config;

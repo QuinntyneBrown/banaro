@@ -1,4 +1,5 @@
 import type { Deps } from '../../container';
+import { FakeMediaScanner } from '../../integrations/fake-media-scanner';
 
 /** One dependency the API needs before it takes traffic. */
 interface HealthCheck {
@@ -10,6 +11,15 @@ const checks: HealthCheck[] = [
   { name: 'database', passes: (deps) => deps.db.query('select 1') },
   { name: 'cache', passes: (deps) => deps.cache.ping() },
   { name: 'queue', passes: (deps) => deps.redis.ping() },
+  // The development scanner never takes production traffic (ADR-0004).
+  {
+    name: 'media-scanner',
+    passes: async (deps) => {
+      if (process.env.APP_ENV === 'production' && deps.scanner instanceof FakeMediaScanner) {
+        throw new Error('the development media scanner is bound');
+      }
+    },
+  },
 ];
 
 const TIMEOUT_MS = 3000;

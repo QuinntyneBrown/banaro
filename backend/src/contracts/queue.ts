@@ -10,6 +10,8 @@ export interface JobDefinition<P> {
   /** Seconds to wait before each retry; the last value repeats. */
   backoff: number[];
   handle(payload: P, deps: Deps): Promise<void>;
+  /** Runs once after the last attempt failed. */
+  failed?(payload: P, deps: Deps, error: Error): Promise<void>;
 }
 
 export interface JobQueue {

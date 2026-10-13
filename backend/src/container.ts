@@ -3,7 +3,11 @@ import pg from 'pg';
 import type { Logger } from 'pino';
 import { env } from './config/env';
 import type { Mailer } from './contracts/mailer';
+import type { MediaScanner } from './contracts/media-scanner';
+import type { MediaStore } from './contracts/media-store';
 import type { JobQueue } from './contracts/queue';
+import { FakeMediaScanner } from './integrations/fake-media-scanner';
+import { LocalMediaStore } from './integrations/local-media-store';
 import { SmtpMailer } from './integrations/smtp-mailer';
 import { createLogger } from './logging';
 import { BullQueue } from './queue/bull-queue';
@@ -17,6 +21,8 @@ export interface Deps {
   logger: Logger;
   queue: JobQueue;
   mailer: Mailer;
+  media: MediaStore;
+  scanner: MediaScanner;
 }
 
 // Kept on globalThis so `next dev` reloads reuse one pool and one set of Redis connections.
@@ -41,6 +47,9 @@ export function deps(): Deps {
     logger: createLogger(),
     queue: new BullQueue(),
     mailer: new SmtpMailer(),
+    media: new LocalMediaStore(process.env.MEDIA_PATH ?? 'storage/media'),
+    // The only scanner until a vendor is chosen (ADR-0004).
+    scanner: new FakeMediaScanner(),
   };
   return { ...store.banaroDeps, ...store.banaroOverrides };
 }

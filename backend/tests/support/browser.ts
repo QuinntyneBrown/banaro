@@ -7,6 +7,8 @@ type Handler = (
 
 interface Options {
   json?: unknown;
+  /** A raw body, such as a multipart form. */
+  body?: RequestInit['body'];
   headers?: Record<string, string>;
   params?: Record<string, string>;
 }
@@ -42,7 +44,7 @@ export class Browser {
     if (method !== 'GET') {
       headers['X-XSRF-TOKEN'] = decodeURIComponent(this.cookies.get('XSRF-TOKEN') ?? '');
     }
-    let body: string | undefined;
+    let body: RequestInit['body'] = options.body;
     if (options.json !== undefined) {
       headers['Content-Type'] = 'application/json';
       body = JSON.stringify(options.json);

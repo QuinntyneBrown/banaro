@@ -32,6 +32,8 @@ const limiters: Record<string, (ctx: Ctx) => Limit[] | Promise<Limit[]>> = {
     { key: `email:${clientHash(await emailOf(ctx.req))}`, max: 5, windowSeconds: 3600 },
     { key: `ip:${byIp(ctx)}`, max: 5, windowSeconds: 3600 },
   ],
+  // Profile photos: 10 uploads per hour per member (L2-008, L2-046; D-038).
+  'photo-upload': (ctx) => [{ key: `user:${ctx.user?.id}`, max: 10, windowSeconds: 3600 }],
 };
 
 /**

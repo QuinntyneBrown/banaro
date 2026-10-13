@@ -25,6 +25,14 @@ export async function runJob(job: Job, deps: Deps): Promise<void> {
   await definition.handle(job.data, deps);
 }
 
+/** Logs a failed attempt and, after the last one, runs the job's `failed` hook. */
+export async function jobFailed(job: Job, error: Error, deps: Deps): Promise<void> {
+  deps.logger.error({ err: error, job: job.name, attempts: job.attemptsMade }, 'job failed');
+  if (job.attemptsMade >= (job.opts.attempts ?? 1)) {
+    await definitions.get(job.name)?.failed?.(job.data, deps, error);
+  }
+}
+
 /**
  * Works one queue until it is empty, or for one job with `once`, then stops; the e2e suite drains
  * queues this way. Nothing runs while maintenance mode is on (L2-043 criterion 9). Returns the
@@ -46,8 +54,8 @@ export async function work(deps: Deps, queue: QueueName, { once = false } = {}):
         await runJob(job, deps);
         await job.moveToCompleted(null, token, false);
       } catch (error) {
-        deps.logger.error({ err: error, job: job.name }, 'job failed');
         await job.moveToFailed(error as Error, token, false);
+        await jobFailed(job, error as Error, deps);
       }
       if (once) break;
       job = await worker.getNextJob(token, { block: false });

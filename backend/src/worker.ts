@@ -1,7 +1,7 @@
 import { Worker } from 'bullmq';
 import { isInMaintenance } from './console/commands/maintenance';
 import { deps } from './container';
-import { backoffStrategy, runJob } from './queue/work';
+import { backoffStrategy, jobFailed, runJob } from './queue/work';
 import { PREFIX, queueConnection } from './queue/bull-queue';
 
 /** The Banaro Worker: runs queued jobs until SIGTERM (ADR-0009). */
@@ -12,9 +12,9 @@ const workers = (['default', 'mail'] as const).map((queue) =>
     prefix: PREFIX,
     concurrency: Number(process.env.WORKER_CONCURRENCY ?? 3),
     settings: { backoffStrategy },
-  }).on('failed', (job, error) =>
-    shared.logger.error({ err: error, job: job?.name, attempts: job?.attemptsMade }, 'job failed'),
-  ),
+  }).on('failed', (job, error) => {
+    if (job) void jobFailed(job, error, shared);
+  }),
 );
 
 // No job runs while maintenance mode is on; jobs wait in Redis until it ends (L2-043 criterion 9).
