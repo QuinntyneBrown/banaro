@@ -18,6 +18,6 @@ Rel(orchestrator, api, "GET /health/live, GET /health/ready", "HTTP")
 Rel(web, api, "Calls /api/v1, receives X-Request-Id", "JSON/HTTPS")
 Rel(api, db, "Readiness check", "SQL")
 Rel(api, redis, "Readiness checks", "Redis protocol")
-Rel(api, logs, "One JSON line per request; exceptions with stack trace", "stderr")
+Rel(api, logs, "One JSON line per request; exceptions with stack trace", "stdout")
 Rel(maintainer, logs, "Searches by request ID")
 @enduml

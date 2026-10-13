@@ -70,7 +70,7 @@ the Banaro API to the Banaro database. It writes nothing.
 - **`ShowProjectRequest`** and **`ListFeedbackRequest`** (`src/http/requests/projects/`) — validate the route
   key and `page`. `per_page` defaults to 12 and is capped at 50 (`L2-047` criterion 4).
 - **`ViewProject`** (`src/actions/projects/`) — loads the project with its owner's `Builder` profile and
-  its looking-for roles in one eager-loaded query. Route-model binding returns 404 for an id that does
+  its looking-for roles in one extra query. The bindings middleware returns 404 for an id that does
   not exist or a project that was deleted (`L2-013` criterion 4).
 - **`ListProjectFeedback`** (`src/actions/projects/`) — returns feedback newest first, through the
   `Feedback.visibleTo(?User)` query scope:

@@ -55,7 +55,7 @@ package "Backend — Banaro API" {
     +complete(): OnboardingResource
   }
   class SaveOnboardingStep {
-    +handle(builder: Builder, step: OnboardingStep, answers: array): Builder
+    +handle(builder: Builder, step: OnboardingStep, answers: unknown[]): Builder
   }
   class CompleteOnboarding {
     +handle(builder: Builder): Builder
@@ -70,7 +70,7 @@ package "Backend — Banaro API" {
   }
   class SkillCatalogue {
     +catalogue(): unknown[]<Skill>
-    +resolve(entries: array): unknown[]<Skill>
+    +resolve(entries: unknown[]): unknown[]<Skill>
   }
   class Builder {
     +id: number

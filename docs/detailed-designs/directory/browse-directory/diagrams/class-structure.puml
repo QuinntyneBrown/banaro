@@ -75,11 +75,11 @@ package "Backend — Banaro API" {
     +apply(query: DrizzleQuery, sort: DirectorySort, viewer: User | null): DrizzleQuery
   }
   class MatchScoreService <<matching>> {
-    +scoresFor(viewer: User, builderIds: array): string[]
+    +scoresFor(viewer: User, builderIds: unknown[]): string[]
   }
   class DistanceService {
-    +betweenNeighbourhoods(from: int, to: int): number
-    +approximate(km: float): number
+    +betweenNeighbourhoods(from: number, to: number): number
+    +approximate(km: number): number
   }
   class PresenceService {
     +statusFor(builder: Builder): ?OnlineStatus

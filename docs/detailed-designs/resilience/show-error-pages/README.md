@@ -100,7 +100,7 @@ the generic 500 body.
   through its policy. An unknown `/api/v1` route returns a JSON 404.
 - **`AssignRequestId`** (`src/http/middleware/`) — gives each request a request ID and returns it in
   `X-Request-Id`. The `observe-health` feature owns it.
-- **Exception rendering** (`src/http/pipeline.ts`, `withExceptions`) — renders any unhandled exception as
+- **Error boundary** (`src/http/pipeline.ts`) — renders any unhandled error as
   500 with the body `{ "message": "Server Error", "requestId": "…" }` and nothing else (`L2-053`
   criterion 4). The log entry for the same request carries the same request ID, so the reference ID
   on the page is also in the server log (`L2-042` criterion 3).

@@ -67,9 +67,9 @@ package "Frontend — banaro application" {
 
 package "Backend — Banaro API" {
   class AssignRequestId <<middleware>> {
-    +handle(request: Request, next: Closure): Response
+    +run(ctx: Ctx, next: Next): Promise<Response>
   }
-  class ExceptionRendering <<src/http/pipeline.ts withExceptions>> {
+  class ErrorBoundary <<src/http/pipeline.ts>> {
     +render(e: Throwable, request: Request): Response
   }
   class GenericServerErrorBody {
@@ -90,6 +90,6 @@ RouterErrorPageNavigator ..> NotFoundPage : routes to
 RouterErrorPageNavigator ..> ForbiddenPage : routes to
 RouterErrorPageNavigator ..> ServerErrorPage : routes to
 HttpErrorStatusInterceptor ..> AssignRequestId : reads X-Request-Id
-ExceptionRendering ..> GenericServerErrorBody : returns
-ExceptionRendering ..> AssignRequestId : reads request ID
+ErrorBoundary ..> GenericServerErrorBody : returns
+ErrorBoundary ..> AssignRequestId : reads request ID
 @enduml

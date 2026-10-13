@@ -14,11 +14,11 @@ skinparam class {
 title Class structure — E-mail notifications
 
 package "Backend — Notifications" {
-  abstract class BanaroMailNotification <<queued>> {
+  abstract class MemberNotification <<queued>> {
     +tries: number
     +{abstract} category(): ?EmailCategory
-    +via(notifiable: User): string[]
-    +shouldSend(notifiable: User, channel: string): boolean
+    +channels: string[]
+    +shouldSend(member: User): Promise<boolean>
     +backoff(): string[]
     +toMail(notifiable: User): MailMessage
     +failed(e: Throwable): void
@@ -34,7 +34,7 @@ package "Backend — Notifications" {
   class WeeklyDigestNotification
   class VerifyEmailNotification
   class MailerChannel {
-    +send(notifiable: User, notification: BanaroMailNotification): void
+    +send(notifiable: User, notification: MemberNotification): void
   }
 }
 
@@ -67,11 +67,11 @@ package "Backend — Services, Commands and Jobs" {
   class NotificationDedupeService {
     +claim(key: string): boolean
   }
-  class SendEventRemindersCommand {
+  class SendEventReminders {
     +signature: 'events:send-reminders'
     +handle(): number
   }
-  class SendWeeklyDigestCommand {
+  class SendWeeklyDigests {
     +signature: 'notifications:send-weekly-digest'
     +handle(): number
   }
@@ -106,19 +106,19 @@ package "Backend — Models" {
   }
 }
 
-BanaroMailNotification <|-- MatchSuggestionsReadyNotification
-BanaroMailNotification <|-- NewMessageNotification
-BanaroMailNotification <|-- RsvpConfirmedNotification
-BanaroMailNotification <|-- WaitlistPromotedNotification
-BanaroMailNotification <|-- EventReminderNotification
-BanaroMailNotification <|-- FeedbackReceivedNotification
-BanaroMailNotification <|-- HelpOfferedNotification
-BanaroMailNotification <|-- HelpOfferAnsweredNotification
-BanaroMailNotification <|-- WeeklyDigestNotification
-BanaroMailNotification <|-- VerifyEmailNotification
-BanaroMailNotification --> EmailCategory : category
-BanaroMailNotification ..> EmailPreferenceService : shouldSend
-BanaroMailNotification ..> MailerChannel : via
+MemberNotification <|-- MatchSuggestionsReadyNotification
+MemberNotification <|-- NewMessageNotification
+MemberNotification <|-- RsvpConfirmedNotification
+MemberNotification <|-- WaitlistPromotedNotification
+MemberNotification <|-- EventReminderNotification
+MemberNotification <|-- FeedbackReceivedNotification
+MemberNotification <|-- HelpOfferedNotification
+MemberNotification <|-- HelpOfferAnsweredNotification
+MemberNotification <|-- WeeklyDigestNotification
+MemberNotification <|-- VerifyEmailNotification
+MemberNotification --> EmailCategory : category
+MemberNotification ..> EmailPreferenceService : shouldSend
+MemberNotification ..> MailerChannel : via
 MailerChannel ..> Mailer : send
 MailerChannel ..> UnsubscribeTokenService : token
 MailerChannel --> EmailDelivery : reads and writes
@@ -126,9 +126,9 @@ MailerChannel ..> OutgoingEmail : builds
 VendorMailer ..|> Mailer
 Mailer ..> MailerReceipt : returns
 Mailer ..> MailerUnavailable : throws
-SendEventRemindersCommand ..> NotificationDedupeService : claim
-SendEventRemindersCommand ..> EventReminderNotification : sends
-SendWeeklyDigestCommand ..> SendWeeklyDigest : dispatches
+SendEventReminders ..> NotificationDedupeService : claim
+SendEventReminders ..> EventReminderNotification : sends
+SendWeeklyDigests ..> SendWeeklyDigest : dispatches
 SendWeeklyDigest ..> NotificationDedupeService : claim
 SendWeeklyDigest ..> WeeklyDigestNotification : sends
 NotificationDedupeService --> NotificationDedupeKey : inserts

@@ -24,7 +24,7 @@ box "Frontend — banaro application" #E0F2FE
   participant "MaintenancePage" as mpage
 end box
 box "Backend — Banaro API application" #D1FADF
-  participant "RespondDuringMaintenance" as mw
+  participant "maintenance middleware" as mw
   participant "LivenessRoutes" as live
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5

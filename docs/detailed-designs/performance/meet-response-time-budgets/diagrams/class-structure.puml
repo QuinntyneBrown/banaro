@@ -43,7 +43,7 @@ package "Backend — Banaro API" {
   class DirectoryQuery {
     +for(viewer: User | null, filters: DirectoryFilters): self
     +sortBy(sort: DirectorySort): self
-    +paginate(perPage: int, page: int): Page
+    +page(perPage: number, page: number): Promise<Page>
   }
   enum DirectorySort {
     BestMatch
@@ -52,8 +52,8 @@ package "Backend — Banaro API" {
     Newest
   }
   class DistanceService {
-    +neighbourhoodsWithin(fromId: int, km: int): string[]
-    +distanceKm(fromId: int, toId: int): number
+    +neighbourhoodsWithin(fromId: number, km: number): string[]
+    +distanceKm(fromId: number, toId: number): number
   }
   class PaginatedResource {
     +toArray(request: Request): string[]

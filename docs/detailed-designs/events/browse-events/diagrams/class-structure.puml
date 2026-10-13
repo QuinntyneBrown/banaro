@@ -70,7 +70,7 @@ package "Backend — Banaro API" {
     +schema: ZodObject
   }
   class ListEvents {
-    +handle(when: string, perPage: int): Page
+    +handle(when: string, perPage: number): Page
   }
   class Event {
     +id: number

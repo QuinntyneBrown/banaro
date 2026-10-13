@@ -45,7 +45,7 @@ action -> db : Load builder by public_id with skills, experience, project, priva
 action -> db : Block in either direction?
 action -> visibility : canView(builder, viewer)
 alt no such builder, deleted, blocked, or visibility denies the viewer
-  action --> controller : NotFoundHttpException
+  action --> controller : NotFoundError
   controller --> client : 404 with the same body for every reason (L2-011 criterion 3)
   client --> page : Not found
   page --> actor : not-found state "We can't find that builder"; SSR status 404

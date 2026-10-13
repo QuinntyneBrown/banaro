@@ -25,8 +25,9 @@ Terms used in this design:
   sign-in
 - **weekly digest** — single weekly e-mail that summarizes a member's unread items
 
-A feature sends a Laravel notification that extends `BanaroMailNotification`, for example
-`RsvpConfirmedNotification`. Laravel queues it on Redis after the database transaction commits. The
+A feature calls `notify(member, notification)` with a notification that extends
+`MemberNotification`, for example `RsvpConfirmedNotification`. `notify()` dispatches a
+`DeliverNotification` BullMQ job on Redis after the database transaction commits. The
 Banaro Worker takes the job, checks the member's preference for the category, renders the e-mail and
 hands it to the `Mailer` contract. A provider failure leads to retries with back-off. After the last
 retry the job is logged as failed and raises an alert.
@@ -39,19 +40,19 @@ the `settings/manage-email-preferences` feature (`L2-037` criteria 2 and 3).
 
 ### Notification classes — `src/notifications/`
 
-- **`BanaroMailNotification`** — abstract base class for every e-mail notification. It implements
-  `queued` and calls `afterCommit()`, so no e-mail leaves for a rolled-back change. It runs on the
-  `mail` queue.
+- **`MemberNotification`** — abstract base class for every member notification. `notify()` writes
+  the in-app row, when the class uses that channel, inside the caller's transaction and dispatches a
+  `DeliverNotification` job with `afterCommit`, so no e-mail leaves for a rolled-back change. The job
+  runs on the `mail` queue.
   - `category()` returns the `EmailCategory`, or `null` for security e-mail.
-  - `via()` returns `MailerChannel`, plus `database` when the class also feeds `/notifications`
-    (`L2-027`).
-  - `shouldSend(notifiable, channel)` asks `EmailPreferenceService.allows()` for the mail channel.
-    Laravel calls `shouldSend()` when the queued job runs, so a preference changed after queueing
+  - `channels` lists `mail`, plus `inApp` when the class also feeds `/notifications` (`L2-027`).
+  - `shouldSend(member)` asks `EmailPreferenceService.allows()` for the mail channel.
+    `DeliverNotification` calls `shouldSend()` when the job runs, so a preference changed after queueing
     still applies. A turned-off category sends nothing. Security e-mail, with a `null` category, never
     calls the service and always sends (`L2-029` criterion 2).
-  - `backoff()` returns the delays between retries, and the retry limit allows 5 retries after the
-    first attempt (`L2-029` criterion 4). The delay values are `<TO SUPPLY>`.
-  - `failed()` marks the delivery record `failed`, writes a structured log line and raises an alert
+  - The job's `attempts` (6) and `backoff` ladder allow 5 retries after the first attempt, at
+    1 minute, 5 minutes, 15 minutes, 1 hour and 3 hours (`L2-029` criterion 4, D-059).
+  - `failed()`, called after the last attempt, marks the delivery record `failed`, writes a structured log line and raises an alert
     (`L2-029` criterion 4).
 - **Notification classes and categories** — each trigger of `L2-029` criterion 1 has one class:
 
@@ -68,14 +69,14 @@ the `settings/manage-email-preferences` feature (`L2-037` criteria 2 and 3).
 
 ### Delivery — Banaro Worker
 
-- **the BullMQ worker `mail` queue** — a dedicated supervisor processes the `mail` queue. The target is a send
-  within 5 minutes of the trigger (`L2-029` criterion 1). A the BullMQ worker wait-time alert on the queue fires
-  before that budget is spent; its threshold is `<TO SUPPLY>`.
-- **`MailerChannel`** (`src/notifications/channels/`) — custom notification channel:
-  1. It loads the `EmailDelivery` row for the notification id, and returns at once when the row is
-     already `sent`. A retry after a successful hand-off therefore sends nothing twice (`L2-029`
+- **`mail` queue** — a dedicated BullMQ `Worker` in `src/worker.ts` processes the `mail` queue. The
+  target is a send within 5 minutes of the trigger (`L2-029` criterion 1). A wait-time alert on the
+  queue fires before that budget is spent; its threshold is `<TO SUPPLY>`.
+- **`MailerChannel`** (`src/notifications/channels/`) — mail channel, run by `DeliverNotification`:
+  1. It inserts the `email_deliveries` row for the notification id with `ON CONFLICT DO NOTHING`, and
+     returns at once when the existing row is already `sent`. A retry after a successful hand-off therefore sends nothing twice (`L2-029`
      criterion 1).
-  2. It renders the Blade template under `src/mail/templates/{category}/`.
+  2. It renders the TypeScript template under `src/mail/templates/{category}/`, which escapes every value.
   3. For any e-mail with a category, it asks `UnsubscribeTokenService.issue()` for a token. It adds
      a link to `/unsubscribe?token=…` in the body. It also adds a `List-Unsubscribe` header that
      points at `POST /api/v1/email-preferences/unsubscribe`, with
@@ -83,9 +84,10 @@ the `settings/manage-email-preferences` feature (`L2-037` criteria 2 and 3).
   4. It calls `Mailer.send()` and passes the notification id as the idempotency key where the vendor
      supports one.
   5. It records the delivery as `sent` with the provider's message id.
-- **`Mailer`** (`src/contracts/`) — port with `send(OutgoingEmail): MailerReceipt`. It throws
+- **`Mailer`** (`src/contracts/`) — port with `send(email: OutgoingEmail): Promise<MailerReceipt>`. It throws
   `MailerUnavailable` on a transient failure, which lets the job retry.
-- **`{Vendor}Mailer`** (`src/integrations/mail/`) — adapter for the mail provider; vendor `<TO SUPPLY>`.
+- **`SmtpMailer`** (`src/integrations/`) — Nodemailer adapter, pointed at Mailpit locally
+  (ADR-0004). The production vendor's adapter is `<TO SUPPLY>`. Tests bind `InMemoryMailer`.
 - **`UnsubscribeTokenService`** (`src/services/settings/`) — `issue(user, category)` returns the signed
   token. The `settings/manage-email-preferences` feature owns it, the `/unsubscribe` page and the
   anonymous `POST /email-preferences/unsubscribe` route in `src/http/public-routes.ts`. Token lifetime is
@@ -108,15 +110,15 @@ the `settings/manage-email-preferences` feature (`L2-037` criteria 2 and 3).
 
 ### Scheduled commands — `src/scheduler.ts`
 
-Both commands use `a Redis lock` and `a Redis lock`, so each runs once across Worker replicas
-(`L2-054` criterion 5).
+Both are BullMQ job schedulers registered by `src/scheduler.ts`, so each runs once across Worker
+replicas (`L2-054` criterion 5).
 
-- **`SendEventRemindersCommand`** (`src/console/commands/`, signature `events:send-reminders`) — runs every
+- **`SendEventReminders`** (`src/jobs/notifications/`, scheduler `events:send-reminders`) — runs every
   five minutes. It selects going RSVPs for events that are not cancelled and start between now and 24
   hours plus five minutes from now. For each pair it claims `event-reminder:{event}:{user}` and sends
-  `EventReminderNotification` on the `database` and mail channels (`L2-029` criterion 1). For an event
+  `EventReminderNotification` on the in-app and mail channels (`L2-029` criterion 1). For an event
   at 7:00 pm on Thursday, the e-mail leaves at about 7:00 pm on Wednesday.
-- **`SendWeeklyDigestCommand`** (`src/console/commands/`, signature `notifications:send-weekly-digest`) —
+- **`SendWeeklyDigests`** (`src/jobs/notifications/`, scheduler `notifications:send-weekly-digest`) —
   runs once a week; day and time `<TO SUPPLY>`. It dispatches one `SendWeeklyDigest` job per member
   with the Weekly digest category on.
 - **`SendWeeklyDigest`** (`src/jobs/notifications/`) — claims `digest:{user}:{iso_week}` (`L2-029`
@@ -125,9 +127,9 @@ Both commands use `a Redis lock` and `a Redis lock`, so each runs once across Wo
 
 ### Models and enums
 
-- **`EmailDelivery`** (`src/db/schema/`) — `notification_id` (unique), `user_id`, `category`, `status`
+- **`email_deliveries`** (`src/db/schema/`) — `notification_id` (unique), `user_id`, `category`, `status`
   (`queued`, `sent` or `failed`), `attempts`, `provider_message_id`, `sent_at` and `failed_at`.
-- **`NotificationDedupeKey`** (`src/db/schema/`) — `key` (unique) and `created_at`.
+- **`notification_dedupe_keys`** (`src/db/schema/`) — `key` (unique) and `created_at`.
 - **`EmailCategory`** (`src/enums/`) — `Matches`, `Messages`, `src/events/`, `ProjectActivity` and
   `WeeklyDigest`, as `settings/manage-email-preferences` defines it. Security e-mail has no category.
 

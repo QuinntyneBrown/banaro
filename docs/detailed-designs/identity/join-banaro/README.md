@@ -72,7 +72,7 @@ Banaro Worker sends the e-mail.
 - **`JoinBanaroRequest`** (`src/http/requests/identity/`) — request schema with these rules:
   - `name` — required string, at most 100 characters (`L2-001` criterion 7).
   - `email` — required, RFC-valid e-mail, at most 254 characters.
-  - `password` — required string of at most 128 characters, validated by `PasswordPolicy::schema`.
+  - `password` — required string of at most 128 characters, validated by `PasswordPolicy.schema`.
   - `agreed_to_code_of_conduct` — required and accepted.
   - On failure it returns 422 with per-field errors, and no account is created (`L2-001` criterion 2).
 - **`PasswordPolicy`** (`src/services/identity/`) — owns the password rules shared with the

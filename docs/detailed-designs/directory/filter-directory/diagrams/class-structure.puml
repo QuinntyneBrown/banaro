@@ -80,7 +80,7 @@ package "Backend — Banaro API" {
     +countsFor(filters: DirectoryFilters, viewer: User | null): string[]
   }
   class DistanceService {
-    +withinKm(query: DrizzleQuery, fromNeighbourhood: int, km: int): DrizzleQuery
+    +withinKm(query: DrizzleQuery, fromNeighbourhood: number, km: number): DrizzleQuery
   }
   class Neighbourhood {
     +id: number

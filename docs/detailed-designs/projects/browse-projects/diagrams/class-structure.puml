@@ -60,7 +60,7 @@ package "Backend — Banaro API" {
     +schema: ZodObject
   }
   class BrowseProjects {
-    +handle(input: array, viewer: User | null): Page
+    +handle(input: unknown[], viewer: User | null): Page
   }
   class ProjectSearchService {
     +search(query: ProjectSearchQuery): Page

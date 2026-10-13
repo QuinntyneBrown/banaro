@@ -5,7 +5,7 @@ title Components — In-app notifications
 
 Container(web, "Banaro Web", "Angular", "NotificationsPage, header bell, UnreadCountStore, HttpNotificationsApi")
 ContainerDb(db, "Banaro database", "Relational database", "notifications")
-Container(worker, "Banaro Worker", "BullMQ worker", "Feature notifications on the database channel")
+Container(worker, "Banaro Worker", "BullMQ worker", "Feature notifications on the in-app channel")
 
 Container_Boundary(api, "Banaro API") {
   Component(ctrl, "NotificationRoutes", "Route handler", "index, unreadCount, markRead, markAllRead")
@@ -15,7 +15,7 @@ Container_Boundary(api, "Banaro API") {
   Component(mark, "MarkNotificationRead", "Action", "Sets read_at once")
   Component(markall, "MarkAllNotificationsRead", "Action", "One UPDATE for every unread row")
   Component(block, "BlockService", "Domain service (trust and safety)", "isBlockedEitherWay()")
-  Component(model, "DatabaseNotification", "Drizzle table", "Member's notifications relation")
+  Component(model, "Notification", "Drizzle table", "Member's notifications relation")
   Component(resource, "NotificationResource / UnreadCountResource", "API resources", "AppNotification and count shapes")
 }
 

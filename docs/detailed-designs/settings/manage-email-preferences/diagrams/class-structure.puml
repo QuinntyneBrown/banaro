@@ -47,7 +47,7 @@ package "Backend — Banaro API" {
     +POST(request: UnsubscribeRequest): Response
   }
   class SetEmailPreference {
-    +handle(member: User, category: EmailCategory, enabled: bool): string[]
+    +handle(member: User, category: EmailCategory, enabled: boolean): string[]
   }
   class Unsubscribe {
     +handle(token: string): EmailCategory

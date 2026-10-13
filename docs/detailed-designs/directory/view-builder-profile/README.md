@@ -87,7 +87,7 @@ database. Redis caches match scores. No external system takes part.
 - **`ViewBuilderProfile`** (`src/actions/directory/`) — builds the profile for one viewer:
   1. It loads the builder by public id with skills, experience, links, neighbourhood, photo and
      building project.
-  2. It raises the same `NotFoundHttpException` when the builder does not exist, the account is
+  2. It raises the same `NotFoundError` when the builder does not exist, the account is
      deleted, or a block exists in either direction (`L2-011` criterion 3, `L2-032` criterion 4). It
      also raises it when `ProfileVisibility` denies the viewer the profile, for example a visitor and
      a "Members only" profile.

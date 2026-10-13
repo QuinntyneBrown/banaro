@@ -22,7 +22,7 @@ box "Frontend — banaro application" #E0F2FE
 end box
 box "Backend — Banaro API application" #D1FADF
   participant "SignInRoutes" as controller
-  participant "Exception rendering" as render
+  participant "Error boundary" as render
 end box
 box "Backend — Banaro Application and Domain" #ECFDF3
   participant "SignIn" as action
@@ -38,7 +38,7 @@ actor -> page : Submit e-mail and password
 page -> client : signIn(email, password)
 client -> interceptor : POST /api/v1/auth/sign-in
 interceptor -> controller : Request (anonymous-limiter and CSRF checks passed)
-controller -> action : handle(credentials, request)
+controller -> action : handle(credentials, ctx)
 action -> fingerprint : forEmail(email), forRequest(request)
 fingerprint --> action : Account key, IP key
 action -> attempts : tooManyFailures([account: 5, ip: 20])
@@ -46,7 +46,7 @@ attempts -> redis : GET failure counts
 redis --> attempts : Counts in the 15-minute window
 alt 5 account failures or 20 IP failures already recorded
   attempts --> action : true, availableIn seconds
-  action -> render : ThrottleRequestsException with Retry-After
+  action -> render : TooManyRequestsError with Retry-After
   render --> interceptor : 429 rate_limited, limiter sign-in, Retry-After (L2-003 criterion 3)
   interceptor --> page : RateLimitedError
   page --> actor : "Try again in N minutes" from Retry-After (L2-046 criterion 2)

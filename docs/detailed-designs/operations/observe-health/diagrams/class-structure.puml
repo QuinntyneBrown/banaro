@@ -14,12 +14,12 @@ skinparam class {
 title Class structure — Observe health
 
 package "Backend — Banaro API: health" {
-  class LivenessRoutes {
-    +__invoke(): Response
+  class "health/live route" as LiveRoute {
+    +GET(): Response
   }
-  class ReadinessRoutes {
+  class "health/ready route" as ReadyRoute {
     -service: ReadinessService
-    +__invoke(): Response
+    +GET(): Response
   }
   class ReadinessService {
     -checks: HealthCheck[]
@@ -39,14 +39,13 @@ package "Backend — Banaro API: health" {
 }
 
 package "Backend — Banaro API: request logging" {
-  class AssignRequestId <<middleware>> {
+  class assignRequestId <<middleware>> {
     -pattern = '^[A-Za-z0-9-]{8,64}$'
-    +handle(request: Request, next: Closure): Response
+    +run(ctx: Ctx, next: Next): Promise<Response>
   }
-  class LogRequest <<terminable middleware>> {
+  class logRequest <<middleware>> {
     -startedAt: float
-    +handle(request: Request, next: Closure): Response
-    +terminate(request: Request, response: Response): void
+    +run(ctx: Ctx, next: Next): Promise<Response>
     -routeOf(request: Request): string
   }
   class RequestLogLine <<log record>> {
@@ -57,25 +56,25 @@ package "Backend — Banaro API: request logging" {
     +duration_ms: number
     +member_id: number | null
   }
-  class ExceptionHandling <<src/http/pipeline.ts withExceptions>> {
+  class ErrorBoundary <<src/http/pipeline.ts>> {
     +context(): string[]
-    +report(e: Throwable): void
-    +render(e: Throwable, request: Request): Response
+    +report(e: unknown): void
+    +render(e: unknown, ctx: Ctx): Response
   }
-  class Context <<Laravel facade>> {
-    +add(key: string, value: mixed): void
+  class RequestContext <<AsyncLocalStorage>> {
+    +add(key: string, value: unknown): void
     +get(key: string): unknown
   }
 }
 
-ReadinessRoutes --> ReadinessService : calls
+ReadyRoute --> ReadinessService : calls
 ReadinessService ..> ReadinessResult : returns
 ReadinessService o-- "3" HealthCheck
 DatabaseCheck ..|> HealthCheck
 CacheCheck ..|> HealthCheck
 QueueCheck ..|> HealthCheck
-AssignRequestId ..> Context : add request_id
-LogRequest ..> Context : get request_id
-LogRequest ..> RequestLogLine : writes
-ExceptionHandling ..> Context : get request_id
+assignRequestId ..> RequestContext : add request_id
+logRequest ..> RequestContext : get request_id
+logRequest ..> RequestLogLine : writes
+ErrorBoundary ..> RequestContext : get request_id
 @enduml

@@ -17,7 +17,7 @@ skinparam package {
 participant "Clock (every 5 minutes)" as clock
 box "Backend — Banaro Worker" #ECFDF3
   participant "Scheduler" as scheduler
-  participant "SendEventRemindersCommand" as cmd
+  participant "SendEventReminders" as cmd
   participant "NotificationDedupeService" as dedupe
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5
@@ -25,12 +25,12 @@ box "Backend — Banaro Infrastructure" #FFF4E5
   database "Banaro database" as db
 end box
 
-clock -> scheduler : schedule:run tick
-scheduler -> redis : Take the scheduler lock for events:send-reminders
-alt lock held by another replica
-  redis --> scheduler : Refused; skip (L2-054 criterion 5)
-else lock granted
-  scheduler -> cmd : Run events:send-reminders
+clock -> scheduler : Every five minutes
+scheduler -> redis : Job scheduler events:send-reminders creates one job (L2-054 criterion 5)
+alt job already running for this tick
+  redis --> scheduler : Same job id; no second job
+else new job
+  redis -> cmd : A worker runs SendEventReminders
   cmd -> db : Going RSVPs of events not cancelled,\nstarting after now and before now + 24 h + 5 min
   db --> cmd : (event, member) pairs
   loop each pair

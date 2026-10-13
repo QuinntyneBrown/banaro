@@ -72,7 +72,7 @@ package "Backend — Banaro API" {
     +handle(project: Project): Project
   }
   class ListProjectFeedback {
-    +handle(project: Project, viewer: User | null, page: int, perPage: int): Page
+    +handle(project: Project, viewer: User | null, page: number, perPage: number): Page
   }
   class ProjectPolicy {
     +update(user: User, project: Project): boolean

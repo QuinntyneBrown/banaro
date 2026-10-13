@@ -71,8 +71,8 @@ Subsystem folders in this tree map to code folders by name: `trust-and-safety` s
 | Shared component | `frontend/projects/components/src/lib/{component}/` | Class `{Name}`, selector `bn-{name}` |
 | API contract | `frontend/projects/api/src/lib/services/` | Interface `{Subsystem}Api`, token `{SUBSYSTEM}_API`, class `Http{Subsystem}Api` |
 | API fake | `frontend/projects/api/src/lib/testing/` | Class `InMemory{Subsystem}Api` |
-| Route handler | `backend/app/api/v1/{path}/route.ts` | Exports `GET`, `POST`, `PUT` or `DELETE` wrapped in `handle()`; validates, calls one action, returns a resource |
-| Request schema | `backend/src/http/requests/{subsystem}/{verb}-{noun}.ts` | zod schema `{Verb}{Noun}Request` |
+| Route handler | `backend/app/api/v1/{path}/route.ts` | Exports `GET`, `POST`, `PUT` or `DELETE` wrapped in `handle()`; validates, calls one action, returns a resource. Designs name a resource's route files together as `{Noun}Routes` (for example `ProjectRoutes` for `projects/route.ts` and `projects/[project]/route.ts`) |
+| Request schema | `backend/src/http/requests/{subsystem}/{verb}-{noun}.ts` | `{Verb}{Noun}Request`: a zod `schema` and an optional `authorize(ctx)`; `validate()` runs `authorize()`, then `schema.parse()` |
 | Action | `backend/src/actions/{subsystem}/{verb}-{noun}.ts` | Class `{Verb}{Noun}`, single public `handle()` method |
 | Domain service | `backend/src/services/{subsystem}/{noun}-service.ts` | `{Noun}Service` |
 | Job | `backend/src/jobs/{subsystem}/{verb}-{noun}.ts` | `{Verb}{Noun}`, a BullMQ job with its queue, attempts and backoff |

@@ -58,17 +58,17 @@ package "Backend — Banaro API" {
   class NotificationRoutes {
     +GET(request: ListNotificationsRequest): Page
     +unreadCount(request: Request): UnreadCountResource
-    +markRead(request: MarkNotificationReadRequest, notification: DatabaseNotification): Response
+    +markRead(request: MarkNotificationReadRequest, notification: Notification): Response
     +markAllRead(request: MarkAllNotificationsReadRequest): Response
   }
   class ListNotifications {
-    +handle(member: User, page: int, perPage: int): Page
+    +handle(member: User, page: number, perPage: number): Page
   }
   class CountUnreadNotifications {
     +handle(member: User): number
   }
   class MarkNotificationRead {
-    +handle(notification: DatabaseNotification): void
+    +handle(notification: Notification): void
   }
   class MarkAllNotificationsRead {
     +handle(member: User): number
@@ -79,7 +79,7 @@ package "Backend — Banaro API" {
   class User {
     +notifications(): MorphMany
   }
-  class DatabaseNotification {
+  class "notifications" as Notification <<table>> {
     +id: string
     +type: string
     +notifiable_id: number
@@ -121,7 +121,7 @@ NotificationRoutes ..> NotificationResource : returns
 NotificationRoutes ..> UnreadCountResource : returns
 ListNotifications ..> BlockService : filters
 ListNotifications --> User : notifications()
-User "1" *-- "*" DatabaseNotification : notifications
-DatabaseNotification ..> NotificationKind : data.kind
-InAppPayload ..> DatabaseNotification : writes data
+User "1" *-- "*" Notification : notifications
+Notification ..> NotificationKind : data.kind
+InAppPayload ..> Notification : writes data
 @enduml

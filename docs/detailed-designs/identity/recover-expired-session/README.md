@@ -79,7 +79,7 @@ Redis holds the sessions.
   after the session starts and before authentication. It reads the `authenticated_at` value that
   `SignIn` stored. After 90 days it logs out and invalidates the session, so the request continues
   unauthenticated (`L2-005` criterion 5). `src/config/security.ts` holds the 90-day value.
-- **Unauthenticated response** — `src/http/pipeline.ts` renders `AuthenticationException` on API routes
+- **Unauthenticated response** — the error boundary in `src/http/pipeline.ts` renders `UnauthenticatedError` on API routes
   as 401 with code `unauthenticated` and no redirect. Wrong credentials answer 422, not 401, so a
   failed sign-in never triggers the dialog.
 - **`SessionRoutes`** and **`SignIn`** (`app/api/v1/`, `src/actions/identity/`) —

@@ -63,7 +63,7 @@ package "Frontend — banaro application, components and api libraries" {
 
 package "Backend — Banaro API" {
   class BuilderProfileRoutes {
-    +GET(request: ShowBuilderProfileRequest, builder: Builder): JsonResource
+    +GET(request: ShowBuilderProfileRequest, builder: Builder): BuilderProfileResource
   }
   class ViewBuilderProfile {
     +handle(viewer: User | null, builder: Builder): BuilderProfileView
@@ -90,7 +90,7 @@ package "Backend — Banaro API" {
   }
   class DistanceService {
     +between(from: Neighbourhood, to: Neighbourhood): number
-    +approximate(km: float): number
+    +approximate(km: number): number
   }
   class PresenceService {
     +statusFor(builder: Builder): ?OnlineStatus

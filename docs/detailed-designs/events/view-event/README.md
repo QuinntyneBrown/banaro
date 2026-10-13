@@ -68,7 +68,7 @@ It reads only; RSVP writes belong to `rsvp-to-event`.
 ### Backend — Banaro API
 
 - **`EventRoutes`** (`app/api/v1/`) — `show()` handles `GET /events/{event}`. The
-  route is on the authenticated stack (`src/http/pipeline.ts`), because `L2-019` grants the page to members. Route-model binding
+  route is on the authenticated stack (`src/http/pipeline.ts`), because `L2-019` grants the page to members. The bindings middleware
   returns 404 for an unknown id (`L2-019` criterion 4). The method calls `ViewEvent` and returns an
   `EventDetailResource`.
 - **`ViewEventRequest`** (`src/http/requests/events/`) — authorizes a verified member and accepts no query or

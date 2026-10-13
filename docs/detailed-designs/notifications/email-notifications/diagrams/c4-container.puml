@@ -15,7 +15,7 @@ System_Boundary(banaro, "Banaro") {
 }
 
 Rel(api, redis, "Queues notifications", "Redis protocol")
-Rel(worker, redis, "Takes jobs; holds onOneServer locks", "Redis protocol")
+Rel(worker, redis, "Takes jobs; job schedulers", "Redis protocol")
 Rel(worker, db, "Reads preferences; writes delivery records and dedupe keys", "SQL")
 Rel(worker, mail, "Sends e-mail via", "Mailer contract")
 Rel(mail, member, "Delivers e-mail to")

@@ -78,7 +78,7 @@ Banaro Worker looks up the account and sends the e-mail.
   through `ResetPasswordRequest`, calls `ResetPassword` and returns 204. A rejected link returns 422
   with code `reset_link_invalid`.
 - **`SendPasswordResetLinkRequest`**, **`CheckPasswordResetRequest`** and **`ResetPasswordRequest`**
-  (`src/http/requests/identity/`) — request schemas. `ResetPasswordRequest` applies `PasswordPolicy::schema`
+  (`src/http/requests/identity/`) — request schemas. `ResetPasswordRequest` applies `PasswordPolicy.schema`
   and `confirmed` to `password`.
 - **`RequestPasswordReset`** (`src/actions/identity/`) — dispatches the `SendPasswordResetLink` job for
   every well-formed address. It does no account lookup, so the response and its timing do not depend

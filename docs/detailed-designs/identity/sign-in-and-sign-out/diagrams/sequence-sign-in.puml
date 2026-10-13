@@ -47,7 +47,7 @@ else form valid
   throttle -> redis : Read failure counts (account key, IP key)
   alt 5 failures for the account or 20 for the IP in 15 minutes
     throttle --> action : Limit reached
-    action --> controller : ThrottleRequestsException
+    action --> controller : TooManyRequestsError
     controller --> client : 429 with Retry-After (L2-003 criterion 3)
     client --> page : ApiProblem
     page --> actor : "try again in N minutes"

@@ -54,14 +54,14 @@ package "Backend — Banaro API" {
     +schema: ZodObject
   }
   class SaveMatchingPreferences {
-    +handle(member: User, data: array): MatchingPreference
+    +handle(member: User, data: unknown[]): MatchingPreference
   }
   class MatchingScheduleService {
     +nextRunDate(now: Timestamp): Timestamp
     +isoWeekOf(instant: Timestamp): string
   }
   class EmailPreferenceService {
-    +set(member: User, category: EmailCategory, enabled: bool): void
+    +set(member: User, category: EmailCategory, enabled: boolean): void
   }
   class User {
     +id: number

@@ -38,7 +38,7 @@ package "Backend — Banaro API" {
     +PUT(request: UpdatePrivacySettingsRequest): PrivacySettingsResource
   }
   class UpdatePrivacySettings {
-    +handle(member: User, values: array): PrivacySettings
+    +handle(member: User, values: unknown[]): PrivacySettings
   }
   class PrivacySettings {
     +user_id: number

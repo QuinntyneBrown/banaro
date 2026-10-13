@@ -69,7 +69,7 @@ package "Backend — Banaro API" {
     +confirm(request: ConfirmEmailChangeRequest): Response
   }
   class UpdateAccount {
-    +handle(member: User, data: array): User
+    +handle(member: User, data: unknown[]): User
   }
   class RequestEmailChange {
     +handle(member: User, newEmail: string): PendingEmailChange

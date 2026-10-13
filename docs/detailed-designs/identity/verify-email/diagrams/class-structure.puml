@@ -62,11 +62,11 @@ package "Backend — Banaro API" {
   }
   class EmailVerificationService {
     +issue(user: User): string
-    +consume(token: string, expires: int, signature: string): User
-    -sign(token: string, expires: int): string
+    +consume(token: string, expires: number, signature: string): User
+    -sign(token: string, expires: number): string
   }
   class RequireVerifiedEmail {
-    +handle(request: Request, next: Closure): Response
+    +run(ctx: Ctx, next: Next): Promise<Response>
   }
   class User {
     +id: number

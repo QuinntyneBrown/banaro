@@ -48,7 +48,7 @@ package "Backend — Banaro API" {
     +validated(): string[]
   }
   class ShareProject {
-    +handle(owner: User, data: array): Project
+    +handle(owner: User, data: unknown[]): Project
   }
   class ProjectLimitReached {
     +code: 'project_limit'

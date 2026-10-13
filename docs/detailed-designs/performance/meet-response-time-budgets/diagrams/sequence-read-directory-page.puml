@@ -49,7 +49,7 @@ distance --> query : Ids
 query -> db : SELECT card columns FROM builders JOIN match_scores (viewer_id, score) index ... LIMIT 12 OFFSET 12
 note right of db : Index range scans only; no full scan of builders (L2-047 criterion 3)
 db --> query : 12 rows and total count
-query -> db : SELECT skills WHERE builder_id IN (...) (eager load)
+query -> db : SELECT skills WHERE builder_id IN (...) (one extra query)
 db --> query : Skills
 query --> controller : Page
 controller -> resource : Wrap BuilderCardResource items with page meta

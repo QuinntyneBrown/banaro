@@ -50,10 +50,10 @@ package "Backend — Banaro API" {
     +schema: ZodObject
   }
   class SubmitReport {
-    +handle(reporter: User, type: ReportSubjectType, id: int, reason: ReportReason, details: ?string): Report
+    +handle(reporter: User, type: ReportSubjectType, id: number, reason: ReportReason, details: ?string): Report
   }
   class ReportSubjectResolver {
-    +resolve(viewer: User, type: ReportSubjectType, id: int): ReportSubject
+    +resolve(viewer: User, type: ReportSubjectType, id: number): ReportSubject
   }
   class BlockService {
     +isBlockedEitherWay(a: User, b: User): boolean

@@ -76,7 +76,7 @@ package "Backend — Banaro API" {
     +moreCount: number
   }
   class AttendeeListService {
-    +previewFor(event: Event, viewer: User, limit: int): AttendeePreviewResult
+    +previewFor(event: Event, viewer: User, limit: number): AttendeePreviewResult
   }
   class BlockService <<TrustAndSafety>> {
     +isBlockedEitherWay(a: User, b: User): boolean

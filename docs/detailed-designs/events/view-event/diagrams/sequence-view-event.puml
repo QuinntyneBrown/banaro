@@ -38,7 +38,7 @@ page -> client : getEvent(id)
 client -> controller : GET /api/v1/events/{id}
 controller -> controller : Authenticate verified member, validate ViewEventRequest
 alt unknown id
-  controller --> client : 404 from route-model binding (L2-019 criterion 4)
+  controller --> client : 404 from the bindings middleware (L2-019 criterion 4)
   client --> page : Not found
   page --> actor : not-found state with links to events and dashboard
 else event exists

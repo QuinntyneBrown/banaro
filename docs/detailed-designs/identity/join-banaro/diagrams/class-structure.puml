@@ -56,7 +56,7 @@ package "Backend — Banaro API" {
     +schema: ZodObject
   }
   class NotCommonPassword {
-    +validate(attribute: string, value: mixed, fail: Closure): void
+    +refine(value: string): boolean
   }
   class JoinBanaro {
     +handle(data: JoinData): void

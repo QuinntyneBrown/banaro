@@ -55,7 +55,7 @@ package "Frontend — banaro application and api library" {
 package "Backend — Banaro API" {
   class EnforceAbsoluteSessionLifetime {
     -int absoluteLifetimeDays = 90
-    +handle(request: Request, next: Closure): Response
+    +run(ctx: Ctx, next: Next): Promise<Response>
   }
   class SessionRoutes {
     +POST(request: SignInRequest): SessionResource

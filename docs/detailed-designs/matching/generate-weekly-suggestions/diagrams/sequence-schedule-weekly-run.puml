@@ -36,7 +36,7 @@ schedB -> schedB : Skip run (L2-054 criterion 5)
 schedA -> cmd : Run matching:generate-weekly
 cmd -> cal : isoWeekOf(now in America/Toronto)
 cal --> cmd : 2026-W42
-loop chunkById over active matching preferences
+loop id-ordered batches of active matching preferences
   cmd -> db : SELECT user_id FROM matching_preferences WHERE status = active
   db --> cmd : Chunk of member ids
   loop each member

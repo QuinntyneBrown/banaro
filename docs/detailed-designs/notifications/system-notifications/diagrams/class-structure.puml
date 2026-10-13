@@ -103,7 +103,7 @@ package "Backend — Banaro API" {
     +handle(): ?SiteAnnouncement
   }
   class PublishSiteAnnouncement {
-    +handle(admin: User, data: array): SiteAnnouncement
+    +handle(admin: User, data: unknown[]): SiteAnnouncement
   }
   class SiteAnnouncement {
     +id: number

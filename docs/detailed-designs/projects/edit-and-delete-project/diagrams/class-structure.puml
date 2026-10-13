@@ -61,7 +61,7 @@ package "Backend — Banaro API" {
     +delete(user: User, project: Project): boolean
   }
   class UpdateProject {
-    +handle(project: Project, data: array): Project
+    +handle(project: Project, data: unknown[]): Project
   }
   class DeleteProject {
     +handle(project: Project): void

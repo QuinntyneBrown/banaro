@@ -91,7 +91,7 @@ package "Backend — Banaro API" {
     +isBlockedEitherWay(a: User, b: User): boolean
   }
   class ListConversations {
-    +handle(member: User, perPage: int): Page
+    +handle(member: User, perPage: number): Page
   }
   class ListMessages {
     +handle(member: User, conversation: Conversation, cursor: MessageCursor): unknown[]
@@ -100,7 +100,7 @@ package "Backend — Banaro API" {
     +handle(sender: User, conversation: Conversation, body: string, clientMessageId: string): Message
   }
   class MarkConversationRead {
-    +handle(member: User, conversation: Conversation, lastMessageId: int): void
+    +handle(member: User, conversation: Conversation, lastMessageId: number): void
   }
   class Conversation {
     +id: number

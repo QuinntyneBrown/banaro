@@ -72,7 +72,7 @@ API to the Banaro database.
     `project_looking_for (role, project_id)` keep the query inside the read budget (`L2-047`
     criterion 1).
 - **`ProjectSummaryResource`** (`src/http/resources/projects/`) — serializes one row into the `ProjectSummary`
-  shape. It eager-loads owners and roles to avoid one query per card.
+  shape. It joins owners and loads roles in one extra query, so there is no query per card.
 
 `last_activity_at` changes when a project is shared or edited, when it receives feedback, and when
 its owner replies to feedback. The `share-project`, `edit-and-delete-project` and `give-feedback`

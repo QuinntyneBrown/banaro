@@ -63,10 +63,10 @@ package "Backend — Banaro API" {
     +handle(builder: Builder): Builder
   }
   class UpdateOwnProfile {
-    +handle(builder: Builder, data: array): Builder
+    +handle(builder: Builder, data: unknown[]): Builder
   }
   class SkillCatalogue {
-    +resolve(entries: array): unknown[]<Skill>
+    +resolve(entries: unknown[]): unknown[]<Skill>
   }
   class Builder {
     +id: number

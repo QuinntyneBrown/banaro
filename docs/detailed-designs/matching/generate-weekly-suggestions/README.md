@@ -43,9 +43,10 @@ Its only outbound effects are the stored suggestions and one notification per me
   The entry adds `a Redis lock` and `a Redis lock`. Both take a lock in Redis, so the run
   starts exactly once across Worker replicas (`L2-054` criterion 5). The `timezone()` call keeps
   06:00 local across daylight-saving changes (`L2-022` criterion 1).
-- **`GenerateWeeklySuggestionsCommand`** (`src/console/commands/`, signature `matching:generate-weekly`)
+- **`GenerateWeeklySuggestions`** (`src/jobs/matching/`, job scheduler `matching:generate-weekly`, also
+  runnable as `banaro matching:generate-weekly`)
   — computes the ISO week key once through `MatchingScheduleService.isoWeekOf()`. It then walks the
-  active `MatchingPreference` rows with `chunkById()` and dispatches one `GenerateMatchSuggestions`
+  active `matching_preferences` rows in id-ordered batches and dispatches one `GenerateMatchSuggestions`
   job per member with that key. An operator may re-run the command for the same week; the key makes
   the re-run safe (`L2-022` criterion 3).
 - **`GenerateMatchSuggestions`** (`src/jobs/matching/`) — queued job for one member and one ISO week. It
@@ -107,7 +108,7 @@ table is their documentation (`L2-022` criterion 4). Service tests in
 The member's stored pass reasons adjust the weights for that member (`L2-024` criterion 3). For
 example, a "Too far" reason may raise the distance weight. The adjustment rules are `<TO SUPPLY>`.
 
-`MatchScore::reasons` lists reason codes with parameters, such as shared skills, the open-to role,
+`MatchScore.reasons` lists reason codes with parameters, such as shared skills, the open-to role,
 the distance and the candidate's project. The `review-matches` page renders them as text through the
 translation catalogue (`L2-052`).
 

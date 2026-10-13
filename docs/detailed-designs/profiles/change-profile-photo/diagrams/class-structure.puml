@@ -58,13 +58,13 @@ package "Backend — Banaro API and Worker" {
     +schema: ZodObject
   }
   class UploadProfilePhoto {
-    +handle(builder: Builder, file: UploadedFile, crop: array): ProfilePhoto
+    +handle(builder: Builder, file: UploadedFile, crop: unknown[]): ProfilePhoto
   }
   class RemoveProfilePhoto {
     +handle(builder: Builder): void
   }
   class PhotoProcessor {
-    +process(file: UploadedFile, crop: array): ProcessedImage
+    +process(file: UploadedFile, crop: unknown[]): ProcessedImage
   }
   class ScanProfilePhoto {
     +photoId: number

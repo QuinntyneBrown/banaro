@@ -19,9 +19,9 @@ Terms used in this design:
 - **unread notification** — notification whose `read_at` is empty
 - **unread count** — number of the member's unread notifications, shown on the header bell
 
-A feature that wants to tell a member something sends a Laravel notification on the `database`
-channel. The `RsvpConfirmedNotification` of `events/rsvp-to-event` is one example. Laravel writes the
-row to the `notifications` table. The member opens `/notifications` and sees the list, newest first,
+A feature that wants to tell a member something calls `notify(member, notification)` with a
+notification that uses the in-app channel. The `RsvpConfirmedNotification` of `events/rsvp-to-event`
+is one example. The in-app channel writes the row to the `notifications` table. The member opens `/notifications` and sees the list, newest first,
 with unread items marked. Selecting an item marks it read and opens its subject. "Mark all as read"
 marks every item read and clears the header count.
 
@@ -94,7 +94,7 @@ to the Banaro database.
 - **Scoping** — every query starts from `request.user().notifications()`. The
   `{notification}` binding resolves through the same relation, so another member's id yields 404
   (`L2-027` criterion 5, `L2-044` criterion 1).
-- **`DatabaseNotification`** (Drizzle table, table `notifications`) — `id` (UUID), `type`,
+- **`notifications`** (Drizzle table, `src/db/schema/notifications.ts`) — `id` (UUID), `type`,
   `notifiable_type`, `notifiable_id`, `data` (JSON), `read_at` and `created_at`. An index on
   (`notifiable_id`, `read_at`, `created_at`) serves the list and the count.
 - **`NotificationKind`** (`src/enums/`) — `MatchesReady`, `NewMessage`, `RsvpConfirmed`,
@@ -161,7 +161,7 @@ member's own `notifications` relation.
 
 ### Class structure
 
-A `User` has many `DatabaseNotification` rows, each with a `NotificationKind` in its payload. On the
+A `User` has many `notifications` rows, each with a `NotificationKind` in its payload. On the
 frontend, `NotificationsPage` and `UnreadCountStore` depend on the `NotificationsApi` contract.
 
 ![Class diagram for in-app notifications](diagrams/class-structure.png)

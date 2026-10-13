@@ -55,7 +55,7 @@ The representative request is a member opening the builder directory at `/builde
 - **`DirectoryQuery`** (`src/services/directory/`) — builds the directory query from the validated
   filters. It applies the visibility scope from the `scope-data-access` feature, the facet filters
   (`L2-010`), the sort and the page. It selects only the columns `BuilderCardResource` needs and
-  eager-loads skills in one extra query.
+  loads skills in one extra `IN (...)` query.
 - **Indexes** (migrations in `database/migrations/`) — the query uses only indexed predicates:
   - `builders (neighbourhood_id)`, `builders (role)`, `builders (last_active_at)` and
     `builders (created_at)` for filters and the "Nearest", "Recently active" and "Newest" sorts
@@ -70,12 +70,12 @@ The representative request is a member opening the builder directory at `/builde
   factories, runs the query for each sort and a representative filter set, and reads the engine's
   `EXPLAIN` output. It asserts that no step scans the whole `builders` table (`L2-047` criterion 3).
   It carries the acceptance-test header naming `L2-047`.
-- **Lazy-loading guard** — `AppServiceProvider` calls `Model.preventLazyLoading(!
-  app().isProduction())`. A query that loads relations one row at a time fails in tests.
+- **No lazy loading** — Drizzle has no lazy relations. Each action names its joins or its one
+  extra `IN (...)` query, so a query per row cannot happen by accident.
 
 ### Backend — keeping writes short
 
-- **After-commit jobs** — actions queue notifications, e-mail and media work with `afterCommit()`.
+- **After-commit jobs** — actions queue notifications, e-mail and media work with `afterCommit`.
   The Banaro Worker runs them, so a write endpoint returns once its transaction commits (`L2-047`
   criterion 2).
 - **Short transactions** — actions hold row locks only for the rows they change, as `RsvpToEvent`

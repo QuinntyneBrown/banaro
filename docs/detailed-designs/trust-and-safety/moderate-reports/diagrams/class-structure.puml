@@ -51,7 +51,7 @@ package "Frontend — admin application and api library" {
 
 package "Backend — Banaro API" {
   class EnsureAdministrator {
-    +handle(request: Request, next: Closure): Response
+    +run(ctx: Ctx, next: Next): Promise<Response>
   }
   class AdminReportRoutes {
     +GET(request: Request): Page
