@@ -34,3 +34,9 @@ export const newPassword = () =>
 /** A ticked box: what Laravel's `accepted` rule took. */
 export const accepted = (key: string) =>
   z.union([z.literal(true), z.literal(1), z.enum(['1', 'true', 'yes', 'on'])], message(key));
+
+/** true or false, as Laravel's `boolean` rule took them. */
+export const booleanField = () =>
+  z
+    .union([z.boolean(), z.literal(0), z.literal(1), z.enum(['0', '1'])])
+    .transform((value) => value === true || value === 1 || value === '1');
