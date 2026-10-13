@@ -49,5 +49,10 @@
     "subject": "New feedback on {project}",
     "intro": "{author} left feedback on {project}.",
     "action": "Read the feedback"
+  },
+  "helpOffered": {
+    "subject": "{offerer} offered to help with {project}",
+    "intro": "{offerer} offered to help with {project}. Read their message and reply from the project page.",
+    "action": "See the offer"
   }
 }

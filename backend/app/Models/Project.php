@@ -6,6 +6,7 @@ use App\Enums\LookingForRole;
 use App\Enums\ProjectStage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -35,6 +36,12 @@ class Project extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    /** @return HasMany<HelpOffer, $this> */
+    public function helpOffers(): HasMany
+    {
+        return $this->hasMany(HelpOffer::class);
     }
 
     /** The roles in the order the vocabulary lists them. @return list<string> */

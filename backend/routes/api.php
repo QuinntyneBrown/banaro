@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Profiles\OnboardingController;
 use App\Http\Controllers\Api\V1\Profiles\OwnProfileController;
 use App\Http\Controllers\Api\V1\Profiles\ProfilePhotoController;
 use App\Http\Controllers\Api\V1\Projects\FeedbackController;
+use App\Http\Controllers\Api\V1\Projects\HelpOfferController;
 use App\Http\Controllers\Api\V1\Projects\ProjectController;
 use App\Http\Controllers\Api\V1\Settings\EmailPreferenceController;
 use App\Http\Controllers\Api\V1\Settings\PrivacyController;
@@ -67,6 +68,14 @@ Route::middleware('auth:sanctum')->group(function () {
                 ->where('project', '[0-9a-z]{26}')
                 ->middleware('throttle:project-feedback')
                 ->name('projects.feedback.store');
+
+            // L2-017: a member offers to help; only the owner reads the offers.
+            Route::post('projects/{project}/help-offers', [HelpOfferController::class, 'store'])
+                ->where('project', '[0-9a-z]{26}')
+                ->name('projects.help-offers.store');
+            Route::get('projects/{project}/help-offers', [HelpOfferController::class, 'index'])
+                ->where('project', '[0-9a-z]{26}')
+                ->name('projects.help-offers.index');
 
             // L2-008: the member's own photo.
             Route::post('me/photo', [ProfilePhotoController::class, 'store'])
