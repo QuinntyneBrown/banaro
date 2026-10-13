@@ -4,7 +4,7 @@
 |---|---|
 | Selector | `bn-file-upload` |
 | Library path | `frontend/projects/components/src/lib/file-upload/` |
-| Status | planned |
+| Status | built |
 | Traces to | L2-008, L2-048, L2-049, L2-050, L2-051, L2-052 |
 | Design system | [`file-upload.html`](../../design-system/components/file-upload.html) |
 | Source mocks | [`dialogs/change-photo/default`](../../mocks/dialogs/change-photo/default.html), [`dialogs/change-photo/invalid`](../../mocks/dialogs/change-photo/invalid.html), [`dialogs/change-photo/busy`](../../mocks/dialogs/change-photo/busy.html), [`dialogs/change-photo/failed`](../../mocks/dialogs/change-photo/failed.html) |
@@ -77,6 +77,7 @@ Host: `bn-file-upload` is `display: block`.
 | `progress` | `number \| null` | `null` | no | 0–100 while busy; `null` renders an indeterminate bar (`aria-busy="true"`). |
 | `progressLabel` | `string` | — | yes when `busy` | Progress bar name, "Uploading photo". |
 | `removeLabel` | `string \| null` | `null` | no | Shows a "Remove photo" button with a valid file. |
+| `chooseHidden` | `boolean` | `false` | no | Hides the choose control in the failed state, while the dialog offers "Try again". |
 
 ### Outputs
 

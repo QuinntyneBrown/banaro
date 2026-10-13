@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+
+/* Extracted from docs/design-system/assets/components.css: filter, check, cluster. */
+.filter {
+  margin: 0;
+  padding: var(--space-6) 0;
+  border: 0;
+  border-top: var(--border-width-hairline) solid var(--color-border-default);
+  min-width: 0;
+}
+.filter__legend {
+  padding: 0;
+  margin-bottom: var(--space-4);
+  font: var(--text-overline);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-fg-subtle);
+}
+.filter__list {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.check {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--target-comfortable);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font: var(--text-body-sm);
+}
+.check:hover {
+  background: var(--color-bg-subtle);
+}
+.check__count {
+  color: var(--color-fg-subtle);
+  font-variant-numeric: tabular-nums;
+}
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .check {
+    transition: background-color var(--duration-base) var(--ease-standard);
+  }
+}

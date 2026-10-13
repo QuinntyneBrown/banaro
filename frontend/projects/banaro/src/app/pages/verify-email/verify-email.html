@@ -1,0 +1,69 @@
+<div class="wrap">
+  @switch (state()) {
+    @case ('success') {
+      <bn-auth-card
+        icon="check"
+        [heading]="'identity.verify.success.title' | t"
+        [sub]="'identity.verify.success.sub' | t"
+      >
+        <div class="form-actions">
+          <a bn-button variant="primary" [routerLink]="setUpPath()" [queryParams]="setUpParams()">{{
+            'identity.verify.success.setUp' | t
+          }}</a>
+        </div>
+      </bn-auth-card>
+    }
+    @case ('error') {
+      <bn-auth-card
+        icon="alert"
+        [heading]="'identity.verify.error.title' | t"
+        [sub]="'identity.verify.error.sub' | t"
+      >
+        @if (alert()) {
+          <bn-alert variant="danger" [heading]="alert()!" />
+        }
+        <div class="form-actions">
+          <button
+            bn-button
+            variant="primary"
+            type="button"
+            [busy]="sending()"
+            [disabled]="sending()"
+            (click)="resend()"
+          >
+            {{ 'identity.verify.error.resend' | t }}
+          </button>
+          <a bn-button variant="quiet" routerLink="/sign-in">{{
+            'identity.verify.error.signIn' | t
+          }}</a>
+        </div>
+      </bn-auth-card>
+    }
+    @default {
+      <bn-auth-card
+        icon="mail"
+        [heading]="'identity.verify.default.title' | t"
+        [sub]="'identity.verify.default.sub' | t: { email: email() }"
+      >
+        @if (alert()) {
+          <bn-alert variant="danger" [heading]="alert()!" />
+        }
+        <div class="form-actions">
+          <button
+            bn-button
+            variant="quiet"
+            type="button"
+            [busy]="sending()"
+            [disabled]="sending()"
+            (click)="resend()"
+          >
+            {{ 'identity.verify.default.resend' | t }}
+          </button>
+          <a bn-button variant="text" routerLink="/contact">{{
+            'identity.verify.default.help' | t
+          }}</a>
+        </div>
+      </bn-auth-card>
+    }
+  }
+</div>

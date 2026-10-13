@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "title": "Builders near you · Banaro",
+    "description": "Find Christian founders, engineers, designers and product managers in Toronto and the GTA by skill, role and neighbourhood."
+  },
+  "eyebrow": "Builder directory",
+  "title": "Builders near you",
+  "sub": "{count, plural, one {# builder} other {# builders}} in Toronto and the GTA.",
+  "search": {
+    "label": "Search builders",
+    "placeholder": "Name, skill or project",
+    "button": "Search"
+  },
+  "resultsTitle": "Results",
+  "loading": "Loading builders",
+  "count": {
+    "showing": "Showing",
+    "of": "of",
+    "noun": "{count, plural, one {builder} other {builders}}",
+    "none": "builders match"
+  },
+  "sort": {
+    "label": "Sort by",
+    "bestMatch": "Best match",
+    "nearest": "Nearest",
+    "recentlyActive": "Recently active",
+    "newest": "Newest"
+  },
+  "card": {
+    "match": "match",
+    "skills": "Skills",
+    "building": "Building",
+    "openTo": "Open to",
+    "noProject": "No project listed",
+    "away": "{place} · {distance} away"
+  },
+  "openTo": {
+    "coFounding": "Co-founding",
+    "advising": "Advising",
+    "contributing": "Contributing"
+  },
+  "presence": {
+    "online": "Online now",
+    "minutes": "Seen {count} min ago",
+    "hours": "Seen {count} h ago",
+    "yesterday": "Seen yesterday",
+    "days": "Seen {count} days ago",
+    "weeks": "{count, plural, one {Seen a week ago} other {Seen # weeks ago}}",
+    "longAgo": "Seen over a month ago"
+  },
+  "pager": {
+    "more": "{count, plural, one {Show # more builder} other {Show # more builders}}",
+    "busy": "Loading more builders…",
+    "status": "{shown} of {total} · page {page} of {pages}"
+  },
+  "error": {
+    "title": "We couldn't load the builders",
+    "body": "Banaro had trouble reaching the server. Nothing you've set up is lost. Try again, or open your matches while we sort it out.",
+    "tryAgain": "Try again",
+    "matches": "See your matches"
+  },
+  "filters": {
+    "title": "Filters",
+    "close": "Close filters",
+    "apply": "Apply",
+    "clearAll": "Clear all",
+    "active": "Active filters",
+    "remove": "Remove filter: {label}",
+    "role": {
+      "legend": "Role",
+      "founder": "Founders",
+      "engineer": "Engineers",
+      "designer": "Designers",
+      "productManager": "Product managers",
+      "other": "Other"
+    },
+    "openTo": "Open to",
+    "area": "Neighbourhood or city",
+    "distance": {
+      "legend": "Distance",
+      "km": "{km} km",
+      "any": "Anywhere in the GTA",
+      "within": "Within {km} km"
+    },
+    "skills": "Popular skills"
+  },
+  "noResults": {
+    "title": "No builders match those filters",
+    "body": "Clear a filter or two and more people will appear.",
+    "clear": "Clear all filters",
+    "within": "Search within {km} km",
+    "anywhere": "Search anywhere in the GTA"
+  },
+  "profile": {
+    "meta": {
+      "title": "{name} · Banaro"
+    },
+    "crumb": "Builders",
+    "builder": "Builder",
+    "breadcrumb": "Breadcrumb",
+    "builderProfile": "Builder profile",
+    "loading": "Loading builder profile",
+    "portrait": "Portrait of {name}",
+    "noPhoto": "{name}, no photo",
+    "edit": "Edit profile",
+    "whoCanSee": "Who can see this",
+    "about": "About",
+    "skills": "Skills",
+    "experience": "Experience",
+    "building": "What {name} is building",
+    "buildingOwn": "What you are building",
+    "noProject": "No project listed yet. {name} is here to meet people first.",
+    "noProjectOwn": "No project listed yet. Add what you are building from Edit profile.",
+    "aside": "About {name}",
+    "whyMatch": "Why you match",
+    "glance": "At a glance",
+    "neighbourhood": "Neighbourhood",
+    "distance": "Distance",
+    "distanceFrom": "{distance} from {from}",
+    "memberSince": "Member since",
+    "now": "now",
+    "under5": "under 5 km",
+    "reasons": {
+      "nearby": "{name} is {distance} from {from}.",
+      "recentlyActive": "{name} has been active this week."
+    },
+    "notFound": {
+      "meta": "Builder not found · Banaro",
+      "title": "We can't find that builder",
+      "lead": "The profile may have been removed, or the link is mistyped. Builders who leave Banaro take their profile with them.",
+      "browse": "Browse builders"
+    },
+    "error": {
+      "title": "We couldn't load this profile",
+      "body": "Banaro had trouble reaching the server. Try again, or go back to the directory.",
+      "back": "Back to builders"
+    },
+    "more": "More",
+    "moreActions": "More actions",
+    "block": "Block {name}"
+  }
+}

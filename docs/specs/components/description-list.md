@@ -4,7 +4,7 @@
 |---|---|
 | Selector | `dl[bn-description-list]`, `div[bn-description-item]` |
 | Library path | `frontend/projects/components/src/lib/description-list/` |
-| Status | planned |
+| Status | built |
 | Traces to | L2-011, L2-013, L2-021, L2-048, L2-049, L2-050, L2-051, L2-052 |
 | Design system | [`description-list.html`](../../design-system/components/description-list.html) |
 | Source mocks | [`pages/builder-profile/default`](../../mocks/pages/builder-profile/default.html), [`pages/builder-profile/own`](../../mocks/pages/builder-profile/own.html), [`pages/project-detail/default`](../../mocks/pages/project-detail/default.html), [`pages/project-detail/own`](../../mocks/pages/project-detail/own.html), [`pages/matching/default`](../../mocks/pages/matching/default.html), [`pages/matching-setup/success`](../../mocks/pages/matching-setup/success.html), [`pages/dashboard/default`](../../mocks/pages/dashboard/default.html) |

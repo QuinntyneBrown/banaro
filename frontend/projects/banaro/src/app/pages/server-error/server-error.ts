@@ -1,7 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, RESPONSE_INIT } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { TranslatePipe, TranslationService } from 'api';
+import { SessionStore, TranslatePipe, TranslationService } from 'api';
 import { Button, ErrorPage } from 'components';
 import { SeoService } from '../../shared/seo.service';
 
@@ -18,6 +18,8 @@ export interface ServerErrorState {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ServerErrorPage {
+  /** A member's way home is the dashboard; a visitor's is the home page (L2-042). */
+  protected readonly signedIn = inject(SessionStore).signedIn;
   private readonly document = inject(DOCUMENT);
   protected readonly requestId =
     (inject(Router).currentNavigation()?.extras.state as ServerErrorState | undefined)?.requestId ??

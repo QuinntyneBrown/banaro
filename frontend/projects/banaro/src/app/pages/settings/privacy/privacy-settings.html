@@ -1,0 +1,124 @@
+<section aria-labelledby="privacy-title">
+  <h2 class="section__title" id="privacy-title">{{ 'settings.privacy.title' | t }}</h2>
+
+  @switch (state()) {
+    @case ('loading') {
+      <div class="privacy__body" aria-busy="true">
+        <p class="vh" role="status">{{ 'settings.loading' | t }}</p>
+        <span bn-skeleton shape="block"></span>
+        <span bn-skeleton shape="block"></span>
+        <span bn-skeleton></span>
+      </div>
+    }
+    @case ('error') {
+      <div class="privacy__body">
+        <bn-empty-state tone="error" [heading]="'settings.loadFailed.title' | t">
+          {{ 'settings.loadFailed.body' | t }}
+          <button slot="actions" bn-button variant="primary" type="button" (click)="load()">
+            {{ 'settings.tryAgain' | t }}
+          </button>
+        </bn-empty-state>
+      </div>
+    }
+    @default {
+      @if (settings(); as s) {
+        <form bn-form class="privacy__body" novalidate [busy]="saving()" (ngSubmit)="save()">
+          @if (saved()) {
+            <div id="privacy-saved" tabindex="-1">
+              <bn-alert variant="success" [heading]="'settings.saved.title' | t">
+                {{ 'settings.privacy.saved' | t }}
+              </bn-alert>
+            </div>
+          }
+          @if (failed()) {
+            <div id="privacy-failed" tabindex="-1">
+              <bn-alert variant="danger" [heading]="'settings.saveFailed.title' | t">
+                {{ 'settings.saveFailed.body' | t }}
+              </bn-alert>
+            </div>
+          }
+
+          <fieldset
+            bn-form-section
+            level="question"
+            [legend]="'settings.privacy.visibility.legend' | t"
+          >
+            <bn-choices>
+              @for (option of visibilities; track option) {
+                <bn-choice
+                  [label]="'settings.privacy.visibility.' + option + '.title' | t"
+                  [description]="'settings.privacy.visibility.' + option + '.text' | t"
+                >
+                  <input
+                    type="radio"
+                    name="profile-visibility"
+                    [value]="option"
+                    [checked]="s.profileVisibility === option"
+                    [disabled]="saving()"
+                    (change)="set('profileVisibility', option)"
+                  />
+                </bn-choice>
+              }
+            </bn-choices>
+          </fieldset>
+
+          <fieldset
+            bn-form-section
+            level="question"
+            [legend]="'settings.privacy.precision.legend' | t"
+          >
+            <bn-choices>
+              @for (option of precisions; track option) {
+                <bn-choice
+                  [label]="'settings.privacy.precision.' + option + '.title' | t"
+                  [description]="'settings.privacy.precision.' + option + '.text' | t"
+                >
+                  <input
+                    type="radio"
+                    name="location-precision"
+                    [value]="option"
+                    [checked]="s.locationPrecision === option"
+                    [disabled]="saving()"
+                    (change)="set('locationPrecision', option)"
+                  />
+                </bn-choice>
+              }
+            </bn-choices>
+          </fieldset>
+
+          <div>
+            @for (key of switches; track key) {
+              <bn-switch
+                [controlId]="switchId(key)"
+                [label]="'settings.privacy.' + key + '.title' | t"
+                [description]="'settings.privacy.' + key + '.text' | t"
+              >
+                <input
+                  bn-switch
+                  type="checkbox"
+                  [id]="switchId(key)"
+                  [name]="switchId(key)"
+                  [checked]="s[key]"
+                  [disabled]="saving()"
+                  (change)="set(key, $any($event.target).checked)"
+                />
+              </bn-switch>
+            }
+          </div>
+
+          <div bn-form-actions>
+            <button
+              bn-button
+              variant="primary"
+              type="submit"
+              [busy]="saving()"
+              [disabled]="saving()"
+            >
+              {{ (saving() ? 'settings.saving' : 'settings.save') | t }}
+            </button>
+          </div>
+        </form>
+      }
+    }
+  }
+</section>

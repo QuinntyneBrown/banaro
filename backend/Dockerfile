@@ -1,6 +1,9 @@
 FROM php:8.3-cli-bookworm
+# GD with JPEG and WebP decodes, crops and re-encodes profile photos (ADR-0006).
 RUN apt-get update && apt-get install -y --no-install-recommends git unzip libpq-dev libzip-dev libicu-dev \
-    && docker-php-ext-install pdo_pgsql pgsql zip intl pcntl bcmath opcache \
+      libpng-dev libjpeg62-turbo-dev libwebp-dev \
+    && docker-php-ext-configure gd --with-jpeg --with-webp \
+    && docker-php-ext-install pdo_pgsql pgsql zip intl pcntl bcmath opcache gd \
     && pecl install redis && docker-php-ext-enable redis \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

@@ -1,0 +1,16 @@
+.onboarding__fieldset {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.field__label {
+  font: var(--text-label);
+}
+.field__help {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--color-fg-muted);
+}

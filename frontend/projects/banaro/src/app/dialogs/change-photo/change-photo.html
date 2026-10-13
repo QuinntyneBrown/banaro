@@ -1,0 +1,69 @@
+<bn-dialog
+  [heading]="'profiles.photo.title' | t"
+  [description]="'profiles.photo.description' | t"
+  [closeLabel]="'profiles.photo.close' | t"
+  [busy]="state() === 'busy' || removing()"
+  form
+  (submitted)="save()"
+>
+  <svg slot="icon" class="icon" viewBox="0 0 24 24" aria-hidden="true">
+    <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" />
+    <circle cx="9" cy="10" r="1.6" />
+    <path d="m4 18 5-5 4 4 3-3 4.5 4.5" />
+  </svg>
+  @if (alert(); as a) {
+    <bn-alert variant="danger" [heading]="a.title">{{ a.body }}</bn-alert>
+  }
+  <bn-file-upload
+    accept="image/jpeg,image/png,image/webp"
+    [controlId]="controlId"
+    [label]="'profiles.photo.newPhoto' | t"
+    [chooseLabel]="'profiles.photo.choose' | t"
+    [chooseAgainLabel]="'profiles.photo.chooseAgain' | t"
+    [help]="'profiles.photo.help' | t"
+    [error]="error()"
+    [file]="chosen()?.view ?? null"
+    [previewAlt]="'profiles.photo.previewAlt' | t"
+    [busy]="state() === 'busy'"
+    [progress]="progress()"
+    [progressLabel]="'profiles.photo.uploading' | t"
+    [chooseHidden]="state() === 'failed'"
+    (fileChosen)="choose($event)"
+  >
+    <strong>{{ 'profiles.photo.drop' | t }}</strong> {{ 'profiles.photo.dropRest' | t }}
+  </bn-file-upload>
+  @if (canRemove()) {
+    <button
+      slot="actions"
+      bn-button
+      variant="text"
+      type="button"
+      class="change-photo__remove"
+      [busy]="removing()"
+      (click)="remove()"
+    >
+      {{ 'profiles.photo.remove' | t }}
+    </button>
+  }
+  <button slot="actions" bn-button variant="quiet" type="button" (click)="cancel()">
+    {{ 'profiles.photo.cancel' | t }}
+  </button>
+  <button
+    slot="actions"
+    bn-button
+    variant="primary"
+    type="submit"
+    [busy]="state() === 'busy'"
+    [disabled]="state() === 'busy'"
+    [attr.aria-disabled]="!canSave() && state() !== 'busy' ? 'true' : null"
+  >
+    {{
+      (state() === 'busy'
+        ? 'profiles.photo.saving'
+        : state() === 'failed'
+          ? 'profiles.photo.tryAgain'
+          : 'profiles.photo.save'
+      ) | t
+    }}
+  </button>
+</bn-dialog>

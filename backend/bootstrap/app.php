@@ -3,7 +3,9 @@
 use App\Http\Controllers\Health\LivenessController;
 use App\Http\Controllers\Health\ReadinessController;
 use App\Http\Middleware\AssignRequestId;
+use App\Http\Middleware\EnforceAbsoluteSessionLifetime;
 use App\Http\Middleware\LogRequest;
+use App\Http\Middleware\RecordActivity;
 use App\Http\Middleware\RespondDuringMaintenance;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
@@ -36,9 +38,22 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prepend([LogRequest::class, AssignRequestId::class]);
         $middleware->replace(PreventRequestsDuringMaintenance::class, RespondDuringMaintenance::class);
         $middleware->statefulApi();
+        // Opening a verification link and checking a reset link prove themselves with the link's
+        // secret token and touch no session, and the pages make these calls during server-side
+        // rendering, which carries no CSRF token (decision D-021).
+        $middleware->validateCsrfTokens(except: ['api/v1/email/verify', 'api/v1/reset-password/check']);
+        // Runs inside the stateful session, before route authentication (L2-005 criterion 5).
+        $middleware->appendToGroup('api', EnforceAbsoluteSessionLifetime::class);
+        // After the lifetime check, so an ended session never counts as activity (L2-009).
+        $middleware->appendToGroup('api', RecordActivity::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->context(fn () => ['request_id' => Context::get('request_id')]);
+
+        // No session: the app opens the session-expired dialog on this code (L2-005 criterion 1).
+        $exceptions->render(fn (AuthenticationException $e, Request $request) => $request->expectsJson()
+            ? response()->json(['code' => 'unauthenticated', 'message' => __('identity.session.expired')], 401)
+            : null);
 
         $exceptions->render(function (Throwable $e, Request $request) {
             $handled = $e instanceof HttpExceptionInterface

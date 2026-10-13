@@ -4,7 +4,7 @@
 |---|---|
 | Selector | `bn-switch`, `input[bn-switch]` |
 | Library path | `frontend/projects/components/src/lib/switch/` |
-| Status | planned |
+| Status | built |
 | Traces to | L2-021, L2-036, L2-037, L2-048, L2-049, L2-050, L2-051, L2-052 |
 | Design system | [`switch.html`](../../design-system/components/switch.html) |
 | Source mocks | [`pages/settings/email`](../../mocks/pages/settings/email.html), [`pages/settings/privacy`](../../mocks/pages/settings/privacy.html), [`pages/matching-setup/default`](../../mocks/pages/matching-setup/default.html), [`pages/matching-setup/submitting`](../../mocks/pages/matching-setup/submitting.html) |

@@ -99,6 +99,7 @@ Hosts: `bn-search-filter-toolbar` and `bn-search-box` are `display: block`.
 | `buttonLabel` | `string` | — | yes | "Search". |
 | `placeholder` | `string` | `''` | no | An example, never the only label: "Name, skill or project". |
 | `inputId` | `string` | `'q'` | no | Input id; the not-found page uses `nf-q`. |
+| `value` (search box) | `string` | `''` | no | Starting text, such as the directory's `q` from the URL. |
 | `value` | `string` | `''` | no | Initial query, from the URL ("Kotlin", "chaplaincy"). |
 | `embedded` | `boolean` | `false` | no | Renders `div.search` instead of `form.search` so it can sit inside the stacked toolbar's form. |
 
@@ -111,6 +112,7 @@ Hosts: `bn-search-filter-toolbar` and `bn-search-box` are `display: block`.
 | `filtersCleared` (toolbar) | `void` | "Clear all" is activated. |
 | `searched` (toolbar, stacked) | `string` (trimmed query) | The stacked form is submitted, by the search button or Enter. |
 | `searched` (search box) | `string` (trimmed query) | The standalone search form is submitted. |
+| `typed` (search box) | `string` (raw text) | Every change as it is typed; the directory debounces it by 250 ms (L2-009 criterion 4). |
 | `queryChange` (search box) | `string` | Every input event; the page debounces it by 250 ms. |
 
 ### Content slots

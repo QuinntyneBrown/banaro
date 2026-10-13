@@ -13,7 +13,11 @@
     />
     <div class="cluster">
       <a bn-button variant="quiet" routerLink="/builders">{{ 'errors.notFound.browse' | t }}</a>
-      <a bn-button variant="quiet" routerLink="/">{{ 'errors.home' | t }}</a>
+      @if (signedIn()) {
+        <a bn-button variant="quiet" routerLink="/dashboard">{{ 'errors.dashboard' | t }}</a>
+      } @else {
+        <a bn-button variant="quiet" routerLink="/">{{ 'errors.home' | t }}</a>
+      }
     </div>
   </bn-error-page>
 </div>

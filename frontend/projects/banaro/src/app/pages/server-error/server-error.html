@@ -10,7 +10,11 @@
       <button bn-button variant="primary" type="button" (click)="retry()">
         {{ 'errors.serverError.retry' | t }}
       </button>
-      <a bn-button variant="quiet" routerLink="/">{{ 'errors.home' | t }}</a>
+      @if (signedIn()) {
+        <a bn-button variant="quiet" routerLink="/dashboard">{{ 'errors.dashboard' | t }}</a>
+      } @else {
+        <a bn-button variant="quiet" routerLink="/">{{ 'errors.home' | t }}</a>
+      }
     </div>
   </bn-error-page>
 </div>

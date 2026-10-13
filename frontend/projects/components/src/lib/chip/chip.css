@@ -1,0 +1,78 @@
+/* Extracted from docs/design-system/assets/components.css: chips, chip, pill, tags, active-filters.
+   Not encapsulated: the host elements are the page's own button, li and span. */
+.chips,
+.tags,
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.active-filters {
+  align-items: center;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-height-sm);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-full);
+  border: var(--border-width-hairline) solid var(--color-border-default);
+  background: var(--color-bg-surface);
+  color: var(--color-fg-default);
+  font: var(--text-body-sm);
+  cursor: pointer;
+}
+.chip:hover {
+  border-color: var(--color-border-strong);
+}
+.chip[aria-pressed='true'] {
+  background: var(--color-accent-subtle);
+  border-color: var(--color-accent);
+  color: var(--color-fg-accent);
+}
+.chip[data-state='active'],
+.chip:active {
+  background: var(--color-accent-subtle-hover);
+}
+.chip:disabled {
+  color: var(--color-fg-disabled);
+  background: var(--color-bg-subtle);
+  cursor: not-allowed;
+}
+.chip__count {
+  color: var(--color-fg-subtle);
+  font: var(--text-caption);
+  font-variant-numeric: tabular-nums;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  min-height: var(--size-ill-tags-and-status---------------------------min-height-6);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  font: var(--text-caption);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  background: var(--color-bg-subtle);
+  color: var(--color-fg-muted);
+}
+.pill--sage {
+  background: var(--color-accent-subtle);
+  color: var(--color-fg-accent);
+}
+@media (pointer: coarse) {
+  .chip {
+    min-height: var(--target-comfortable);
+  }
+}
+@media (forced-colors: active) {
+  .chip[aria-pressed='true'] {
+    border-width: var(--border-width-thick, 2px);
+  }
+}

@@ -1,0 +1,114 @@
+/* Extracted from docs/design-system/assets/components.css: two-col, stack, section__title, prose,
+   aside-card, facts, rows, card__match, tags, cluster. */
+.two-col {
+  display: grid;
+  gap: var(--space-12);
+  padding-bottom: var(--space-16);
+}
+@media (min-width: 64rem) {
+  .two-col {
+    grid-template-columns: minmax(0, 1fr) var(--size-two-col-grid-template-columns-34);
+    align-items: start;
+  }
+}
+.stack {
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+}
+.stack--lg {
+  gap: var(--space-8);
+}
+.section__title {
+  margin: 0 0 var(--space-4);
+  font: var(--text-h2);
+  font-size: var(--font-size-2xl);
+  letter-spacing: var(--letter-spacing-tight);
+}
+.prose {
+  max-width: var(--size-search-max-width-18);
+  display: grid;
+  gap: var(--space-5);
+}
+.prose p {
+  margin: 0;
+  color: var(--color-fg-muted);
+  font: var(--text-body-lg);
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+.aside-card {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-surface);
+  border: var(--border-width-hairline) solid var(--color-border-default);
+}
+.aside-card p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.aside-card__title {
+  margin: 0;
+  font: var(--text-h4);
+}
+.muted {
+  margin: 0;
+  color: var(--color-fg-muted);
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rows > li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  border-bottom: var(--border-width-hairline) solid var(--color-border-default);
+}
+.rows__main {
+  flex: 1;
+  min-width: 0;
+}
+.rows__title {
+  margin: 0;
+  font: var(--text-h4);
+  overflow-wrap: anywhere;
+}
+.rows__meta {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--color-fg-muted);
+}
+.card__match {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-1);
+  font: var(--text-caption);
+  color: var(--color-fg-subtle);
+}
+.card__match strong {
+  font: var(--font-weight-light) var(--font-size-xl) / 1 var(--font-family-display);
+  color: var(--color-fg-accent);
+  font-variant-numeric: tabular-nums;
+}
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.profile__error {
+  padding-block: var(--space-12);
+}

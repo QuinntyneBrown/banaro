@@ -1,0 +1,61 @@
+<ng-template #nameText>{{ name() }}</ng-template>
+<div class="profile-head__who">
+  @if (loading()) {
+    <span bn-skeleton shape="photo" class="profile-head__media"></span>
+    <div class="profile-head__text">
+      <span bn-skeleton width="12rem" height="var(--space-8)"></span>
+      <span bn-skeleton width="8rem"></span>
+    </div>
+  } @else {
+    @if (photo() && !photoFailed()) {
+      <img
+        class="profile-head__photo"
+        [src]="photo()"
+        width="96"
+        height="96"
+        [alt]="photoAlt()"
+        (error)="photoFailed.set(true)"
+      />
+    } @else {
+      <span
+        [class]="'profile-head__initials tile--' + tone()"
+        role="img"
+        [attr.aria-label]="initialsLabel()"
+        >{{ initials() }}</span
+      >
+    }
+    <div class="profile-head__text">
+      @switch (headingLevel()) {
+        @case (2) {
+          <h2 class="profile-head__name"><ng-container [ngTemplateOutlet]="nameText" /></h2>
+        }
+        @case (3) {
+          <h3 class="profile-head__name"><ng-container [ngTemplateOutlet]="nameText" /></h3>
+        }
+        @default {
+          <h1 class="profile-head__name" tabindex="-1">
+            <ng-container [ngTemplateOutlet]="nameText" />
+          </h1>
+        }
+      }
+      @if (role()) {
+        <p class="profile-head__role">{{ role() }}</p>
+      }
+      @if (place() || presence()) {
+        <p class="card__place">
+          @if (place()) {
+            <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" />
+              <circle cx="12" cy="10" r="2.3" />
+            </svg>
+            <span>{{ place() }}</span>
+          }
+          @if (presence(); as p) {
+            <bn-status [online]="p.online">{{ p.text }}</bn-status>
+          }
+        </p>
+      }
+    </div>
+  }
+</div>
+<div class="profile-head__actions"><ng-content select="[slot=actions]" /></div>

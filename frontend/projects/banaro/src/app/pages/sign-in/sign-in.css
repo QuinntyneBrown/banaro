@@ -1,0 +1,5 @@
+.field__help {
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--color-fg-muted);
+}

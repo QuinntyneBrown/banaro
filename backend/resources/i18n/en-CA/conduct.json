@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "title": "Code of conduct · Banaro",
+    "description": "How Banaro members treat each other, online and in person."
+  },
+  "eyebrow": "Community",
+  "title": "Code of conduct",
+  "sub": "How we treat each other, online and in person.",
+  "lastUpdated": "Last updated",
+  "contents": "On this page",
+  "intro": "Banaro is a gathering of people who share a faith and a craft. We hope it feels like a well-kept room where everyone is welcome to sit down. This is how we keep it that way.",
+  "beKind": {
+    "title": "Be kind and be honest",
+    "respect": "Treat every member with respect, whatever their church, background, seniority or experience.",
+    "disagree": "Disagree respectfully. Argue with ideas, never with people, and assume the best of one another.",
+    "feedback": "Give feedback on projects that is specific, generous and useful."
+  },
+  "welcoming": {
+    "title": "Faith-aligned, and welcoming",
+    "text": "Banaro is a community for Christian builders. We expect members to be gracious to people of every tradition within the church and to guests who are curious. Please do not use the community to pressure anyone about belief."
+  },
+  "askFirst": {
+    "title": "Ask before you reach out",
+    "spam": "No spam, mass messages or sales pitches to members who have not asked for them.",
+    "consent": "No recruiting, investing or hiring approaches without the other person's consent. A first message should say who you are and why you are writing.",
+    "no": "If someone says no or does not reply, leave it there."
+  },
+  "keepPeopleSafe": {
+    "title": "Keep people safe",
+    "text": "Harassment, discrimination, threats and sharing someone's private information are not tolerated. At events, follow the host's guidance, and look out for anyone who seems uncomfortable."
+  },
+  "ifSomethingGoesWrong": {
+    "title": "If something goes wrong",
+    "before": "Use Report on any profile, project or message, or write to us at",
+    "link": "the contact page",
+    "after": "A person on our team reads every report, usually within one working day, and keeps your report private. Depending on what happened, we may remove content, pause an account or end a membership."
+  }
+}

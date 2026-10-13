@@ -4,7 +4,7 @@
 |---|---|
 | Selector | `bn-breadcrumb` |
 | Library path | `frontend/projects/components/src/lib/breadcrumb/` |
-| Status | planned |
+| Status | built |
 | Traces to | L2-048, L2-049, L2-050, L2-051, L2-052 |
 | Design system | [`breadcrumb.html`](../../design-system/components/breadcrumb.html) |
 | Source mocks | [`pages/builder-profile/default`](../../mocks/pages/builder-profile/default.html), [`pages/builder-profile/loading`](../../mocks/pages/builder-profile/loading.html), [`pages/project-detail/default`](../../mocks/pages/project-detail/default.html), [`pages/project-detail/error`](../../mocks/pages/project-detail/error.html), [`pages/project-edit/default`](../../mocks/pages/project-edit/default.html), [`pages/project-new/default`](../../mocks/pages/project-new/default.html), [`pages/event-detail/default`](../../mocks/pages/event-detail/default.html) |

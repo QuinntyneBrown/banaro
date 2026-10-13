@@ -4,7 +4,7 @@
 |---|---|
 | Selector | `header[bn-profile-header]` |
 | Library path | `frontend/projects/components/src/lib/profile-header/` |
-| Status | planned |
+| Status | built |
 | Traces to | L2-007, L2-008, L2-011, L2-036, L2-048, L2-049, L2-050, L2-051, L2-052 |
 | Design system | [`profile-header.html`](../../design-system/components/profile-header.html) |
 | Source mocks | [`pages/builder-profile/default`](../../mocks/pages/builder-profile/default.html), [`pages/builder-profile/own`](../../mocks/pages/builder-profile/own.html), [`pages/builder-profile/sparse`](../../mocks/pages/builder-profile/sparse.html), [`pages/builder-profile/loading`](../../mocks/pages/builder-profile/loading.html), [`dialogs/report/default`](../../mocks/dialogs/report/default.html), [`dialogs/block-builder/default`](../../mocks/dialogs/block-builder/default.html) |

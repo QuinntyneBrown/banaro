@@ -1,0 +1,45 @@
+<div class="wrap">
+  <div class="page-block narrow">
+    <bn-page-header [eyebrow]="'conduct.eyebrow' | t" [heading]="'conduct.title' | t">
+      <span slot="sub"
+        >{{ 'conduct.sub' | t }} {{ 'conduct.lastUpdated' | t }}
+        <time [attr.datetime]="updated">{{ updatedLabel }}</time
+        >.</span
+      >
+    </bn-page-header>
+    <nav class="toc" [attr.aria-label]="'conduct.contents' | t">
+      <ol>
+        @for (section of sections; track section.id) {
+          <li>
+            <a routerLink="." [fragment]="section.id">{{ section.titleKey | t }}</a>
+          </li>
+        }
+      </ol>
+    </nav>
+    <div class="prose">
+      <p>{{ 'conduct.intro' | t }}</p>
+      <h2 id="be-kind">{{ 'conduct.beKind.title' | t }}</h2>
+      <ul>
+        <li>{{ 'conduct.beKind.respect' | t }}</li>
+        <li>{{ 'conduct.beKind.disagree' | t }}</li>
+        <li>{{ 'conduct.beKind.feedback' | t }}</li>
+      </ul>
+      <h2 id="welcoming">{{ 'conduct.welcoming.title' | t }}</h2>
+      <p>{{ 'conduct.welcoming.text' | t }}</p>
+      <h2 id="ask-first">{{ 'conduct.askFirst.title' | t }}</h2>
+      <ul>
+        <li>{{ 'conduct.askFirst.spam' | t }}</li>
+        <li>{{ 'conduct.askFirst.consent' | t }}</li>
+        <li>{{ 'conduct.askFirst.no' | t }}</li>
+      </ul>
+      <h2 id="keep-people-safe">{{ 'conduct.keepPeopleSafe.title' | t }}</h2>
+      <p>{{ 'conduct.keepPeopleSafe.text' | t }}</p>
+      <h2 id="if-something-goes-wrong">{{ 'conduct.ifSomethingGoesWrong.title' | t }}</h2>
+      <p>
+        {{ 'conduct.ifSomethingGoesWrong.before' | t }}
+        <a routerLink="/contact">{{ 'conduct.ifSomethingGoesWrong.link' | t }}</a
+        >. {{ 'conduct.ifSomethingGoesWrong.after' | t }}
+      </p>
+    </div>
+  </div>
+</div>

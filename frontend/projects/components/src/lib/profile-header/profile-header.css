@@ -1,0 +1,82 @@
+/* Extracted from docs/design-system/assets/components.css: profile-head. */
+:host {
+  display: grid;
+  gap: var(--space-6);
+  padding-block: var(--space-12) var(--space-8);
+}
+.profile-head__who {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+.profile-head__text {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.profile-head__photo,
+.profile-head__media {
+  flex: none;
+  width: var(--space-24);
+  height: var(--space-24);
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  background: var(--color-bg-subtle);
+}
+.profile-head__initials {
+  display: grid;
+  place-items: center;
+  width: var(--space-24);
+  height: var(--space-24);
+  flex: none;
+  border-radius: var(--radius-lg);
+  font: var(--font-weight-light) var(--font-size-3xl) / 1 var(--font-family-display);
+  color: var(--color-tile-fg);
+}
+.tile--sage {
+  background: var(--color-tile-sage);
+}
+.tile--clay {
+  background: var(--color-tile-clay);
+}
+.tile--fjord {
+  background: var(--color-tile-fjord);
+}
+.tile--oat {
+  background: var(--color-tile-oat);
+}
+.profile-head__name {
+  margin: 0;
+  font: var(--text-h1);
+  letter-spacing: var(--letter-spacing-tight);
+  overflow-wrap: anywhere;
+}
+.profile-head__name:focus {
+  outline: none;
+}
+.profile-head__role {
+  margin: 0;
+  color: var(--color-fg-muted);
+}
+.card__place {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font: var(--text-body-sm);
+  color: var(--color-fg-muted);
+}
+.profile-head__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.profile-head__actions:empty {
+  display: none;
+}
+@media (forced-colors: active) {
+  .profile-head__initials {
+    border: var(--border-width-hairline) solid CanvasText;
+  }
+}

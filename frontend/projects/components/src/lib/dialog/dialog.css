@@ -1,0 +1,117 @@
+/* Extracted from docs/design-system/assets/components.css: backdrop, dialog. Not encapsulated: the
+   panel renders in the CDK overlay container. */
+.cdk-overlay-backdrop.backdrop {
+  background: var(--color-bg-backdrop);
+}
+.bn-dialog {
+  width: 100%;
+  max-width: var(--size-dialog-max-width-27);
+  max-height: 100%;
+  padding: var(--space-6);
+}
+.bn-dialog--sm {
+  max-width: var(--layout-dialog-sm);
+}
+.bn-dialog--sheet {
+  max-width: 100%;
+  max-height: calc(100dvh - var(--space-4));
+  padding: 0;
+}
+.dialog {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: 100%;
+  max-height: calc(100dvh - var(--space-12));
+  overflow: hidden;
+  background: var(--color-bg-surface-raised);
+  color: var(--color-fg-default);
+  border: var(--border-width-hairline) solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-4);
+  outline: none;
+}
+.bn-dialog--sheet .dialog {
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  max-height: calc(100dvh - var(--space-4));
+}
+/* The opened component and bn-dialog lay out as if they were the panel's own children. */
+bn-dialog-container > * {
+  display: contents;
+}
+.dialog__form {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
+}
+.dialog__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-6) var(--space-3);
+}
+.dialog__title {
+  flex: 1;
+  margin: 0;
+  font: var(--text-h3);
+}
+.dialog__body {
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-3) var(--space-6) var(--space-6);
+  overflow-y: auto;
+}
+.dialog__body > p {
+  margin: 0;
+  color: var(--color-fg-muted);
+}
+.dialog__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  border-top: var(--border-width-hairline) solid var(--color-border-default);
+}
+.dialog__footer:empty {
+  display: none;
+}
+.dialog__who {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.dialog__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--size-switch-control-width-23);
+  height: var(--size-dialog-icon-height-29);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-subtle);
+  color: var(--color-fg-accent);
+}
+.dialog__icon--danger {
+  background: var(--color-danger-bg);
+  color: var(--color-danger-icon);
+}
+.dialog__header .icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  margin: calc(-1 * var(--space-1)) calc(-1 * var(--space-2)) 0 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-fg-muted);
+  cursor: pointer;
+}
+.dialog__header .icon-btn:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-fg-default);
+}
+@media (forced-colors: active) {
+  .dialog {
+    border-color: CanvasText;
+  }
+}

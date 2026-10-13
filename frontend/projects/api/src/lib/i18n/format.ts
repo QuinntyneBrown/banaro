@@ -54,3 +54,27 @@ export class DistancePipe implements PipeTransform {
     return formatDistance(km);
   }
 }
+
+/** "13 KB" under 1 MB, "1.2 MB" from 1 MB, in binary units as upload limits are (L2-008). */
+export function formatFileSize(bytes: number): string {
+  const mb = bytes / (1024 * 1024);
+  if (mb < 1) return `${formatNumber(Math.max(1, Math.round(bytes / 1024)))} KB`;
+  return `${new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 1 }).format(mb)} MB`;
+}
+
+/** How long ago a builder was last seen, in the unit the presence word uses (D-043). */
+export type LastSeen =
+  | { unit: 'minutes' | 'hours' | 'days' | 'weeks'; count: number }
+  | { unit: 'yesterday' | 'longAgo' };
+
+export function lastSeen(iso: string, now: Date = new Date()): LastSeen {
+  const minutes = Math.max(1, Math.floor((now.getTime() - new Date(iso).getTime()) / 60_000));
+  if (minutes < 60) return { unit: 'minutes', count: minutes };
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return { unit: 'hours', count: hours };
+  if (hours < 48) return { unit: 'yesterday' };
+  const days = Math.floor(hours / 24);
+  if (days < 7) return { unit: 'days', count: days };
+  if (days < 30) return { unit: 'weeks', count: Math.floor(days / 7) };
+  return { unit: 'longAgo' };
+}

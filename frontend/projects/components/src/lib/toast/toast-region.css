@@ -1,0 +1,17 @@
+/* Extracted from docs/design-system/assets/components.css: toast-region */
+.toast-region {
+  position: fixed;
+  z-index: var(--z-toast);
+  inset: auto var(--space-4) var(--space-4) var(--space-4);
+  display: grid;
+  gap: var(--space-3);
+  justify-items: stretch;
+  padding-bottom: env(safe-area-inset-bottom);
+  pointer-events: none;
+}
+@media (min-width: 48rem) {
+  .toast-region {
+    inset: auto var(--space-6) var(--space-6) auto;
+    width: var(--size-toast-region-width-26);
+  }
+}

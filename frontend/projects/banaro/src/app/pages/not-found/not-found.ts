@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, RESPONSE_INIT } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { TranslatePipe, TranslationService } from 'api';
+import { SessionStore, TranslatePipe, TranslationService } from 'api';
 import { Button, ErrorPage, SearchBox } from 'components';
 import { SeoService } from '../../shared/seo.service';
 
@@ -12,6 +12,8 @@ import { SeoService } from '../../shared/seo.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotFoundPage {
+  /** A member's way home is the dashboard; a visitor's is the home page (L2-042). */
+  protected readonly signedIn = inject(SessionStore).signedIn;
   private readonly router = inject(Router);
 
   constructor() {

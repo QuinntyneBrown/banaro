@@ -1,6 +1,13 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Directory\BuilderDirectoryController;
+use App\Http\Controllers\Api\V1\Directory\BuilderProfileController;
+use App\Http\Controllers\Api\V1\Identity\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Identity\JoinController;
+use App\Http\Controllers\Api\V1\Identity\PasswordResetController;
+use App\Http\Controllers\Api\V1\Identity\SessionController;
+use App\Http\Controllers\Api\V1\Identity\VerificationNotificationController;
+use App\Http\Controllers\Api\V1\Profiles\ProfilePhotoController;
 use App\Http\Controllers\Api\V1\PublicSite\ContactMessageController;
 use App\Http\Controllers\Api\V1\UserExperience\CatalogueController;
 use Illuminate\Support\Facades\Route;
@@ -24,3 +31,32 @@ Route::post('join', [JoinController::class, 'store'])
 Route::post('contact-messages', [ContactMessageController::class, 'store'])
     ->middleware('throttle:contact')
     ->name('contact-messages.store');
+
+// L2-003: visitors read their (empty) session and sign in.
+Route::get('session', [SessionController::class, 'show'])->name('session.show');
+Route::post('session', [SessionController::class, 'store'])->name('session.store');
+
+// L2-002: whoever opens a link may not be signed in; a resend finds the account from the session,
+// the link or the address.
+Route::post('email/verify', [EmailVerificationController::class, 'store'])->name('email.verify');
+Route::post('email/verification-notification', [VerificationNotificationController::class, 'store'])
+    ->name('email.verification-notification');
+
+// L2-004: the person resetting a password is not signed in.
+Route::post('forgot-password', [PasswordResetController::class, 'requestLink'])
+    ->middleware('throttle:password-reset')
+    ->name('password-reset.request');
+Route::post('reset-password/check', [PasswordResetController::class, 'check'])->name('password-reset.check');
+Route::post('reset-password', [PasswordResetController::class, 'store'])->name('password-reset.store');
+
+// L2-009 criterion 6: visitors browse the directory with a reduced card; a signed-in member gets the
+// member card from the same route.
+Route::get('builders', [BuilderDirectoryController::class, 'index'])->name('builders.index');
+// L2-011, L2-036 criterion 2: a visitor may open a profile that is open to everyone.
+Route::get('builders/{builder}', [BuilderProfileController::class, 'show'])
+    ->where('builder', '[0-9a-z]{26}')
+    ->name('builders.show');
+
+// L2-008, L2-009 criterion 6: visitors see builders' photos in the directory. Only ready photos are
+// served.
+Route::get('photos/{photo}', [ProfilePhotoController::class, 'serve'])->whereUuid('photo')->name('photos.serve');

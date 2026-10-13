@@ -4,7 +4,7 @@
 |---|---|
 | Selector | `bn-pagination` |
 | Library path | `frontend/projects/components/src/lib/pagination/` |
-| Status | planned |
+| Status | built (load more) |
 | Traces to | L2-009, L2-015, L2-048, L2-049, L2-050, L2-051, L2-052 |
 | Design system | [`pagination.html`](../../design-system/components/pagination.html) |
 | Source mocks | [`pages/directory/default`](../../mocks/pages/directory/default.html), [`pages/directory/edge`](../../mocks/pages/directory/edge.html), [`pages/directory/filtered`](../../mocks/pages/directory/filtered.html), [`pages/projects/default`](../../mocks/pages/projects/default.html), [`dialogs/say-hello/busy`](../../mocks/dialogs/say-hello/busy.html), [`notifications/toast/info`](../../mocks/notifications/toast/info.html) |

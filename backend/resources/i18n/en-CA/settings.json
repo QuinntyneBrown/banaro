@@ -1,0 +1,84 @@
+{
+  "eyebrow": "Your account",
+  "title": "Settings",
+  "sub": "Manage your account, who sees you, and the e-mail you get.",
+  "nav": {
+    "label": "Settings",
+    "account": "Account",
+    "privacy": "Privacy",
+    "email": "E-mail",
+    "blocked": "Blocked builders"
+  },
+  "loading": "Loading settings",
+  "loadFailed": {
+    "title": "We couldn't load your settings",
+    "body": "Your details are safe. Try again in a moment."
+  },
+  "tryAgain": "Try again",
+  "save": "Save changes",
+  "saving": "Saving…",
+  "saved": {
+    "title": "Saved"
+  },
+  "saveFailed": {
+    "title": "We couldn't save your settings",
+    "body": "Your choices are still here. Try again in a moment."
+  },
+  "privacy": {
+    "meta": {
+      "title": "Privacy settings · Banaro"
+    },
+    "title": "Privacy",
+    "saved": "Your privacy settings are updated. Builders see the change right away.",
+    "visibility": {
+      "legend": "Who can see my profile",
+      "members": {
+        "title": "Signed-in builders",
+        "text": "Anyone with a Banaro account can open your profile."
+      },
+      "everyone": {
+        "title": "Everyone",
+        "text": "Visitors who aren't signed in can also find you in the directory and open your profile."
+      }
+    },
+    "precision": {
+      "legend": "What builders see of where you are",
+      "neighbourhood": {
+        "title": "My neighbourhood",
+        "text": "Builders see your neighbourhood and roughly how far you are, such as 5.8 km, never your street."
+      },
+      "city": {
+        "title": "My city only",
+        "text": "Builders see your city and a distance rounded to 5 km, never your neighbourhood."
+      }
+    },
+    "emailContact": {
+      "title": "Show my e-mail address to builders",
+      "text": "Signed-in builders see it on your profile. Off, Banaro never shows it."
+    },
+    "showOnlineStatus": {
+      "title": "Show when I was last online",
+      "text": "Builders see \"Online now\" or when you were last seen."
+    },
+    "listInAttendees": {
+      "title": "List me as going to events",
+      "text": "Builders see your name on the attendee list of events you RSVP to."
+    }
+  },
+  "blocked": {
+    "meta": {
+      "title": "Blocked builders · Banaro"
+    },
+    "title": "Blocked builders",
+    "sub": "People you block can't see you or message you, and you won't see them.",
+    "since": "Blocked {date}",
+    "unblock": "Unblock",
+    "unblockNamed": "Unblock {name}",
+    "done": "You unblocked {name}",
+    "failed": "We couldn't unblock {name}",
+    "none": {
+      "title": "You haven't blocked anyone",
+      "body": "Builders you block appear here, and you can unblock them any time."
+    }
+  }
+}

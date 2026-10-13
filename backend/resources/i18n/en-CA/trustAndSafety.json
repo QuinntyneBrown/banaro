@@ -1,0 +1,26 @@
+{
+  "block": {
+    "errors": {
+      "self": "You can't block yourself."
+    },
+    "title": "Block {name}?",
+    "description": "This hides you from each other across Banaro.",
+    "close": "Close dialog",
+    "noContact": "{name} won't be able to message you or see your profile.",
+    "notListed": "You won't see them in the directory or in your matches.",
+    "notTold": "They aren't told that you blocked them.",
+    "undo": "You can unblock them any time in Settings.",
+    "cancel": "Cancel",
+    "confirm": "Block {name}",
+    "busy": "Blocking…",
+    "tryAgain": "Try again",
+    "failed": {
+      "title": "We couldn't block {name}",
+      "body": "Nothing changed. Check your connection and try again."
+    },
+    "done": {
+      "title": "You blocked {name}",
+      "body": "You won't see each other on Banaro."
+    }
+  }
+}
