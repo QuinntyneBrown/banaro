@@ -1,6 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { SELECT_HOST } from '../input/input';
 
 /**
  * The design system's chevron select around one native `select[bn-input]`. With a `label` it is the
@@ -10,7 +9,6 @@ import { SELECT_HOST } from '../input/input';
 @Component({
   selector: 'bn-select',
   imports: [NgTemplateOutlet],
-  providers: [{ provide: SELECT_HOST, useValue: true }],
   templateUrl: './select.html',
   styleUrl: './select.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

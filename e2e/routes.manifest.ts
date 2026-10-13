@@ -5,6 +5,7 @@ import { resetLink } from './fixtures/password-reset';
 import { createProject } from './fixtures/projects';
 import { BuilderProfilePage } from './pages/builder-profile.page';
 import { DirectoryPage } from './pages/directory.page';
+import { ProjectPage } from './pages/project.page';
 import { ProjectsPage } from './pages/projects.page';
 
 /**
@@ -152,6 +153,61 @@ export const routes: RouteEntry[] = [
     },
   }),
   page('projects', 'no-results', '/projects?q=chaplaincy&stage=launched&looking_for=advisor'),
+  page('project-detail', 'default', (c) => `/projects/${c.params['project']}`, {
+    seed: (c) => {
+      c.params['project'] = createProject(createBuilder({ name: 'Daniel Reyes' }), {
+        name: 'Psalter',
+        summary: 'Scripture memory with spaced repetition',
+        description: 'Psalter shows the few verses that are about to slip away.',
+        stage: 'beta',
+        lookingFor: ['contributor'],
+        link: 'https://psalter.example.ca',
+        feedbackCount: 41,
+      });
+    },
+  }),
+  page('project-detail', 'empty', (c) => `/projects/${c.params['project']}`, {
+    seed: (c) => {
+      c.params['project'] = createProject(createBuilder({ name: 'Esther Nguyen' }), {
+        name: 'Hearth',
+        description: 'A weekly meal and prayer rota for small groups.',
+        feedbackCount: 0,
+      });
+    },
+  }),
+  page('project-detail', 'own', (c) => `/projects/${c.params['project']}`, {
+    ...asMember,
+    seed: (c) => {
+      c.params['project'] = createProject(c.member as Member, {
+        name: 'Harvest',
+        description: 'Volunteer scheduling for GTA food banks.',
+        feedbackCount: 23,
+      });
+    },
+  }),
+  page('project-detail', 'not-found', `/projects/${'a'.repeat(26)}`),
+  page('project-detail', 'loading', (c) => `/projects?q=${c.params['word']}`, {
+    seed: (c) => {
+      c.params['word'] = `zeph${Date.now().toString(36)}`;
+      createProject(createBuilder(), { name: `${c.params['word']} Ledgerline` });
+    },
+    reach: async (p) => {
+      await new ProjectPage(p).holdLoading();
+      await p.getByRole('main').locator('.project__name a').first().click();
+      await new ProjectPage(p).loading.first().waitFor();
+    },
+  }),
+  page('project-detail', 'error', (c) => `/projects?q=${c.params['word']}`, {
+    seed: (c) => {
+      c.params['word'] = `zeph${Date.now().toString(36)}`;
+      createProject(createBuilder(), { name: `${c.params['word']} Gather` });
+    },
+    reach: async (p) => {
+      await new ProjectPage(p).failLoading();
+      await p.getByRole('main').locator('.project__name a').first().click();
+      await new ProjectPage(p).errorTitle.waitFor();
+    },
+  }),
 
   // Dialogs and menus, over the page they open from.
   {

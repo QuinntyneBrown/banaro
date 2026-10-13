@@ -1,13 +1,4 @@
-import { NgTemplateOutlet } from '@angular/common';
-import {
-  booleanAttribute,
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  inject,
-  input,
-  output,
-} from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { Button } from '../button/button';
 
 /**
@@ -16,32 +7,47 @@ import { Button } from '../button/button';
  */
 @Component({
   selector: 'bn-search-box',
-  imports: [Button, NgTemplateOutlet],
+  imports: [Button],
   template: `
-    <ng-template #field>
-      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="11" cy="11" r="6.5" />
-        <path d="m16 16 4.5 4.5" />
-      </svg>
-      <label class="vh" [attr.for]="inputId()">{{ label() }}</label>
-      <input
-        #box
-        class="search__input"
-        [id]="inputId()"
-        name="q"
-        type="search"
-        autocomplete="off"
-        [placeholder]="placeholder()"
-        [value]="value()"
-        (input)="typed.emit(box.value)"
-      />
-      <button bn-button variant="primary" type="submit">{{ buttonLabel() }}</button>
-    </ng-template>
     @if (embedded()) {
-      <div class="search"><ng-container [ngTemplateOutlet]="field" /></div>
+      <div class="search">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" />
+          <path d="m16 16 4.5 4.5" />
+        </svg>
+        <label class="vh" [attr.for]="inputId()">{{ label() }}</label>
+        <input
+          #box
+          class="search__input"
+          [id]="inputId()"
+          name="q"
+          type="search"
+          autocomplete="off"
+          [placeholder]="placeholder()"
+          [value]="value()"
+          (input)="typed.emit(box.value)"
+        />
+        <button bn-button variant="primary" type="submit">{{ buttonLabel() }}</button>
+      </div>
     } @else {
-      <form class="search" role="search" (submit)="submit($event)">
-        <ng-container [ngTemplateOutlet]="field" />
+      <form class="search" role="search" (submit)="submit($event, box.value)">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" />
+          <path d="m16 16 4.5 4.5" />
+        </svg>
+        <label class="vh" [attr.for]="inputId()">{{ label() }}</label>
+        <input
+          #box
+          class="search__input"
+          [id]="inputId()"
+          name="q"
+          type="search"
+          autocomplete="off"
+          [placeholder]="placeholder()"
+          [value]="value()"
+          (input)="typed.emit(box.value)"
+        />
+        <button bn-button variant="primary" type="submit">{{ buttonLabel() }}</button>
       </form>
     }
   `,
@@ -60,11 +66,8 @@ export class SearchBox {
   readonly searched = output<string>();
   readonly typed = output<string>();
 
-  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
-
-  protected submit(event: Event): void {
+  protected submit(event: Event, query: string): void {
     event.preventDefault();
-    const box = this.host.nativeElement.querySelector<HTMLInputElement>('input.search__input');
-    this.searched.emit((box?.value ?? '').trim());
+    this.searched.emit(query.trim());
   }
 }

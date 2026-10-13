@@ -1,6 +1,14 @@
 /* Extracted from docs/design-system/assets/components.css: select, select__wrap, select__chev. */
 :host {
   display: inline-block;
+  /* The inline pill: the knobs the native select inside takes (see input.css). */
+  --bn-select-width: auto;
+  --bn-select-height: var(--control-height-md);
+  --bn-select-padding: 0 var(--space-10) 0 var(--space-4);
+  --bn-select-radius: var(--radius-full);
+  --bn-select-appearance: none;
+  --bn-select-font: var(--text-label);
+  --bn-select-cursor: pointer;
 }
 :host(.select--field) {
   display: block;

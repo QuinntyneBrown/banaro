@@ -126,5 +126,48 @@
       "text": "Building something? Share it early; a first comment is often the most useful one.",
       "share": "Share a project"
     }
+  },
+  "detail": {
+    "meta": {
+      "title": "{name} · Banaro",
+      "notFound": "Project not found · Banaro"
+    },
+    "breadcrumb": "Breadcrumb",
+    "loading": "Loading project…",
+    "about": "About {name}",
+    "feedback": "Feedback",
+    "comments": "{count, plural, one {# comment} other {# comments}}",
+    "empty": {
+      "title": "Be the first to say something",
+      "body": "{name} has no feedback yet. A question, a kind word or a small suggestion all help {owner} decide what to build next.",
+      "cta": "Give the first feedback"
+    },
+    "emptyOwn": "No comments yet. When someone leaves feedback, you will see it here.",
+    "actions": {
+      "feedback": "Give feedback",
+      "help": "Offer to help"
+    },
+    "aside": {
+      "label": "About this project",
+      "glance": "At a glance",
+      "stage": "Stage",
+      "lookingFor": "Looking for",
+      "updated": "Updated",
+      "builder": "The builder"
+    },
+    "notFound": {
+      "title": "We couldn't find that project",
+      "lead": "It may have been renamed, removed by its builder, or the link might have a typo.",
+      "browse": "Browse projects",
+      "share": "Share a project"
+    },
+    "error": {
+      "title": "We couldn't load this project",
+      "body": "Banaro had trouble reaching the server. The project and its feedback are safe. Try again, or go back to the showcase.",
+      "tryAgain": "Try again",
+      "back": "Back to projects"
+    },
+    "heading": "Project",
+    "by": "by"
   }
 }
