@@ -26,3 +26,15 @@ export const projectLookingFor = pgTable('project_looking_for', {
   projectId: bigint('project_id', { mode: 'number' }).notNull(),
   role: varchar('role', { length: 32 }).notNull(),
 });
+
+/** A member's comment on someone else's project (L2-016). */
+export const feedback = pgTable('feedback', {
+  id: bigserial('id', { mode: 'number' }).primaryKey(),
+  projectId: bigint('project_id', { mode: 'number' }).notNull(),
+  authorId: bigint('author_id', { mode: 'number' }).notNull(),
+  body: text('body').notNull(),
+  createdAt: stamp('created_at'),
+  updatedAt: stamp('updated_at'),
+});
+
+export type Feedback = typeof feedback.$inferSelect;

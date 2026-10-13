@@ -1,5 +1,11 @@
+import { eq } from 'drizzle-orm';
 import { POST as shareRoute } from '../../app/api/v1/projects/route';
+import { nowStamp } from '../../src/clock';
+import { deps } from '../../src/container';
+import { orm } from '../../src/db/orm';
+import { projects, type Project } from '../../src/db/schema/projects';
 import type { User } from '../../src/db/schema/users';
+import { ulid } from '../../src/ulid';
 import { actingAs } from './members';
 
 /** A valid project to share; tests override the fields they are about. */
@@ -26,3 +32,26 @@ export async function sharedProjectId(
   if (response.status !== 201) throw new Error(`share answered ${response.status}`);
   return ((await response.json()) as { id: string }).id;
 }
+
+/** A project stored straight in the table, as the PHP tests' `project()` helper made it. */
+export async function createProject(owner: User, name = 'Psalter'): Promise<Project> {
+  const now = nowStamp();
+  const [row] = await orm(deps().db)
+    .insert(projects)
+    .values({
+      publicId: ulid(),
+      ownerId: owner.id,
+      name,
+      summary: 'A quiet place to read the psalms together.',
+      stage: 'prototype',
+      lastActivityAt: now,
+      createdAt: now,
+      updatedAt: now,
+    })
+    .returning();
+  return row;
+}
+
+/** The project as stored now. */
+export const fresh = async (project: Project) =>
+  (await orm(deps().db).select().from(projects).where(eq(projects.id, project.id)))[0];

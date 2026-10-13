@@ -34,6 +34,8 @@ const limiters: Record<string, (ctx: Ctx) => Limit[] | Promise<Limit[]>> = {
   ],
   // Unsubscribe links: 10 a minute per hashed address, so the signature cannot be guessed (D-056).
   unsubscribe: (ctx) => [{ key: byIp(ctx), max: 10, windowSeconds: 60 }],
+  // Project feedback: 10 pieces per hour per member (L2-016, L2-046).
+  'project-feedback': (ctx) => [{ key: `user:${ctx.user?.id}`, max: 10, windowSeconds: 3600 }],
   // Profile photos: 10 uploads per hour per member (L2-008, L2-046; D-038).
   'photo-upload': (ctx) => [{ key: `user:${ctx.user?.id}`, max: 10, windowSeconds: 3600 }],
 };
