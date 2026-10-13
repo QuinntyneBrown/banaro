@@ -38,3 +38,20 @@ export const feedback = pgTable('feedback', {
 });
 
 export type Feedback = typeof feedback.$inferSelect;
+
+/** A member's offer to fill one of a project's roles (L2-017). */
+export const helpOffers = pgTable('help_offers', {
+  id: bigserial('id', { mode: 'number' }).primaryKey(),
+  projectId: bigint('project_id', { mode: 'number' }).notNull(),
+  offererId: bigint('offerer_id', { mode: 'number' }).notNull(),
+  role: varchar('role', { length: 32 }).notNull(),
+  message: text('message').notNull(),
+  /** pending, accepted or declined. */
+  status: varchar('status', { length: 16 }).notNull().default('pending'),
+  answeredAt: stamp('answered_at'),
+  conversationId: bigint('conversation_id', { mode: 'number' }),
+  createdAt: stamp('created_at'),
+  updatedAt: stamp('updated_at'),
+});
+
+export type HelpOffer = typeof helpOffers.$inferSelect;

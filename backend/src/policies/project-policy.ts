@@ -1,7 +1,7 @@
 import type pg from 'pg';
 import type { Project } from '../db/schema/projects';
 import type { User } from '../db/schema/users';
-import { HttpError } from '../http/pipeline';
+import { HttpError, notFound } from '../http/pipeline';
 import { isBlockedEitherWay } from '../services/trust-and-safety/block-service';
 import { t } from '../services/user-experience/catalogue-service';
 
@@ -25,4 +25,19 @@ export async function authorizeFeedback(db: pg.Pool, user: User, project: Projec
       message: t('projects.feedback.notAllowed'),
     });
   }
+}
+
+/** Offers follow the feedback rule: not the owner, not a blocked pair (L2-017). */
+export async function authorizeOffer(db: pg.Pool, user: User, project: Project): Promise<void> {
+  if (!(await mayGiveFeedback(db, user, project))) {
+    throw new HttpError(403, {
+      code: 'offer_not_allowed',
+      message: t('projects.offer.notAllowed'),
+    });
+  }
+}
+
+/** Only the owner reads a project's offers; anyone else is told it is not there (L2-044). */
+export function authorizeViewOffers(user: User, project: Project): void {
+  if (project.ownerId !== user.id) throw notFound();
 }
