@@ -51,6 +51,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/projects/projects').then((m) => m.ProjectsPage),
   },
   {
+    path: 'projects/:id/edit',
+    canMatch: [memberGuard],
+    loadComponent: () => import('./pages/project-edit/project-edit').then((m) => m.ProjectEditPage),
+  },
+  {
     path: 'projects/:id',
     loadComponent: () =>
       import('./pages/project-detail/project-detail').then((m) => m.ProjectDetailPage),

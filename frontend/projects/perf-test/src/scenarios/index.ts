@@ -12,6 +12,7 @@ import Button from './Button';
 import ButtonBusy from './ButtonBusy';
 import Card from './Card';
 import Choice from './Choice';
+import DangerZone from './DangerZone';
 import DarkTheme from './DarkTheme';
 import DescriptionList from './DescriptionList';
 import Dialog from './Dialog';
@@ -62,6 +63,7 @@ export const scenarios: Record<string, Type<unknown>> = {
   ButtonBusy,
   Card,
   Choice,
+  DangerZone,
   DarkTheme,
   DescriptionList,
   Dialog,

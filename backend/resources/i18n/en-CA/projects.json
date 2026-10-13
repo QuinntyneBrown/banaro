@@ -169,5 +169,50 @@
     },
     "heading": "Project",
     "by": "by"
+  },
+  "edit": {
+    "meta": {
+      "title": "Edit {name} · Banaro"
+    },
+    "title": "Edit {name}",
+    "sub": "Changes appear on your project page as soon as you save.",
+    "crumb": "Edit",
+    "submit": "Save changes",
+    "submitting": "Saving…",
+    "saved": {
+      "title": "Changes saved",
+      "body": "{name} is up to date."
+    },
+    "failed": {
+      "title": "We couldn't save your changes",
+      "body": "Nothing was lost. Check your connection and try again."
+    },
+    "danger": {
+      "title": "Danger zone",
+      "body": "Deleting {name} removes the project page and {count, plural, one {its # comment} other {its # comments}}. This can't be undone.",
+      "delete": "Delete project"
+    }
+  },
+  "delete": {
+    "title": "Delete {name}?",
+    "description": "This permanently removes the project page and {count, plural, one {its # comment} other {its # comments}}. It can't be undone.",
+    "closeLabel": "Close dialog",
+    "removed": "The project page is removed and its link stops working.",
+    "offers": "Offers to help on it are removed too.",
+    "confirmLabel": "Type the project name to confirm",
+    "help": "Type {name} exactly as shown.",
+    "mismatch": "That doesn't match. Type {name} exactly as shown.",
+    "keep": "Keep project",
+    "confirm": "Delete project",
+    "busy": "Deleting…",
+    "tryAgain": "Try again",
+    "failed": {
+      "title": "We couldn't delete {name}",
+      "body": "Banaro couldn't reach the server. Nothing was deleted, and what you typed is still here. Try again in a moment."
+    },
+    "done": {
+      "title": "{name} deleted",
+      "body": "The project and its comments are gone."
+    }
   }
 }

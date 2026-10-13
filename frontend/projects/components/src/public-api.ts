@@ -16,6 +16,7 @@ export * from './lib/checkbox/checkbox';
 export * from './lib/chip/chip';
 export * from './lib/choice/choice';
 export * from './lib/description-list/description-list';
+export * from './lib/danger-zone/danger-zone';
 export * from './lib/dialog/dialog';
 export * from './lib/dialog/dialog-container';
 export * from './lib/dialog/dialog-service';

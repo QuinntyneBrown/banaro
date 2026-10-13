@@ -4,7 +4,9 @@ import { createMember, type Member } from './fixtures/members';
 import { resetLink } from './fixtures/password-reset';
 import { createProject } from './fixtures/projects';
 import { BuilderProfilePage } from './pages/builder-profile.page';
+import { DeleteProjectDialog } from './pages/delete-project.dialog';
 import { DirectoryPage } from './pages/directory.page';
+import { ProjectFormPage } from './pages/project-form.page';
 import { ProjectPage } from './pages/project.page';
 import { ProjectsPage } from './pages/projects.page';
 
@@ -153,6 +155,30 @@ export const routes: RouteEntry[] = [
     },
   }),
   page('projects', 'no-results', '/projects?q=chaplaincy&stage=launched&looking_for=advisor'),
+  page('project-edit', 'default', (c) => `/projects/${c.params['project']}/edit`, {
+    ...asMember,
+    seed: (c) => {
+      c.params['project'] = createProject(c.member as Member, {
+        name: 'Harvest',
+        summary: 'Volunteer scheduling for GTA food banks',
+        stage: 'beta',
+        lookingFor: ['technical_co_founder'],
+        feedbackCount: 23,
+      });
+    },
+  }),
+  page('project-edit', 'invalid', (c) => `/projects/${c.params['project']}/edit`, {
+    ...asMember,
+    seed: (c) => {
+      c.params['project'] = createProject(c.member as Member, { name: 'Harvest' });
+    },
+    reach: async (p) => {
+      const form = new ProjectFormPage(p);
+      await form.name.fill('');
+      await form.submit.click();
+      await form.errorSummary.waitFor();
+    },
+  }),
   page('project-detail', 'default', (c) => `/projects/${c.params['project']}`, {
     seed: (c) => {
       c.params['project'] = createProject(createBuilder({ name: 'Daniel Reyes' }), {
@@ -210,6 +236,29 @@ export const routes: RouteEntry[] = [
   }),
 
   // Dialogs and menus, over the page they open from.
+  ...(['default', 'invalid', 'failed'] as const).map(
+    (state): RouteEntry => ({
+      ...page('delete-project', state, (c) => `/projects/${c.params['project']}/edit`, {
+        ...asMember,
+        seed: (c) => {
+          c.params['project'] = createProject(c.member as Member, { name: 'Harvest', feedbackCount: 23 });
+        },
+        reach: async (p) => {
+          const dialog = new DeleteProjectDialog(p);
+          await new ProjectFormPage(p).deleteProject.click();
+          await dialog.dialog.waitFor();
+          if (state === 'invalid') await dialog.confirmName.fill('harvest app');
+          if (state === 'failed') {
+            await dialog.confirmName.fill('Harvest');
+            await dialog.failNextDelete();
+            await dialog.confirm.click();
+            await dialog.alert.waitFor();
+          }
+        },
+      }),
+      kind: 'dialog',
+    }),
+  ),
   {
     ...page('block-builder', 'default', (c) => `/builders/${c.params['builder']}`, {
       ...asMember,
