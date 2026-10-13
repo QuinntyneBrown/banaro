@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Identity\SessionController;
+use App\Http\Controllers\Api\V1\Notifications\NotificationController;
 use App\Http\Controllers\Api\V1\Profiles\OnboardingController;
 use App\Http\Controllers\Api\V1\Profiles\OwnProfileController;
 use App\Http\Controllers\Api\V1\Profiles\ProfilePhotoController;
@@ -41,6 +42,12 @@ Route::middleware('auth:sanctum')->group(function () {
         // L2-037: the member's own e-mail categories.
         Route::get('settings/email-preferences', [EmailPreferenceController::class, 'show'])->name('settings.email-preferences.show');
         Route::put('settings/email-preferences/{category}', [EmailPreferenceController::class, 'update'])->name('settings.email-preferences.update');
+
+        // L2-027: the member's own notifications.
+        Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+        Route::get('notifications/unread-count', [NotificationController::class, 'unreadCount'])->name('notifications.unread-count');
+        Route::post('notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+        Route::post('notifications/{notification}/read', [NotificationController::class, 'read'])->whereUuid('notification')->name('notifications.read');
 
         // Everything below works on a finished profile (L2-006 criterion 1).
         Route::middleware(RequireCompleteProfile::class)->group(function () {

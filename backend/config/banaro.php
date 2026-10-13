@@ -36,6 +36,12 @@ return [
         'record_every_seconds' => 60,
     ],
 
+    // Notification e-mail is retried with these waits in seconds, five times after the first attempt
+    // and then reported as failed (L2-029 criterion 4; D-059).
+    'notifications' => [
+        'backoff' => [60, 300, 900, 3600, 10800],
+    ],
+
     // Media scanner adapter (ADR-0004). Only "fake" exists; readiness fails in production with it.
     'media_scanner' => env('BANARO_MEDIA_SCANNER', 'fake'),
 
