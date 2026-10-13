@@ -4,6 +4,7 @@ namespace App\Http\Requests\Projects;
 
 use App\Models\Project;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Gate;
 
 /**
@@ -26,6 +27,15 @@ class GiveFeedbackRequest extends FormRequest
     public function authorize(): bool
     {
         return Gate::allows('giveFeedback', $this->project());
+    }
+
+    /** The 403 names itself, so the dialog can say why instead of showing a generic failure. */
+    protected function failedAuthorization(): void
+    {
+        throw new HttpResponseException(response()->json([
+            'code' => 'feedback_not_allowed',
+            'message' => __('projects.feedback.notAllowed'),
+        ], 403));
     }
 
     /** @return array<string, mixed> */

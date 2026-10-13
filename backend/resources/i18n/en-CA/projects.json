@@ -168,7 +168,15 @@
       "back": "Back to projects"
     },
     "heading": "Project",
-    "by": "by"
+    "by": "by",
+    "justNow": "just now",
+    "earlier": "{count, plural, one {Show # earlier comment} other {Show # earlier comments}}",
+    "earlierBusy": "Loading comments…",
+    "recent": "Showing the most recent first.",
+    "listFailed": {
+      "title": "We couldn't load the comments",
+      "retry": "Try again"
+    }
   },
   "edit": {
     "meta": {
@@ -220,6 +228,29 @@
       "required": "Write a comment before posting. Even one sentence helps.",
       "min": "Use at least {min} characters. A little more helps the builder act on it.",
       "max": "Use {max} characters or fewer."
+    },
+    "notAllowed": "Feedback isn't available between you and this builder.",
+    "title": "Give feedback on {name}",
+    "description": "Your name appears with your comment. {owner} is notified by e-mail and in Banaro.",
+    "closeLabel": "Close dialog",
+    "about": "by {owner} · {count, plural, one {# comment} other {# comments}} so far",
+    "label": "Your feedback",
+    "help": "Be specific and kind. {owner} reads every comment and can reply.",
+    "cancel": "Cancel",
+    "post": "Post feedback",
+    "posting": "Posting…",
+    "tryAgain": "Try again",
+    "failed": {
+      "title": "We couldn't post your feedback",
+      "body": "Banaro couldn't reach the server. Nothing was lost; your words are still here. Try again in a moment."
+    },
+    "slowDown": {
+      "title": "You're posting quickly",
+      "body": "Wait {minutes, plural, one {# minute} other {# minutes}}, then try again. Your words are still here."
+    },
+    "refused": {
+      "title": "You can't post feedback on this project",
+      "body": "Feedback isn't available between you and this builder."
     }
   }
 }

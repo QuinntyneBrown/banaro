@@ -78,7 +78,7 @@ class GiveFeedbackTest extends TestCase
         $owner = $this->member('Owner');
         $project = $this->project($owner);
 
-        $this->give($project->public_id, $owner)->assertForbidden();
+        $this->give($project->public_id, $owner)->assertForbidden()->assertJsonPath('code', 'feedback_not_allowed');
 
         $this->assertSame(0, $project->fresh()->feedback_count);
     }
