@@ -25,10 +25,11 @@ Banaro uses BullMQ on Redis.
   only that contract.
 - Job definitions live in `backend/src/jobs/{subsystem}/`. Each names its queue, attempts and
   backoff.
-- `node dist/worker.js` runs one BullMQ `Worker` per queue and closes them on `SIGTERM`, so a
+- `npm run worker` runs one BullMQ `Worker` per queue and closes them on `SIGTERM`, so a
   rollout drains in-flight jobs.
-- `node dist/scheduler.js` registers repeatable jobs. BullMQ stores each schedule once in Redis, so
-  each one runs once whatever the replica count.
+- A scheduler process registers repeatable jobs. BullMQ stores each schedule once in Redis, so
+  each one runs once whatever the replica count. Nothing is scheduled yet, so the process and its
+  container arrive with the first scheduled job.
 - Integration tests bind a synchronous queue that runs jobs inline after commit.
 
 ## Options Considered

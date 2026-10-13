@@ -1,8 +1,8 @@
 // Acceptance Test
 // Traces to: L2-044
 // Description:
-// Given a request with no session, when it reaches any route whose stack needs a signed-in member,
-// then the API returns 401 and nothing else about the record is revealed.
+// Given a request with no session, when it reaches any route that src/http/public-routes.ts does not
+// list, then the API returns 401 and nothing else about the record is revealed.
 
 import { randomUUID } from 'node:crypto';
 import { describe, expect, it } from 'vitest';

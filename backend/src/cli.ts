@@ -1,8 +1,11 @@
+import bcrypt from 'bcryptjs';
 import { checkI18nKeys } from './console/commands/i18n-check';
 import { maintenanceOff, maintenanceOn } from './console/commands/maintenance';
 import { migrate } from './console/commands/migrate';
 import { seed } from './console/commands/seed';
 import { deps } from './container';
+import type { QueueName } from './contracts/queue';
+import { work } from './queue/work';
 
 /** `npm run banaro -- <command>`: one-off commands, run in the api container (ADR-0002). */
 const commands: Record<string, (args: string[]) => Promise<void>> = {
@@ -20,7 +23,21 @@ const commands: Record<string, (args: string[]) => Promise<void>> = {
     const option = args.find((arg) => arg.startsWith('--frontend='));
     process.exitCode = await checkI18nKeys({ frontend: option?.slice(11) ?? '../frontend' });
   },
+  // Works one queue until it is empty; the e2e suite runs queued jobs this way.
+  'queue:work': async (args) => {
+    const queue = (args.find((arg) => arg.startsWith('--queue='))?.slice(8) ??
+      'default') as QueueName;
+    console.log(`queue:work: ${await work(deps(), queue)} job(s) from ${queue}`);
+  },
+  // Prints a bcrypt hash of the value, as reset tokens are stored; the e2e suite issues links with it.
+  bcrypt: async ([value]) => {
+    if (!value) throw new Error('Usage: bcrypt <value>');
+    console.log(await bcrypt.hash(value, Number(process.env.BCRYPT_ROUNDS ?? 12)));
+  },
 };
+
+/** Commands whose output is read by a script, so they print nothing else. */
+const quiet = new Set(['bcrypt']);
 
 const [name, ...args] = process.argv.slice(2);
 const command = commands[name];
@@ -31,7 +48,7 @@ if (!command) {
 
 try {
   await command(args);
-  if (!process.exitCode) console.log(`${name}: done`);
+  if (!process.exitCode && !quiet.has(name)) console.log(`${name}: done`);
 } catch (error) {
   console.error(error);
   process.exitCode = 1;

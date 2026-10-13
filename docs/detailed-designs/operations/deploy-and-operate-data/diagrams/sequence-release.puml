@@ -27,7 +27,6 @@ box "Backend — Banaro API application" #D1FADF
 end box
 box "Backend — Banaro Infrastructure" #FFF4E5
   database "Banaro database" as db
-  database "Redis" as redis
 end box
 
 maintainer -> ci : Merge to main
@@ -36,17 +35,17 @@ ci -> ci : build: banaro-api and banaro-web images, push to registry
 opt schema-compat step
   ci -> ci : Migrate a disposable database with the new release, run previous release's integration tests (L2-054 criterion 2)
 end
-ci -> task : node dist/cli.js migrate (L2-054 criterion 1)
-task -> redis : Take migration lock
+ci -> task : npm run banaro -- migrate (L2-054 criterion 1)
+task -> db : pg_advisory_lock (migration lock)
 task -> db : Apply pending expand migrations
 alt migration fails
   db --> task : Error
   task --> ci : Non-zero exit
   ci --> maintainer : Release stopped, no rollout
 else migrations applied
-  task -> redis : Release lock
+  task -> db : pg_advisory_unlock
   task --> ci : Exit 0
-  ci -> task : node dist/cli.js seed (L2-054 criterion 3)
+  ci -> task : npm run banaro -- seed (L2-054 criterion 3)
   task -> db : Upsert reference data by natural key
   task --> ci : Exit 0
   ci -> orch : Roll out API, Worker and Web images

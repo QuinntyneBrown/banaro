@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
-import { auth } from '../../src/http/middleware/auth';
 import type { Middleware } from '../../src/http/pipeline';
+import { PUBLIC_ROUTES } from '../../src/http/public-routes';
 import type { Handler } from './browser';
 
 const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] as const;
@@ -36,8 +36,9 @@ export function routes(): RouteEntry[] {
   });
 }
 
-/** The routes that need a signed-in member: their stack includes `auth`. */
-export const authenticatedRoutes = () => routes().filter((route) => route.stack.includes(auth));
+/** The routes that need a signed-in member: every route not in `PUBLIC_ROUTES`. */
+export const authenticatedRoutes = () =>
+  routes().filter((route) => !PUBLIC_ROUTES.includes(route.key));
 
 /** The route's path with each parameter replaced by the given value. */
 export const fillPath = (path: string, params: Record<string, string>) =>

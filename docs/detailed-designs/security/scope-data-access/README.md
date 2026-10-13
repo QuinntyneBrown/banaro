@@ -116,7 +116,7 @@ The suite lives in `backend/tests/feature/security/` and runs with the other int
 - **`RouteOwnershipRegistry`** — maps each route name to its fixture. Fixtures live in
   `tests/feature/security/fixtures/`, one module per subsystem, for example `messaging.ts`.
 - **`CrossUserAccessTest`** — enumerates every route whose exported `stack` includes `auth`,
-  through the route table that `tests/support/router.ts` builds from `app/**/route.ts`. For each route it looks up the fixture and fails with the route name when
+  through the route table that `tests/support/routes.ts` builds from `app/**/route.ts`. For each route it looks up the fixture and fails with the route name when
   none is registered (`L2-044` criterion 2). It then signs in member B, arranges B's record, signs in
   member A and calls the route. It asserts the expected status and asserts that the body contains no
   sentinel value (`L2-044` criterion 1).
