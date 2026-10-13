@@ -3,6 +3,7 @@
 namespace Tests\Feature\Security\Fixtures;
 
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Tests\Feature\Security\Support\Expectation;
 use Tests\Feature\Security\Support\RouteOwnershipFixture;
 use Tests\Feature\Security\Support\Scenario;
@@ -31,7 +32,25 @@ final class ProjectsFixtures
             );
         };
 
+        // Anyone but the owner may give feedback, so another member's call is allowed; what must hold is
+        // that the first member's own feedback is left alone (L2-016).
+        $feedback = function (User $owner, TestCase $t) {
+            $project = $t->project($t->member('Project owner'));
+            DB::table('feedback')->insert([
+                'project_id' => $project->id, 'author_id' => $owner->id, 'body' => 'Sentinel feedback text',
+                'created_at' => now(), 'updated_at' => now(),
+            ]);
+
+            return new Scenario(
+                params: ['project' => $project->public_id],
+                body: ['body' => 'Feedback from another member.'],
+                sentinels: [$owner->email],
+                intact: Snapshot::of('feedback', ['author_id' => $owner->id]),
+            );
+        };
+
         return [
+            new RouteOwnershipFixture('projects.feedback.store', Expectation::SelfOnly, $feedback),
             // Sharing creates a project for the caller; the owner's projects are untouched (L2-012).
             new RouteOwnershipFixture('projects.store', Expectation::SelfOnly, function (User $owner, TestCase $t) {
                 $t->project($owner);

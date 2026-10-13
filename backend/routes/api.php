@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Notifications\NotificationController;
 use App\Http\Controllers\Api\V1\Profiles\OnboardingController;
 use App\Http\Controllers\Api\V1\Profiles\OwnProfileController;
 use App\Http\Controllers\Api\V1\Profiles\ProfilePhotoController;
+use App\Http\Controllers\Api\V1\Projects\FeedbackController;
 use App\Http\Controllers\Api\V1\Projects\ProjectController;
 use App\Http\Controllers\Api\V1\Settings\EmailPreferenceController;
 use App\Http\Controllers\Api\V1\Settings\PrivacyController;
@@ -60,6 +61,12 @@ Route::middleware('auth:sanctum')->group(function () {
             // L2-014: the owner edits or deletes it.
             Route::put('projects/{project}', [ProjectController::class, 'update'])->where('project', '[0-9a-z]{26}')->name('projects.update');
             Route::delete('projects/{project}', [ProjectController::class, 'destroy'])->where('project', '[0-9a-z]{26}')->name('projects.destroy');
+
+            // L2-016: a member who is not the owner leaves feedback; at most 10 an hour.
+            Route::post('projects/{project}/feedback', [FeedbackController::class, 'store'])
+                ->where('project', '[0-9a-z]{26}')
+                ->middleware('throttle:project-feedback')
+                ->name('projects.feedback.store');
 
             // L2-008: the member's own photo.
             Route::post('me/photo', [ProfilePhotoController::class, 'store'])

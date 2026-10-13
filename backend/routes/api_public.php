@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\Identity\PasswordResetController;
 use App\Http\Controllers\Api\V1\Identity\SessionController;
 use App\Http\Controllers\Api\V1\Identity\VerificationNotificationController;
 use App\Http\Controllers\Api\V1\Profiles\ProfilePhotoController;
+use App\Http\Controllers\Api\V1\Projects\FeedbackController;
 use App\Http\Controllers\Api\V1\Projects\ProjectController;
 use App\Http\Controllers\Api\V1\PublicSite\ContactMessageController;
 use App\Http\Controllers\Api\V1\Settings\UnsubscribeController;
@@ -50,6 +51,11 @@ Route::post('forgot-password', [PasswordResetController::class, 'requestLink'])
     ->name('password-reset.request');
 Route::post('reset-password/check', [PasswordResetController::class, 'check'])->name('password-reset.check');
 Route::post('reset-password', [PasswordResetController::class, 'store'])->name('password-reset.store');
+
+// L2-016, L2-013: anyone reads a project's feedback.
+Route::get('projects/{project}/feedback', [FeedbackController::class, 'index'])
+    ->where('project', '[0-9a-z]{26}')
+    ->name('projects.feedback.index');
 
 // L2-037, L2-029 criterion 3: one-click unsubscribe, authenticated by the signed token in the link.
 Route::post('email-preferences/unsubscribe', [UnsubscribeController::class, 'store'])

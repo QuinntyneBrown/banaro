@@ -44,5 +44,10 @@
     "notYou": "If you did not change it, reset your password now so no one else can use your account.",
     "reset": "Reset your password",
     "help": "Questions? Write to us at {url}."
+  },
+  "feedbackReceived": {
+    "subject": "New feedback on {project}",
+    "intro": "{author} left feedback on {project}.",
+    "action": "Read the feedback"
   }
 }

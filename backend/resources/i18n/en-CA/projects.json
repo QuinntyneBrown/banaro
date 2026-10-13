@@ -214,5 +214,12 @@
       "title": "{name} deleted",
       "body": "The project and its comments are gone."
     }
+  },
+  "feedback": {
+    "errors": {
+      "required": "Write a comment before posting. Even one sentence helps.",
+      "min": "Use at least {min} characters. A little more helps the builder act on it.",
+      "max": "Use {max} characters or fewer."
+    }
   }
 }
