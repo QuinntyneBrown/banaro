@@ -1,7 +1,7 @@
 // Acceptance Test
 // Traces to: L2-040, L2-045
 // Description: A visitor's contact message is validated and queued to the team; bots are
-// discarded through the honeypot.
+// discarded through the honeypot or stopped by the 3-per-hour limit.
 
 import { beforeEach, describe, expect, it } from 'vitest';
 import { POST } from '@/app/api/v1/contact-messages/route';
@@ -92,5 +92,22 @@ describe('contact messages', () => {
     expect(response.status).toBe(202);
     expect(await response.json()).toEqual({});
     expect(queue.pushed).toHaveLength(0);
+  });
+
+  it('rejects the fourth message from one address within an hour', async () => {
+    for (let i = 0; i < 3; i++) expect((await post(message())).status).toBe(202);
+
+    const response = await post(message());
+
+    expect(response.status).toBe(429);
+    expect(Number(response.headers.get('Retry-After'))).toBeGreaterThan(3500);
+    expect(queue.pushed).toHaveLength(3);
+    expect((await post(message(), '10.0.0.2')).status).toBe(202);
+  });
+
+  it('counts the address the nearest proxy recorded, not one the client added', async () => {
+    for (let i = 0; i < 3; i++) await post(message(), `192.0.2.${i}, 10.0.0.1`);
+
+    expect((await post(message(), '198.51.100.7, 10.0.0.1')).status).toBe(429);
   });
 });
