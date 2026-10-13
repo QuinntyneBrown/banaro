@@ -3,7 +3,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 docker compose up -d --wait api
-docker compose run --rm api php artisan migrate --force --seed
+docker compose run --rm api npm run banaro -- migrate --seed
 (cd frontend && npm ci)
 cd e2e
 npm ci
