@@ -99,11 +99,11 @@ instance.
   request receives 503 with a `Retry-After` header and the JSON body
   `{ "code": "maintenance", "expectedBackAt": "…" }` (`L2-043` criterion 2). It runs after
   `logRequest` and `assignRequestId`, so a 503 still carries a request ID and a log line (`L2-053`).
-- **Shared maintenance flag** — the Redis key `banaro:maintenance` holds `{ since, retry }`. Each API
-  instance reads it at most once a second. A maintainer runs `banaro maintenance:on --retry={seconds}` once, from the
+- **Shared maintenance flag** — the Redis key `banaro:maintenance` holds `{ retry }`. Each API
+  instance reads it on every request. A maintainer runs `banaro maintenance:on --retry={seconds}` once, from the
   release pipeline, and every API instance enters maintenance mode. `banaro maintenance:off` ends it. The
-  admin application has no maintenance control (`L2-043` criterion 8). `expectedBackAt` is `since` plus `retry`
-  (D-017).
+  admin application has no maintenance control (`L2-043` criterion 8). `expectedBackAt` is the response time plus
+  `retry` (D-017).
 - **Banaro Worker** — `src/worker.ts` checks the flag and pauses its BullMQ workers while it is set, so
   the worker processes no jobs, e-mail included. Jobs wait in Redis until `banaro maintenance:off`, and
   e-mail is sent after it (`L2-043` criterion 9).

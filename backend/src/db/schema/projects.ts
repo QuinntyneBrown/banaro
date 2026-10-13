@@ -1,0 +1,57 @@
+import { bigint, bigserial, integer, pgTable, text, varchar } from 'drizzle-orm/pg-core';
+import { stamp } from './columns';
+
+/** A product a member shares (L2-012). */
+export const projects = pgTable('projects', {
+  id: bigserial('id', { mode: 'number' }).primaryKey(),
+  publicId: varchar('public_id', { length: 26 }).notNull(),
+  ownerId: bigint('owner_id', { mode: 'number' }).notNull(),
+  name: varchar('name', { length: 80 }).notNull(),
+  summary: varchar('summary', { length: 140 }).notNull(),
+  description: text('description'),
+  stage: varchar('stage', { length: 16 }).notNull(),
+  link: varchar('link', { length: 2048 }),
+  feedbackCount: integer('feedback_count').notNull().default(0),
+  lastActivityAt: stamp('last_activity_at'),
+  /** Accent-free name and summary that browse searches (L2-015 criterion 2). */
+  searchText: text('search_text').notNull().default(''),
+  createdAt: stamp('created_at'),
+  updatedAt: stamp('updated_at'),
+});
+
+export type Project = typeof projects.$inferSelect;
+
+/** The roles a project is looking for (L2-012). */
+export const projectLookingFor = pgTable('project_looking_for', {
+  projectId: bigint('project_id', { mode: 'number' }).notNull(),
+  role: varchar('role', { length: 32 }).notNull(),
+});
+
+/** A member's comment on someone else's project (L2-016). */
+export const feedback = pgTable('feedback', {
+  id: bigserial('id', { mode: 'number' }).primaryKey(),
+  projectId: bigint('project_id', { mode: 'number' }).notNull(),
+  authorId: bigint('author_id', { mode: 'number' }).notNull(),
+  body: text('body').notNull(),
+  createdAt: stamp('created_at'),
+  updatedAt: stamp('updated_at'),
+});
+
+export type Feedback = typeof feedback.$inferSelect;
+
+/** A member's offer to fill one of a project's roles (L2-017). */
+export const helpOffers = pgTable('help_offers', {
+  id: bigserial('id', { mode: 'number' }).primaryKey(),
+  projectId: bigint('project_id', { mode: 'number' }).notNull(),
+  offererId: bigint('offerer_id', { mode: 'number' }).notNull(),
+  role: varchar('role', { length: 32 }).notNull(),
+  message: text('message').notNull(),
+  /** pending, accepted or declined. */
+  status: varchar('status', { length: 16 }).notNull().default('pending'),
+  answeredAt: stamp('answered_at'),
+  conversationId: bigint('conversation_id', { mode: 'number' }),
+  createdAt: stamp('created_at'),
+  updatedAt: stamp('updated_at'),
+});
+
+export type HelpOffer = typeof helpOffers.$inferSelect;
