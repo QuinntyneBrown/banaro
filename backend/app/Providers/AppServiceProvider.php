@@ -10,6 +10,7 @@ use App\Services\Security\ClientFingerprint;
 use App\Services\UserExperience\CatalogueService;
 use App\Services\UserExperience\CatalogueTranslationLoader;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\RateLimiter;
@@ -40,6 +41,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Outside production a lazy load or a silently dropped attribute fails loudly, so N+1 queries and
+        // ignored request fields show up in tests (L2-044 criterion 4, L2-047).
+        Model::preventLazyLoading(! $this->app->isProduction());
+        Model::preventSilentlyDiscardingAttributes(! $this->app->isProduction());
+
         // Every notification's e-mail goes through one channel that records and de-duplicates it (L2-029).
         Notification::extend('mail', fn ($app) => $app->make(MailerChannel::class));
 
