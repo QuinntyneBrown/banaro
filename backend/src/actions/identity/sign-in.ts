@@ -2,6 +2,9 @@ import { eq } from 'drizzle-orm';
 import { orm } from '../../db/orm';
 import { canonicalEmail, users, type User } from '../../db/schema/users';
 import { HttpError, type Ctx } from '../../http/pipeline';
+import { sendMail } from '../../jobs/send-mail';
+import { newSignInMail } from '../../mail/templates/identity';
+import { browserName, recordSignIn } from '../../services/identity/sign-in-history';
 import { checkPassword, PASSWORD_MAX } from '../../services/identity/password-policy';
 import { signInThrottle } from '../../services/identity/sign-in-throttle';
 import { clientIp } from '../../services/security/client-fingerprint';
@@ -42,5 +45,14 @@ export async function signIn(email: string, password: string, ctx: Ctx): Promise
   session.data.authenticatedAt = Math.floor(Date.now() / 1000);
   session.data.passwordHash = user.password;
   ctx.user = user;
+
+  // A new device on an account that signed in before gets a security e-mail (criterion 10).
+  const userAgent = ctx.req.headers.get('User-Agent') ?? '';
+  if (await recordSignIn(ctx.deps.db, user.id, userAgent, ip)) {
+    await ctx.deps.queue.dispatch(
+      sendMail,
+      newSignInMail(user, new Date(), browserName(userAgent)),
+    );
+  }
   return user;
 }

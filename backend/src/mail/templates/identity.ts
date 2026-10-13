@@ -36,6 +36,44 @@ export function resetPasswordMail(user: Recipient, token: string): Mail {
   };
 }
 
+const signInTime = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'America/Toronto',
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  hour12: true,
+});
+
+/** "Friday 9 October 2026 at 6:30 pm", Toronto time. */
+function formatSignInTime(at: Date): string {
+  const part = Object.fromEntries(signInTime.formatToParts(at).map((p) => [p.type, p.value]));
+  const period = part.dayPeriod.replace(/\./g, '').toLowerCase();
+  return `${part.weekday} ${part.day} ${part.month} ${part.year} at ${part.hour}:${part.minute} ${period}`;
+}
+
+/**
+ * Security e-mail after a sign-in from a new device (L2-003 criterion 10). It names the time and
+ * browser; there is no location lookup (D-023).
+ */
+export function newSignInMail(user: Recipient, at: Date, browser: string): Mail {
+  return {
+    to: user.email,
+    subject: t('email.newSignIn.subject'),
+    ...renderMail({
+      greeting: greeting(user.name),
+      intro: [
+        t('email.newSignIn.intro', { browser, time: formatSignInTime(at) }),
+        t('email.newSignIn.ifYou'),
+      ],
+      action: { text: t('email.newSignIn.reset'), url: webUrl('/forgot-password') },
+      outro: [t('email.newSignIn.help', { url: webUrl('/contact') })],
+    }),
+  };
+}
+
 /** Security e-mail after a password change (L2-004 criterion 9). */
 export function passwordChangedMail(user: Recipient): Mail {
   return {
