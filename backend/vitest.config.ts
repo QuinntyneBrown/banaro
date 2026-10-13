@@ -13,6 +13,7 @@ const testEnv = {
   REDIS_DB: '14',
   REDIS_CACHE_DB: '15',
   LOG_LEVEL: 'silent',
+  BCRYPT_ROUNDS: '4',
 };
 Object.assign(process.env, testEnv);
 

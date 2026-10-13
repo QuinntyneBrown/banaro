@@ -1,4 +1,5 @@
-import { bigserial, boolean, pgTable, smallint, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { bigserial, boolean, pgTable, smallint, varchar } from 'drizzle-orm/pg-core';
+import { stamp } from './columns';
 
 /** Skills a builder lists; the twelve with `is_catalogue` are the onboarding catalogue (D-027). */
 export const skills = pgTable('skills', {
@@ -8,8 +9,8 @@ export const skills = pgTable('skills', {
   normalizedName: varchar('normalized_name', { length: 40 }).notNull(),
   isCatalogue: boolean('is_catalogue').notNull().default(false),
   cataloguePosition: smallint('catalogue_position'),
-  createdAt: timestamp('created_at', { precision: 0, mode: 'string' }),
-  updatedAt: timestamp('updated_at', { precision: 0, mode: 'string' }),
+  createdAt: stamp('created_at'),
+  updatedAt: stamp('updated_at'),
 });
 
 /** Lower-case ASCII, trimmed: the key that makes "laravel " and "Laravel" one skill. */

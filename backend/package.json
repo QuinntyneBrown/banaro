@@ -19,6 +19,7 @@
     "worker": "tsx src/worker.ts"
   },
   "dependencies": {
+    "bcryptjs": "3.0.3",
     "bullmq": "6.3.10",
     "drizzle-orm": "0.45.4",
     "ioredis": "5.11.1",

@@ -11,7 +11,7 @@ export const logRequest: Middleware = async (ctx, next) => {
       route: ctx.route,
       status: response.status,
       duration_ms: Number(process.hrtime.bigint() - started) / 1e6,
-      member_id: ctx.memberId,
+      member_id: ctx.user?.id ?? null,
     },
     'request',
   );

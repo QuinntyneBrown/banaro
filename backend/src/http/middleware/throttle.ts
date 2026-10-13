@@ -1,5 +1,6 @@
 import { clientHash, clientIp } from '../../services/security/client-fingerprint';
 import { HttpError, type Ctx, type Middleware } from '../pipeline';
+import { rateLimiter } from '../rate-limiter';
 
 interface Limit {
   key: string;
@@ -26,8 +27,8 @@ export function throttle(name: keyof typeof limiters): Middleware {
     }));
 
     for (const limit of limits) {
-      if (Number(await redis.get(limit.key)) >= limit.max) {
-        const retryAfter = Math.max(await redis.ttl(limit.key), 1);
+      if (await rateLimiter.tooManyAttempts(redis, limit.key, limit.max)) {
+        const retryAfter = await rateLimiter.availableIn(redis, limit.key);
         ctx.deps.logger.warn(
           { route: ctx.route, client: clientHash(`ip:${clientIp(ctx.req)}`) },
           'rate_limit.exceeded',
@@ -46,8 +47,7 @@ export function throttle(name: keyof typeof limiters): Middleware {
 
     let remaining = Infinity;
     for (const limit of limits) {
-      const hits = await redis.incr(limit.key);
-      if (hits === 1) await redis.expire(limit.key, limit.windowSeconds);
+      const hits = await rateLimiter.hit(redis, limit.key, limit.windowSeconds);
       remaining = Math.min(remaining, limit.max - hits);
     }
     const response = await next();

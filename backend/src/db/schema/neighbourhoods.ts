@@ -1,14 +1,5 @@
-import {
-  bigint,
-  bigserial,
-  numeric,
-  pgTable,
-  primaryKey,
-  timestamp,
-  varchar,
-} from 'drizzle-orm/pg-core';
-
-const stamp = (name: string) => timestamp(name, { precision: 0, mode: 'string' });
+import { bigint, bigserial, numeric, pgTable, primaryKey, varchar } from 'drizzle-orm/pg-core';
+import { stamp } from './columns';
 
 /** GTA places with a centroid and the directory area they belong to (D-026). */
 export const neighbourhoods = pgTable('neighbourhoods', {
